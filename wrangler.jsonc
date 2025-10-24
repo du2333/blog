@@ -5,5 +5,8 @@
     "compatibility_flags": [
         "nodejs_compat"
     ],
-    "main": "./src/server.ts"
+    "main": "./src/server.ts",
+    "observability": {
+        "enabled": true
+    }
 }
