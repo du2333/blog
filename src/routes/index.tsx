@@ -1,44 +1,98 @@
-import { getDb } from "@/db";
-import { testTable } from "@/db/schema";
-import { useMutation } from "@tanstack/react-query";
-import { createFileRoute, redirect } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
+import { createPostFn, getPostsFn, updatePostFn } from "@/core/functions/posts";
+import {
+  queryOptions,
+  useMutation,
+  useSuspenseQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { Suspense } from "react";
 
-const addTestDataToDbSchema = z.object({
-  name: z.string(),
-  age: z.number(),
+const postsQuery = queryOptions({
+  queryKey: ["posts"],
+  queryFn: () => getPostsFn({ data: { offset: 0, limit: 10 } }),
 });
-
-const addTestDataToDb = createServerFn({ method: "POST" })
-  .inputValidator(addTestDataToDbSchema)
-  .handler(async ({ data }) => {
-    const db = getDb();
-    await db.insert(testTable).values({ name: data.name, age: data.age });
-
-    throw redirect({ to: "/example" });
-  });
 
 export const Route = createFileRoute("/")({
   component: App,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(postsQuery);
+  },
 });
 
 function App() {
-  const addTestDataToDbMutation = useMutation({
-    mutationFn: addTestDataToDb,
+  const queryClient = useQueryClient();
+  const { data: posts } = useSuspenseQuery(postsQuery);
+
+  const createPostMutation = useMutation({
+    mutationFn: createPostFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
+  });
+  const updatePostMutation = useMutation({
+    mutationFn: updatePostFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+    },
   });
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-2xl font-bold">Hello World 2</h1>
-      <button
-        onClick={() => {
-          addTestDataToDbMutation.mutate({ data: { name: "John", age: 20 } });
-        }}
-        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
-      >
-        {addTestDataToDbMutation.isPending ? "Adding..." : "Click me"}
-      </button>
+      <Link to="/example" className="hover:underline text-2xl">
+        Go to /Example
+      </Link>
+      <div className="flex flex-col gap-4">
+        <button
+          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
+          onClick={() =>
+            createPostMutation.mutate({
+              data: {
+                title: "Hello World",
+                slug: "hello-world",
+                contentHtml: "Hello World",
+                status: "draft",
+                publishedAt: null,
+              },
+            })
+          }
+        >
+          Create Example Post
+        </button>
+        <button
+          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
+          onClick={() =>
+            updatePostMutation.mutate({
+              data: {
+                id: 1,
+                title: `Hello World ${Math.random()}`,
+                slug: "hello-world",
+                contentHtml: "Hello World",
+                status: "draft",
+                publishedAt: null,
+              },
+            })
+          }
+        >
+          Update Example Post
+        </button>
+      </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <div className="flex flex-col gap-4">
+          {posts.map((post) => (
+            <div
+              key={post.id}
+              className="border border-gray-300 rounded-md p-4"
+            >
+              <h2 className="text-lg font-bold">{post.title}</h2>
+              <p className="text-sm text-gray-500">
+                Last Updated: {new Date(post.updatedAt).toLocaleString()}
+              </p>
+            </div>
+          ))}
+        </div>
+      </Suspense>
     </div>
   );
 }
