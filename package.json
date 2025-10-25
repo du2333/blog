@@ -8,7 +8,9 @@
     "deploy": "pnpm run build && wrangler deploy",
     "serve": "vite preview",
     "test": "vitest run",
-    "cf-typegen": "wrangler types --env-interface Env"
+    "cf-typegen": "wrangler types --env-interface Env",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.6",
@@ -22,6 +24,7 @@
     "@tanstack/router-plugin": "^1.132.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.44.7",
     "lucide-react": "^0.544.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
@@ -39,6 +42,7 @@
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^5.0.4",
+    "drizzle-kit": "^0.31.5",
     "jsdom": "^27.0.0",
     "typescript": "^5.7.2",
     "vite": "^7.1.7",

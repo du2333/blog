@@ -8,5 +8,13 @@
     "main": "./src/server.ts",
     "observability": {
         "enabled": true
-    }
+    },
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_id": "7f48004e-8086-4cec-871f-45d38cf9a2eb",
+            "migrations_dir": "drizzle",
+            "remote": true
+        }
+    ]
 }
