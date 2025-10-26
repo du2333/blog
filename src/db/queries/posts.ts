@@ -17,6 +17,15 @@ export async function getPosts(options: { offset: number; limit: number }) {
   return posts;
 }
 
+export async function getPostById(id: number) {
+  const db = getDb();
+  const [post] = await db
+    .select()
+    .from(PostsTable)
+    .where(eq(PostsTable.id, id));
+  return post;
+}
+
 export async function updatePost(
   id: number,
   data: Partial<typeof PostsTable.$inferInsert>

@@ -1,13 +1,14 @@
-import { getPosts, insertPost, updatePost } from "@/db/queries/posts";
+import { getPostById, getPosts, insertPost, updatePost } from "@/db/queries/posts";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { JSONContent } from "@tiptap/react";
 
 export const createPostFn = createServerFn()
   .inputValidator(
     z.object({
       title: z.string(),
       slug: z.string(),
-      //   contentJson: z.string(),
+      contentJson: z.custom<JSONContent>(),
       contentHtml: z.string(),
       status: z.enum(["draft", "published", "archived"]).catch("draft"),
       publishedAt: z.date().nullable(),
@@ -31,12 +32,19 @@ export const getPostsFn = createServerFn()
     });
   });
 
+export const getPostByIdFn = createServerFn()
+  .inputValidator(z.object({ id: z.number() }))
+  .handler(async ({ data }) => {
+    return await getPostById(data.id);
+  });
+
 export const updatePostFn = createServerFn()
   .inputValidator(
     z.object({
       id: z.number(),
       title: z.string(),
       slug: z.string(),
+      contentJson: z.custom<JSONContent>(),
       contentHtml: z.string(),
       status: z.enum(["draft", "published", "archived"]).catch("draft"),
       publishedAt: z.date().nullable(),
@@ -46,6 +54,7 @@ export const updatePostFn = createServerFn()
     await updatePost(data.id, {
       title: data.title,
       slug: data.slug,
+      contentJson: data.contentJson,
       contentHtml: data.contentHtml,
       status: data.status,
       publishedAt: data.publishedAt,

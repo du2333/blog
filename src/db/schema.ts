@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { index, integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import type { JSONContent } from "@tiptap/react";
 
 export const PostsTable = sqliteTable(
   "posts",
@@ -7,9 +8,7 @@ export const PostsTable = sqliteTable(
     id: integer().primaryKey({ autoIncrement: true }),
     title: text().notNull(),
     slug: text().notNull(),
-    // contentJson: text("content_json", { mode: "json" })
-    //   .$type<Record<string, any>>()
-    //   .notNull(),
+    contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
     contentHtml: text().notNull(),
     status: text("status", { enum: ["draft", "published", "archived"] })
       .notNull()
