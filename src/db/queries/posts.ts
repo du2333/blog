@@ -10,7 +10,15 @@ export async function insertPost(data: typeof PostsTable.$inferInsert) {
 export async function getPosts(options: { offset: number; limit: number }) {
   const db = getDb();
   const posts = await db
-    .select()
+    .select({
+      id: PostsTable.id,
+      title: PostsTable.title,
+      slug: PostsTable.slug,
+      status: PostsTable.status,
+      publishedAt: PostsTable.publishedAt,
+      createdAt: PostsTable.createdAt,
+      updatedAt: PostsTable.updatedAt,
+    })
     .from(PostsTable)
     .limit(options.limit)
     .offset(options.offset);

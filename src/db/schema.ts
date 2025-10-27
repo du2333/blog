@@ -9,7 +9,6 @@ export const PostsTable = sqliteTable(
     title: text().notNull(),
     slug: text().notNull(),
     contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
-    contentHtml: text().notNull(),
     status: text("status", { enum: ["draft", "published", "archived"] })
       .notNull()
       .default("draft"),

@@ -44,6 +44,9 @@ importers:
       '@tiptap/starter-kit':
         specifier: ^3.8.0
         version: 3.8.0
+      '@tiptap/static-renderer':
+        specifier: ^3.8.0
+        version: 3.8.0(@tiptap/core@3.8.0(@tiptap/pm@3.8.0))(@tiptap/pm@3.8.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1597,6 +1600,14 @@ packages:
 
   '@tiptap/starter-kit@3.8.0':
     resolution: {integrity: sha512-v79kOzGdbn9ZPJts97+/+mF6AHr4P/ivUl4FviC16hBMuP8hub2cOyECUYVn3mxoAKUpELZwppFRWB/+A90H+g==}
+
+  '@tiptap/static-renderer@3.8.0':
+    resolution: {integrity: sha512-uIgLhNxUu2rpB5fqDVSRn0XMFpJGsQZaYuO1eOEtaCeB7iA91toI4RW0lwwfJzJ2HEiqrTGE7sKq6WWrIparAA==}
+    peerDependencies:
+      '@tiptap/core': ^3.8.0
+      '@tiptap/pm': ^3.8.0
+      react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      react-dom: ^17.0.0 || ^18.0.0 || ^19.0.0
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -4312,6 +4323,13 @@ snapshots:
       '@tiptap/extension-underline': 3.8.0(@tiptap/core@3.8.0(@tiptap/pm@3.8.0))
       '@tiptap/extensions': 3.8.0(@tiptap/core@3.8.0(@tiptap/pm@3.8.0))(@tiptap/pm@3.8.0)
       '@tiptap/pm': 3.8.0
+
+  '@tiptap/static-renderer@3.8.0(@tiptap/core@3.8.0(@tiptap/pm@3.8.0))(@tiptap/pm@3.8.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+    dependencies:
+      '@tiptap/core': 3.8.0(@tiptap/pm@3.8.0)
+      '@tiptap/pm': 3.8.0
+      react: 19.2.0
+      react-dom: 19.2.0(react@19.2.0)
 
   '@types/aria-query@5.0.4': {}
 

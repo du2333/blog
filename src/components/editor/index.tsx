@@ -4,7 +4,7 @@ import StarterKit from "@tiptap/starter-kit";
 
 interface EditorProps {
   content?: JSONContent | string;
-  onSave?: (json: JSONContent, html: string) => void;
+  onSave?: (json: JSONContent) => void;
 }
 
 export function Editor({ content, onSave }: EditorProps) {
@@ -20,9 +20,8 @@ export function Editor({ content, onSave }: EditorProps) {
     if (!editor || !onSave) return;
 
     const json = editor.getJSON();
-    const html = editor.getHTML();
 
-    onSave(json, html);
+    onSave(json);
   };
 
   return (

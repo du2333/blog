@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
+import { useNavigate } from "@tanstack/react-router";
 
 const postsQuery = queryOptions({
   queryKey: ["posts"],
@@ -21,6 +22,7 @@ export const Route = createFileRoute("/db")({
 });
 
 function RouteComponent() {
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: posts } = useSuspenseQuery(postsQuery);
 
@@ -61,7 +63,6 @@ function RouteComponent() {
                     },
                   ],
                 },
-                contentHtml: "Hello World",
                 status: "draft",
                 publishedAt: null,
               },
@@ -87,7 +88,6 @@ function RouteComponent() {
                     },
                   ],
                 },
-                contentHtml: "Hello World",
                 status: "draft",
                 publishedAt: null,
               },
@@ -108,7 +108,12 @@ function RouteComponent() {
               <p className="text-sm text-gray-500">
                 Last Updated: {new Date(post.updatedAt).toLocaleString()}
               </p>
-              <div dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
+              <button
+                className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
+                onClick={() => navigate({ to: "/post/$id", params: { id: post.id } })}
+              >
+                View Post
+              </button>
             </div>
           ))}
         </div>

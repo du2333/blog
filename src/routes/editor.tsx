@@ -35,12 +35,11 @@ function RouteComponent() {
       <div className="w-full max-w-2xl mx-auto border border-gray-300 rounded-md p-4">
         <Editor
           content={post.contentJson ?? ""}
-          onSave={(json, html) =>
+          onSave={(json) =>
             updatePostMutation.mutate({
               data: {
                 ...post,
                 contentJson: json,
-                contentHtml: html,
               },
             })
           }
