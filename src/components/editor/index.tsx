@@ -1,5 +1,5 @@
-import { useEditor, EditorContent, type JSONContent } from "@tiptap/react";
-import { FloatingMenu, BubbleMenu } from "@tiptap/react/menus";
+import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
+import { BubbleMenu } from "./bubble-menu";
 import StarterKit from "@tiptap/starter-kit";
 
 interface EditorProps {
@@ -27,8 +27,7 @@ export function Editor({ content, onSave }: EditorProps) {
   return (
     <>
       <EditorContent editor={editor} />
-      <FloatingMenu editor={editor}>This is the floating menu</FloatingMenu>
-      <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu>
+      <BubbleMenu editor={editor} />
       {onSave && (
         <button
           onClick={handleSave}

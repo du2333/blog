@@ -1,13 +1,12 @@
-import { createPostFn, getPostsFn, updatePostFn } from "@/core/functions/posts";
+import { createPostFn, getPostsFn } from "@/core/functions/posts";
 import {
   queryOptions,
   useMutation,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { useNavigate } from "@tanstack/react-router";
 
 const postsQuery = queryOptions({
   queryKey: ["posts"],
@@ -32,71 +31,39 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
     },
   });
-  const updatePostMutation = useMutation({
-    mutationFn: updatePostFn,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-  });
 
   return (
-    <div>
+    <div className="container mx-auto flex flex-col gap-4">
       <h1 className="text-2xl font-bold">Database Example</h1>
       <Link to="/" className="text-blue-500 hover:text-blue-600">
         Home
       </Link>
 
-      <div className="flex flex-col gap-4">
-        <button
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
-          onClick={() =>
-            createPostMutation.mutate({
-              data: {
-                title: "Hello World",
-                slug: "hello-world",
-                contentJson: {
-                  type: "doc",
-                  content: [
-                    {
-                      type: "paragraph",
-                      content: [{ type: "text", text: "Hello World" }],
-                    },
-                  ],
-                },
-                status: "draft",
-                publishedAt: null,
+      <button
+        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
+        onClick={() =>
+          createPostMutation.mutate({
+            data: {
+              title: "Hello World",
+              slug: "hello-world",
+              contentJson: {
+                type: "doc",
+                content: [
+                  {
+                    type: "paragraph",
+                    content: [{ type: "text", text: "Hello World" }],
+                  },
+                ],
               },
-            })
-          }
-        >
-          Create Example Post
-        </button>
-        <button
-          className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
-          onClick={() =>
-            updatePostMutation.mutate({
-              data: {
-                id: 1,
-                title: `Hello World ${Math.random()}`,
-                slug: "hello-world",
-                contentJson: {
-                  type: "doc",
-                  content: [
-                    {
-                      type: "paragraph",
-                      content: [{ type: "text", text: "Hello World" }],
-                    },
-                  ],
-                },
-                status: "draft",
-                publishedAt: null,
-              },
-            })
-          }
-        >
-          Update Example Post
-        </button>
-      </div>
+              status: "draft",
+              publishedAt: null,
+            },
+          })
+        }
+      >
+        Create Example Post
+      </button>
+
       <Suspense fallback={<div>Loading...</div>}>
         <div className="flex flex-col gap-4">
           {posts.map((post) => (
@@ -110,7 +77,9 @@ function RouteComponent() {
               </p>
               <button
                 className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
-                onClick={() => navigate({ to: "/post/$id", params: { id: post.id } })}
+                onClick={() =>
+                  navigate({ to: "/post/$id", params: { id: post.id } })
+                }
               >
                 View Post
               </button>

@@ -9,16 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as EditorRouteImport } from './routes/editor'
 import { Route as DbRouteImport } from './routes/db'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PostIdRouteImport } from './routes/post.$id'
+import { Route as PostIdEditRouteImport } from './routes/post_.$id.edit'
 
-const EditorRoute = EditorRouteImport.update({
-  id: '/editor',
-  path: '/editor',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const DbRoute = DbRouteImport.update({
   id: '/db',
   path: '/db',
@@ -34,50 +29,48 @@ const PostIdRoute = PostIdRouteImport.update({
   path: '/post/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PostIdEditRoute = PostIdEditRouteImport.update({
+  id: '/post_/$id/edit',
+  path: '/post/$id/edit',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/editor': typeof EditorRoute
   '/post/$id': typeof PostIdRoute
+  '/post/$id/edit': typeof PostIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/editor': typeof EditorRoute
   '/post/$id': typeof PostIdRoute
+  '/post/$id/edit': typeof PostIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/editor': typeof EditorRoute
   '/post/$id': typeof PostIdRoute
+  '/post_/$id/edit': typeof PostIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/db' | '/editor' | '/post/$id'
+  fullPaths: '/' | '/db' | '/post/$id' | '/post/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/db' | '/editor' | '/post/$id'
-  id: '__root__' | '/' | '/db' | '/editor' | '/post/$id'
+  to: '/' | '/db' | '/post/$id' | '/post/$id/edit'
+  id: '__root__' | '/' | '/db' | '/post/$id' | '/post_/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DbRoute: typeof DbRoute
-  EditorRoute: typeof EditorRoute
   PostIdRoute: typeof PostIdRoute
+  PostIdEditRoute: typeof PostIdEditRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/editor': {
-      id: '/editor'
-      path: '/editor'
-      fullPath: '/editor'
-      preLoaderRoute: typeof EditorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/db': {
       id: '/db'
       path: '/db'
@@ -99,14 +92,21 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/post_/$id/edit': {
+      id: '/post_/$id/edit'
+      path: '/post/$id/edit'
+      fullPath: '/post/$id/edit'
+      preLoaderRoute: typeof PostIdEditRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DbRoute: DbRoute,
-  EditorRoute: EditorRoute,
   PostIdRoute: PostIdRoute,
+  PostIdEditRoute: PostIdEditRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -9,7 +9,6 @@ function App() {
     <div className="flex flex-col items-center justify-center h-screen">
       <h1 className="text-2xl font-bold">Hello World 2</h1>
       <Link to="/db">DB</Link>
-      <Link to="/editor">Editor</Link>
     </div>
   );
 }
