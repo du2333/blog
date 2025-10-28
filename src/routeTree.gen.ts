@@ -11,8 +11,9 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DbRouteImport } from './routes/db'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as PostIdRouteImport } from './routes/post.$id'
-import { Route as PostIdEditRouteImport } from './routes/post_.$id.edit'
+import { Route as PostsIdRouteRouteImport } from './routes/posts/$id/route'
+import { Route as PostsIdIndexRouteImport } from './routes/posts/$id/index'
+import { Route as PostsIdEditRouteImport } from './routes/posts/$id/edit'
 
 const DbRoute = DbRouteImport.update({
   id: '/db',
@@ -24,49 +25,61 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PostIdRoute = PostIdRouteImport.update({
-  id: '/post/$id',
-  path: '/post/$id',
+const PostsIdRouteRoute = PostsIdRouteRouteImport.update({
+  id: '/posts/$id',
+  path: '/posts/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PostIdEditRoute = PostIdEditRouteImport.update({
-  id: '/post_/$id/edit',
-  path: '/post/$id/edit',
-  getParentRoute: () => rootRouteImport,
+const PostsIdIndexRoute = PostsIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PostsIdRouteRoute,
+} as any)
+const PostsIdEditRoute = PostsIdEditRouteImport.update({
+  id: '/edit',
+  path: '/edit',
+  getParentRoute: () => PostsIdRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/post/$id': typeof PostIdRoute
-  '/post/$id/edit': typeof PostIdEditRoute
+  '/posts/$id': typeof PostsIdRouteRouteWithChildren
+  '/posts/$id/edit': typeof PostsIdEditRoute
+  '/posts/$id/': typeof PostsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/post/$id': typeof PostIdRoute
-  '/post/$id/edit': typeof PostIdEditRoute
+  '/posts/$id/edit': typeof PostsIdEditRoute
+  '/posts/$id': typeof PostsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/db': typeof DbRoute
-  '/post/$id': typeof PostIdRoute
-  '/post_/$id/edit': typeof PostIdEditRoute
+  '/posts/$id': typeof PostsIdRouteRouteWithChildren
+  '/posts/$id/edit': typeof PostsIdEditRoute
+  '/posts/$id/': typeof PostsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/db' | '/post/$id' | '/post/$id/edit'
+  fullPaths: '/' | '/db' | '/posts/$id' | '/posts/$id/edit' | '/posts/$id/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/db' | '/post/$id' | '/post/$id/edit'
-  id: '__root__' | '/' | '/db' | '/post/$id' | '/post_/$id/edit'
+  to: '/' | '/db' | '/posts/$id/edit' | '/posts/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/db'
+    | '/posts/$id'
+    | '/posts/$id/edit'
+    | '/posts/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DbRoute: typeof DbRoute
-  PostIdRoute: typeof PostIdRoute
-  PostIdEditRoute: typeof PostIdEditRoute
+  PostsIdRouteRoute: typeof PostsIdRouteRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -85,28 +98,48 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/post/$id': {
-      id: '/post/$id'
-      path: '/post/$id'
-      fullPath: '/post/$id'
-      preLoaderRoute: typeof PostIdRouteImport
+    '/posts/$id': {
+      id: '/posts/$id'
+      path: '/posts/$id'
+      fullPath: '/posts/$id'
+      preLoaderRoute: typeof PostsIdRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/post_/$id/edit': {
-      id: '/post_/$id/edit'
-      path: '/post/$id/edit'
-      fullPath: '/post/$id/edit'
-      preLoaderRoute: typeof PostIdEditRouteImport
-      parentRoute: typeof rootRouteImport
+    '/posts/$id/': {
+      id: '/posts/$id/'
+      path: '/'
+      fullPath: '/posts/$id/'
+      preLoaderRoute: typeof PostsIdIndexRouteImport
+      parentRoute: typeof PostsIdRouteRoute
+    }
+    '/posts/$id/edit': {
+      id: '/posts/$id/edit'
+      path: '/edit'
+      fullPath: '/posts/$id/edit'
+      preLoaderRoute: typeof PostsIdEditRouteImport
+      parentRoute: typeof PostsIdRouteRoute
     }
   }
 }
 
+interface PostsIdRouteRouteChildren {
+  PostsIdEditRoute: typeof PostsIdEditRoute
+  PostsIdIndexRoute: typeof PostsIdIndexRoute
+}
+
+const PostsIdRouteRouteChildren: PostsIdRouteRouteChildren = {
+  PostsIdEditRoute: PostsIdEditRoute,
+  PostsIdIndexRoute: PostsIdIndexRoute,
+}
+
+const PostsIdRouteRouteWithChildren = PostsIdRouteRoute._addFileChildren(
+  PostsIdRouteRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DbRoute: DbRoute,
-  PostIdRoute: PostIdRoute,
-  PostIdEditRoute: PostIdEditRoute,
+  PostsIdRouteRoute: PostsIdRouteRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

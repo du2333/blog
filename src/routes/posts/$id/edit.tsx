@@ -2,14 +2,8 @@ import { Editor } from "@/components/editor";
 import { getPostByIdFn, updatePostFn } from "@/core/functions/posts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { z } from "zod";
 
-export const Route = createFileRoute("/post_/$id/edit")({
-  params: {
-    parse: (params) => ({
-      id: z.coerce.number().int().positive().parse(params.id),
-    }),
-  },
+export const Route = createFileRoute("/posts/$id/edit")({
   component: RouteComponent,
 });
 
@@ -39,7 +33,7 @@ function RouteComponent() {
           Home
         </Link>
         <Link
-          to={`/post/$id`}
+          to={`/posts/$id`}
           params={{ id: post.id }}
           className="text-blue-500 hover:text-blue-600"
         >

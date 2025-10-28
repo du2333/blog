@@ -1,9 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getPostByIdFn } from "@/core/functions/posts";
-import { z } from "zod";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { Link } from "@tanstack/react-router";
 
 function postQuery(id: number) {
   return queryOptions({
@@ -11,12 +9,8 @@ function postQuery(id: number) {
     queryFn: () => getPostByIdFn({ data: { id } }),
   });
 }
-export const Route = createFileRoute("/post/$id")({
-  params: {
-    parse: (params) => ({
-      id: z.coerce.number().int().positive().parse(params.id),
-    }),
-  },
+
+export const Route = createFileRoute("/posts/$id/")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
     await context.queryClient.ensureQueryData(postQuery(params.id));
@@ -38,7 +32,7 @@ function RouteComponent() {
           Back to DB
         </Link>
         <Link
-          to="/post/$id/edit"
+          to="/posts/$id/edit"
           params={{ id: post.id }}
           className="text-blue-500 hover:text-blue-600"
         >
@@ -52,3 +46,4 @@ function RouteComponent() {
     </div>
   );
 }
+

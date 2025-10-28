@@ -78,7 +78,7 @@ function RouteComponent() {
               <button
                 className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
                 onClick={() =>
-                  navigate({ to: "/post/$id", params: { id: post.id } })
+                  navigate({ to: "/posts/$id", params: { id: post.id } })
                 }
               >
                 View Post
