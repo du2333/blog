@@ -1,9 +1,9 @@
-import type { Editor } from "@tiptap/react";
+import type { SaveStatus } from "@/components/editor/types";
+import type { Editor, JSONContent } from "@tiptap/react";
 import { useEffect, useRef, useState } from "react";
-import type { SaveStatus } from "./types";
 
 interface UseAutoSaveOptions {
-  onSave?: (json: any) => void | Promise<void>;
+  onSave?: (json: JSONContent) => void | Promise<void>;
   onSaveStatusChange?: (status: SaveStatus) => void;
   debounceMs?: number;
 }
@@ -85,4 +85,3 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
     handleUpdate,
   };
 }
-

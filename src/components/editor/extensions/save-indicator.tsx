@@ -1,11 +1,10 @@
-import type { SaveIndicatorProps } from "./types";
+import type { SaveIndicatorProps } from "@/components/editor/types";
 
 export function SaveIndicator({ status }: SaveIndicatorProps) {
   const formatTime = (date: Date) => {
-    return date.toLocaleTimeString("zh-CN", {
+    return date.toLocaleTimeString(undefined, {
       hour: "2-digit",
       minute: "2-digit",
-      second: "2-digit",
     });
   };
 
