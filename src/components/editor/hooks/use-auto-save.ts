@@ -1,6 +1,7 @@
 import type { SaveStatus } from "@/components/editor/types";
 import type { Editor, JSONContent } from "@tiptap/react";
 import { useEffect, useRef, useState } from "react";
+import { useDebounce } from "@/hooks/use-debounce";
 
 interface UseAutoSaveOptions {
   onSave?: (json: JSONContent) => void | Promise<void>;
@@ -16,16 +17,16 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
     lastSavedAt: null,
   });
 
-  const debounceTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [editorContent, setEditorContent] = useState<JSONContent | null>(null);
+  const debouncedContent = useDebounce(editorContent, debounceMs);
   const isSavingRef = useRef(false);
 
-  const handleSave = async (editor: Editor) => {
-    if (!editor || !onSave || isSavingRef.current) {
+  const handleSave = async (json: JSONContent) => {
+    if (!json || !onSave || isSavingRef.current) {
       return;
     }
 
     isSavingRef.current = true;
-    const json = editor.getJSON();
 
     try {
       await onSave(json);
@@ -48,10 +49,7 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
   };
 
   const handleUpdate = (editor: Editor) => {
-    // Clear existing timeout
-    if (debounceTimeoutRef.current) {
-      clearTimeout(debounceTimeoutRef.current);
-    }
+    const json = editor.getJSON();
 
     // Update status to saving if not already saving
     if (!isSavingRef.current) {
@@ -65,20 +63,16 @@ export function useAutoSave(options: UseAutoSaveOptions = {}) {
       });
     }
 
-    // Schedule debounced save
-    debounceTimeoutRef.current = setTimeout(() => {
-      handleSave(editor);
-    }, debounceMs);
+    // Update content, which will be debounced
+    setEditorContent(json);
   };
 
-  // Cleanup timeout on unmount
+  // Trigger save when debounced content changes
   useEffect(() => {
-    return () => {
-      if (debounceTimeoutRef.current) {
-        clearTimeout(debounceTimeoutRef.current);
-      }
-    };
-  }, []);
+    if (debouncedContent !== null && onSave) {
+      handleSave(debouncedContent);
+    }
+  }, [debouncedContent]);
 
   return {
     saveStatus,

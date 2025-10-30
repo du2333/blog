@@ -1,4 +1,4 @@
-import { BubbleMenu } from "@/components/editor/extensions/bubble-menu";
+import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
 import { SaveIndicator } from "@/components/editor/extensions/save-indicator";
 import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
