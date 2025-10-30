@@ -44,19 +44,17 @@ function RouteComponent() {
         </Link>
       </div>
 
-      <div className="w-full max-w-2xl mx-auto border border-gray-300 rounded-md p-4">
-        <Editor
-          content={post.contentJson ?? ""}
-          onSave={(json) =>
-            updatePostMutation.mutate({
-              data: {
-                ...post,
-                contentJson: json,
-              },
-            })
-          }
-        />
-      </div>
+      <Editor
+        content={post.contentJson ?? ""}
+        onSave={async (json) =>
+          updatePostMutation.mutateAsync({
+            data: {
+              ...post,
+              contentJson: json,
+            },
+          })
+        }
+      />
     </div>
   );
 }

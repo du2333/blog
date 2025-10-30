@@ -1,41 +1,37 @@
-import { EditorContent, useEditor, type JSONContent } from "@tiptap/react";
+import { useEditor } from "@tiptap/react";
+import { EditorContent } from "@tiptap/react";
 import { BubbleMenu } from "./bubble-menu";
-import StarterKit from "@tiptap/starter-kit";
+import { SaveIndicator } from "./save-indicator";
+import { createEditorConfig } from "./use-editor-config";
+import { useAutoSave } from "./use-auto-save";
+import type { EditorProps } from "./types";
+import "./style.css";
 
-interface EditorProps {
-  content?: JSONContent | string;
-  onSave?: (json: JSONContent) => void;
-}
+export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
+  const { saveStatus, handleUpdate } = useAutoSave({
+    onSave,
+    onSaveStatusChange,
+  });
 
-export function Editor({ content, onSave }: EditorProps) {
   const editor = useEditor({
-    extensions: [StarterKit],
-    content,
-    immediatelyRender: false,
+    ...createEditorConfig(content),
+    onUpdate: ({ editor }) => {
+      handleUpdate(editor);
+    },
   });
 
   if (!editor) return null;
 
-  const handleSave = () => {
-    if (!editor || !onSave) return;
-
-    const json = editor.getJSON();
-
-    onSave(json);
-  };
-
   return (
-    <>
-      <EditorContent editor={editor} />
-      <BubbleMenu editor={editor} />
-      {onSave && (
-        <button
-          onClick={handleSave}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Save
-        </button>
-      )}
-    </>
+    <div className="relative w-full border bg-card pb-[60px] sm:pb-0">
+      <div className="max-h-[calc(100dvh-6rem)] overflow-hidden overflow-y-scroll">
+        <EditorContent editor={editor} />
+        <BubbleMenu editor={editor} />
+      </div>
+      <SaveIndicator status={saveStatus} />
+    </div>
   );
 }
+
+// Re-export types for convenience
+export type { EditorProps, SaveStatus } from "./types";
