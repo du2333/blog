@@ -9,6 +9,9 @@ export const PostsTable = sqliteTable(
     title: text().notNull(),
     slug: text().notNull(),
     contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
+    publishedContentJson: text("published_content_json", {
+      mode: "json",
+    }).$type<JSONContent>(),
     status: text("status", { enum: ["draft", "published", "archived"] })
       .notNull()
       .default("draft"),
@@ -18,8 +21,7 @@ export const PostsTable = sqliteTable(
     ),
     updatedAt: integer("updated_at", { mode: "timestamp" })
       .notNull()
-      .default(sql`(unixepoch())`)
-      .$onUpdate(() => new Date()),
+      .default(sql`(unixepoch())`),
   },
   (table) => [
     index("slug_idx").on(table.slug),

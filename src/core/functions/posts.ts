@@ -9,7 +9,9 @@ import { z } from "zod";
 import type { JSONContent } from "@tiptap/react";
 import { renderHtml } from "@/lib/render";
 
-export const createPostFn = createServerFn()
+export const createPostFn = createServerFn({
+  method: "POST",
+})
   .inputValidator(
     z.object({
       title: z.string(),
@@ -46,19 +48,21 @@ export const getPostByIdFn = createServerFn()
     }
     return {
       ...post,
-      contentHtml: post.contentJson ? renderHtml(post.contentJson) : "",
+      contentHtml: post.publishedContentJson
+        ? renderHtml(post.publishedContentJson)
+        : "",
     };
   });
 
-export const updatePostFn = createServerFn()
+export const updatePostFn = createServerFn({
+  method: "POST",
+})
   .inputValidator(
     z.object({
       id: z.number(),
-      title: z.string(),
-      slug: z.string(),
-      contentJson: z.custom<JSONContent>(),
-      status: z.enum(["draft", "published", "archived"]).catch("draft"),
-      publishedAt: z.date().nullable(),
+      title: z.string().optional(),
+      slug: z.string().optional(),
+      contentJson: z.custom<JSONContent>().optional(),
     })
   )
   .handler(async ({ data }) => {
@@ -66,7 +70,23 @@ export const updatePostFn = createServerFn()
       title: data.title,
       slug: data.slug,
       contentJson: data.contentJson,
-      status: data.status,
-      publishedAt: data.publishedAt,
+    });
+  });
+
+export const publishPostFn = createServerFn()
+  .inputValidator(z.object({ id: z.number() }))
+  .handler(async ({ data }) => {
+    const post = await getPostById(data.id);
+    if (!post) {
+      throw new Error("Post not found");
+    }
+
+    const now = new Date();
+    await updatePost(data.id, {
+      publishedContentJson: post.contentJson, // Copy draft to published
+      status: "published",
+      updatedAt: now,
+      // Only set publishedAt if it's the first time publishing
+      publishedAt: post.publishedAt ?? now,
     });
   });
