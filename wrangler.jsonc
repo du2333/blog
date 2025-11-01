@@ -9,6 +9,12 @@
 	"observability": {
 		"enabled": true
 	},
+	"routes": [
+		{
+			"pattern": "test.dukda.com",
+			"custom_domain": true
+		}
+	],
 	"d1_databases": [
 		{
 			"binding": "DB",
