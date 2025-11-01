@@ -1,4 +1,5 @@
 import { getContentTypeFromKey } from "@/lib/files";
+import { waitUntil } from "cloudflare:workers";
 
 /**
  * 处理图片请求（支持 GET 和 HEAD）
@@ -78,11 +79,11 @@ export async function handleImageRequest(
     });
 
     // 存入缓存
-    try {
-      await cache.put(cacheKey, response.clone());
-    } catch (cacheError) {
-      console.warn("Failed to cache response:", cacheError);
-    }
+    waitUntil(
+      cache.put(cacheKey, response.clone()).catch((error) => {
+        console.warn("Failed to cache response:", error);
+      })
+    );
   } else {
     // HEAD 请求：只返回响应头
     response = new Response(null, {
