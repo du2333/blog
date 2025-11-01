@@ -11,7 +11,7 @@
 	},
 	"routes": [
 		{
-			"pattern": "test.dukda.com",
+			"pattern": "bbb.dukda.com",
 			"custom_domain": true
 		}
 	],
