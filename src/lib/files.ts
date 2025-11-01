@@ -2,6 +2,19 @@ export function getFileExtension(fileName: string): string | undefined {
   return fileName.split(".").pop();
 }
 
+export function getContentTypeFromKey(key: string): string | undefined {
+  const extension = key.split(".").pop()?.toLowerCase();
+  const contentTypes: Record<string, string> = {
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    png: "image/png",
+    webp: "image/webp",
+    gif: "image/gif",
+    svg: "image/svg+xml",
+  };
+  return contentTypes[extension || ""];
+}
+
 export function generateKey(fileName: string): string {
   const now = new Date();
   const year = now.getFullYear();
