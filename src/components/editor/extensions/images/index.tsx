@@ -1,29 +1,30 @@
 import Image from "@tiptap/extension-image";
 import {
-    type NodeViewProps,
-    NodeViewWrapper,
-    ReactNodeViewRenderer,
+  type NodeViewProps,
+  NodeViewWrapper,
+  ReactNodeViewRenderer,
 } from "@tiptap/react";
 import {
-    AlignCenter,
-    AlignLeft,
-    AlignRight,
-    Edit,
-    MoreVertical,
-    Trash
+  AlignCenter,
+  AlignLeft,
+  AlignRight,
+  Edit,
+  MoreVertical,
+  Trash,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/lib/utils";
+import { ImageZoom } from "@/components/image-zoom";
 
 export const ImageExtension = Image.extend({
   addAttributes() {
@@ -174,7 +175,6 @@ function TiptapImage(props: NodeViewProps) {
     }
   }
 
-
   useEffect(() => {
     window.addEventListener("mousemove", resize);
     window.addEventListener("mouseup", endResize);
@@ -206,7 +206,7 @@ function TiptapImage(props: NodeViewProps) {
           resizing && ""
         )}
       >
-        <figure className="relative m-0">
+        <ImageZoom className="relative m-0">
           <img
             ref={imageRef}
             src={node.attrs.src}
@@ -243,7 +243,7 @@ function TiptapImage(props: NodeViewProps) {
               </div>
             </>
           )}
-        </figure>
+        </ImageZoom>
 
         {editingCaption ? (
           <Input
