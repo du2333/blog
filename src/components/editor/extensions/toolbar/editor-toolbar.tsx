@@ -2,16 +2,18 @@ import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { type Editor } from "@tiptap/react";
-import { AlignmentToolbar } from "./alignment";
-import { BoldToolbar } from "./bold";
-import { BulletListToolbar } from "./bullet-list";
-import { HorizontalRuleToolbar } from "./horizontal-rule";
-import { ItalicToolbar } from "./italic";
-import { LinkToolbar } from "./link";
-import { OrderedListToolbar } from "./ordered-list";
-import { StrikeThroughToolbar } from "./strikethrough";
-import { ToolbarProvider } from "./toolbar-provider";
-import { UnderlineToolbar } from "./underline";
+import {
+  UnderlineToolbar,
+  AlignmentToolbar,
+  BoldToolbar,
+  BulletListToolbar,
+  HorizontalRuleToolbar,
+  ItalicToolbar,
+  LinkToolbar,
+  OrderedListToolbar,
+  StrikeThroughToolbar,
+  ToolbarProvider,
+} from "./components";
 
 export const EditorToolbar = ({ editor }: { editor: Editor }) => {
   return (

@@ -1,4 +1,4 @@
-import { env } from "cloudflare:workers";
+import { env, waitUntil } from "cloudflare:workers";
 import { generateKey } from "@/lib/files";
 
 // TODO: add image transformation using Cloudflare Images
@@ -17,4 +17,17 @@ export async function uploadImage(image: File) {
     key: result.key,
     url: `/images/${result.key}`,
   };
+}
+
+export async function deleteImage(key: string) {
+  await env.R2.delete(key);
+
+  // clear cache
+  const promise = new Promise((resolve, reject) => {
+    const cache = (caches as any).default as Cache;
+    const cacheKey = new Request(`/images/${key}`, { method: "GET" });
+    cache.delete(cacheKey).then(resolve).catch(reject);
+  });
+
+  waitUntil(promise);
 }

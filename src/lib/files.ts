@@ -26,3 +26,17 @@ export function generateKey(fileName: string): string {
 
   return `${year}/${month}/${day}/${uuid}.${extension}`;
 }
+
+export function extractImageKey(src: string): string | undefined {
+  const prefix = "/images/";
+
+  try {
+    const key = new URL(src).pathname.replace(prefix, "");
+    return key;
+  } catch (error) {
+    if (src.startsWith(prefix)) {
+      return src.replace(prefix, "");
+    }
+    return undefined;
+  }
+}

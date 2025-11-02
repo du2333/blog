@@ -1,7 +1,7 @@
 import { Editor } from "@tiptap/react";
 import { BubbleMenu as TiptapBubbleMenu } from "@tiptap/react/menus";
-import { BoldToolbar } from "./bold";
-import { ToolbarProvider } from "./toolbar-provider";
+import { BoldToolbar } from "./components/bold";
+import { ToolbarProvider } from "./components/toolbar-provider";
 
 interface BubbleMenuProps {
   editor: Editor;

@@ -1,16 +1,20 @@
-import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
 import { SaveIndicator } from "@/components/editor/extensions/save-indicator";
+import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
+import { EditorToolbar } from "@/components/editor/extensions/toolbar/editor-toolbar";
 import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
+import { uploadImageFn } from "@/core/functions/images";
 import { Highlight } from "@tiptap/extension-highlight";
+import { Image } from "@tiptap/extension-image";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
 import { Typography } from "@tiptap/extension-typography";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import "./style.css";
-import { EditorToolbar } from "@/components/editor/extensions/toolbar/editor-toolbar";
 
+import { FileHandler } from "@/components/editor/extensions/file-handler";
+import { handleImageDeletes } from "./utils";
 const extensions = [
   StarterKit.configure({
     orderedList: {
@@ -36,6 +40,49 @@ const extensions = [
   Highlight.configure({
     multicolor: true,
   }),
+  Image,
+  FileHandler.configure({
+    allowedMimeTypes: ["image/*"],
+    allowBase64: true,
+    maxFileSize: 10 * 1024 * 1024,
+    onDrop: (editor, files, pos) => {
+      files.forEach(async (file) => {
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
+          const result = await uploadImageFn({ data: formData });
+          editor.commands.insertContentAt(pos, {
+            type: "image",
+            attrs: {
+              src: result.url,
+            },
+          });
+        } catch (error) {
+          console.error("Failed to upload image:", error);
+        }
+      });
+    },
+    onPaste(editor, files) {
+      files.forEach(async (file) => {
+        try {
+          const formData = new FormData();
+          formData.append("image", file);
+          const result = await uploadImageFn({ data: formData });
+          editor.commands.insertContent({
+            type: "image",
+            attrs: {
+              src: result.url,
+            },
+          });
+        } catch (error) {
+          console.error("Failed to upload image:", error);
+        }
+      });
+    },
+    onValidationError(errors) {
+      console.error(errors);
+    },
+  }),
 ];
 
 export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
@@ -53,8 +100,9 @@ export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
     },
     content,
     immediatelyRender: false,
-    onUpdate: ({ editor }) => {
+    onUpdate: ({ editor, transaction }) => {
       handleUpdate(editor);
+      handleImageDeletes(transaction);
     },
   });
 

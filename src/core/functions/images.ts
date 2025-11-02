@@ -1,4 +1,4 @@
-import { uploadImage } from "@/core/helpers/r2";
+import { deleteImage, uploadImage } from "@/core/helpers/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -16,18 +16,35 @@ export const uploadImageFn = createServerFn({
   method: "POST",
 })
   .inputValidator(
+    z.instanceof(FormData)
+  )
+  .handler(async ({ data }) => {
+    const file = data.get("image");
+
+    if (!(file instanceof File)) {
+      throw new Error("Image file is required");
+    }
+
+    // 验证文件大小
+    if (file.size > MAX_FILE_SIZE) {
+      throw new Error("File size must be less than 10MB");
+    }
+
+    // 验证文件类型
+    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
+      throw new Error("File type must be an image");
+    }
+
+    return await uploadImage(file);
+  });
+
+export const deleteImageFn = createServerFn()
+  .inputValidator(
     z.object({
-      image: z
-        .instanceof(File)
-        .refine((file) => file.size <= MAX_FILE_SIZE, {
-          message: "File size must be less than 10MB",
-        })
-        .refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
-          message: "File type must be an image",
-        }),
+      key: z.string().min(1, "Image key is required"),
     })
   )
   .handler(async ({ data }) => {
-    const { image } = data;
-    return await uploadImage(image);
+    const { key } = data;
+    await deleteImage(key);
   });
