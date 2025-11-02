@@ -101,7 +101,23 @@ export const ImageExtension = Image.extend({
     };
 
     // 构建 figure 的子元素数组
-    const children: any[] = [["img", { ...imgAttrs, width: widthStr }]];
+    // 添加图片优化属性：懒加载和异步解码
+    const optimizedImgAttrs: Record<string, any> = {
+      ...imgAttrs,
+      loading: "lazy",
+      decoding: "async",
+    };
+
+    // width 属性：如果是百分比，使用 style；如果是像素值，可以设置 width 属性
+    // 但为了灵活性，统一使用 style
+    if (widthStr && widthStr !== "100%") {
+      optimizedImgAttrs.style = {
+        ...(imgAttrs.style || {}),
+        width: widthStr,
+      };
+    }
+
+    const children: any[] = [["img", optimizedImgAttrs]];
 
     // 如果有 caption，添加 figcaption
     if (caption) {

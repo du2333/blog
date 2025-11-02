@@ -48,7 +48,10 @@ export function ImageDisplay({
             alt={alt || caption || "blog image"}
             title={title}
             height={height}
+            loading="lazy"
+            decoding="async"
             className="rounded-lg transition-shadow duration-200 hover:shadow-lg w-full"
+            style={{ width: widthStyle }}
           />
         </ImageZoom>
         {caption && (
