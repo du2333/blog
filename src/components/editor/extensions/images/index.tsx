@@ -76,6 +76,9 @@ export const ImageExtension = Image.extend({
       rawWidth !== null && rawWidth !== undefined ? rawWidth : "100%";
     const { caption: _, align: __, width: ___, ...imgAttrs } = HTMLAttributes;
 
+    // 处理 alt：如果没有 alt，使用 caption 作为 alt
+    const alt = imgAttrs.alt || caption || "blog image";
+
     // 处理宽度：确保是字符串格式
     let widthStr = width;
     if (width === "100%") {
@@ -104,6 +107,7 @@ export const ImageExtension = Image.extend({
     // 添加图片优化属性：懒加载和异步解码
     const optimizedImgAttrs: Record<string, any> = {
       ...imgAttrs,
+      alt,
       loading: "lazy",
       decoding: "async",
     };
