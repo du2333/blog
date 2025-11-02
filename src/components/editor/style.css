@@ -312,7 +312,6 @@
 
 .ProseMirror img:hover {
   box-shadow: var(--editor-shadow-lg);
-  transform: translateY(-2px);
 }
 
 /* Horizontal Rule */

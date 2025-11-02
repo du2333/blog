@@ -59,6 +59,58 @@ export const ImageExtension = Image.extend({
   addNodeView: () => {
     return ReactNodeViewRenderer(TiptapImage);
   },
+
+  renderHTML({
+    HTMLAttributes,
+    node,
+  }: {
+    HTMLAttributes: Record<string, any>;
+    node: { attrs: Record<string, any> };
+  }) {
+    // 从 node.attrs 获取自定义属性，从 HTMLAttributes 获取标准 HTML 属性
+    const caption = node.attrs.caption || HTMLAttributes.caption;
+    const align = node.attrs.align || HTMLAttributes.align || "center";
+    // 获取 width，如果为 null/undefined，使用 "100%"
+    const rawWidth = node.attrs.width ?? HTMLAttributes.width;
+    const width =
+      rawWidth !== null && rawWidth !== undefined ? rawWidth : "100%";
+    const { caption: _, align: __, width: ___, ...imgAttrs } = HTMLAttributes;
+
+    // 处理宽度：确保是字符串格式
+    let widthStr = width;
+    if (width === "100%") {
+      // 默认值，保持不变
+      widthStr = "100%";
+    } else if (typeof width === "number") {
+      widthStr = `${width}px`;
+    } else if (typeof width === "string") {
+      // 如果是不带单位的数字字符串，添加 px
+      if (
+        !width.includes("px") &&
+        !width.includes("%") &&
+        !isNaN(Number(width))
+      ) {
+        widthStr = `${width}px`;
+      }
+    }
+
+    // 构建 figure 的属性对象（即使 width 是 "100%"，也明确设置）
+    const figureAttrs: Record<string, any> = {
+      "data-align": align,
+      "data-width": widthStr,
+    };
+
+    // 构建 figure 的子元素数组
+    const children: any[] = [["img", { ...imgAttrs, width: widthStr }]];
+
+    // 如果有 caption，添加 figcaption
+    if (caption) {
+      children.push(["figcaption", {}, caption]);
+    }
+
+    // 返回 figure 结构，使用展开运算符展开子元素
+    return ["figure", figureAttrs, ...children];
+  },
 });
 
 function TiptapImage(props: NodeViewProps) {

@@ -16,7 +16,8 @@ import "./style.css";
 import { FileHandler } from "@/components/editor/extensions/file-handler";
 import { handleImageDeletes } from "./utils";
 import { toast } from "sonner";
-const extensions = [
+
+export const extensions = [
   StarterKit.configure({
     orderedList: {
       HTMLAttributes: {
