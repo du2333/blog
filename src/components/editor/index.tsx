@@ -5,7 +5,7 @@ import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
 import { uploadImageFn } from "@/core/functions/images";
 import { Highlight } from "@tiptap/extension-highlight";
-import { Image } from "@tiptap/extension-image";
+import { ImageExtension } from "@/components/editor/extensions/images";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
 import { Typography } from "@tiptap/extension-typography";
@@ -15,6 +15,7 @@ import "./style.css";
 
 import { FileHandler } from "@/components/editor/extensions/file-handler";
 import { handleImageDeletes } from "./utils";
+import { toast } from "sonner";
 const extensions = [
   StarterKit.configure({
     orderedList: {
@@ -40,26 +41,29 @@ const extensions = [
   Highlight.configure({
     multicolor: true,
   }),
-  Image,
+  ImageExtension,
   FileHandler.configure({
     allowedMimeTypes: ["image/*"],
     allowBase64: true,
     maxFileSize: 10 * 1024 * 1024,
     onDrop: (editor, files, pos) => {
       files.forEach(async (file) => {
-        try {
-          const formData = new FormData();
-          formData.append("image", file);
-          const result = await uploadImageFn({ data: formData });
-          editor.commands.insertContentAt(pos, {
-            type: "image",
-            attrs: {
-              src: result.url,
-            },
-          });
-        } catch (error) {
-          console.error("Failed to upload image:", error);
-        }
+        const formData = new FormData();
+        formData.append("image", file);
+        toast.promise(uploadImageFn({ data: formData }), {
+          loading: "Uploading image...",
+          success: (result) => {
+            editor.commands.insertContentAt(pos, {
+              type: "image",
+              attrs: {
+                src: result.url,
+              },
+            });
+            return "Image uploaded successfully";
+          },
+          error: (error) =>
+            error instanceof Error ? error.message : "Unknown error",
+        });
       });
     },
     onPaste(editor, files) {
@@ -67,15 +71,25 @@ const extensions = [
         try {
           const formData = new FormData();
           formData.append("image", file);
-          const result = await uploadImageFn({ data: formData });
-          editor.commands.insertContent({
-            type: "image",
-            attrs: {
-              src: result.url,
+          toast.promise(uploadImageFn({ data: formData }), {
+            loading: "Uploading image...",
+            success: (result) => {
+              editor.commands.insertContent({
+                type: "image",
+                attrs: {
+                  src: result.url,
+                },
+              });
+              return "Image uploaded successfully";
             },
+            error: (error) =>
+              error instanceof Error ? error.message : "Unknown error",
           });
         } catch (error) {
-          console.error("Failed to upload image:", error);
+          toast.error("Failed to upload image", {
+            description:
+              error instanceof Error ? error.message : "Unknown error",
+          });
         }
       });
     },

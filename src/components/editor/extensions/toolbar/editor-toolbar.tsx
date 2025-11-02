@@ -13,7 +13,7 @@ import {
   OrderedListToolbar,
   StrikeThroughToolbar,
   ToolbarProvider,
-} from "./components";
+} from "./components"; 
 
 export const EditorToolbar = ({ editor }: { editor: Editor }) => {
   return (
