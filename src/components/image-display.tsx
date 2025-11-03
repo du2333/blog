@@ -1,5 +1,6 @@
 import { ImageZoom } from "@/components/image-zoom";
 import { cn } from "@/lib/utils";
+import { useState, useEffect } from "react";
 
 interface ImageDisplayProps {
   src: string;
@@ -26,6 +27,14 @@ export function ImageDisplay({
   caption,
   className,
 }: ImageDisplayProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  if (!mounted) {
+    return null;
+  }
+
   // 处理宽度样式
   const widthStyle = width || "100%";
 

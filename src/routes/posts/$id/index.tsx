@@ -3,7 +3,7 @@ import { getPostByIdFn } from "@/core/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
-import { HtmlContent } from "@/components/html-content";
+import { ContentRenderer } from "@/components/content-renderer";
 
 function postQuery(id: number) {
   return queryOptions({
@@ -44,7 +44,10 @@ function RouteComponent() {
       </div>
       <Suspense fallback={<div>Loading...</div>}>
         <h1 className="text-2xl font-bold">{post.title}</h1>
-        <HtmlContent html={post.contentHtml} className="ProseMirror" />
+        <ContentRenderer
+          content={post.publishedContentJson}
+          className="ProseMirror"
+        />
       </Suspense>
     </div>
   );

@@ -7,7 +7,6 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import type { JSONContent } from "@tiptap/react";
-import { renderHtml } from "@/lib/render";
 
 export const createPostFn = createServerFn({
   method: "POST",
@@ -42,16 +41,7 @@ export const getPostsFn = createServerFn()
 export const getPostByIdFn = createServerFn()
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data }) => {
-    const post = await getPostById(data.id);
-    if (!post) {
-      return null;
-    }
-    return {
-      ...post,
-      contentHtml: post.publishedContentJson
-        ? renderHtml(post.publishedContentJson)
-        : "",
-    };
+    return await getPostById(data.id);
   });
 
 export const updatePostFn = createServerFn({
