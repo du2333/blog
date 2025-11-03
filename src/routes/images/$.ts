@@ -1,6 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { env } from "cloudflare:workers";
 import { handleImageRequest } from "@/core/helpers/images";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/images/$")({
   server: {
@@ -16,7 +15,7 @@ export const Route = createFileRoute("/images/$")({
         }
 
         try {
-          return await handleImageRequest(key, request, env.R2, true);
+          return await handleImageRequest(key, request, true);
         } catch (error) {
           console.error("Error fetching image from R2:", error);
           return new Response("Internal server error", {
@@ -37,7 +36,7 @@ export const Route = createFileRoute("/images/$")({
         }
 
         try {
-          return await handleImageRequest(key, request, env.R2, false);
+          return await handleImageRequest(key, request, false);
         } catch (error) {
           console.error("Error checking image from R2:", error);
           return new Response(null, {

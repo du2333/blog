@@ -27,15 +27,30 @@ export function generateKey(fileName: string): string {
   return `${year}/${month}/${day}/${uuid}.${extension}`;
 }
 
+/**
+ * 从图片 URL 中提取 R2 key
+ * 支持格式：
+ * - /images/${key}
+ * - /images/${key}?quality=80&format=webp
+ * - https://domain.com/images/${key}?quality=80
+ */
 export function extractImageKey(src: string): string | undefined {
   const prefix = "/images/";
 
   try {
-    const key = new URL(src).pathname.replace(prefix, "");
-    return key;
+    // 尝试解析为完整 URL
+    const url = new URL(src);
+    const pathname = url.pathname;
+    if (pathname.startsWith(prefix)) {
+      return pathname.replace(prefix, "");
+    }
+    return undefined;
   } catch (error) {
+    // 如果不是完整 URL，尝试作为相对路径处理
     if (src.startsWith(prefix)) {
-      return src.replace(prefix, "");
+      // 移除查询参数（如果有）
+      const withoutQuery = src.split("?")[0];
+      return withoutQuery?.replace(prefix, "");
     }
     return undefined;
   }
