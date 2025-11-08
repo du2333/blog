@@ -1,11 +1,23 @@
 import { Copy, Check } from "lucide-react";
-import { useState } from "react";
+import { useState, memo } from "react";
 
 interface CodeBlockProps {
   html: string;
   language: string | null;
   code: string;
 }
+
+// 将代码内容区域分离为独立组件，避免状态更新时重新渲染
+const CodeContent = memo(({ html }: { html: string }) => {
+  return (
+    <div
+      className="shiki overflow-x-auto rounded-b-lg"
+      dangerouslySetInnerHTML={{ __html: html }}
+    />
+  );
+});
+
+CodeContent.displayName = "CodeContent";
 
 export function CodeBlock({ html, language, code }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
@@ -53,10 +65,7 @@ export function CodeBlock({ html, language, code }: CodeBlockProps) {
         </button>
       </div>
       {/* Code content */}
-      <div
-        className="shiki overflow-x-auto rounded-b-lg"
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+      <CodeContent html={html} />
     </div>
   );
 }
