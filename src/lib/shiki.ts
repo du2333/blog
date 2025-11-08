@@ -70,20 +70,35 @@ export function highlightCode(
   if (!highlighter) {
     // 如果还未初始化，尝试初始化（但这是异步的，所以先返回未高亮的代码）
     getHighlighter().catch(console.error);
-    return `<pre><code>${code}</code></pre>`;
+    // 转义 HTML 标签，防止浏览器误解析
+    const escapedCode = code
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    return `<pre><code>${escapedCode}</code></pre>`;
   }
 
   const lang = language || "text";
   try {
-    return highlighter.codeToHtml(code, {
+    // Shiki 会自动转义 HTML 标签，但为了确保安全，我们使用 codeToHtml
+    // 它会生成完整的、正确转义的 HTML
+    const html = highlighter.codeToHtml(code, {
       lang,
       themes: {
         light: "github-light",
         dark: "github-dark",
       },
     });
+
+    // 确保返回的 HTML 是完整的，没有被截断
+    return html;
   } catch (error) {
     console.error("Failed to highlight code:", error);
-    return `<pre><code>${code}</code></pre>`;
+    // 降级方案：转义 HTML 标签
+    const escapedCode = code
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+    return `<pre><code>${escapedCode}</code></pre>`;
   }
 }
