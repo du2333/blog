@@ -50,39 +50,37 @@ export async function createHighlighter() {
 
 // Shiki 高亮器单例
 let highlighter: Highlighter | null = null;
-let highlighterPromise: Promise<Highlighter> | null = null;
 
-// 初始化高亮器（懒加载）
-async function getHighlighter(): Promise<Highlighter> {
-  if (highlighter) return highlighter;
-  if (!highlighterPromise) {
-    highlighterPromise = createHighlighter() as Promise<Highlighter>;
-    highlighter = await highlighterPromise;
+// 初始化高亮器
+export async function initShikiHighlighter(): Promise<void> {
+  if (highlighter) {
+    return;
   }
-  return highlighterPromise;
+  highlighter = (await createHighlighter()) as Highlighter;
 }
 
-// 同步高亮代码（如果 highlighter 未初始化，返回未高亮的代码）
+// 获取高亮器实例
+export function getHighlighter(): Highlighter {
+  if (!highlighter) {
+    throw new Error(
+      "Shiki highlighter not initialized. Call initShikiHighlighter() first."
+    );
+  }
+  return highlighter;
+}
+
+// 同步高亮代码
 export function highlightCode(
   code: string,
   language: string | null | undefined
 ): string {
-  if (!highlighter) {
-    // 如果还未初始化，尝试初始化（但这是异步的，所以先返回未高亮的代码）
-    getHighlighter().catch(console.error);
-    // 转义 HTML 标签，防止浏览器误解析
-    const escapedCode = code
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    return `<pre><code>${escapedCode}</code></pre>`;
-  }
-
-  const lang = language || "text";
   try {
+    const highlighterInstance = getHighlighter();
+    const lang = language || "text";
+
     // Shiki 会自动转义 HTML 标签，但为了确保安全，我们使用 codeToHtml
     // 它会生成完整的、正确转义的 HTML
-    const html = highlighter.codeToHtml(code, {
+    const html = highlighterInstance.codeToHtml(code, {
       lang,
       themes: {
         light: "github-light",
@@ -93,8 +91,8 @@ export function highlightCode(
     // 确保返回的 HTML 是完整的，没有被截断
     return html;
   } catch (error) {
-    console.error("Failed to highlight code:", error);
-    // 降级方案：转义 HTML 标签
+    // 如果高亮器未初始化或高亮失败，返回转义的代码
+    console.warn("Failed to highlight code");
     const escapedCode = code
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
