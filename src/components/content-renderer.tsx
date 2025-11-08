@@ -17,9 +17,5 @@ export function ContentRenderer({ content, className }: ContentRendererProps) {
 
   const renderedContent = renderReact(content);
 
-  return (
-    <div className={className}>
-      {renderedContent}
-    </div>
-  );
+  return <div className={className}>{renderedContent}</div>;
 }

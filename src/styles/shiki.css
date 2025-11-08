@@ -1,0 +1,37 @@
+/* 移除 Shiki 代码块的默认间距 */
+.shiki,
+.shiki pre,
+.shiki code {
+  margin: 0;
+  border: none;
+}
+
+/* 确保代码内容区域顶部没有圆角，紧贴头部栏 */
+.shiki {
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.shiki pre {
+  padding: 0;
+  border-radius: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.shiki code {
+  padding: 0;
+  border-radius: 0;
+}
+
+/* 为代码内容添加内边距（只在最内层的 code 标签） */
+.shiki pre code {
+  display: block;
+  padding: 1rem;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+}

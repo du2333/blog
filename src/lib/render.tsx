@@ -1,7 +1,9 @@
 import { extensions } from "@/components/editor";
 import { ImageDisplay } from "@/components/image-display";
+import { CodeBlock } from "@/components/code-block";
 import type { JSONContent } from "@tiptap/react";
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
+import { highlightCode } from "./shiki";
 
 export function renderReact(content: JSONContent) {
   return renderToReactElement({
@@ -74,6 +76,17 @@ export function renderReact(content: JSONContent) {
               caption={caption}
             />
           );
+        },
+        codeBlock: ({ node }) => {
+          // 从 CodeBlock 节点获取代码内容
+          const code = node.textContent || "";
+          const language =
+            (node.attrs as { language?: string | null }).language || null;
+
+          // 使用 Shiki 高亮代码
+          const html = highlightCode(code, language);
+
+          return <CodeBlock html={html} language={language} code={code} />;
         },
       },
     },

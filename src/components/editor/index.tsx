@@ -1,3 +1,4 @@
+import { ImageExtension } from "@/components/editor/extensions/images";
 import { SaveIndicator } from "@/components/editor/extensions/save-indicator";
 import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
 import { EditorToolbar } from "@/components/editor/extensions/toolbar/editor-toolbar";
@@ -5,17 +6,18 @@ import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
 import { uploadImageFn } from "@/core/functions/images";
 import { Highlight } from "@tiptap/extension-highlight";
-import { ImageExtension } from "@/components/editor/extensions/images";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
 import { Typography } from "@tiptap/extension-typography";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
+import CodeBlockShiki from "tiptap-extension-code-block-shiki";
 import "./style.css";
+import "@/styles/shiki.css";
 
 import { FileHandler } from "@/components/editor/extensions/file-handler";
-import { handleImageDeletes } from "./utils";
 import { toast } from "sonner";
+import { handleImageDeletes } from "./utils";
 
 export const extensions = [
   StarterKit.configure({
@@ -31,6 +33,14 @@ export const extensions = [
     },
     heading: {
       levels: [1, 2, 3, 4],
+    },
+    codeBlock: false,
+  }),
+  CodeBlockShiki.configure({
+    defaultTheme: "tokyo-night",
+    themes: {
+      light: "github-light",
+      dark: "github-dark",
     },
   }),
   Typography,

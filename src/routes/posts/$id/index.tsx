@@ -1,4 +1,3 @@
-import "@/components/editor/style.css";
 import { getPostByIdFn } from "@/core/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
