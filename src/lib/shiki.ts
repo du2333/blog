@@ -93,10 +93,6 @@ export function highlightCode(
   } catch (error) {
     // 如果高亮器未初始化或高亮失败，返回转义的代码
     console.warn("Failed to highlight code");
-    const escapedCode = code
-      .replace(/&/g, "&amp;")
-      .replace(/</g, "&lt;")
-      .replace(/>/g, "&gt;");
-    return `<pre><code>${escapedCode}</code></pre>`;
+    return `<pre><code>${code}</code></pre>`;
   }
 }

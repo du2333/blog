@@ -3,7 +3,6 @@ import { ImageDisplay } from "@/components/image-display";
 import { CodeBlock } from "@/components/code-block";
 import type { JSONContent } from "@tiptap/react";
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
-import { highlightCode } from "./shiki";
 
 export function renderReact(content: JSONContent) {
   return renderToReactElement({
@@ -83,10 +82,8 @@ export function renderReact(content: JSONContent) {
           const language =
             (node.attrs as { language?: string | null }).language || null;
 
-          // 使用 Shiki 高亮代码
-          const html = highlightCode(code, language);
-
-          return <CodeBlock html={html} language={language} code={code} />;
+          // 只传递原始代码和语言，不进行高亮（在客户端完成）
+          return <CodeBlock code={code} language={language} />;
         },
       },
     },

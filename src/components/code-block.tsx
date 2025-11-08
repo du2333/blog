@@ -1,26 +1,75 @@
 import { Copy, Check } from "lucide-react";
-import { useState, memo } from "react";
+import { useState, useEffect, memo } from "react";
+import { initShikiHighlighter, highlightCode } from "@/lib/shiki";
 
 interface CodeBlockProps {
-  html: string;
-  language: string | null;
   code: string;
+  language: string | null;
 }
 
 // 将代码内容区域分离为独立组件，避免状态更新时重新渲染
-const CodeContent = memo(({ html }: { html: string }) => {
-  return (
-    <div
-      className="shiki overflow-x-auto rounded-b-lg"
-      dangerouslySetInnerHTML={{ __html: html }}
-    />
-  );
-});
+const CodeContent = memo(
+  ({ html, code }: { html: string | null; code: string }) => {
+    // SSR 时显示未高亮的代码
+    if (!html) {
+      return (
+        <div className="shiki overflow-x-auto rounded-b-lg">
+          <pre>
+            <code>{code}</code>
+          </pre>
+        </div>
+      );
+    }
+
+    // 客户端显示高亮的代码
+    return (
+      <div
+        className="shiki overflow-x-auto rounded-b-lg"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    );
+  }
+);
 
 CodeContent.displayName = "CodeContent";
 
-export function CodeBlock({ html, language, code }: CodeBlockProps) {
+export function CodeBlock({ code, language }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
+  const [highlightedHtml, setHighlightedHtml] = useState<string | null>(null);
+
+  // 在客户端初始化 Shiki 并高亮代码
+  useEffect(() => {
+    // 只在客户端执行
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    let mounted = true;
+
+    async function highlight() {
+      try {
+        // 初始化 Shiki（如果还没初始化）
+        await initShikiHighlighter();
+
+        // 高亮代码
+        const html = highlightCode(code, language);
+
+        // 只在组件仍然挂载时更新
+        if (mounted) {
+          setHighlightedHtml(html);
+        }
+      } catch (error) {
+        console.warn("Failed to highlight code:", error);
+        // 如果高亮失败，保持显示未高亮的代码
+      }
+    }
+
+    highlight();
+
+    return () => {
+      mounted = false;
+    };
+  }, [code, language]);
 
   const handleCopy = async () => {
     // 确保在客户端环境中执行
@@ -65,7 +114,7 @@ export function CodeBlock({ html, language, code }: CodeBlockProps) {
         </button>
       </div>
       {/* Code content */}
-      <CodeContent html={html} />
+      <CodeContent html={highlightedHtml} code={code} />
     </div>
   );
 }
