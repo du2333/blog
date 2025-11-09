@@ -44,7 +44,7 @@ function RouteComponent() {
       <Suspense fallback={<div>Loading...</div>}>
         <h1 className="text-2xl font-bold">{post.title}</h1>
         <ContentRenderer
-          content={post.publishedContentJson}
+          content={post.contentJson}
           className="ProseMirror"
         />
       </Suspense>

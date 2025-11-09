@@ -62,21 +62,3 @@ export const updatePostFn = createServerFn({
       contentJson: data.contentJson,
     });
   });
-
-export const publishPostFn = createServerFn()
-  .inputValidator(z.object({ id: z.number() }))
-  .handler(async ({ data }) => {
-    const post = await getPostById(data.id);
-    if (!post) {
-      throw new Error("Post not found");
-    }
-
-    const now = new Date();
-    await updatePost(data.id, {
-      publishedContentJson: post.contentJson, // Copy draft to published
-      status: "published",
-      updatedAt: now,
-      // Only set publishedAt if it's the first time publishing
-      publishedAt: post.publishedAt ?? now,
-    });
-  });
