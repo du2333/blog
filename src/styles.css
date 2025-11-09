@@ -148,25 +148,11 @@ html.dark .shiki span {
 .shiki,
 .shiki pre,
 .shiki code {
-  margin: 0;
-  border: none;
-}
-
-.shiki pre {
-  padding: 0;
-  border-radius: 0 !important;
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
-}
-
-.shiki code {
-  padding: 0;
-  border-radius: 0;
+  margin: 0 !important;
 }
 
 /* 为代码内容添加内边距（只在最内层的 code 标签） */
 .shiki pre code {
-  display: block;
   padding: 1rem;
 }
 

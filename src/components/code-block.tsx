@@ -89,32 +89,40 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
   const displayLanguage = language || "text";
 
   return (
-    <div className="relative group rounded-lg border border-border overflow-hidden bg-card">
-      {/* Header with language indicator and copy button */}
-      <div className="flex items-center justify-between px-4 py-2 bg-muted/50 border-b border-border rounded-t-lg">
-        <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-          {displayLanguage}
-        </span>
-        <button
-          onClick={handleCopy}
-          className="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent"
-          aria-label="Copy code"
-        >
-          {copied ? (
-            <>
-              <Check className="size-3.5" />
-              <span>Copied</span>
-            </>
-          ) : (
-            <>
-              <Copy className="size-3.5" />
-              <span>Copy</span>
-            </>
-          )}
-        </button>
+    <>
+      <style>{`
+        .code-block-container .shiki pre {
+          border-top-left-radius: 0 !important;
+          border-top-right-radius: 0 !important;
+        }
+      `}</style>
+      <div className="code-block-container relative group rounded-lg border border-border overflow-hidden bg-card">
+        {/* Header with language indicator and copy button */}
+        <div className="flex items-center justify-between px-4 py-2 bg-muted/50 border-b border-border rounded-t-lg">
+          <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+            {displayLanguage}
+          </span>
+          <button
+            onClick={handleCopy}
+            className="inline-flex items-center gap-1.5 px-2 py-1 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent"
+            aria-label="Copy code"
+          >
+            {copied ? (
+              <>
+                <Check className="size-3.5" />
+                <span>Copied</span>
+              </>
+            ) : (
+              <>
+                <Copy className="size-3.5" />
+                <span>Copy</span>
+              </>
+            )}
+          </button>
+        </div>
+        {/* Code content */}
+        <CodeContent html={highlightedHtml} code={code} />
       </div>
-      {/* Code content */}
-      <CodeContent html={highlightedHtml} code={code} />
-    </div>
+    </>
   );
 }
