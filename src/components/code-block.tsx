@@ -13,7 +13,7 @@ const CodeContent = memo(
     // SSR 时显示未高亮的代码
     if (!html) {
       return (
-        <div className="shiki overflow-x-auto rounded-b-lg">
+        <div className="shiki overflow-x-auto">
           <pre>
             <code>{code}</code>
           </pre>
@@ -24,7 +24,7 @@ const CodeContent = memo(
     // 客户端显示高亮的代码
     return (
       <div
-        className="shiki overflow-x-auto rounded-b-lg"
+        className="shiki overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     );

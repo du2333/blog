@@ -1,21 +1,21 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@import 'tw-animate-css';
+@import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
 
 body {
   @apply m-0;
-  font-family:
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family:
-    source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 :root {
@@ -150,12 +150,6 @@ html.dark .shiki span {
 .shiki code {
   margin: 0;
   border: none;
-}
-
-/* 确保代码内容区域顶部没有圆角，紧贴头部栏 */
-.shiki {
-  border-top-left-radius: 0 !important;
-  border-top-right-radius: 0 !important;
 }
 
 .shiki pre {
