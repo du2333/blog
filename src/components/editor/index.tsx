@@ -4,7 +4,6 @@ import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
 import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
 import { uploadImageFn } from "@/core/functions/images";
-import "@/styles/shiki.css";
 import { Highlight } from "@tiptap/extension-highlight";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
