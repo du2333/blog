@@ -13,7 +13,7 @@ export function SaveIndicator({ status }: SaveIndicatorProps) {
   }
 
   return (
-    <div className="absolute bottom-4 right-8 flex items-center gap-2 text-sm text-muted-foreground">
+    <div className="fixed bottom-4 right-8 flex items-center gap-2 text-sm text-muted-foreground">
       {status.status === "saving" ? (
         <>
           <div className="h-2 w-2 animate-spin rounded-full border-2 border-current border-t-transparent" />

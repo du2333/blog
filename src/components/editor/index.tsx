@@ -1,10 +1,10 @@
 import { ImageExtension } from "@/components/editor/extensions/images";
 import { SaveIndicator } from "@/components/editor/extensions/save-indicator";
 import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
-import { EditorToolbar } from "@/components/editor/extensions/toolbar/editor-toolbar";
 import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
 import { uploadImageFn } from "@/core/functions/images";
+import "@/styles/shiki.css";
 import { Highlight } from "@tiptap/extension-highlight";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Color, TextStyle } from "@tiptap/extension-text-style";
@@ -13,7 +13,6 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import CodeBlockShiki from "tiptap-extension-code-block-shiki";
 import "./style.css";
-import "@/styles/shiki.css";
 
 import { FileHandler } from "@/components/editor/extensions/file-handler";
 import { toast } from "sonner";
@@ -134,15 +133,12 @@ export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
   if (!editor) return null;
 
   return (
-    <div className="relative w-full border bg-card pb-[60px] sm:pb-0">
-      <div className="max-h-[calc(100dvh-6rem)] overflow-hidden overflow-y-scroll">
-        <EditorToolbar editor={editor} />
-        <EditorContent
-          editor={editor}
-          className=" min-h-[600px] w-full min-w-full cursor-text sm:p-6"
-        />
-        <BubbleMenu editor={editor} />
-      </div>
+    <div className="relative w-full bg-card pb-[60px] sm:pb-0">
+      <EditorContent
+        editor={editor}
+        className=" min-h-[600px] w-full min-w-full cursor-text sm:p-6"
+      />
+      <BubbleMenu editor={editor} />
       <SaveIndicator status={saveStatus} />
     </div>
   );
