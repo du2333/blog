@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 type Theme = "dark" | "light" | "system";
 
@@ -26,45 +26,44 @@ export function ThemeProvider({
   storageKey = "theme",
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
-
-  // 只在客户端读取 localStorage
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const storedTheme = localStorage.getItem(storageKey) as Theme;
-      if (storedTheme) {
-        setTheme(storedTheme);
+  // 同步初始化：在客户端立即读取 localStorage，用于 UI 显示
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return defaultTheme;
+    try {
+      const stored = localStorage.getItem(storageKey) as Theme;
+      if (stored === "dark" || stored === "light" || stored === "system") {
+        return stored;
       }
+    } catch (e) {
+      // localStorage 可能不可用
     }
-  }, [storageKey]);
+    return defaultTheme;
+  });
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const root = window.document.documentElement;
-
-    root.classList.remove("light", "dark");
-
-    if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      root.classList.add(systemTheme);
-      return;
-    }
-
-    root.classList.add(theme);
-  }, [theme]);
-
+  // 当用户手动切换主题时，更新 localStorage 和 DOM 类名
   const value = {
     theme,
-    setTheme: (theme: Theme) => {
-      if (typeof window !== "undefined") {
-        localStorage.setItem(storageKey, theme);
+    setTheme: (newTheme: Theme) => {
+      if (typeof window === "undefined") return;
+
+      // 更新 localStorage
+      localStorage.setItem(storageKey, newTheme);
+      setTheme(newTheme);
+
+      // 更新 DOM 类名
+      const root = window.document.documentElement;
+      let targetTheme: "light" | "dark";
+
+      if (newTheme === "system") {
+        targetTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light";
+      } else {
+        targetTheme = newTheme;
       }
-      setTheme(theme);
+
+      root.classList.remove("light", "dark");
+      root.classList.add(targetTheme);
     },
   };
 
