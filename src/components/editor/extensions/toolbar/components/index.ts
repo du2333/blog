@@ -8,3 +8,4 @@ export * from "./ordered-list";
 export * from "./strikethrough";
 export * from "./underline";
 export * from "./toolbar-provider";
+export * from "./color-and-highlight";

@@ -1,12 +1,15 @@
+import { Separator } from "@/components/ui/separator";
 import { Editor } from "@tiptap/react";
 import { BubbleMenu as TiptapBubbleMenu } from "@tiptap/react/menus";
 import {
+  AlignmentToolbar,
   BoldToolbar,
+  ColorHighlightToolbar,
   ItalicToolbar,
   LinkToolbar,
   StrikeThroughToolbar,
   ToolbarProvider,
-  UnderlineToolbar,
+  UnderlineToolbar
 } from "./components";
 
 interface BubbleMenuProps {
@@ -23,6 +26,17 @@ export function BubbleMenu({ editor }: BubbleMenuProps) {
           <UnderlineToolbar />
           <StrikeThroughToolbar />
           <LinkToolbar />
+          <Separator
+            orientation="vertical"
+            className="data-[orientation=vertical]:h-7 mx-1"
+          />
+
+          <AlignmentToolbar />
+          <Separator
+            orientation="vertical"
+            className="data-[orientation=vertical]:h-7 mx-1"
+          />
+          <ColorHighlightToolbar />
         </div>
       </ToolbarProvider>
     </TiptapBubbleMenu>

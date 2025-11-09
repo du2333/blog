@@ -13,6 +13,7 @@ import {
   OrderedListToolbar,
   StrikeThroughToolbar,
   ToolbarProvider,
+  ColorHighlightToolbar,
 } from "./components"; 
 
 export const EditorToolbar = ({ editor }: { editor: Editor }) => {
@@ -46,6 +47,7 @@ export const EditorToolbar = ({ editor }: { editor: Editor }) => {
                   orientation="vertical"
                   className="data-[orientation=vertical]:h-7 mx-1"
                 />
+                <ColorHighlightToolbar />
               </div>
             </div>
             <ScrollBar className="hidden" orientation="horizontal" />
