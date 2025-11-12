@@ -10,6 +10,7 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 
 import appCss from "../styles.css?url";
 import darkModeScript from "@/scripts/dark-mode.js?raw";
+import googleTagManagerScript from "@/scripts/google-tag-manager.js?raw";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -41,6 +42,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     scripts: [
       {
+        children: googleTagManagerScript,
+      },
+      {
         children: darkModeScript,
       },
     ],
@@ -56,6 +60,14 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <noscript>
+          <iframe
+            src="https://www.googletagmanager.com/ns.html?id=GTM-WC5C7HSQ"
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+          ></iframe>
+        </noscript>
         <ThemeProvider>
           {children}
           <TanStackDevtools
