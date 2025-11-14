@@ -1,4 +1,4 @@
-import { handleImageRequest } from "@/core/helpers/images";
+import { handleImageRequest } from "@/lib/images";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/images/$")({

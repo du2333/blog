@@ -1,4 +1,4 @@
-import { deleteImage, uploadImage } from "@/core/helpers/r2";
+import { deleteImage, uploadImage } from "@/lib/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -15,9 +15,7 @@ const ACCEPTED_IMAGE_TYPES = [
 export const uploadImageFn = createServerFn({
   method: "POST",
 })
-  .inputValidator(
-    z.instanceof(FormData)
-  )
+  .inputValidator(z.instanceof(FormData))
   .handler(async ({ data }) => {
     const file = data.get("image");
 

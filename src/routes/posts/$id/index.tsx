@@ -1,4 +1,4 @@
-import { getPostByIdFn } from "@/core/functions/posts";
+import { getPostByIdFn } from "@/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
@@ -43,10 +43,7 @@ function RouteComponent() {
       </div>
       <Suspense fallback={<div>Loading...</div>}>
         <h1 className="text-2xl font-bold">{post.title}</h1>
-        <ContentRenderer
-          content={post.contentJson}
-          className="ProseMirror"
-        />
+        <ContentRenderer content={post.contentJson} className="ProseMirror" />
       </Suspense>
     </div>
   );
