@@ -55,6 +55,7 @@
     "tailwindcss": "^4.0.6",
     "tiptap-extension-code-block-shiki": "^1.0.0",
     "tw-animate-css": "^1.3.6",
+    "vanilla-cookieconsent": "3.1.0",
     "vite-tsconfig-paths": "^5.1.4",
     "zod": "^4.1.12"
   },

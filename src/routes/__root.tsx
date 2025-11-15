@@ -11,6 +11,7 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 import darkModeScript from "@/scripts/dark-mode.js?raw";
 import googleTagManagerScript from "@/scripts/google-tag-manager.js?raw";
+import { CookieBanner } from "@/components/cookie-banner";
 
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
@@ -84,6 +85,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           />
           <Scripts />
           <Toaster richColors />
+          <CookieBanner language="zh" privacyPolicyUrl="/privacy-policy" />
         </ThemeProvider>
       </body>
     </html>
