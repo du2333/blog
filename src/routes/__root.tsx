@@ -1,19 +1,16 @@
+import { Toaster } from "@/components/ui/sonner";
 import { TanStackDevtools } from "@tanstack/react-devtools";
+import type { QueryClient } from "@tanstack/react-query";
 import {
   HeadContent,
   Scripts,
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
-
 import appCss from "../styles.css?url";
-import darkModeScript from "@/scripts/dark-mode.js?raw";
-
-import { ThemeProvider } from "@/components/theme-provider";
-import { Toaster } from "@/components/ui/sonner";
-import type { QueryClient } from "@tanstack/react-query";
+import { ThemeProvider } from "@/lib/theme-provider";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -39,11 +36,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: appCss,
       },
     ],
-    scripts: [
-      {
-        children: darkModeScript,
-      },
-    ],
   }),
 
   shellComponent: RootDocument,
@@ -51,12 +43,13 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html suppressHydrationWarning>
       <head>
         <HeadContent />
       </head>
       <body>
         <ThemeProvider>
+          <ThemeToggle />
           {children}
           <TanStackDevtools
             config={{
@@ -70,9 +63,10 @@ function RootDocument({ children }: { children: React.ReactNode }) {
               TanStackQueryDevtools,
             ]}
           />
-          <Scripts />
           <Toaster richColors />
         </ThemeProvider>
+
+        <Scripts />
       </body>
     </html>
   );
