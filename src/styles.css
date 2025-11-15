@@ -130,12 +130,34 @@ code {
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+@theme {
+  --tw-transition-duration: 0.3s;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+
+  html,
+  body,
+  .border,
+  .bg-card,
+  .bg-background,
+  .bg-primary,
+  .bg-secondary,
+  .bg-muted,
+  .bg-accent,
+  .bg-destructive {
+    transition: background-color var(--tw-transition-duration) ease-in-out,
+      color var(--tw-transition-duration) ease-in-out,
+      border-color var(--tw-transition-duration) ease-in-out,
+      outline-color var(--tw-transition-duration) ease-in-out,
+      fill var(--tw-transition-duration) ease-in-out,
+      box-shadow var(--tw-transition-duration) ease-in-out;
   }
 }
 
