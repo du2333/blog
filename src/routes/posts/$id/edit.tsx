@@ -1,5 +1,5 @@
 import { Editor } from "@/components/editor";
-import { getPostByIdFn, updatePostFn } from "@/core/functions/posts";
+import { getPostByIdFn, updatePostFn } from "@/functions/posts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 

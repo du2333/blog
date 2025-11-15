@@ -1,6 +1,6 @@
 import { Transaction } from "@tiptap/pm/state";
 import { extractImageKey } from "@/lib/files";
-import { deleteImageFn } from "@/core/functions/images";
+import { deleteImageFn } from "@/functions/images";
 
 export function handleImageDeletes(transaction: Transaction) {
   // 如果事务没有改变文档，直接返回

@@ -1,4 +1,4 @@
-import { createPostFn, getPostsFn } from "@/core/functions/posts";
+import { createPostFn, getPostsFn } from "@/functions/posts";
 import {
   queryOptions,
   useMutation,
