@@ -1,21 +1,57 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import TechButton from "@/components/ui/tech-button";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { ArrowRight, Disc } from "lucide-react";
+import { PostList } from "@/components/post-list";
+import { MOCK_POSTS } from "@/lib/constants";
 
 export const Route = createFileRoute("/")({
   component: App,
 });
 
 function App() {
+  const router = useRouter();
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <h1 className="text-2xl font-bold">Hello World 2</h1>
-      <Link to="/db">DB</Link>
-      <div>
-        Image CDN Test
-        <img
-          src="https://bbb.dukda.com/images/test.png"
-          alt="test"
-          width={1000}
-        />
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700">
+      {/* Hero / Intro */}
+      <section className="text-center py-10 relative">
+        <h2 className="text-5xl md:text-8xl font-black font-sans italic uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter">
+          New Eridu
+          <br />
+          <span className="text-stroke-lime text-zzz-lime">Chronicles</span>
+        </h2>
+        <p className="max-w-xl mx-auto text-gray-400 font-mono">
+          Documenting the anomalies of the digital realm. Avoid corruption. Stay
+          connected.
+        </p>
+
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-10 text-zzz-gray/20 hidden md:block">
+          <Disc size={120} className="animate-spin-slow" />
+        </div>
+      </section>
+
+      {/* Latest Section Header */}
+      <div className="flex items-center gap-4 mb-8">
+        <div className="h-4 w-4 bg-zzz-lime transform rotate-45"></div>
+        <h3 className="text-xl font-bold font-sans uppercase tracking-widest text-white">
+          Latest Transmissions
+        </h3>
+        <div className="h-px bg-zzz-gray flex-1"></div>
+        <span className="font-mono text-xs text-zzz-lime">LATEST_4</span>
+      </div>
+
+      {/* Latest Posts (Only 4) */}
+      <PostList posts={MOCK_POSTS.slice(0, 4)} />
+
+      {/* View All Button */}
+      <div className="flex justify-center mt-8">
+        <TechButton
+          variant="secondary"
+          onClick={() => router.navigate({ to: "/" })}
+          icon={<ArrowRight size={16} />}
+        >
+          ACCESS FULL DATABASE
+        </TechButton>
       </div>
     </div>
   );

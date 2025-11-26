@@ -9,8 +9,8 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
-import { ThemeProvider } from "@/lib/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -32,6 +32,19 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
     links: [
       {
+        rel: "preconnect",
+        href: "https://fonts.googleapis.com",
+      },
+      {
+        rel: "preconnect",
+        href: "https://fonts.gstatic.com",
+        crossOrigin: "anonymous",
+      },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap",
+      },
+      {
         rel: "stylesheet",
         href: appCss,
       },
@@ -48,24 +61,32 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <ThemeProvider>
-          <ThemeToggle />
-          {children}
-          <TanStackDevtools
-            config={{
-              position: "bottom-right",
-            }}
-            plugins={[
-              {
-                name: "Tanstack Router",
-                render: <TanStackRouterDevtoolsPanel />,
-              },
-              TanStackQueryDevtools,
-            ]}
-          />
-          <Toaster richColors />
-        </ThemeProvider>
-
+        <div className="min-h-screen bg-zzz-black text-zzz-white selection:bg-zzz-lime selection:text-black font-body overflow-x-hidden relative flex flex-col">
+          {/* --- Background Effects --- */}
+          <div className="fixed inset-0 pointer-events-none z-0">
+            <div className="absolute inset-0 bg-stripe-pattern opacity-5"></div>
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]"></div>
+            <div className="w-full h-1 bg-white/5 absolute top-0 animate-[scan_8s_linear_infinite]"></div>
+          </div>
+          <Header />
+          <main className="flex-1 container mx-auto px-4 py-8 md:py-12 relative z-10">
+            {children}
+          </main>
+          <Footer />
+        </div>
+        <TanStackDevtools
+          config={{
+            position: "bottom-right",
+          }}
+          plugins={[
+            {
+              name: "Tanstack Router",
+              render: <TanStackRouterDevtoolsPanel />,
+            },
+            TanStackQueryDevtools,
+          ]}
+        />
+        <Toaster richColors />
         <Scripts />
       </body>
     </html>
