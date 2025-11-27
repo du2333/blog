@@ -1,4 +1,12 @@
-import { BlogPost } from "./types";
+export interface BlogPost {
+  id: string;
+  title: string;
+  summary: string;
+  date: string;
+  category: string;
+  readTime: string;
+  content: string;
+}
 
 export const MOCK_POSTS: BlogPost[] = [
   {

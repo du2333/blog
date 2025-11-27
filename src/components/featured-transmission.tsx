@@ -1,8 +1,8 @@
 import type { Post } from "@/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
-import { Link } from "@tanstack/react-router";
-import { ArrowRight, ArrowUpRight, Clock, Database } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import { ArrowUpRight, Clock, Zap } from "lucide-react";
 
 export function FeaturedTransmission({
   posts,
@@ -18,161 +18,143 @@ export function FeaturedTransmission({
     | "updatedAt"
   >[];
 }) {
-  // Ensure we have at least one post
-  if (!posts || posts.length === 0) return null;
+  const navigate = useNavigate();
+  if (posts.length === 0) return null;
 
-  const featuredPost = posts[0];
-  const recentPosts = posts.slice(1, 4); // Next 3 posts
+  const heroPost = posts[0];
+  const sidePosts = posts.slice(1, 4);
 
   return (
-    <section>
-      <div className="flex items-end justify-between mb-8 border-b border-zzz-gray pb-4">
-        <div>
-          <h3 className="text-3xl font-black font-sans uppercase italic text-white">
-            Featured <span className="text-zzz-lime">Transmissions</span>
-          </h3>
-          <p className="font-mono text-xs text-gray-500 mt-1">
-            SELECT * FROM ARCHIVES WHERE PRIORITY = 'HIGH'
-          </p>
-        </div>
-        <Link
-          to="/"
-          className="text-xs font-mono text-zzz-lime hover:underline flex items-center gap-1"
+    <div className="w-full max-w-[1600px] mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* --- HERO SECTION (Left / Top) --- */}
+        <div
+          onClick={() =>
+            navigate({ to: `/post/$slug`, params: { slug: heroPost!.slug } })
+          }
+          className="lg:col-span-8 group relative bg-zzz-dark border-2 border-zzz-gray hover:border-zzz-lime cursor-pointer transition-all duration-500 overflow-hidden min-h-[500px] flex flex-col"
         >
-          VIEW_ALL <ArrowRight size={12} />
-        </Link>
-      </div>
+          {/* Background Image / Pattern */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={`https://picsum.photos/800/400?random=${heroPost!.id}`}
+              alt={heroPost!.title}
+              className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500 grayscale group-hover:grayscale-0 scale-105 group-hover:scale-100"
+            />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 auto-rows-[minmax(200px,auto)]">
-        {/* Big Featured Card (Col-span-2, Row-span-2) */}
-        <div className="md:col-span-2 md:row-span-2 relative group overflow-hidden border-2 border-zzz-gray hover:border-zzz-lime transition-all rounded-lg bg-zzz-dark h-[400px] md:h-auto">
-          <Link
-            to={`/post/$slug`}
-            params={{ slug: featuredPost!.slug }}
-            className="block h-full w-full relative"
-          >
-            {/* Background: Random Placeholder Image for Featured Post */}
-            <div className="absolute inset-0 transition-transform duration-700 group-hover:scale-105">
-              <img
-                src={`https://picsum.photos/seed/${featuredPost!.id}/800/800`}
-                alt="Featured Cover"
-                className="w-full h-full object-cover opacity-50 group-hover:opacity-70 transition-opacity"
-              />
-            </div>
+            <div className="absolute inset-0 bg-linear-to-t from-zzz-black via-zzz-black/80 to-transparent"></div>
+            <div className="absolute inset-0 bg-linear-to-r from-zzz-black/90 via-transparent to-transparent"></div>
+          </div>
 
-            {/* Gradient Overlay for Text Readability */}
-            <div className="absolute inset-0 bg-linear-to-t from-black via-black/60 to-transparent"></div>
-
-            <div className="relative z-10 p-8 h-full flex flex-col justify-end">
-              <div className="mb-4">
-                <span
-                  className={`inline-block px-2 py-1 text-xs font-bold bg-zzz-lime text-black mb-2 ${CATEGORY_COLORS[
-                    featuredPost!.category
-                  ]
-                    .replace("text-", "bg-")
-                    .replace("border-", "")}`}
+          {/* Content Overlay */}
+          <div className="relative z-10 flex-1 flex flex-col p-8 md:p-12">
+            {/* Top Meta */}
+            <div className="flex justify-between items-start mb-auto">
+              <div className="flex items-center gap-3">
+                <div className="bg-zzz-lime text-black font-black text-xs px-2 py-1 uppercase tracking-widest animate-pulse">
+                  Latest_Signal
+                </div>
+                <div
+                  className={`text-[10px] font-mono border ${
+                    CATEGORY_COLORS[heroPost!.category]
+                  } px-2 py-1 uppercase bg-black`}
                 >
-                  {featuredPost!.category}
-                </span>
-                <h2 className="text-3xl md:text-5xl font-black font-sans text-white uppercase leading-[0.9] mb-2 group-hover:text-zzz-lime transition-colors">
-                  {featuredPost!.title}
-                </h2>
+                  {heroPost!.category}
+                </div>
               </div>
-              <p className="text-gray-300 font-mono text-sm line-clamp-2 max-w-md border-l-2 border-zzz-lime pl-3 bg-black/30 backdrop-blur-xs p-2 rounded-r">
-                {featuredPost!.summary}
-              </p>
-
-              <div className="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1 rounded border border-zzz-gray flex items-center gap-2 text-xs font-mono text-zzz-white">
-                <Clock size={12} /> {featuredPost!.readTimeInMinutes} MIN
+              <div className="text-6xl md:text-8xl font-black text-white/5 font-sans leading-none select-none">
+                01
               </div>
             </div>
-          </Link>
+
+            {/* Main Title Area */}
+            <div className="mt-8 md:mt-0">
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-[0.9] mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl">
+                {heroPost!.title}
+              </h3>
+              <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8">
+                {heroPost!.summary}
+              </p>
+            </div>
+
+            {/* Footer Actions */}
+            <div className="mt-auto pt-8 border-t border-zzz-gray/30 flex items-center justify-between">
+              <div className="flex items-center gap-6 font-mono text-xs text-zzz-gray group-hover:text-white transition-colors">
+                <span className="flex items-center gap-2">
+                  <Clock size={14} className="text-zzz-lime" />{" "}
+                  {heroPost!.readTimeInMinutes} MINS
+                </span>
+                <span>//</span>
+                <span>{formatDate(heroPost!.updatedAt)}</span>
+              </div>
+              <div className="flex items-center gap-2 text-zzz-lime font-bold font-sans uppercase tracking-wider text-sm group-hover:translate-x-2 transition-transform">
+                Read_Log <ArrowUpRight size={18} />
+              </div>
+            </div>
+          </div>
+
+          {/* Decorative Corners */}
+          <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-zzz-lime opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+          <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-zzz-lime opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
         </div>
 
-        {/* Standard Cards */}
-        {recentPosts.map((post) => (
-          <div
-            key={post.id}
-            className="md:col-span-1 relative group bg-zzz-dark border border-zzz-gray hover:border-zzz-lime transition-all flex flex-col overflow-hidden rounded-lg min-h-60"
-          >
-            <Link
-              to={`/post/$slug`}
-              params={{ slug: post.slug }}
-              className="flex flex-col h-full"
+        {/* --- SIDEBAR FEED (Right / Bottom) --- */}
+        <div className="lg:col-span-4 flex flex-col gap-4">
+          {/* Section Header */}
+          <div className="flex items-center justify-between bg-zzz-dark border border-zzz-gray px-4 py-2 mb-2">
+            <span className="font-mono text-xs font-bold text-zzz-cyan uppercase tracking-widest flex items-center gap-2">
+              <Zap size={12} /> Incoming_Stream
+            </span>
+            <div className="flex gap-1">
+              <div className="w-1.5 h-1.5 bg-zzz-cyan rounded-full animate-pulse"></div>
+              <div className="w-1.5 h-1.5 bg-zzz-cyan rounded-full animate-pulse delay-75"></div>
+              <div className="w-1.5 h-1.5 bg-zzz-cyan rounded-full animate-pulse delay-150"></div>
+            </div>
+          </div>
+
+          {/* List Items */}
+          {sidePosts.map((post, index) => (
+            <div
+              key={post.id}
+              onClick={() => navigate({ to: `/post/$slug`, params: { slug: post.slug } })}
+              className="group flex-1 bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
             >
-              <div className="h-32 overflow-hidden relative border-b border-zzz-gray group-hover:border-zzz-lime/50 bg-zzz-black">
-                {/* Pattern Header for Standard Cards */}
-                <div className="absolute inset-0 bg-zzz-black flex items-center justify-center overflow-hidden">
-                  {/* Subtle Grid */}
-                  <div
-                    className="absolute inset-0 opacity-20"
-                    style={{
-                      backgroundImage: `radial-gradient(#333 1px, transparent 1px)`,
-                      backgroundSize: "10px 10px",
-                    }}
-                  ></div>
-
-                  {/* Diagonal Lines */}
-                  <div className="w-full h-px bg-zzz-gray/30 transform rotate-45 absolute"></div>
-                  <div className="w-full h-px bg-zzz-gray/30 transform -rotate-45 absolute"></div>
-
-                  {/* Category Tint Overlay */}
-                  <div
-                    className={`absolute inset-0 opacity-5 ${CATEGORY_COLORS[
-                      post.category
-                    ]
-                      .replace("text-", "bg-")
-                      .replace("border-", "")}`}
-                  ></div>
+              <div className="flex justify-between items-start mb-2">
+                <div className="font-mono text-[10px] text-gray-500 group-hover:text-zzz-cyan transition-colors">
+                  LOG_0{index + 2}
                 </div>
-
-                <div className="absolute top-2 right-2 bg-black px-2 py-0.5 text-[10px] font-mono font-bold text-zzz-white border border-zzz-gray z-10">
+                <div
+                  className={`text-[10px] px-1.5 py-0.5 border ${
+                    CATEGORY_COLORS[post.category]
+                  } uppercase`}
+                >
                   {post.category}
                 </div>
               </div>
-              <div className="p-4 flex-1 flex flex-col bg-zzz-dark">
-                <h4 className="text-lg font-bold font-sans text-white uppercase leading-tight mb-2 group-hover:text-zzz-lime line-clamp-2">
-                  {post.title}
-                </h4>
-                <p className="text-xs text-gray-500 font-mono line-clamp-2 mb-4 flex-1">
-                  {post.summary}
-                </p>
-                <div className="flex justify-between items-center pt-3 border-t border-zzz-gray/20 mt-auto">
-                  <span className="text-[10px] font-mono text-gray-600">
-                    {formatDate(post.updatedAt)}
-                  </span>
-                  <ArrowUpRight
-                    size={14}
-                    className="text-zzz-gray group-hover:text-zzz-lime transition-colors"
-                  />
-                </div>
-              </div>
-            </Link>
-          </div>
-        ))}
 
-        {/* Decorative "More" Block */}
-        <div className="md:col-span-1 bg-zzz-lime/10 border border-zzz-lime/30 rounded-lg flex flex-col items-center justify-center p-6 text-center group hover:bg-zzz-lime hover:text-black transition-all cursor-pointer min-h-60">
-          {/* Fake Link behavior via parent container click handling or wrapping in Link if routing needed */}
-          <Link
-            to="/"
-            className="flex flex-col items-center justify-center w-full h-full"
-          >
-            <Database
-              size={32}
-              className="mb-3 text-zzz-lime group-hover:text-black transition-colors"
-            />
-            <span className="font-black font-sans text-xl uppercase">
-              Access
-              <br />
-              Archives
+              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2">
+                {post.title}
+              </h4>
+
+              <div className="flex items-center gap-4 mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
+                <span className="text-[10px] font-mono text-gray-400">
+                  {formatDate(post.updatedAt)}
+                </span>
+              </div>
+
+              {/* Hover Indicator */}
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-zzz-cyan transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom duration-300"></div>
+            </div>
+          ))}
+
+          {/* "More" Hint */}
+          <div className="mt-auto text-center border-t border-dashed border-zzz-gray pt-2">
+            <span className="font-mono text-[10px] text-gray-600">
+              SCROLL FOR ARCHIVE ACCESS
             </span>
-            <span className="mt-2 text-xs font-mono opacity-60">
-              View all entries -&gt;
-            </span>
-          </Link>
+          </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

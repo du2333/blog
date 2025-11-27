@@ -1,9 +1,7 @@
-import { createPostFn, getPostsFn } from "@/functions/posts";
+import { getPostsFn } from "@/functions/posts";
 import {
   queryOptions,
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
+  useSuspenseQuery
 } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { Suspense } from "react";
@@ -22,15 +20,7 @@ export const Route = createFileRoute("/db")({
 
 function RouteComponent() {
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const { data: posts } = useSuspenseQuery(postsQuery);
-
-  const createPostMutation = useMutation({
-    mutationFn: createPostFn,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-    },
-  });
 
   return (
     <div className="container mx-auto flex flex-col gap-4">
@@ -38,31 +28,6 @@ function RouteComponent() {
       <Link to="/" className="text-blue-500 hover:text-blue-600">
         Home
       </Link>
-
-      <button
-        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 cursor-pointer"
-        onClick={() =>
-          createPostMutation.mutate({
-            data: {
-              title: "Hello World",
-              slug: "hello-world",
-              contentJson: {
-                type: "doc",
-                content: [
-                  {
-                    type: "paragraph",
-                    content: [{ type: "text", text: "Hello World" }],
-                  },
-                ],
-              },
-              status: "draft",
-              publishedAt: null,
-            },
-          })
-        }
-      >
-        Create Example Post
-      </button>
 
       <Suspense fallback={<div>Loading...</div>}>
         <div className="flex flex-col gap-4">
