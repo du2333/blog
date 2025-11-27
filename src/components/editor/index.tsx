@@ -7,7 +7,11 @@ import StarterKit from "@tiptap/starter-kit";
 import CodeBlockShiki from "tiptap-extension-code-block-shiki";
 import { HeadingExtension } from "@/components/editor/extensions/typography/heading";
 import { BlockQuoteExtension } from "./extensions/typography/block-quote";
-import { BulletListExtension, ListItemExtension, OrderedListExtension } from "./extensions/typography/list";
+import {
+  BulletListExtension,
+  ListItemExtension,
+  OrderedListExtension,
+} from "./extensions/typography/list";
 
 // import { ImageExtension } from "@/components/editor/extensions/images";
 // import { uploadImageFn } from "@/functions/images";
@@ -27,6 +31,42 @@ export const extensions = [
         class:
           "bg-zzz-gray text-zzz-lime px-1.5 py-0.5 rounded-sm font-mono text-sm border border-zzz-gray/50",
         spellcheck: false,
+      },
+    },
+    underline: {
+      HTMLAttributes: {
+        class: "text-white decoration-zzz-lime decoration-2 underline-offset-4",
+      },
+    },
+    strike: {
+      HTMLAttributes: {
+        class:
+          "text-gray-500 decoration-zzz-orange decoration-2 line-through opacity-70",
+      },
+    },
+    link: {
+      autolink: true,
+      openOnClick: false,
+      HTMLAttributes: {
+        class: `
+        text-zzz-cyan font-bold underline decoration-transparent 
+        hover:underline hover:cursor-pointer hover:decoration-zzz-cyan underline-offset-4 transition-all
+        
+        /* 2. 为图标预留空间并设置对齐 */
+        inline-flex items-center gap-0.5
+        
+        /* 3. 使用伪元素 ::after 渲染图标 */
+        after:content-[''] 
+        after:w-3 after:h-3 after:mb-0.5
+        after:bg-current /* 让图标颜色跟随文字颜色 (zzz-cyan) */
+        
+        /* 4. 关键：使用 mask-image 加载 SVG */
+        after:[mask-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xOCAxM3Y2YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjhhMiAyIDAgMCAxIDItMmg2Ii8+PHBvbHlsaW5lIHBvaW50cz0iMTUgMyAyMSAzIDIxIDkiLz48bGluZSB4MT0iMTAiIHkxPSIxNCIgeDI9IjIxIiB5Mj0iMyIvPjwvc3ZnPg==')]
+        after:[mask-size:contain]
+        after:[mask-repeat:no-repeat]
+        after:[mask-position:center]
+      `,
+        target: "_blank",
       },
     },
   }),
