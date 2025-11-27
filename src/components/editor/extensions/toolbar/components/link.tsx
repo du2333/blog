@@ -56,8 +56,8 @@ const LinkToolbar = React.forwardRef<HTMLButtonElement, ButtonProps>(
                 size="sm"
                 type="button"
                 className={cn(
-                  "h-8 w-max px-3 font-normal",
-                  isLink && "bg-accent",
+                  "h-8 w-max px-3 font-normal rounded-none hover:bg-zzz-gray hover:text-zzz-lime transition-colors",
+                  isLink && "bg-zzz-lime text-black hover:bg-zzz-lime hover:text-black",
                   className
                 )}
                 ref={ref}
@@ -77,15 +77,15 @@ const LinkToolbar = React.forwardRef<HTMLButtonElement, ButtonProps>(
             e.preventDefault();
           }}
           asChild
-          className="relative px-3 py-2.5"
+          className="relative px-3 py-2.5 bg-zzz-black border-zzz-gray border rounded-none clip-corner-bl shadow-xl"
         >
           <div className="relative">
-            <PopoverClose className="absolute right-3 top-3">
+            <PopoverClose className="absolute right-3 top-3 text-gray-400 hover:text-zzz-lime transition-colors">
               <X className="h-4 w-4" />
             </PopoverClose>
             <form onSubmit={handleSubmit}>
-              <Label>Link</Label>
-              <p className="text-sm text-gray-11">
+              <Label className="text-white font-mono uppercase">Link</Label>
+              <p className="text-sm text-gray-400 font-mono">
                 Add a link to the selected text
               </p>
               <div className="mt-3 flex flex-col items-end justify-end gap-3">
@@ -94,7 +94,7 @@ const LinkToolbar = React.forwardRef<HTMLButtonElement, ButtonProps>(
                   onChange={(e) => {
                     setLink(e.target.value);
                   }}
-                  className="w-full"
+                  className="w-full bg-zzz-dark border-zzz-gray text-white focus-visible:ring-zzz-lime font-mono rounded-none"
                   placeholder="https://example.com"
                 />
                 <div className="flex items-center gap-3">
@@ -102,7 +102,7 @@ const LinkToolbar = React.forwardRef<HTMLButtonElement, ButtonProps>(
                     <Button
                       type="reset"
                       size="sm"
-                      className="h-8 text-gray-11 cursor-pointer"
+                      className="h-8 text-gray-400 cursor-pointer hover:text-zzz-orange hover:bg-zzz-gray/50 rounded-none"
                       variant="ghost"
                       onClick={() => {
                         editor?.chain().focus().unsetLink().run();
@@ -113,7 +113,7 @@ const LinkToolbar = React.forwardRef<HTMLButtonElement, ButtonProps>(
                       Remove
                     </Button>
                   )}
-                  <Button size="sm" className="h-8 cursor-pointer">
+                  <Button size="sm" className="h-8 cursor-pointer bg-zzz-lime text-black hover:bg-white hover:text-black rounded-none font-bold font-mono clip-corner-tr">
                     {editor?.getAttributes("link").href ? "Update" : "Confirm"}
                   </Button>
                 </div>
