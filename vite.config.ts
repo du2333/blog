@@ -13,6 +13,7 @@ const config = defineConfig({
       projects: ["./tsconfig.json"],
     }),
     tailwindcss(),
+    devtools(),
     tanstackStart(),
     viteReact(),
     cloudflare({
@@ -20,7 +21,6 @@ const config = defineConfig({
         name: "ssr",
       },
     }),
-    devtools(),
   ],
 });
 
