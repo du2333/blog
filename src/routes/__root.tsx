@@ -11,6 +11,8 @@ import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { ASSET_LINKS, FONT_URLS } from "@/config/assets";
+import { useAsyncFonts } from "@/hooks/use-async-fonts";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -31,19 +33,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
-      // {
-      //   rel: "preconnect",
-      //   href: "https://fonts.googleapis.com",
-      // },
-      // {
-      //   rel: "preconnect",
-      //   href: "https://fonts.gstatic.com",
-      //   crossOrigin: "anonymous",
-      // },
-      // {
-      //   rel: "stylesheet",
-      //   href: "https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap",
-      // },
+      ...ASSET_LINKS,
       {
         rel: "stylesheet",
         href: appCss,
@@ -55,6 +45,9 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  // 异步加载字体 - 不阻塞渲染
+  useAsyncFonts(FONT_URLS);
+
   return (
     <html lang="zh" suppressHydrationWarning>
       <head>

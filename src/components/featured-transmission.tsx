@@ -39,6 +39,7 @@ export function FeaturedTransmission({
             <video
               src="/assets/hollow.webm"
               poster="/assets/hollow.webp"
+              preload="auto"
               autoPlay
               loop
               muted
