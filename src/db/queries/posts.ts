@@ -13,7 +13,9 @@ export async function getPosts(options: { offset: number; limit: number }) {
     .select({
       id: PostsTable.id,
       title: PostsTable.title,
+      summary: PostsTable.summary,
       slug: PostsTable.slug,
+      category: PostsTable.category,
       status: PostsTable.status,
       publishedAt: PostsTable.publishedAt,
       createdAt: PostsTable.createdAt,
@@ -31,6 +33,15 @@ export async function getPostById(id: number) {
     .select()
     .from(PostsTable)
     .where(eq(PostsTable.id, id));
+  return post;
+}
+
+export async function getPostBySlug(slug: string) {
+  const db = getDb();
+  const [post] = await db
+    .select()
+    .from(PostsTable)
+    .where(eq(PostsTable.slug, slug));
   return post;
 }
 

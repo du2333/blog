@@ -4,16 +4,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { type Editor } from "@tiptap/react";
 import {
   UnderlineToolbar,
-  AlignmentToolbar,
   BoldToolbar,
   BulletListToolbar,
-  HorizontalRuleToolbar,
   ItalicToolbar,
   LinkToolbar,
   OrderedListToolbar,
   StrikeThroughToolbar,
   ToolbarProvider,
-  ColorHighlightToolbar,
 } from "./components"; 
 
 export const EditorToolbar = ({ editor }: { editor: Editor }) => {
@@ -36,18 +33,15 @@ export const EditorToolbar = ({ editor }: { editor: Editor }) => {
 
                 <BulletListToolbar />
                 <OrderedListToolbar />
-                <HorizontalRuleToolbar />
                 <Separator
                   orientation="vertical"
                   className="data-[orientation=vertical]:h-7 mx-1"
                 />
 
-                <AlignmentToolbar />
                 <Separator
                   orientation="vertical"
                   className="data-[orientation=vertical]:h-7 mx-1"
                 />
-                <ColorHighlightToolbar />
               </div>
             </div>
             <ScrollBar className="hidden" orientation="horizontal" />

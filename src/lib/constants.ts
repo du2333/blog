@@ -62,7 +62,6 @@ export const MOCK_POSTS: BlogPost[] = [
       ## 05. 文本强调
       你可以使用 *斜体表示微妙强调* 或 **粗体文本表示强烈警告**。行内代码如 \`const a = 1\` 高亮显示以便快速扫描。
     `,
-    image: "https://picsum.photos/800/400?random=1",
   },
   {
     id: "2",

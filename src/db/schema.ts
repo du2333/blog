@@ -7,7 +7,12 @@ export const PostsTable = sqliteTable(
   {
     id: integer().primaryKey({ autoIncrement: true }),
     title: text().notNull(),
-    slug: text().notNull(),
+    summary: text(),
+    readTimeInMinutes: integer().default(1).notNull(),
+    slug: text().notNull().unique(),
+    category: text("category", { enum: ["DEV", "LIFE", "GAMING", "TECH"] })
+      .default("DEV")
+      .notNull(),
     contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
     status: text("status", { enum: ["draft", "published", "archived"] })
       .notNull()
