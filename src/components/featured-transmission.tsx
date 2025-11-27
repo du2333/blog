@@ -39,7 +39,7 @@ export function FeaturedTransmission({
             <img
               src={`https://picsum.photos/800/400?random=${heroPost!.id}`}
               alt={heroPost!.title}
-              className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-opacity duration-500 grayscale group-hover:grayscale-0 scale-105 group-hover:scale-100"
+              className="w-full h-full object-cover opacity-40 group-hover:opacity-60 transition-all duration-500 grayscale group-hover:grayscale-0 scale-105 group-hover:scale-100"
             />
 
             <div className="absolute inset-0 bg-linear-to-t from-zzz-black via-zzz-black/80 to-transparent"></div>
