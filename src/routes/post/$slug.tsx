@@ -4,7 +4,11 @@ import { getPostBySlugFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  createFileRoute,
+  useNavigate,
+} from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Clock, RefreshCw, Share2 } from "lucide-react";
 
 function postQuery(slug: string) {
@@ -96,7 +100,9 @@ function RouteComponent() {
                 <Calendar size={14} />
               </div>
               <span className="tracking-widest text-white">
-                {formatDate(post.publishedAt)}
+                <ClientOnly fallback={<span>-</span>}>
+                  {formatDate(post.publishedAt)}
+                </ClientOnly>
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -113,7 +119,9 @@ function RouteComponent() {
               </div>
               <span className="tracking-widest text-white">
                 UPDATED:{" "}
-                {formatDate(post.updatedAt)}
+                <ClientOnly fallback={<span>-</span>}>
+                  {formatDate(post.updatedAt)}
+                </ClientOnly>
               </span>
             </div>
           </div>

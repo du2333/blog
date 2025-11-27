@@ -1,7 +1,7 @@
 import type { Post } from "@/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
-import { useNavigate } from "@tanstack/react-router";
+import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { ArrowUpRight, Clock, Zap } from "lucide-react";
 
 export function FeaturedTransmission({
@@ -89,7 +89,9 @@ export function FeaturedTransmission({
                   {heroPost!.readTimeInMinutes} MINS
                 </span>
                 <span>//</span>
-                <span>{formatDate(heroPost!.updatedAt)}</span>
+                <ClientOnly fallback={<span>-</span>}>
+                  <span>{formatDate(heroPost!.updatedAt)}</span>
+                </ClientOnly>
               </div>
               <div className="flex items-center gap-2 text-zzz-lime font-bold font-sans uppercase tracking-wider text-sm group-hover:translate-x-2 transition-transform">
                 Read_Log <ArrowUpRight size={18} />
@@ -143,9 +145,11 @@ export function FeaturedTransmission({
               </h4>
 
               <div className="flex items-center gap-4 mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-mono text-gray-400">
-                  {formatDate(post.updatedAt)}
-                </span>
+                <ClientOnly fallback={<span>-</span>}>
+                  <span className="text-[10px] font-mono text-gray-400">
+                    {formatDate(post.updatedAt)}
+                  </span>
+                </ClientOnly>
               </div>
 
               {/* Hover Indicator */}
