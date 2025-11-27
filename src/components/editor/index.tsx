@@ -50,62 +50,62 @@ export const extensions = [
   Highlight.configure({
     multicolor: true,
   }),
-  ImageExtension,
-  FileHandler.configure({
-    allowedMimeTypes: ["image/*"],
-    allowBase64: true,
-    maxFileSize: 10 * 1024 * 1024,
-    onDrop: (editor, files, pos) => {
-      files.forEach(async (file) => {
-        const formData = new FormData();
-        formData.append("image", file);
-        toast.promise(uploadImageFn({ data: formData }), {
-          loading: "Uploading image...",
-          success: (result) => {
-            editor.commands.insertContentAt(pos, {
-              type: "image",
-              attrs: {
-                src: result.url,
-              },
-            });
-            return "Image uploaded successfully";
-          },
-          error: (error) =>
-            error instanceof Error ? error.message : "Unknown error",
-        });
-      });
-    },
-    onPaste(editor, files) {
-      files.forEach(async (file) => {
-        try {
-          const formData = new FormData();
-          formData.append("image", file);
-          toast.promise(uploadImageFn({ data: formData }), {
-            loading: "Uploading image...",
-            success: (result) => {
-              editor.commands.insertContent({
-                type: "image",
-                attrs: {
-                  src: result.url,
-                },
-              });
-              return "Image uploaded successfully";
-            },
-            error: (error) =>
-              error instanceof Error ? error.message : "Unknown error",
-          });
-        } catch (error) {
-          toast.error("Failed to upload image", {
-            description:
-              error instanceof Error ? error.message : "Unknown error",
-          });
-        }
-      });
-    },
-    onValidationError(errors) {
-      console.error(errors);
-    },
-  }),
+  // ImageExtension,
+  // FileHandler.configure({
+  //   allowedMimeTypes: ["image/*"],
+  //   allowBase64: true,
+  //   maxFileSize: 10 * 1024 * 1024,
+  //   onDrop: (editor, files, pos) => {
+  //     files.forEach(async (file) => {
+  //       const formData = new FormData();
+  //       formData.append("image", file);
+  //       toast.promise(uploadImageFn({ data: formData }), {
+  //         loading: "Uploading image...",
+  //         success: (result) => {
+  //           editor.commands.insertContentAt(pos, {
+  //             type: "image",
+  //             attrs: {
+  //               src: result.url,
+  //             },
+  //           });
+  //           return "Image uploaded successfully";
+  //         },
+  //         error: (error) =>
+  //           error instanceof Error ? error.message : "Unknown error",
+  //       });
+  //     });
+  //   },
+  //   onPaste(editor, files) {
+  //     files.forEach(async (file) => {
+  //       try {
+  //         const formData = new FormData();
+  //         formData.append("image", file);
+  //         toast.promise(uploadImageFn({ data: formData }), {
+  //           loading: "Uploading image...",
+  //           success: (result) => {
+  //             editor.commands.insertContent({
+  //               type: "image",
+  //               attrs: {
+  //                 src: result.url,
+  //               },
+  //             });
+  //             return "Image uploaded successfully";
+  //           },
+  //           error: (error) =>
+  //             error instanceof Error ? error.message : "Unknown error",
+  //         });
+  //       } catch (error) {
+  //         toast.error("Failed to upload image", {
+  //           description:
+  //             error instanceof Error ? error.message : "Unknown error",
+  //         });
+  //       }
+  //     });
+  //   },
+  //   onValidationError(errors) {
+  //     console.error(errors);
+  //   },
+  // }),
 ];
 
 export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
@@ -116,16 +116,11 @@ export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
 
   const editor = useEditor({
     extensions,
-    editorProps: {
-      attributes: {
-        class: "max-w-full focus:outline-none",
-      },
-    },
     content,
     immediatelyRender: false,
     onUpdate: ({ editor, transaction }) => {
       handleUpdate(editor);
-      handleImageDeletes(transaction);
+      // handleImageDeletes(transaction);
     },
   });
 

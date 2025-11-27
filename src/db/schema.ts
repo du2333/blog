@@ -30,3 +30,5 @@ export const PostsTable = sqliteTable(
     index("published_at_idx").on(table.publishedAt, table.status),
   ]
 );
+
+export type Post = typeof PostsTable.$inferSelect;

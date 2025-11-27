@@ -1,13 +1,22 @@
+import type { Post } from "@/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
-import { BlogPost } from "@/lib/types";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight, Clock, Database } from "lucide-react";
 
-interface FeaturedTransmissionProps {
-  posts: BlogPost[];
-}
-
-export function FeaturedTransmission({ posts }: FeaturedTransmissionProps) {
+export function FeaturedTransmission({
+  posts,
+}: {
+  posts: Pick<
+    Post,
+    | "id"
+    | "title"
+    | "summary"
+    | "slug"
+    | "category"
+    | "readTimeInMinutes"
+    | "updatedAt"
+  >[];
+}) {
   // Ensure we have at least one post
   if (!posts || posts.length === 0) return null;
 
@@ -37,8 +46,8 @@ export function FeaturedTransmission({ posts }: FeaturedTransmissionProps) {
         {/* Big Featured Card (Col-span-2, Row-span-2) */}
         <div className="md:col-span-2 md:row-span-2 relative group overflow-hidden border-2 border-zzz-gray hover:border-zzz-lime transition-all rounded-lg bg-zzz-dark h-[400px] md:h-auto">
           <Link
-            to={`/post/$id`}
-            params={{ id: featuredPost!.id }}
+            to={`/post/$slug`}
+            params={{ slug: featuredPost!.slug }}
             className="block h-full w-full relative"
           >
             {/* Background: Random Placeholder Image for Featured Post */}
@@ -73,7 +82,7 @@ export function FeaturedTransmission({ posts }: FeaturedTransmissionProps) {
               </p>
 
               <div className="absolute top-4 right-4 bg-black/80 backdrop-blur px-3 py-1 rounded border border-zzz-gray flex items-center gap-2 text-xs font-mono text-zzz-white">
-                <Clock size={12} /> {featuredPost!.readTime}
+                <Clock size={12} /> {featuredPost!.readTimeInMinutes} MIN
               </div>
             </div>
           </Link>
@@ -86,8 +95,8 @@ export function FeaturedTransmission({ posts }: FeaturedTransmissionProps) {
             className="md:col-span-1 relative group bg-zzz-dark border border-zzz-gray hover:border-zzz-lime transition-all flex flex-col overflow-hidden rounded-lg min-h-60"
           >
             <Link
-              to={`/post/$id`}
-              params={{ id: post.id }}
+              to={`/post/$slug`}
+              params={{ slug: post.slug }}
               className="flex flex-col h-full"
             >
               <div className="h-32 overflow-hidden relative border-b border-zzz-gray group-hover:border-zzz-lime/50 bg-zzz-black">
@@ -129,7 +138,11 @@ export function FeaturedTransmission({ posts }: FeaturedTransmissionProps) {
                 </p>
                 <div className="flex justify-between items-center pt-3 border-t border-zzz-gray/20 mt-auto">
                   <span className="text-[10px] font-mono text-gray-600">
-                    {post.date}
+                    {post.updatedAt.toLocaleDateString(undefined, {
+                      year: "numeric",
+                      month: "numeric",
+                      day: "numeric",
+                    })}
                   </span>
                   <ArrowUpRight
                     size={14}

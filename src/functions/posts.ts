@@ -1,12 +1,13 @@
 import {
   getPostById,
+  getPostBySlug,
   getPosts,
   insertPost,
   updatePost,
 } from "@/db/queries/posts";
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
 import type { JSONContent } from "@tiptap/react";
+import { z } from "zod";
 
 export const createPostFn = createServerFn({
   method: "POST",
@@ -36,6 +37,12 @@ export const getPostsFn = createServerFn()
       offset: data.offset ?? 0,
       limit: data.limit ?? 10,
     });
+  });
+
+export const getPostBySlugFn = createServerFn()
+  .inputValidator(z.object({ slug: z.string() }))
+  .handler(async ({ data }) => {
+    return await getPostBySlug(data.slug);
   });
 
 export const getPostByIdFn = createServerFn()

@@ -1,6 +1,6 @@
 import { getDb } from "@/db";
 import { PostsTable } from "@/db/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq } from "drizzle-orm";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
@@ -14,6 +14,7 @@ export async function getPosts(options: { offset: number; limit: number }) {
       id: PostsTable.id,
       title: PostsTable.title,
       summary: PostsTable.summary,
+      readTimeInMinutes: PostsTable.readTimeInMinutes,
       slug: PostsTable.slug,
       category: PostsTable.category,
       status: PostsTable.status,
@@ -23,7 +24,8 @@ export async function getPosts(options: { offset: number; limit: number }) {
     })
     .from(PostsTable)
     .limit(options.limit)
-    .offset(options.offset);
+    .offset(options.offset)
+    .orderBy(desc(PostsTable.publishedAt));
   return posts;
 }
 

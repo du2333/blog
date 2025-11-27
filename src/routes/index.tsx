@@ -1,15 +1,25 @@
-import TechButton from "@/components/ui/tech-button";
-import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { Activity, Zap, Database, Radio, Cpu } from "lucide-react";
-import { MOCK_POSTS } from "@/lib/constants";
 import { FeaturedTransmission } from "@/components/featured-transmission";
+import TechButton from "@/components/ui/tech-button";
+import { getPostsFn } from "@/functions/posts";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { Activity, Cpu, Database, Radio, Zap } from "lucide-react";
+
+const postsQuery = queryOptions({
+  queryKey: ["posts"],
+  queryFn: () => getPostsFn({ data: { offset: 0, limit: 4 } }),
+});
 
 export const Route = createFileRoute("/")({
   component: App,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(postsQuery);
+  },
 });
 
 function App() {
   const router = useRouter();
+  const { data: posts } = useSuspenseQuery(postsQuery);
 
   return (
     <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -155,7 +165,7 @@ function App() {
       </div>
 
       {/* Bento Grid Section */}
-      <FeaturedTransmission posts={MOCK_POSTS} />
+      <FeaturedTransmission posts={posts} />
 
       {/* Additional "Ad" / Banner */}
       <div className="border-t-2 border-b-2 border-zzz-gray py-12 relative overflow-hidden">
