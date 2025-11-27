@@ -3,6 +3,7 @@ import { ImageDisplay } from "@/components/image-display";
 import { CodeBlock } from "@/components/code-block";
 import type { JSONContent } from "@tiptap/react";
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
+import { renderToHTMLString } from "@tiptap/static-renderer";
 
 export function renderReact(content: JSONContent) {
   return renderToReactElement({
@@ -87,5 +88,12 @@ export function renderReact(content: JSONContent) {
         },
       },
     },
+  });
+}
+
+export function renderHtml(content: JSONContent) {
+  return renderToHTMLString({
+    extensions,
+    content,
   });
 }

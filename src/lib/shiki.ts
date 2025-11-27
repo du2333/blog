@@ -15,9 +15,9 @@ import xml from "@shikijs/langs/xml";
 import yaml from "@shikijs/langs/yaml";
 import githubDark from "@shikijs/themes/github-dark";
 import githubLight from "@shikijs/themes/github-light";
+import type { Highlighter } from "shiki";
 import { createJavaScriptRegexEngine } from "shiki";
 import { createHighlighterCore } from "shiki/core";
-import type { Highlighter } from "shiki";
 
 export async function createHighlighter() {
   // 创建regex引擎

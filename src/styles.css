@@ -205,57 +205,7 @@ code {
     background-color: #050505;
     overflow-x: hidden;
   }
-
-  html,
-  body,
-  .border,
-  .bg-card,
-  .bg-background,
-  .bg-primary,
-  .bg-secondary,
-  .bg-muted,
-  .bg-accent,
-  .bg-destructive {
-    transition: background-color var(--tw-transition-duration) ease-in-out,
-      color var(--tw-transition-duration) ease-in-out,
-      border-color var(--tw-transition-duration) ease-in-out,
-      outline-color var(--tw-transition-duration) ease-in-out,
-      fill var(--tw-transition-duration) ease-in-out,
-      box-shadow var(--tw-transition-duration) ease-in-out;
-  }
 }
-
-/* Shiki Start*/
-html.dark .shiki,
-html.dark .shiki span {
-  color: var(--shiki-dark) !important;
-  background-color: var(--shiki-dark-bg) !important;
-}
-
-/* 移除 Shiki 代码块的默认间距 */
-.shiki,
-.shiki pre,
-.shiki code {
-  margin: 0 !important;
-}
-
-/* 为代码内容添加内边距（只在最内层的 code 标签） */
-.shiki pre code {
-  padding: 1rem;
-}
-
-.shiki {
-  counter-reset: step;
-  counter-increment: step 0;
-  .line {
-    &::before {
-      counter-increment: step;
-      @apply mr-6 inline-block w-4 border-transparent text-right text-muted-foreground content-[counter(step)];
-    }
-  }
-}
-
-/* Shiki End */
 
 /* ZZZ Style Custom Scrollbar */
 ::-webkit-scrollbar {
@@ -296,21 +246,6 @@ html.dark .shiki span {
   );
 }
 
-/* ZZZ Style Tiptap Editor Styles */
-.ProseMirror {
-  outline: none;
-  min-height: 300px;
-}
-
-.ProseMirror p.is-editor-empty:first-child::before {
-  content: attr(data-placeholder);
-  float: left;
-  color: #333;
-  pointer-events: none;
-  height: 0;
-  font-family: "Roboto Mono", monospace;
-}
-
 @keyframes scan {
   0% {
     top: 0%;
@@ -326,4 +261,24 @@ html.dark .shiki span {
     top: 100%;
     opacity: 0;
   }
+}
+
+/* ZZZ Style Tiptap Editor Styles */
+.ProseMirror {
+  outline: none !important;
+  min-height: 300px;
+}
+
+.ProseMirror-focused {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #333;
+  pointer-events: none;
+  height: 0;
+  font-family: "Roboto Mono", monospace;
 }
