@@ -1,4 +1,5 @@
 import { ContentRenderer } from "@/components/content-renderer";
+import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TechButton from "@/components/ui/tech-button";
 import { getPostBySlugFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
@@ -23,6 +24,7 @@ export const Route = createFileRoute("/post/$slug")({
   loader: async ({ context, params }) => {
     await context.queryClient.ensureQueryData(postQuery(params.slug));
   },
+  pendingComponent: ArticleSkeleton,
 });
 
 function RouteComponent() {
@@ -49,7 +51,7 @@ function RouteComponent() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-auto animate-in slide-in-from-right-8 duration-500 pb-20">
+    <div className="w-full max-w-5xl mx-auto pb-20">
       <div className="mb-8 flex justify-between items-end">
         <TechButton
           onClick={() => {
