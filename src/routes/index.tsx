@@ -34,7 +34,7 @@ function App() {
           </div>
 
           <h1 className="text-6xl md:text-8xl lg:text-9xl font-black font-sans italic uppercase leading-[0.85] tracking-tighter mb-6">
-            <span className="block text-stroke-white text-transparent hover:text-white transition-colors duration-500">
+            <span className="block text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter hover:text-white transition-colors duration-500">
               New Eridu
             </span>
             <span
