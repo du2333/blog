@@ -116,7 +116,9 @@ export function FeaturedTransmission({
           {sidePosts.map((post, index) => (
             <div
               key={post.id}
-              onClick={() => navigate({ to: `/post/$slug`, params: { slug: post.slug } })}
+              onClick={() =>
+                navigate({ to: `/post/$slug`, params: { slug: post.slug } })
+              }
               className="group flex-1 bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
             >
               <div className="flex justify-between items-start mb-2">
@@ -146,13 +148,6 @@ export function FeaturedTransmission({
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-zzz-cyan transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom duration-300"></div>
             </div>
           ))}
-
-          {/* "More" Hint */}
-          <div className="mt-auto text-center border-t border-dashed border-zzz-gray pt-2">
-            <span className="font-mono text-[10px] text-gray-600">
-              SCROLL FOR ARCHIVE ACCESS
-            </span>
-          </div>
         </div>
       </div>
     </div>
