@@ -88,7 +88,6 @@ export const MOCK_POSTS: BlogPost[] = [
 
       架构正在转变。准备好了吗，代理人？
     `,
-    image: "https://picsum.photos/800/400?random=2",
   },
   {
     id: "3",
@@ -109,7 +108,6 @@ export const MOCK_POSTS: BlogPost[] = [
 
       > "没有功能，风格毫无意义。"
     `,
-    image: "https://picsum.photos/800/400?random=3",
   },
   {
     id: "4",
@@ -128,7 +126,6 @@ export const MOCK_POSTS: BlogPost[] = [
       npm install --save-dev heap-profiler
       \`\`\`
     `,
-    image: "https://picsum.photos/800/400?random=4",
   },
   {
     id: "5",

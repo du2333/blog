@@ -6,5 +6,4 @@ export interface BlogPost {
   date: string;
   category: "DEV" | "LIFE" | "GAMING" | "TECH";
   readTime: string;
-  image?: string;
 }
