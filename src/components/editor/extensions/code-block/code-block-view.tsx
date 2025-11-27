@@ -22,7 +22,7 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 
   return (
     <NodeViewWrapper className="my-8 relative group">
-      <div className="border-2 border-zzz-gray bg-zzz-black overflow-hidden rounded-sm">
+      <div className="border-2 border-zzz-gray bg-zzz-black overflow-hidden">
         {/* Header Bar */}
         <div className="flex items-center justify-between px-4 py-2 bg-zzz-dark border-b border-zzz-gray select-none">
           <div className="flex items-center gap-2">
