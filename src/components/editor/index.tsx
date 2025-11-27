@@ -4,7 +4,7 @@ import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
 import type { EditorProps } from "@/components/editor/types";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
-import CodeBlockShiki from "tiptap-extension-code-block-shiki";
+import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
 import { HeadingExtension } from "@/components/editor/extensions/typography/heading";
 import { BlockQuoteExtension } from "./extensions/typography/block-quote";
 import {
@@ -78,12 +78,8 @@ export const extensions = [
     levels: [1, 2, 3, 4],
   }),
   BlockQuoteExtension,
-  CodeBlockShiki.configure({
+  CodeBlockExtension.configure({
     defaultTheme: "andromeeda",
-    HTMLAttributes: {
-      class: "p-4",
-      spellCheck: false,
-    },
   }),
   // ImageExtension,
   // FileHandler.configure({
