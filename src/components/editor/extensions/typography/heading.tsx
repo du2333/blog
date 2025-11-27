@@ -25,7 +25,6 @@ export const HeadingExtension = Heading.extend({
           "span",
           {
             class: "text-zzz-lime text-xl mr-2 select-none",
-            contenteditable: "false",
           },
           "##",
         ],

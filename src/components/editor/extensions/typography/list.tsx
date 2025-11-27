@@ -45,7 +45,6 @@ export const ListItemExtension = ListItem.extend({
         {
           // 高度设为 1.625em (leading-relaxed) 以确保与第一行文字垂直居中对齐
           class: "shrink-0 select-none flex items-center h-[1.625em]",
-          contenteditable: "false",
         },
 
         // A. 钻石图标 (仅在无序列表显示)

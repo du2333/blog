@@ -15,7 +15,6 @@ export const BlockQuoteExtension = Blockquote.extend({
         {
           class:
             "absolute -left-[11px] -top-2 w-6 h-6 bg-zzz-black border-2 border-zzz-lime rounded-full flex items-center justify-center",
-          contenteditable: "false",
         },
         [
           "span",

@@ -1,5 +1,6 @@
 import type { Post } from "@/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
+import { formatDate } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, ArrowUpRight, Clock, Database } from "lucide-react";
 
@@ -138,11 +139,7 @@ export function FeaturedTransmission({
                 </p>
                 <div className="flex justify-between items-center pt-3 border-t border-zzz-gray/20 mt-auto">
                   <span className="text-[10px] font-mono text-gray-600">
-                    {post.updatedAt.toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                    })}
+                    {formatDate(post.updatedAt)}
                   </span>
                   <ArrowUpRight
                     size={14}

@@ -2,6 +2,7 @@ import { ContentRenderer } from "@/components/content-renderer";
 import TechButton from "@/components/ui/tech-button";
 import { getPostBySlugFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
+import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Clock, RefreshCw, Share2 } from "lucide-react";
@@ -95,11 +96,7 @@ function RouteComponent() {
                 <Calendar size={14} />
               </div>
               <span className="tracking-widest text-white">
-                {post.publishedAt?.toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formatDate(post.publishedAt)}
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -116,11 +113,7 @@ function RouteComponent() {
               </div>
               <span className="tracking-widest text-white">
                 UPDATED:{" "}
-                {post.updatedAt?.toLocaleDateString(undefined, {
-                  year: "numeric",
-                  month: "long",
-                  day: "numeric",
-                })}
+                {formatDate(post.updatedAt)}
               </span>
             </div>
           </div>

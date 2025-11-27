@@ -23,6 +23,7 @@ export const extensions = [
   StarterKit.configure({
     orderedList: false,
     bulletList: false,
+    listItem: false,
     heading: false,
     codeBlock: false,
     blockquote: false,
@@ -30,7 +31,7 @@ export const extensions = [
       HTMLAttributes: {
         class:
           "bg-zzz-gray text-zzz-lime px-1.5 py-0.5 rounded-sm font-mono text-sm border border-zzz-gray/50",
-        spellcheck: false,
+        spellCheck: false,
       },
     },
     underline: {
@@ -77,11 +78,11 @@ export const extensions = [
     levels: [1, 2, 3, 4],
   }),
   BlockQuoteExtension,
-  ListItemExtension,
   CodeBlockShiki.configure({
     defaultTheme: "andromeeda",
     HTMLAttributes: {
       class: "p-4",
+      spellCheck: false,
     },
   }),
   // ImageExtension,
