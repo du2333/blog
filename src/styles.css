@@ -1,5 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto+Mono:wght@400;500&family=Inter:wght@400;600;800&display=swap");
 @import "tailwindcss";
-
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
@@ -143,9 +144,9 @@ code {
   --color-zzz-white: #f0f0f0;
 
   /* ZZZ Style Font Families */
-  --font-sans: "Rajdhani", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Roboto Mono", ui-monospace, monospace;
-  --font-body: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Rajdhani", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Roboto Mono", "Noto Sans SC", ui-monospace, monospace;
+  --font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
   /* ZZZ Style Background Patterns */
   --background-image-dot-pattern: radial-gradient(#333 1px, transparent 1px);

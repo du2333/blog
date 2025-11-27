@@ -15,13 +15,12 @@ function App() {
       {/* Hero / Intro */}
       <section className="text-center py-10 relative">
         <h2 className="text-5xl md:text-8xl font-black font-sans italic uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter">
-          New Eridu
+          新艾利都
           <br />
-          <span className="text-stroke-lime text-zzz-lime">Chronicles</span>
+          <span className="text-stroke-lime text-zzz-lime">档案</span>
         </h2>
         <p className="max-w-xl mx-auto text-gray-400 font-mono">
-          Documenting the anomalies of the digital realm. Avoid corruption. Stay
-          connected.
+          记录数字领域的异常。避免侵蚀。保持连接。
         </p>
 
         {/* Decorative elements */}
