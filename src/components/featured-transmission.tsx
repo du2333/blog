@@ -30,7 +30,7 @@ export function FeaturedTransmission({
         {/* --- HERO SECTION (Left / Top) --- */}
         <div
           onClick={() =>
-            navigate({ to: `/post/$slug`, params: { slug: heroPost!.slug } })
+            navigate({ to: `/post/$slug`, params: { slug: heroPost.slug } })
           }
           className="lg:col-span-8 group relative bg-zzz-dark border-2 border-zzz-gray hover:border-zzz-lime cursor-pointer transition-all duration-500 overflow-hidden min-h-[500px] flex flex-col"
         >
@@ -61,10 +61,10 @@ export function FeaturedTransmission({
                 </div>
                 <div
                   className={`text-[10px] font-mono border ${
-                    CATEGORY_COLORS[heroPost!.category]
+                    CATEGORY_COLORS[heroPost.category]
                   } px-2 py-1 uppercase bg-black`}
                 >
-                  {heroPost!.category}
+                  {heroPost.category}
                 </div>
               </div>
               <div className="text-6xl md:text-8xl font-black text-white/5 font-sans leading-none select-none">
@@ -75,10 +75,10 @@ export function FeaturedTransmission({
             {/* Main Title Area */}
             <div className="mt-8 md:mt-0">
               <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-[0.9] mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl">
-                {heroPost!.title}
+                {heroPost.title}
               </h3>
               <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8">
-                {heroPost!.summary}
+                {heroPost.summary}
               </p>
             </div>
 
@@ -87,11 +87,11 @@ export function FeaturedTransmission({
               <div className="flex items-center gap-6 font-mono text-xs text-zzz-gray group-hover:text-white transition-colors">
                 <span className="flex items-center gap-2">
                   <Clock size={14} className="text-zzz-lime" />{" "}
-                  {heroPost!.readTimeInMinutes} MINS
+                  {heroPost.readTimeInMinutes} MINS
                 </span>
                 <span>//</span>
                 <ClientOnly fallback={<span>-</span>}>
-                  <span>{formatDate(heroPost!.updatedAt)}</span>
+                  <span>{formatDate(heroPost.updatedAt)}</span>
                 </ClientOnly>
               </div>
               <div className="flex items-center gap-2 text-zzz-lime font-bold font-sans uppercase tracking-wider text-sm group-hover:translate-x-2 transition-transform">

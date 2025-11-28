@@ -1,6 +1,7 @@
 import { getDb } from "@/db";
 import { PostsTable } from "@/db/schema";
 import { desc, eq } from "drizzle-orm";
+import { uniqueOrThrow } from "@/db/queries/helper";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
@@ -31,20 +32,20 @@ export async function getPosts(options: { offset: number; limit: number }) {
 
 export async function getPostById(id: number) {
   const db = getDb();
-  const [post] = await db
+  const results = await db
     .select()
     .from(PostsTable)
     .where(eq(PostsTable.id, id));
-  return post;
+  return uniqueOrThrow(results);
 }
 
 export async function getPostBySlug(slug: string) {
   const db = getDb();
-  const [post] = await db
+  const results = await db
     .select()
     .from(PostsTable)
     .where(eq(PostsTable.slug, slug));
-  return post;
+  return uniqueOrThrow(results);
 }
 
 export async function updatePost(
