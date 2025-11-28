@@ -1,3 +1,4 @@
+import { slugify } from "@/lib/editor-utils";
 import Heading from "@tiptap/extension-heading";
 import { mergeAttributes } from "@tiptap/react";
 
@@ -5,7 +6,7 @@ export const HeadingExtension = Heading.extend({
   renderHTML({ HTMLAttributes, node }) {
     const level = node.attrs.level as 1 | 2 | 3 | 4;
     const textContent = node.textContent;
-    const id = textContent.toLowerCase().replace(/\s+/g, "-");
+    const id = slugify(textContent);
 
     const styles: Record<number, string> = {
       1: "text-4xl md:text-5xl font-black text-white uppercase mb-8 mt-12 font-sans tracking-tight border-l-8 border-zzz-lime pl-4",

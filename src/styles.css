@@ -203,6 +203,14 @@ code {
     background-color: #050505;
     overflow-x: hidden;
   }
+
+  /* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
+  h1,
+  h2,
+  h3,
+  h4 {
+    scroll-margin-top: 8rem;
+  }
 }
 
 /* ZZZ Style Custom Scrollbar */

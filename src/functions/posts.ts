@@ -5,6 +5,7 @@ import {
   insertPost,
   updatePost,
 } from "@/db/queries/posts";
+import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
 import type { JSONContent } from "@tiptap/react";
 import { z } from "zod";
@@ -42,7 +43,11 @@ export const getPostsFn = createServerFn()
 export const getPostBySlugFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data }) => {
-    return await getPostBySlug(data.slug);
+    const post = await getPostBySlug(data.slug);
+    return {
+      ...post,
+      toc: generateTableOfContents(post.contentJson),
+    };
   });
 
 export const getPostByIdFn = createServerFn()

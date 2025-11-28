@@ -1,8 +1,8 @@
-import { clsx, type ClassValue } from 'clsx'
-import { twMerge } from 'tailwind-merge'
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export function formatDate(date: Date | undefined | null) {
@@ -13,4 +13,4 @@ export function formatDate(date: Date | undefined | null) {
   const day = date.getDate();
 
   return `${year}-${month}-${day}`;
- }
+}
