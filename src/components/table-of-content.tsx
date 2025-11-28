@@ -1,4 +1,4 @@
-import { useIntersectionTOC } from "@/hooks/use-intersection-toc";
+import { useActiveTOC } from "@/hooks/use-active-toc";
 import type { TableOfContentsItem } from "@/lib/toc";
 import { useNavigate } from "@tanstack/react-router";
 import { AlignLeft } from "lucide-react";
@@ -9,7 +9,7 @@ export default function TableOfContents({
 }: {
   headers: TableOfContentsItem[];
 }) {
-  const activeId = useIntersectionTOC(headers);
+  const activeId = useActiveTOC(headers);
   const [indicatorTop, setIndicatorTop] = useState<number>(0);
   const navRef = useRef<HTMLElement>(null);
   const navigate = useNavigate();
