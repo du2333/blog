@@ -1,5 +1,6 @@
 import { FeaturedTransmission } from "@/components/featured-transmission";
 import TechButton from "@/components/ui/tech-button";
+import { HERO_ASSETS } from "@/config/assets";
 import { getPostsFn } from "@/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(postsQuery);
   },
+  head: () => ({
+    links: [...HERO_ASSETS],
+  }),
 });
 
 function App() {

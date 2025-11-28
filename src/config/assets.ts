@@ -3,7 +3,7 @@
  * 包括：Google Fonts、视频、图片等
  */
 
-export const ASSET_LINKS = [
+export const PRELOAD_LINKS = [
   // 1. Preconnect to Google Fonts (建立连接，不阻塞)
   {
     rel: "preconnect",
@@ -14,21 +14,15 @@ export const ASSET_LINKS = [
     href: "https://fonts.gstatic.com",
     crossOrigin: "anonymous" as const,
   },
+];
 
-  // 2. Preload hero video poster (首页立即显示)
+export const HERO_ASSETS = [
+  // Preload hero video poster (首页立即显示)
   {
     rel: "preload",
     href: "/assets/hollow.webp",
     as: "image" as const,
     type: "image/webp",
-  },
-
-  // 3. Preload hero video (首页背景视频)
-  {
-    rel: "preload",
-    href: "/assets/hollow.webm",
-    as: "video" as const,
-    type: "video/webm",
   },
 ];
 

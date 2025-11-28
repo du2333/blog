@@ -1,4 +1,8 @@
+import { Footer } from "@/components/footer";
+import { Header } from "@/components/header";
 import { Toaster } from "@/components/ui/sonner";
+import { FONT_URLS, PRELOAD_LINKS } from "@/config/assets";
+import { useAsyncFonts } from "@/hooks/use-async-fonts";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -9,10 +13,6 @@ import {
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import TanStackQueryDevtools from "../integrations/tanstack-query/devtools";
 import appCss from "../styles.css?url";
-import { Header } from "@/components/header";
-import { Footer } from "@/components/footer";
-import { ASSET_LINKS, FONT_URLS } from "@/config/assets";
-import { useAsyncFonts } from "@/hooks/use-async-fonts";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -33,7 +33,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
-      ...ASSET_LINKS,
+      ...PRELOAD_LINKS,
       {
         rel: "stylesheet",
         href: appCss,
