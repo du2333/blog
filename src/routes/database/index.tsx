@@ -12,22 +12,23 @@ const searchSchema = z.object({
   category: z.custom<PostCategory>().optional(),
 });
 
-const postsQueryOptions = (page: number) =>
+const postsQueryOptions = (page: number, category?: PostCategory) =>
   queryOptions({
-    queryKey: ["posts", page],
+    queryKey: ["posts", page, category],
     queryFn: () =>
       getPostsFn({
         data: {
           offset: (page - 1) * ITEMS_PER_PAGE,
           limit: ITEMS_PER_PAGE,
           status: "published",
+          category: category,
         },
       }),
   });
 
 const postsCountQueryOptions = (category?: PostCategory) =>
   queryOptions({
-    queryKey: ["postsCount"],
+    queryKey: ["postsCount", category],
     queryFn: () =>
       getPostsCountFn({ data: { category: category, status: "published" } }),
   });
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/database/")({
   loaderDeps: ({ search: { page, category } }) => ({ page, category }),
   loader: async ({ context, deps: { page, category } }) => {
     await Promise.all([
-      context.queryClient.ensureQueryData(postsQueryOptions(page)),
+      context.queryClient.ensureQueryData(postsQueryOptions(page, category)),
       context.queryClient.ensureQueryData(postsCountQueryOptions(category)),
     ]);
   },
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/database/")({
 function RouteComponent() {
   const { page: currentPage, category } = Route.useSearch();
   const { data: paginatedPosts } = useSuspenseQuery(
-    postsQueryOptions(currentPage)
+    postsQueryOptions(currentPage, category)
   );
   const { data: postsCount } = useSuspenseQuery(
     postsCountQueryOptions(category)
@@ -55,8 +56,10 @@ function RouteComponent() {
   const navigate = useNavigate();
   const totalPages = Math.ceil(postsCount / ITEMS_PER_PAGE);
 
+  const CATEGORIES = ["ALL", ...POST_CATEGORIES] as const;
+
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500 max-w-6xl mx-auto">
+    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 fill-mode-forwards duration-500 max-w-6xl mx-auto">
       {/* Header */}
       <div className="border-b border-zzz-gray pb-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
         <div>
@@ -71,14 +74,30 @@ function RouteComponent() {
         </div>
 
         <div className="flex gap-2">
-          {["ALL", ...POST_CATEGORIES].map((cat) => (
-            <button
-              key={cat}
-              className="text-xs font-bold font-sans bg-black border border-zzz-gray hover:border-zzz-lime px-3 py-1 text-gray-400 hover:text-white transition-colors uppercase cursor-pointer"
-            >
-              {cat}
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isActive = cat === "ALL" ? !category : category === cat;
+            return (
+              <button
+                key={cat}
+                className={`text-xs font-bold font-sans bg-black border px-3 py-1 transition-colors uppercase cursor-pointer ${
+                  isActive
+                    ? "border-zzz-lime text-zzz-lime"
+                    : "border-zzz-gray text-gray-400 hover:border-zzz-lime hover:text-white"
+                }`}
+                onClick={() =>
+                  navigate({
+                    to: "/database",
+                    search: {
+                      page: 1,
+                      category: cat === "ALL" ? undefined : cat,
+                    },
+                  })
+                }
+              >
+                {cat}
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -94,6 +113,7 @@ function RouteComponent() {
             to: "/database",
             search: {
               page,
+              category,
             },
           })
         }
