@@ -62,7 +62,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             <div className="w-full h-1 bg-white/5 absolute top-0 animate-[scan_8s_linear_infinite]"></div>
           </div>
           <Header />
-          <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
+          <main className="flex-1 container mx-auto px-4 py-8 md:py-12 min-h-[calc(100vh-10rem)]">
             {children}
           </main>
           <Footer />
