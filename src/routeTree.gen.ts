@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DbRouteImport } from './routes/db'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DatabaseIndexRouteImport } from './routes/database/index'
 import { Route as PostSlugRouteImport } from './routes/post/$slug'
 import { Route as ImagesSplatRouteImport } from './routes/images/$'
 import { Route as PostsIdRouteRouteImport } from './routes/posts/$id/route'
@@ -25,6 +26,11 @@ const DbRoute = DbRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DatabaseIndexRoute = DatabaseIndexRouteImport.update({
+  id: '/database/',
+  path: '/database/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PostSlugRoute = PostSlugRouteImport.update({
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/post/$slug': typeof PostSlugRoute
+  '/database': typeof DatabaseIndexRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/posts/$id/': typeof PostsIdIndexRoute
 }
@@ -67,6 +74,7 @@ export interface FileRoutesByTo {
   '/db': typeof DbRoute
   '/images/$': typeof ImagesSplatRoute
   '/post/$slug': typeof PostSlugRoute
+  '/database': typeof DatabaseIndexRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/posts/$id': typeof PostsIdIndexRoute
 }
@@ -77,6 +85,7 @@ export interface FileRoutesById {
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/post/$slug': typeof PostSlugRoute
+  '/database/': typeof DatabaseIndexRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/posts/$id/': typeof PostsIdIndexRoute
 }
@@ -88,6 +97,7 @@ export interface FileRouteTypes {
     | '/posts/$id'
     | '/images/$'
     | '/post/$slug'
+    | '/database'
     | '/posts/$id/edit'
     | '/posts/$id/'
   fileRoutesByTo: FileRoutesByTo
@@ -96,6 +106,7 @@ export interface FileRouteTypes {
     | '/db'
     | '/images/$'
     | '/post/$slug'
+    | '/database'
     | '/posts/$id/edit'
     | '/posts/$id'
   id:
@@ -105,6 +116,7 @@ export interface FileRouteTypes {
     | '/posts/$id'
     | '/images/$'
     | '/post/$slug'
+    | '/database/'
     | '/posts/$id/edit'
     | '/posts/$id/'
   fileRoutesById: FileRoutesById
@@ -115,6 +127,7 @@ export interface RootRouteChildren {
   PostsIdRouteRoute: typeof PostsIdRouteRouteWithChildren
   ImagesSplatRoute: typeof ImagesSplatRoute
   PostSlugRoute: typeof PostSlugRoute
+  DatabaseIndexRoute: typeof DatabaseIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,6 +144,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/database/': {
+      id: '/database/'
+      path: '/database'
+      fullPath: '/database'
+      preLoaderRoute: typeof DatabaseIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/post/$slug': {
@@ -191,6 +211,7 @@ const rootRouteChildren: RootRouteChildren = {
   PostsIdRouteRoute: PostsIdRouteRouteWithChildren,
   ImagesSplatRoute: ImagesSplatRoute,
   PostSlugRoute: PostSlugRoute,
+  DatabaseIndexRoute: DatabaseIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

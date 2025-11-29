@@ -4,8 +4,8 @@ import { Disc, LayoutGrid, X, Zap } from "lucide-react";
 import { useState } from "react";
 
 const navOptions = [
-  { label: "Archive", to: "/", id: "archive", color: "zzz-lime" },
-  { label: "Database", to: "/db", id: "database", color: "zzz-lime" },
+  { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
+  { label: "Database", to: "/database", id: "database", color: "zzz-lime" },
 ];
 
 export function Header() {

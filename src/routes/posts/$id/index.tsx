@@ -1,4 +1,4 @@
-import { getPostByIdFn } from "@/functions/posts";
+import { findPostByIdFn } from "@/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { Suspense } from "react";
@@ -7,7 +7,7 @@ import { ContentRenderer } from "@/components/content-renderer";
 function postQuery(id: number) {
   return queryOptions({
     queryKey: [id],
-    queryFn: () => getPostByIdFn({ data: { id } }),
+    queryFn: () => findPostByIdFn({ data: { id } }),
   });
 }
 

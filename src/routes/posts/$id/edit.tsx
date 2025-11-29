@@ -1,5 +1,5 @@
 import { Editor } from "@/components/editor";
-import { getPostByIdFn, updatePostFn } from "@/functions/posts";
+import { findPostByIdFn, updatePostFn } from "@/functions/posts";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 
@@ -12,7 +12,7 @@ function RouteComponent() {
   const id = Route.useParams().id;
   const { data: post } = useQuery({
     queryKey: [id],
-    queryFn: () => getPostByIdFn({ data: { id } }),
+    queryFn: () => findPostByIdFn({ data: { id } }),
   });
   const updatePostMutation = useMutation({
     mutationFn: updatePostFn,
