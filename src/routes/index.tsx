@@ -27,7 +27,7 @@ function App() {
 
   return (
     <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
-      <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1600px] mx-auto">
+      <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards w-full max-w-[1600px] mx-auto">
         {/* Hero Section - Split Layout */}
         <section className="text-center py-10 relative">
           <h2 className="text-5xl md:text-8xl font-black font-sans italic uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter">

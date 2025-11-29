@@ -50,7 +50,7 @@ function RouteComponent() {
   return (
     <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-8">
       {/* Top Control Bar */}
-      <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
+      <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500 fill-mode-forwards">
         <TechButton
           onClick={() => router.history.back()}
           variant="secondary"
