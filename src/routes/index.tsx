@@ -63,7 +63,7 @@ function App() {
         <div className="flex justify-center mt-12">
           <TechButton
             variant="secondary"
-            onClick={() => router.navigate({ to: "/db" })}
+            onClick={() => router.navigate({ to: "/database" })}
             icon={<ArrowRight size={16} />}
           >
             ACCESS FULL DATABASE
