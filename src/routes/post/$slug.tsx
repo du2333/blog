@@ -6,11 +6,7 @@ import { findPostBySlugFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import {
-  ClientOnly,
-  createFileRoute,
-  useNavigate,
-} from "@tanstack/react-router";
+import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Clock, RefreshCw, Share2 } from "lucide-react";
 
 function postQuery(slug: string) {
@@ -30,7 +26,7 @@ export const Route = createFileRoute("/post/$slug")({
 
 function RouteComponent() {
   const { data: post } = useSuspenseQuery(postQuery(Route.useParams().slug));
-  const navigate = useNavigate();
+  const router = useRouter();
 
   if (!post) {
     return (
@@ -42,7 +38,7 @@ function RouteComponent() {
           Data corruption detected. Log entry not found.
         </p>
         <button
-          onClick={() => navigate({ to: "/database" })}
+          onClick={() => router.history.back()}
           className="text-zzz-lime underline font-bold font-mono"
         >
           RETURN TO DATABASE
@@ -56,11 +52,11 @@ function RouteComponent() {
       {/* Top Control Bar */}
       <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
         <TechButton
-          onClick={() => navigate({ to: "/database" })}
+          onClick={() => router.history.back()}
           variant="secondary"
           icon={<ArrowLeft size={16} />}
         >
-          RETURN TO DATABASE
+          RETURN
         </TechButton>
         <div className="hidden md:flex flex-col items-end font-mono text-xs text-zzz-gray">
           <span>
