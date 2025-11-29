@@ -74,5 +74,9 @@ export async function updatePost(
   data: Partial<typeof PostsTable.$inferInsert>
 ) {
   const db = getDb();
-  await db.update(PostsTable).set(data).where(eq(PostsTable.id, id));
+  // Remove undefined values from the data object
+  const cleanData = Object.fromEntries(
+    Object.entries(data).filter(([_, v]) => v !== undefined)
+  );
+  await db.update(PostsTable).set(cleanData).where(eq(PostsTable.id, id));
 }
