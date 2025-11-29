@@ -1,7 +1,7 @@
 import { getDb } from "@/db";
+import { buildPostWhereClause, uniqueOrThrow } from "@/db/queries/helper";
 import { PostCategory, PostStatus, PostsTable } from "@/db/schema";
-import { and, count, desc, eq } from "drizzle-orm";
-import { uniqueOrThrow } from "@/db/queries/helper";
+import { count, desc, eq } from "drizzle-orm";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
@@ -14,16 +14,7 @@ export async function getPosts(options: {
   category?: PostCategory;
   status?: PostStatus;
 }) {
-  const whereClauses = [];
-  if (options.category) {
-    whereClauses.push(eq(PostsTable.category, options.category));
-  }
-  if (options.status) {
-    whereClauses.push(eq(PostsTable.status, options.status));
-  }
-
-  const whereClause =
-    whereClauses.length > 0 ? and(...whereClauses) : undefined;
+  const whereClause = buildPostWhereClause(options);
 
   const db = getDb();
   const posts = await db
@@ -40,7 +31,7 @@ export async function getPosts(options: {
       updatedAt: PostsTable.updatedAt,
     })
     .from(PostsTable)
-    .limit(options.limit)
+    .limit(Math.min(options.limit, 50))
     .offset(options.offset)
     .orderBy(desc(PostsTable.publishedAt))
     .where(whereClause);
@@ -51,16 +42,7 @@ export async function getPostsCount(options: {
   category?: PostCategory;
   status?: PostStatus;
 }) {
-  const whereClauses = [];
-  if (options.category) {
-    whereClauses.push(eq(PostsTable.category, options.category));
-  }
-  if (options.status) {
-    whereClauses.push(eq(PostsTable.status, options.status));
-  }
-  const whereClause =
-    whereClauses.length > 0 ? and(...whereClauses) : undefined;
-
+  const whereClause = buildPostWhereClause(options);
   const db = getDb();
   const totalNumberofPosts = await db
     .select({ count: count() })
