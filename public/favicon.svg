@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <!-- Background with clip-corner-bl effect -->
+  <polygon points="0,0 32,0 32,32 6,32 0,26" fill="#ccff00"/>
+  
+  <!-- Zap icon (from Lucide, scaled and centered) -->
+  <path 
+    d="M17.5 6L9 18h6l-1 8 8.5-12h-6l1-8z" 
+    fill="#000000" 
+    stroke="#000000" 
+    stroke-width="1.5" 
+    stroke-linecap="round" 
+    stroke-linejoin="round"
+  />
+</svg>
+

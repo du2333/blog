@@ -33,6 +33,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
     links: [
+      {
+        rel: "icon",
+        type: "image/svg+xml",
+        href: "/favicon.svg",
+      },
       ...PRELOAD_LINKS,
       {
         rel: "stylesheet",
