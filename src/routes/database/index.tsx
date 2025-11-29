@@ -1,11 +1,12 @@
 import { Pagination } from "@/components/pagination";
 import { PostList } from "@/components/post-list";
+import { DatabaseSkeleton } from "@/components/skeletons/database-skeleton";
+import { POST_CATEGORIES, PostCategory } from "@/db/schema";
 import { getPostsCountFn, getPostsFn } from "@/functions/posts";
 import { ITEMS_PER_PAGE } from "@/lib/constants";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
-import { POST_CATEGORIES, PostCategory } from "@/db/schema";
 
 const searchSchema = z.object({
   page: z.number().int().positive().optional().default(1).catch(1),
@@ -35,6 +36,7 @@ const postsCountQueryOptions = (category?: PostCategory) =>
 
 export const Route = createFileRoute("/database/")({
   component: RouteComponent,
+  pendingComponent: DatabaseSkeleton,
   validateSearch: searchSchema,
   loaderDeps: ({ search: { page, category } }) => ({ page, category }),
   loader: async ({ context, deps: { page, category } }) => {
