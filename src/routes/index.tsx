@@ -1,12 +1,11 @@
 import { FeaturedTransmission } from "@/components/featured-transmission";
+import { LoadingFallback } from "@/components/loading-fallback";
 import TechButton from "@/components/ui/tech-button";
 import { HERO_ASSETS } from "@/config/assets";
 import { getPostsFn } from "@/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Disc } from "lucide-react";
-import { FeaturedTransmissionSkeleton } from "@/components/skeletons/featured-transmissions-skeleton";
-import { Suspense } from "react";
 
 const postsQuery = queryOptions({
   queryKey: ["posts"],
@@ -16,22 +15,17 @@ const postsQuery = queryOptions({
 export const Route = createFileRoute("/")({
   component: App,
   loader: async ({ context }) => {
-    // 预取数据但不阻塞渲染，让 Suspense 可以显示 fallback
-    context.queryClient.prefetchQuery(postsQuery);
+    await context.queryClient.ensureQueryData(postsQuery);
   },
   head: () => ({
     links: [...HERO_ASSETS],
   }),
+  pendingComponent: LoadingFallback,
 });
-
-// 包装组件：在 Suspense 内部获取数据
-function FeaturedTransmissionWithData() {
-  const { data: posts } = useSuspenseQuery(postsQuery);
-  return <FeaturedTransmission posts={posts} />;
-}
 
 function App() {
   const router = useRouter();
+  const { data: posts } = useSuspenseQuery(postsQuery);
 
   return (
     <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
@@ -53,7 +47,6 @@ function App() {
             <Disc size={120} className="animate-spin-slow" />
           </div>
         </section>
-
         {/* Latest Section Header */}
         <div className="flex items-center gap-4 mb-8">
           <div className="h-4 w-4 bg-zzz-lime transform rotate-45"></div>
@@ -64,12 +57,9 @@ function App() {
           <span className="font-mono text-xs text-zzz-lime">LATEST_4</span>
         </div>
 
-        {/* Bento Grid Section - 数据获取在 Suspense 内部 */}
-        <Suspense fallback={<FeaturedTransmissionSkeleton />}>
-          <FeaturedTransmissionWithData />
-        </Suspense>
+        {/* Bento Grid Section */}
+        <FeaturedTransmission posts={posts} />
 
-        {/* View All Button */}
         <div className="flex justify-center mt-12">
           <TechButton
             variant="secondary"
