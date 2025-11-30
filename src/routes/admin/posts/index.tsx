@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import React, { useState } from "react";
 import { z } from "zod";
+import { ErrorPage } from "@/components/error-page";
 
 const POST_FILTERS = ["ALL", "PUBLISHED", "DRAFT"] as const;
 
@@ -70,7 +71,11 @@ function PostManager() {
     },
   });
 
-  const { data: posts, isPending } = useQuery({
+  const {
+    data: posts,
+    isPending,
+    error,
+  } = useQuery({
     queryKey: ["posts", page, filter],
     queryFn: () =>
       getPostsFn({
@@ -221,7 +226,9 @@ function PostManager() {
       </div>
 
       {/* List */}
-      {isPending ? (
+      {error ? (
+        <ErrorPage error={error} />
+      ) : isPending ? (
         <LoadingFallback />
       ) : (
         <div className="space-y-2 relative z-0">

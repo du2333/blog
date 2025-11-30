@@ -72,7 +72,7 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     return defaultData;
   });
 
-  const [saveStatus, setSaveStatus] = useState<"SYNCED" | "SAVING" | "PENDING">(
+  const [saveStatus, setSaveStatus] = useState<"SYNCED" | "SAVING" | "PENDING" | "ERROR">(
     "SYNCED"
   );
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -80,6 +80,7 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
   const [isGeneratingSlug, setIsGeneratingSlug] = useState(false);
   const [isCalculatingReadTime, setIsCalculatingReadTime] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Update post when initialData changes (for edit mode)
   useEffect(() => {
@@ -128,12 +129,14 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
       isSaving.current = true;
 
       try {
+        setError(null);
         await onSave(post);
         setSaveStatus("SYNCED");
         setLastSaved(new Date());
       } catch (error) {
         console.error("Auto-save failed:", error);
-        setSaveStatus("PENDING");
+        setSaveStatus("ERROR");
+        setError("AUTO_SAVE_FAILED");
       } finally {
         isSaving.current = false;
       }
@@ -151,12 +154,14 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
 
     setSaveStatus("SAVING");
     try {
+      setError(null);
       await onSave(post);
       // Navigate to edit page after creating
       router.navigate({ to: "/admin/posts" });
     } catch (error) {
       console.error("Save failed:", error);
-      setSaveStatus("PENDING");
+      setSaveStatus("ERROR");
+      setError("MANUAL_SAVE_FAILED");
     }
   };
 
@@ -248,7 +253,12 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
         <div className="flex items-center gap-6">
           {/* Sync Indicator */}
           <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase">
-            {saveStatus === "SAVING" ? (
+            {saveStatus === "ERROR" ? (
+              <>
+                <X size={12} className="text-zzz-orange" />
+                <span className="text-zzz-orange">{error}</span>
+              </>
+            ) : saveStatus === "SAVING" ? (
               <>
                 <RefreshCw size={12} className="text-zzz-orange animate-spin" />
                 <span className="text-zzz-orange">TRANSMITTING...</span>

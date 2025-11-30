@@ -6,6 +6,7 @@ import {
 } from "@/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { ErrorPage } from "@/components/error-page";
 
 const postQuery = (slug: string) =>
   queryOptions({
@@ -24,7 +25,15 @@ export const Route = createFileRoute("/admin/posts/edit/$slug")({
 
 function EditPost() {
   const { slug } = Route.useParams();
-  const { data: post } = useSuspenseQuery(postQuery(slug));
+  const { data: post, isPending, error } = useSuspenseQuery(postQuery(slug));
+
+  if (error) {
+    return <ErrorPage error={error} />;
+  }
+
+  if (isPending) {
+    return <LoadingFallback />;
+  }
 
   if (!post) {
     return (
