@@ -10,7 +10,6 @@ import { useRouter } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
 import {
   ArrowLeft,
-  Calendar,
   CheckCircle2,
   Clock,
   FileText,
@@ -25,6 +24,7 @@ import {
   X,
 } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import DatePicker from "./ui/date-picker";
 
 export interface PostEditorData {
   title: string;
@@ -272,7 +272,7 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
 
           <button
             onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            className={`flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase transition-colors border ${
+            className={`flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase transition-colors border cursor-pointer ${
               isSettingsOpen
                 ? "bg-zzz-gray text-white border-white"
                 : "text-gray-400 border-transparent hover:text-white"
@@ -444,31 +444,21 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
           <div className="grid grid-cols-1 gap-4">
             <div className="space-y-2">
               <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-                Date
+                Publish Date
               </label>
-              <div className="relative">
-                <Calendar
-                  className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-                  size={14}
-                />
-                <input
-                  type="date"
-                  value={
-                    post.publishedAt
-                      ? post.publishedAt.toISOString().split("T")[0]
-                      : ""
-                  }
-                  onChange={(e) =>
-                    setPost({
-                      ...post,
-                      publishedAt: e.target.value
-                        ? new Date(e.target.value)
-                        : null,
-                    })
-                  }
-                  className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-3 focus:border-zzz-lime focus:outline-none"
-                />
-              </div>
+              <DatePicker
+                value={
+                  post.publishedAt
+                    ? post.publishedAt.toISOString().split("T")[0]
+                    : ""
+                }
+                onChange={(dateStr) =>
+                  setPost((prev) => ({
+                    ...prev,
+                    publishedAt: dateStr ? new Date(dateStr) : null,
+                  }))
+                }
+              />
             </div>
             <div className="space-y-2">
               <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
