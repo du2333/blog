@@ -27,7 +27,6 @@ export const PostsTable = sqliteTable(
       .default(sql`(unixepoch())`),
   },
   (table) => [
-    index("slug_idx").on(table.slug),
     index("published_at_idx").on(table.publishedAt, table.status),
     index("created_at_idx").on(table.createdAt),
   ]
