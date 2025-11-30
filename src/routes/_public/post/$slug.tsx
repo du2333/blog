@@ -16,7 +16,7 @@ function postQuery(slug: string) {
   });
 }
 
-export const Route = createFileRoute("/post/$slug")({
+export const Route = createFileRoute("/_public/post/$slug")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
     await context.queryClient.ensureQueryData(postQuery(params.slug));

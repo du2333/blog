@@ -12,7 +12,7 @@ const postsQuery = queryOptions({
   queryFn: () => getPostsFn({ data: { offset: 0, limit: 4 } }),
 });
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_public/")({
   component: App,
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(postsQuery);

@@ -10,33 +10,28 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DbRouteImport } from './routes/db'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as DatabaseIndexRouteImport } from './routes/database/index'
-import { Route as PostSlugRouteImport } from './routes/post/$slug'
+import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as ImagesSplatRouteImport } from './routes/images/$'
 import { Route as PostsIdRouteRouteImport } from './routes/posts/$id/route'
 import { Route as PostsIdIndexRouteImport } from './routes/posts/$id/index'
+import { Route as PublicDatabaseIndexRouteImport } from './routes/_public/database/index'
 import { Route as PostsIdEditRouteImport } from './routes/posts/$id/edit'
+import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 
 const DbRoute = DbRouteImport.update({
   id: '/db',
   path: '/db',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const PublicRouteRoute = PublicRouteRouteImport.update({
+  id: '/_public',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DatabaseIndexRoute = DatabaseIndexRouteImport.update({
-  id: '/database/',
-  path: '/database/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PostSlugRoute = PostSlugRouteImport.update({
-  id: '/post/$slug',
-  path: '/post/$slug',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => PublicRouteRoute,
 } as any)
 const ImagesSplatRoute = ImagesSplatRouteImport.update({
   id: '/images/$',
@@ -53,81 +48,91 @@ const PostsIdIndexRoute = PostsIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PostsIdRouteRoute,
 } as any)
+const PublicDatabaseIndexRoute = PublicDatabaseIndexRouteImport.update({
+  id: '/database/',
+  path: '/database/',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
 const PostsIdEditRoute = PostsIdEditRouteImport.update({
   id: '/edit',
   path: '/edit',
   getParentRoute: () => PostsIdRouteRoute,
 } as any)
+const PublicPostSlugRoute = PublicPostSlugRouteImport.update({
+  id: '/post/$slug',
+  path: '/post/$slug',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
   '/db': typeof DbRoute
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
-  '/post/$slug': typeof PostSlugRoute
-  '/database': typeof DatabaseIndexRoute
+  '/': typeof PublicIndexRoute
+  '/post/$slug': typeof PublicPostSlugRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
+  '/database': typeof PublicDatabaseIndexRoute
   '/posts/$id/': typeof PostsIdIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/db': typeof DbRoute
   '/images/$': typeof ImagesSplatRoute
-  '/post/$slug': typeof PostSlugRoute
-  '/database': typeof DatabaseIndexRoute
+  '/': typeof PublicIndexRoute
+  '/post/$slug': typeof PublicPostSlugRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
+  '/database': typeof PublicDatabaseIndexRoute
   '/posts/$id': typeof PostsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
+  '/_public': typeof PublicRouteRouteWithChildren
   '/db': typeof DbRoute
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
-  '/post/$slug': typeof PostSlugRoute
-  '/database/': typeof DatabaseIndexRoute
+  '/_public/': typeof PublicIndexRoute
+  '/_public/post/$slug': typeof PublicPostSlugRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
+  '/_public/database/': typeof PublicDatabaseIndexRoute
   '/posts/$id/': typeof PostsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/'
     | '/db'
     | '/posts/$id'
     | '/images/$'
+    | '/'
     | '/post/$slug'
-    | '/database'
     | '/posts/$id/edit'
+    | '/database'
     | '/posts/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/'
     | '/db'
     | '/images/$'
+    | '/'
     | '/post/$slug'
-    | '/database'
     | '/posts/$id/edit'
+    | '/database'
     | '/posts/$id'
   id:
     | '__root__'
-    | '/'
+    | '/_public'
     | '/db'
     | '/posts/$id'
     | '/images/$'
-    | '/post/$slug'
-    | '/database/'
+    | '/_public/'
+    | '/_public/post/$slug'
     | '/posts/$id/edit'
+    | '/_public/database/'
     | '/posts/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  PublicRouteRoute: typeof PublicRouteRouteWithChildren
   DbRoute: typeof DbRoute
   PostsIdRouteRoute: typeof PostsIdRouteRouteWithChildren
   ImagesSplatRoute: typeof ImagesSplatRoute
-  PostSlugRoute: typeof PostSlugRoute
-  DatabaseIndexRoute: typeof DatabaseIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -139,26 +144,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DbRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
+    '/_public': {
+      id: '/_public'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof PublicRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_public/': {
+      id: '/_public/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/database/': {
-      id: '/database/'
-      path: '/database'
-      fullPath: '/database'
-      preLoaderRoute: typeof DatabaseIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/post/$slug': {
-      id: '/post/$slug'
-      path: '/post/$slug'
-      fullPath: '/post/$slug'
-      preLoaderRoute: typeof PostSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof PublicIndexRouteImport
+      parentRoute: typeof PublicRouteRoute
     }
     '/images/$': {
       id: '/images/$'
@@ -181,6 +179,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdIndexRouteImport
       parentRoute: typeof PostsIdRouteRoute
     }
+    '/_public/database/': {
+      id: '/_public/database/'
+      path: '/database'
+      fullPath: '/database'
+      preLoaderRoute: typeof PublicDatabaseIndexRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
     '/posts/$id/edit': {
       id: '/posts/$id/edit'
       path: '/edit'
@@ -188,8 +193,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdEditRouteImport
       parentRoute: typeof PostsIdRouteRoute
     }
+    '/_public/post/$slug': {
+      id: '/_public/post/$slug'
+      path: '/post/$slug'
+      fullPath: '/post/$slug'
+      preLoaderRoute: typeof PublicPostSlugRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
   }
 }
+
+interface PublicRouteRouteChildren {
+  PublicIndexRoute: typeof PublicIndexRoute
+  PublicPostSlugRoute: typeof PublicPostSlugRoute
+  PublicDatabaseIndexRoute: typeof PublicDatabaseIndexRoute
+}
+
+const PublicRouteRouteChildren: PublicRouteRouteChildren = {
+  PublicIndexRoute: PublicIndexRoute,
+  PublicPostSlugRoute: PublicPostSlugRoute,
+  PublicDatabaseIndexRoute: PublicDatabaseIndexRoute,
+}
+
+const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
+  PublicRouteRouteChildren,
+)
 
 interface PostsIdRouteRouteChildren {
   PostsIdEditRoute: typeof PostsIdEditRoute
@@ -206,12 +234,10 @@ const PostsIdRouteRouteWithChildren = PostsIdRouteRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  PublicRouteRoute: PublicRouteRouteWithChildren,
   DbRoute: DbRoute,
   PostsIdRouteRoute: PostsIdRouteRouteWithChildren,
   ImagesSplatRoute: ImagesSplatRoute,
-  PostSlugRoute: PostSlugRoute,
-  DatabaseIndexRoute: DatabaseIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

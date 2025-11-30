@@ -34,7 +34,7 @@ const postsCountQueryOptions = (category?: PostCategory) =>
       getPostsCountFn({ data: { category: category, status: "published" } }),
   });
 
-export const Route = createFileRoute("/database/")({
+export const Route = createFileRoute("/_public/database/")({
   component: RouteComponent,
   pendingComponent: DatabaseSkeleton,
   validateSearch: searchSchema,
