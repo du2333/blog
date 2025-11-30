@@ -12,7 +12,15 @@ import {
   notFound,
   useRouter,
 } from "@tanstack/react-router";
-import { ArrowLeft, Calendar, Clock, RefreshCw, Share2 } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowUp,
+  Calendar,
+  Clock,
+  RefreshCw,
+  Share2,
+} from "lucide-react";
+import { useState, useEffect } from "react";
 
 function postQuery(slug: string) {
   return queryOptions({
@@ -37,6 +45,19 @@ export const Route = createFileRoute("/_public/post/$slug")({
 function RouteComponent() {
   const { data: post } = useSuspenseQuery(postQuery(Route.useParams().slug));
   const router = useRouter();
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 400) {
+        setShowBackToTop(true);
+      } else {
+        setShowBackToTop(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // post is guaranteed to exist (loader throws notFound if not)
   if (!post) throw notFound();
@@ -151,6 +172,28 @@ function RouteComponent() {
 
         {/* Sticky Table of Contents Sidebar */}
         <TableOfContents headers={post.toc} />
+      </div>
+
+      {/* Back To Top Button */}
+      <div
+        className={`fixed bottom-8 right-8 z-40 transition-all duration-500 ${
+          showBackToTop
+            ? "opacity-100 translate-y-0"
+            : "opacity-0 translate-y-10 pointer-events-none"
+        }`}
+      >
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          className="group relative h-12 w-12 bg-zzz-dark border border-zzz-lime text-zzz-lime flex items-center justify-center hover:bg-zzz-lime hover:text-black transition-all clip-corner-tr shadow-[0_0_20px_rgba(204,255,0,0.2)] overflow-hidden"
+        >
+          <ArrowUp size={20} className="relative z-10" />
+          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+
+          {/* Hover Text Expansion */}
+          <span className="absolute right-14 bg-black text-zzz-lime text-[10px] font-mono font-bold px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 border border-zzz-gray uppercase tracking-widest whitespace-nowrap">
+            Return_Top
+          </span>
+        </button>
       </div>
     </div>
   );
