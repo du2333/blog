@@ -1,7 +1,3 @@
-export function getFileExtension(fileName: string): string | undefined {
-  return fileName.split(".").pop();
-}
-
 export function getContentTypeFromKey(key: string): string | undefined {
   const extension = key.split(".").pop()?.toLowerCase();
   const contentTypes: Record<string, string> = {
@@ -16,15 +12,10 @@ export function getContentTypeFromKey(key: string): string | undefined {
 }
 
 export function generateKey(fileName: string): string {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth() + 1;
-  const day = now.getDate();
-
   const uuid = crypto.randomUUID();
-  const extension = getFileExtension(fileName);
+  const extension = fileName.split(".").pop()?.toLowerCase() || "bin";
 
-  return `${year}/${month}/${day}/${uuid}.${extension}`;
+  return `${uuid}.${extension}`;
 }
 
 /**
