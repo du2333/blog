@@ -63,9 +63,9 @@ function RouteComponent() {
   if (!post) throw notFound();
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-8">
+    <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-8 relative">
       {/* Top Control Bar */}
-      <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500 fill-mode-forwards">
+      <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
         <TechButton
           onClick={() => router.history.back()}
           variant="secondary"
@@ -105,7 +105,7 @@ function RouteComponent() {
               {post.category} // LOG_ENTRY
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-[0.9] mb-8 relative z-10 drop-shadow-xl tracking-tight animate-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-[0.9] mb-8 relative z-10 drop-shadow-xl tracking-tight wrap-break-word animate-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
               {post.title}
             </h1>
 
@@ -195,6 +195,7 @@ function RouteComponent() {
           </span>
         </button>
       </div>
+
     </div>
   );
 }

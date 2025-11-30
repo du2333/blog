@@ -47,7 +47,7 @@ export function PostList({ posts }: { posts: Omit<Post, "contentJson">[] }) {
               </div>
 
               {/* Title */}
-              <h3 className="text-2xl md:text-3xl font-bold font-sans text-white mb-4 leading-none uppercase group-hover:text-zzz-lime transition-colors">
+              <h3 className="text-2xl md:text-3xl font-bold font-sans text-white mb-4 leading-tight uppercase group-hover:text-zzz-lime transition-colors wrap-break-word">
                 {post.title}
               </h3>
 

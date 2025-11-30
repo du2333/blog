@@ -74,7 +74,7 @@ export function FeaturedTransmission({
 
             {/* Main Title Area */}
             <div className="mt-8 md:mt-0">
-              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-[0.9] mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl">
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-[1.1] mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl wrap-break-word line-clamp-3 md:line-clamp-4">
                 {heroPost.title}
               </h3>
               <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8">
@@ -126,7 +126,7 @@ export function FeaturedTransmission({
               onClick={() =>
                 navigate({ to: `/post/$slug`, params: { slug: post.slug } })
               }
-              className="group flex-1 bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
+              className="group bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center clip-corner-bl"
             >
               <div className="flex justify-between items-start mb-2">
                 <div className="font-mono text-[10px] text-gray-500 group-hover:text-zzz-cyan transition-colors">
@@ -141,7 +141,7 @@ export function FeaturedTransmission({
                 </div>
               </div>
 
-              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2">
+              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2 wrap-break-word">
                 {post.title}
               </h4>
 
