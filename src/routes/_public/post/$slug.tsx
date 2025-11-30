@@ -176,7 +176,7 @@ function RouteComponent() {
 
       {/* Back To Top Button */}
       <div
-        className={`fixed bottom-8 right-8 z-40 transition-all duration-500 ${
+        className={`fixed cursor-pointer bottom-8 right-8 z-40 transition-all duration-500 ${
           showBackToTop
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10 pointer-events-none"
@@ -195,7 +195,6 @@ function RouteComponent() {
           </span>
         </button>
       </div>
-
     </div>
   );
 }
