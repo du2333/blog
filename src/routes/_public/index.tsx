@@ -9,7 +9,8 @@ import { ArrowRight, Disc } from "lucide-react";
 
 const postsQuery = queryOptions({
   queryKey: ["posts"],
-  queryFn: () => getPostsFn({ data: { offset: 0, limit: 4 } }),
+  queryFn: () =>
+    getPostsFn({ data: { offset: 0, limit: 4, publicOnly: true } }),
 });
 
 export const Route = createFileRoute("/_public/")({

@@ -1,6 +1,8 @@
 import {
+  deletePost,
   findPostById,
   findPostBySlug,
+  findPostBySlugPublic,
   getPosts,
   getPostsCount,
   insertPost,
@@ -19,13 +21,25 @@ export const createPostFn = createServerFn({
     z.object({
       title: z.string(),
       slug: z.string(),
-      contentJson: z.custom<JSONContent>(),
+      summary: z.string().optional(),
+      category: z.custom<PostCategory>().optional(),
+      contentJson: z.custom<JSONContent>().nullable(),
       status: z.enum(["draft", "published", "archived"]).catch("draft"),
+      readTimeInMinutes: z.number().optional(),
       publishedAt: z.date().nullable(),
     })
   )
   .handler(async ({ data }) => {
-    await insertPost({ ...data });
+    await insertPost({
+      title: data.title,
+      slug: data.slug,
+      summary: data.summary,
+      category: data.category,
+      contentJson: data.contentJson,
+      status: data.status,
+      readTimeInMinutes: data.readTimeInMinutes,
+      publishedAt: data.publishedAt,
+    });
   });
 
 export const getPostsFn = createServerFn()
@@ -35,6 +49,7 @@ export const getPostsFn = createServerFn()
       limit: z.number().optional(),
       category: z.custom<PostCategory>().optional(),
       status: z.custom<PostStatus>().optional(),
+      publicOnly: z.boolean().optional(),
     })
   )
   .handler(async ({ data }) => {
@@ -43,6 +58,7 @@ export const getPostsFn = createServerFn()
       limit: data.limit ?? 10,
       category: data.category,
       status: data.status,
+      publicOnly: data.publicOnly,
     });
   });
 
@@ -51,12 +67,14 @@ export const getPostsCountFn = createServerFn()
     z.object({
       category: z.custom<PostCategory>().optional(),
       status: z.custom<PostStatus>().optional(),
+      publicOnly: z.boolean().optional(),
     })
   )
   .handler(async ({ data }) => {
     return await getPostsCount({
       category: data.category,
       status: data.status,
+      publicOnly: data.publicOnly,
     });
   });
 
@@ -64,6 +82,21 @@ export const findPostBySlugFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data }) => {
     const post = await findPostBySlug(data.slug);
+    if (!post) return null;
+    return {
+      ...post,
+      toc: generateTableOfContents(post.contentJson),
+    };
+  });
+
+/**
+ * Find post by slug for public access
+ * Only returns if published AND publishedAt <= now
+ */
+export const findPostBySlugPublicFn = createServerFn()
+  .inputValidator(z.object({ slug: z.string() }))
+  .handler(async ({ data }) => {
+    const post = await findPostBySlugPublic(data.slug);
     if (!post) return null;
     return {
       ...post,
@@ -85,13 +118,31 @@ export const updatePostFn = createServerFn({
       id: z.number(),
       title: z.string().optional(),
       slug: z.string().optional(),
-      contentJson: z.custom<JSONContent>().optional(),
+      summary: z.string().optional(),
+      category: z.custom<PostCategory>().optional(),
+      contentJson: z.custom<JSONContent>().nullable().optional(),
+      status: z.enum(["draft", "published", "archived"]).optional(),
+      readTimeInMinutes: z.number().optional(),
+      publishedAt: z.date().nullable().optional(),
     })
   )
   .handler(async ({ data }) => {
     await updatePost(data.id, {
       title: data.title,
       slug: data.slug,
+      summary: data.summary,
+      category: data.category,
       contentJson: data.contentJson,
+      status: data.status,
+      readTimeInMinutes: data.readTimeInMinutes,
+      publishedAt: data.publishedAt,
     });
+  });
+
+export const deletePostFn = createServerFn({
+  method: "POST",
+})
+  .inputValidator(z.object({ id: z.number() }))
+  .handler(async ({ data }) => {
+    await deletePost(data.id);
   });

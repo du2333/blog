@@ -2,24 +2,34 @@ import { ContentRenderer } from "@/components/content-renderer";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TableOfContents from "@/components/table-of-content";
 import TechButton from "@/components/ui/tech-button";
-import { findPostBySlugFn } from "@/functions/posts";
+import { findPostBySlugPublicFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { ClientOnly, createFileRoute, useRouter } from "@tanstack/react-router";
+import {
+  ClientOnly,
+  createFileRoute,
+  notFound,
+  useRouter,
+} from "@tanstack/react-router";
 import { ArrowLeft, Calendar, Clock, RefreshCw, Share2 } from "lucide-react";
 
 function postQuery(slug: string) {
   return queryOptions({
-    queryKey: [slug],
-    queryFn: () => findPostBySlugFn({ data: { slug } }),
+    queryKey: ["post", "public", slug],
+    queryFn: () => findPostBySlugPublicFn({ data: { slug } }),
   });
 }
 
 export const Route = createFileRoute("/_public/post/$slug")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
-    await context.queryClient.ensureQueryData(postQuery(params.slug));
+    const post = await context.queryClient.ensureQueryData(
+      postQuery(params.slug)
+    );
+    if (!post) {
+      throw notFound();
+    }
   },
   pendingComponent: ArticleSkeleton,
 });
@@ -28,24 +38,8 @@ function RouteComponent() {
   const { data: post } = useSuspenseQuery(postQuery(Route.useParams().slug));
   const router = useRouter();
 
-  if (!post) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-center space-y-4">
-        <h2 className="text-4xl font-black text-zzz-orange uppercase">
-          Error 404
-        </h2>
-        <p className="font-mono text-gray-400">
-          Data corruption detected. Log entry not found.
-        </p>
-        <button
-          onClick={() => router.history.back()}
-          className="text-zzz-lime underline font-bold font-mono"
-        >
-          RETURN TO DATABASE
-        </button>
-      </div>
-    );
-  }
+  // post is guaranteed to exist (loader throws notFound if not)
+  if (!post) throw notFound();
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-8">

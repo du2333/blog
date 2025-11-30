@@ -15,23 +15,23 @@ const searchSchema = z.object({
 
 const postsQueryOptions = (page: number, category?: PostCategory) =>
   queryOptions({
-    queryKey: ["posts", page, category],
+    queryKey: ["posts", "public", page, category],
     queryFn: () =>
       getPostsFn({
         data: {
           offset: (page - 1) * ITEMS_PER_PAGE,
           limit: ITEMS_PER_PAGE,
-          status: "published",
           category: category,
+          publicOnly: true,
         },
       }),
   });
 
 const postsCountQueryOptions = (category?: PostCategory) =>
   queryOptions({
-    queryKey: ["postsCount", category],
+    queryKey: ["postsCount", "public", category],
     queryFn: () =>
-      getPostsCountFn({ data: { category: category, status: "published" } }),
+      getPostsCountFn({ data: { category: category, publicOnly: true } }),
   });
 
 export const Route = createFileRoute("/_public/database/")({

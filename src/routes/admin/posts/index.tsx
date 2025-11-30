@@ -1,5 +1,6 @@
 import { LoadingFallback } from "@/components/loading-fallback";
 import TechButton from "@/components/ui/tech-button";
+import type { PostStatus } from "@/db/schema";
 import { getPostsCountFn, getPostsFn } from "@/functions/posts";
 import { ADMIN_ITEMS_PER_PAGE, CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
@@ -25,6 +26,16 @@ import React, { useState } from "react";
 import { z } from "zod";
 
 const POST_FILTERS = ["ALL", "PUBLISHED", "DRAFT"] as const;
+
+/** Check if a post is publicly viewable */
+function isPostPubliclyViewable(post: {
+  status: PostStatus;
+  publishedAt: Date | null;
+}): boolean {
+  if (post.status !== "published") return false;
+  if (!post.publishedAt) return false;
+  return post.publishedAt <= new Date();
+}
 
 const searchSchema = z.object({
   page: z.number().int().positive().optional().default(1).catch(1),
@@ -247,22 +258,23 @@ function PostManager() {
 
               <div className="md:col-span-2 flex justify-end gap-2 mt-2 md:mt-0 opacity-50 group-hover:opacity-100 transition-opacity">
                 <button
-                  disabled={post.status === "draft"}
+                  disabled={!isPostPubliclyViewable(post)}
                   onClick={() =>
-                    post.status === "draft" &&
                     navigate({
                       to: "/post/$slug",
                       params: { slug: post.slug },
                     })
                   }
-                  className={`h-9 w-9 flex items-center justify-center bg-black border border-zzz-gray transition-colors ${
-                    post.status === "draft"
+                  className={`h-9 w-9 cursor-pointer flex items-center justify-center bg-black border border-zzz-gray transition-colors ${
+                    !isPostPubliclyViewable(post)
                       ? "text-gray-600 cursor-not-allowed border-gray-800"
                       : "text-zzz-cyan hover:bg-zzz-cyan hover:text-black"
                   }`}
                   title={
-                    post.status === "draft"
-                      ? "Cannot view Draft"
+                    !isPostPubliclyViewable(post)
+                      ? post.status === "draft"
+                        ? "Cannot view Draft"
+                        : "Scheduled - not yet public"
                       : "View Public"
                   }
                 >
@@ -275,13 +287,13 @@ function PostManager() {
                       params: { slug: post.slug },
                     })
                   }
-                  className="p-2 bg-black border border-zzz-gray text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors"
+                  className="p-2 bg-black border border-zzz-gray text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors cursor-pointer"
                   title="Edit"
                 >
                   <Edit3 size={14} />
                 </button>
                 <button
-                  className="p-2 bg-black border border-zzz-gray text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors"
+                  className="p-2 bg-black border border-zzz-gray text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors cursor-pointer"
                   title="Delete"
                 >
                   <Trash2 size={14} />
@@ -313,7 +325,7 @@ function PostManager() {
                 })
               }
               disabled={page === 1}
-              className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
+              className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors cursor-pointer"
             >
               <ChevronLeft size={16} />
             </button>
@@ -327,16 +339,16 @@ function PostManager() {
                 ) : (
                   <button
                     onClick={() =>
-                      navigate({ to: "/admin/posts", search: { page, filter } })
+                      navigate({
+                        to: "/admin/posts",
+                        search: { page: pageNumber as number, filter },
+                      })
                     }
-                    className={`
-                                        h-9 w-9 flex items-center justify-center font-bold font-mono text-xs border transition-colors
-                                        ${
-                                          page === pageNumber
-                                            ? "bg-zzz-lime text-black border-zzz-lime"
-                                            : "bg-black text-gray-400 border-zzz-gray hover:text-white hover:border-white"
-                                        }
-                                    `}
+                    className={`h-9 w-9 cursor-pointer flex items-center justify-center font-bold font-mono text-xs border transition-colors ${
+                      page === pageNumber
+                        ? "bg-zzz-lime text-black border-zzz-lime"
+                        : "bg-black text-gray-400 border-zzz-gray hover:text-white hover:border-white"
+                    }`}
                   >
                     {pageNumber}
                   </button>
@@ -352,7 +364,7 @@ function PostManager() {
                 })
               }
               disabled={page === totalPages}
-              className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
+              className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors cursor-pointer"
             >
               <ChevronRight size={16} />
             </button>

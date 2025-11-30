@@ -1,7 +1,7 @@
 import { getDb } from "@/db";
 import { buildPostWhereClause, uniqueOrThrow } from "@/db/queries/helper";
 import { PostCategory, PostStatus, PostsTable } from "@/db/schema";
-import { count, desc, eq } from "drizzle-orm";
+import { and, count, desc, eq, lte } from "drizzle-orm";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
@@ -13,6 +13,7 @@ export async function getPosts(options: {
   limit: number;
   category?: PostCategory;
   status?: PostStatus;
+  publicOnly?: boolean;
 }) {
   const whereClause = buildPostWhereClause(options);
 
@@ -41,6 +42,7 @@ export async function getPosts(options: {
 export async function getPostsCount(options: {
   category?: PostCategory;
   status?: PostStatus;
+  publicOnly?: boolean;
 }) {
   const whereClause = buildPostWhereClause(options);
   const db = getDb();
@@ -69,6 +71,25 @@ export async function findPostBySlug(slug: string) {
   return uniqueOrThrow(results);
 }
 
+/**
+ * Find post by slug for public access
+ * Only returns if status=published AND publishedAt <= now
+ */
+export async function findPostBySlugPublic(slug: string) {
+  const db = getDb();
+  const results = await db
+    .select()
+    .from(PostsTable)
+    .where(
+      and(
+        eq(PostsTable.slug, slug),
+        eq(PostsTable.status, "published"),
+        lte(PostsTable.publishedAt, new Date())
+      )
+    );
+  return uniqueOrThrow(results);
+}
+
 export async function updatePost(
   id: number,
   data: Partial<typeof PostsTable.$inferInsert>
@@ -79,4 +100,9 @@ export async function updatePost(
     Object.entries(data).filter(([_, v]) => v !== undefined)
   );
   await db.update(PostsTable).set(cleanData).where(eq(PostsTable.id, id));
+}
+
+export async function deletePost(id: number) {
+  const db = getDb();
+  await db.delete(PostsTable).where(eq(PostsTable.id, id));
 }

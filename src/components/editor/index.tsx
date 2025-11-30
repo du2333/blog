@@ -1,7 +1,4 @@
-import { SaveIndicator } from "@/components/editor/extensions/save-indicator";
 import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
-import { useAutoSave } from "@/components/editor/hooks/use-auto-save";
-import type { EditorProps } from "@/components/editor/types";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
@@ -12,6 +9,7 @@ import {
   ListItemExtension,
   OrderedListExtension,
 } from "./extensions/typography/list";
+import type { JSONContent } from "@tiptap/react";
 
 // import { ImageExtension } from "@/components/editor/extensions/images";
 // import { uploadImageFn } from "@/functions/images";
@@ -139,19 +137,17 @@ export const extensions = [
   // }),
 ];
 
-export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
-  const { saveStatus, handleUpdate } = useAutoSave({
-    onSave,
-    onSaveStatusChange,
-  });
+interface EditorProps {
+  content?: JSONContent | string;
+  onChange?: (json: JSONContent) => void;
+}
 
+export function Editor({ content, onChange }: EditorProps) {
   const editor = useEditor({
     extensions,
     content,
-    immediatelyRender: false,
     onUpdate: ({ editor }) => {
-      handleUpdate(editor);
-      // handleImageDeletes(transaction);
+      onChange?.(editor.getJSON());
     },
   });
 
@@ -167,7 +163,6 @@ export function Editor({ content, onSave, onSaveStatusChange }: EditorProps) {
         className="min-h-[600px] w-full min-w-full cursor-text sm:p-8"
       />
       <BubbleMenu editor={editor} />
-      <SaveIndicator status={saveStatus} />
     </div>
   );
 }
