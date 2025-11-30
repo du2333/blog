@@ -9,27 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as DbRouteImport } from './routes/db'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as ImagesSplatRouteImport } from './routes/images/$'
-import { Route as PostsIdRouteRouteImport } from './routes/posts/$id/route'
-import { Route as PostsIdIndexRouteImport } from './routes/posts/$id/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
 import { Route as PublicDatabaseIndexRouteImport } from './routes/_public/database/index'
-import { Route as PostsIdEditRouteImport } from './routes/posts/$id/edit'
 import { Route as AdminPostsNewRouteImport } from './routes/admin/posts/new'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 import { Route as AdminPostsEditSlugRouteImport } from './routes/admin/posts/edit.$slug'
 
-const DbRoute = DbRouteImport.update({
-  id: '/db',
-  path: '/db',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminRouteRoute = AdminRouteRouteImport.update({
   id: '/admin',
   path: '/admin',
@@ -54,16 +45,6 @@ const ImagesSplatRoute = ImagesSplatRouteImport.update({
   path: '/images/$',
   getParentRoute: () => rootRouteImport,
 } as any)
-const PostsIdRouteRoute = PostsIdRouteRouteImport.update({
-  id: '/posts/$id',
-  path: '/posts/$id',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PostsIdIndexRoute = PostsIdIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PostsIdRouteRoute,
-} as any)
 const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
   id: '/posts/',
   path: '/posts/',
@@ -78,11 +59,6 @@ const PublicDatabaseIndexRoute = PublicDatabaseIndexRouteImport.update({
   id: '/database/',
   path: '/database/',
   getParentRoute: () => PublicRouteRoute,
-} as any)
-const PostsIdEditRoute = PostsIdEditRouteImport.update({
-  id: '/edit',
-  path: '/edit',
-  getParentRoute: () => PostsIdRouteRoute,
 } as any)
 const AdminPostsNewRoute = AdminPostsNewRouteImport.update({
   id: '/posts/new',
@@ -102,119 +78,88 @@ const AdminPostsEditSlugRoute = AdminPostsEditSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
-  '/db': typeof DbRoute
-  '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
   '/admin/posts/new': typeof AdminPostsNewRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/database': typeof PublicDatabaseIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
-  '/posts/$id/': typeof PostsIdIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesByTo {
-  '/db': typeof DbRoute
   '/images/$': typeof ImagesSplatRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
   '/admin/posts/new': typeof AdminPostsNewRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/database': typeof PublicDatabaseIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
-  '/posts/$id': typeof PostsIdIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
-  '/db': typeof DbRoute
-  '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
   '/admin/posts/new': typeof AdminPostsNewRoute
-  '/posts/$id/edit': typeof PostsIdEditRoute
   '/_public/database/': typeof PublicDatabaseIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
-  '/posts/$id/': typeof PostsIdIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/admin'
-    | '/db'
-    | '/posts/$id'
     | '/images/$'
     | '/'
     | '/admin/'
     | '/post/$slug'
     | '/admin/posts/new'
-    | '/posts/$id/edit'
     | '/database'
     | '/admin/media'
     | '/admin/posts'
-    | '/posts/$id/'
     | '/admin/posts/edit/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/db'
     | '/images/$'
     | '/'
     | '/admin'
     | '/post/$slug'
     | '/admin/posts/new'
-    | '/posts/$id/edit'
     | '/database'
     | '/admin/media'
     | '/admin/posts'
-    | '/posts/$id'
     | '/admin/posts/edit/$slug'
   id:
     | '__root__'
     | '/_public'
     | '/admin'
-    | '/db'
-    | '/posts/$id'
     | '/images/$'
     | '/_public/'
     | '/admin/'
     | '/_public/post/$slug'
     | '/admin/posts/new'
-    | '/posts/$id/edit'
     | '/_public/database/'
     | '/admin/media/'
     | '/admin/posts/'
-    | '/posts/$id/'
     | '/admin/posts/edit/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
-  DbRoute: typeof DbRoute
-  PostsIdRouteRoute: typeof PostsIdRouteRouteWithChildren
   ImagesSplatRoute: typeof ImagesSplatRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/db': {
-      id: '/db'
-      path: '/db'
-      fullPath: '/db'
-      preLoaderRoute: typeof DbRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin': {
       id: '/admin'
       path: '/admin'
@@ -250,20 +195,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImagesSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/posts/$id': {
-      id: '/posts/$id'
-      path: '/posts/$id'
-      fullPath: '/posts/$id'
-      preLoaderRoute: typeof PostsIdRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/posts/$id/': {
-      id: '/posts/$id/'
-      path: '/'
-      fullPath: '/posts/$id/'
-      preLoaderRoute: typeof PostsIdIndexRouteImport
-      parentRoute: typeof PostsIdRouteRoute
-    }
     '/admin/posts/': {
       id: '/admin/posts/'
       path: '/posts'
@@ -284,13 +215,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/database'
       preLoaderRoute: typeof PublicDatabaseIndexRouteImport
       parentRoute: typeof PublicRouteRoute
-    }
-    '/posts/$id/edit': {
-      id: '/posts/$id/edit'
-      path: '/edit'
-      fullPath: '/posts/$id/edit'
-      preLoaderRoute: typeof PostsIdEditRouteImport
-      parentRoute: typeof PostsIdRouteRoute
     }
     '/admin/posts/new': {
       id: '/admin/posts/new'
@@ -352,25 +276,9 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
   AdminRouteRouteChildren,
 )
 
-interface PostsIdRouteRouteChildren {
-  PostsIdEditRoute: typeof PostsIdEditRoute
-  PostsIdIndexRoute: typeof PostsIdIndexRoute
-}
-
-const PostsIdRouteRouteChildren: PostsIdRouteRouteChildren = {
-  PostsIdEditRoute: PostsIdEditRoute,
-  PostsIdIndexRoute: PostsIdIndexRoute,
-}
-
-const PostsIdRouteRouteWithChildren = PostsIdRouteRoute._addFileChildren(
-  PostsIdRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   PublicRouteRoute: PublicRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
-  DbRoute: DbRoute,
-  PostsIdRouteRoute: PostsIdRouteRouteWithChildren,
   ImagesSplatRoute: ImagesSplatRoute,
 }
 export const routeTree = rootRouteImport
