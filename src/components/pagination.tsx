@@ -18,10 +18,11 @@ export function Pagination({
         onClick={() => goToPage(currentPage - 1)}
         disabled={currentPage === 1}
         variant="secondary"
-        className="w-32"
+        className="w-12 sm:w-32 px-0 sm:px-6"
       >
         <div className="flex items-center justify-center gap-2">
-          <ChevronLeft size={16} /> PREV
+          <ChevronLeft size={16} />
+          <span className="hidden sm:inline">PREV</span>
         </div>
       </TechButton>
 
@@ -35,10 +36,11 @@ export function Pagination({
         onClick={() => goToPage(currentPage + 1)}
         disabled={currentPage === totalPages}
         variant="secondary"
-        className="w-32"
+        className="w-12 sm:w-32 px-0 sm:px-6"
       >
         <div className="flex items-center justify-center gap-2">
-          NEXT <ChevronRight size={16} />
+          <span className="hidden sm:inline">NEXT</span>
+          <ChevronRight size={16} />
         </div>
       </TechButton>
     </div>
