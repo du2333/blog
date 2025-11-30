@@ -1,4 +1,5 @@
 import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
+import { ImageExtension } from "@/components/editor/extensions/images";
 import InsertModal, {
   ModalType,
 } from "@/components/editor/extensions/toolbar/components/insert-modal";
@@ -78,6 +79,7 @@ export const extensions = [
   CodeBlockExtension.configure({
     defaultTheme: "andromeeda",
   }),
+  ImageExtension,
   Placeholder.configure({
     placeholder: "INITIATE LOG ENTRY... (Start typing)",
   }),
