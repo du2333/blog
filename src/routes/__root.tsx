@@ -1,4 +1,3 @@
-import { Toaster } from "@/components/ui/sonner";
 import { FONT_URLS, PRELOAD_LINKS } from "@/config/assets";
 import { useAsyncFonts } from "@/hooks/use-async-fonts";
 import { TanStackDevtools } from "@tanstack/react-devtools";
@@ -70,7 +69,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
             TanStackQueryDevtools,
           ]}
         />
-        <Toaster richColors />
         <Scripts />
       </body>
     </html>

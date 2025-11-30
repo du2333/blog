@@ -26,6 +26,7 @@ import {
 import React, { useState } from "react";
 import { z } from "zod";
 import { ErrorPage } from "@/components/error-page";
+import { toast } from "sonner";
 
 const POST_FILTERS = ["ALL", "PUBLISHED", "DRAFT"] as const;
 
@@ -67,7 +68,15 @@ function PostManager() {
       // Invalidate posts queries to refetch
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["postsCount"] });
+      toast.success("POST DELETED", {
+        description: `ENTRY "${postToDelete?.title}" deleted successfully`,
+      });
       setPostToDelete(null);
+    },
+    onError: () => {
+      toast.error("FAILED TO DELETE ENTRY", {
+        description: `Failed to delete entry "${postToDelete?.title}"`,
+      });
     },
   });
 

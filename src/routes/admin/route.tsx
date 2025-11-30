@@ -11,6 +11,7 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
+import Toaster from "@/components/ui/toaster";
 
 const navItems = [
   {
@@ -168,6 +169,7 @@ function AdminLayout() {
           <Outlet />
         </div>
       </main>
+      <Toaster />
     </div>
   );
 }
