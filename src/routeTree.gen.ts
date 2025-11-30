@@ -10,23 +10,39 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as DbRouteImport } from './routes/db'
+import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as ImagesSplatRouteImport } from './routes/images/$'
 import { Route as PostsIdRouteRouteImport } from './routes/posts/$id/route'
 import { Route as PostsIdIndexRouteImport } from './routes/posts/$id/index'
+import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
+import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
 import { Route as PublicDatabaseIndexRouteImport } from './routes/_public/database/index'
 import { Route as PostsIdEditRouteImport } from './routes/posts/$id/edit'
+import { Route as AdminPostsNewRouteImport } from './routes/admin/posts/new'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
+import { Route as AdminPostsEditSlugRouteImport } from './routes/admin/posts/edit.$slug'
 
 const DbRoute = DbRouteImport.update({
   id: '/db',
   path: '/db',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRouteRoute = AdminRouteRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
@@ -48,6 +64,16 @@ const PostsIdIndexRoute = PostsIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => PostsIdRouteRoute,
 } as any)
+const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
+  id: '/posts/',
+  path: '/posts/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
+  id: '/media/',
+  path: '/media/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const PublicDatabaseIndexRoute = PublicDatabaseIndexRouteImport.update({
   id: '/database/',
   path: '/database/',
@@ -58,78 +84,123 @@ const PostsIdEditRoute = PostsIdEditRouteImport.update({
   path: '/edit',
   getParentRoute: () => PostsIdRouteRoute,
 } as any)
+const AdminPostsNewRoute = AdminPostsNewRouteImport.update({
+  id: '/posts/new',
+  path: '/posts/new',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const PublicPostSlugRoute = PublicPostSlugRouteImport.update({
   id: '/post/$slug',
   path: '/post/$slug',
   getParentRoute: () => PublicRouteRoute,
 } as any)
+const AdminPostsEditSlugRoute = AdminPostsEditSlugRouteImport.update({
+  id: '/posts/edit/$slug',
+  path: '/posts/edit/$slug',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
+  '/admin': typeof AdminRouteRouteWithChildren
   '/db': typeof DbRoute
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
+  '/admin/posts/new': typeof AdminPostsNewRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/database': typeof PublicDatabaseIndexRoute
+  '/admin/media': typeof AdminMediaIndexRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
   '/posts/$id/': typeof PostsIdIndexRoute
+  '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesByTo {
   '/db': typeof DbRoute
   '/images/$': typeof ImagesSplatRoute
   '/': typeof PublicIndexRoute
+  '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
+  '/admin/posts/new': typeof AdminPostsNewRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/database': typeof PublicDatabaseIndexRoute
+  '/admin/media': typeof AdminMediaIndexRoute
+  '/admin/posts': typeof AdminPostsIndexRoute
   '/posts/$id': typeof PostsIdIndexRoute
+  '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_public': typeof PublicRouteRouteWithChildren
+  '/admin': typeof AdminRouteRouteWithChildren
   '/db': typeof DbRoute
   '/posts/$id': typeof PostsIdRouteRouteWithChildren
   '/images/$': typeof ImagesSplatRoute
   '/_public/': typeof PublicIndexRoute
+  '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
+  '/admin/posts/new': typeof AdminPostsNewRoute
   '/posts/$id/edit': typeof PostsIdEditRoute
   '/_public/database/': typeof PublicDatabaseIndexRoute
+  '/admin/media/': typeof AdminMediaIndexRoute
+  '/admin/posts/': typeof AdminPostsIndexRoute
   '/posts/$id/': typeof PostsIdIndexRoute
+  '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
+    | '/admin'
     | '/db'
     | '/posts/$id'
     | '/images/$'
     | '/'
+    | '/admin/'
     | '/post/$slug'
+    | '/admin/posts/new'
     | '/posts/$id/edit'
     | '/database'
+    | '/admin/media'
+    | '/admin/posts'
     | '/posts/$id/'
+    | '/admin/posts/edit/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/db'
     | '/images/$'
     | '/'
+    | '/admin'
     | '/post/$slug'
+    | '/admin/posts/new'
     | '/posts/$id/edit'
     | '/database'
+    | '/admin/media'
+    | '/admin/posts'
     | '/posts/$id'
+    | '/admin/posts/edit/$slug'
   id:
     | '__root__'
     | '/_public'
+    | '/admin'
     | '/db'
     | '/posts/$id'
     | '/images/$'
     | '/_public/'
+    | '/admin/'
     | '/_public/post/$slug'
+    | '/admin/posts/new'
     | '/posts/$id/edit'
     | '/_public/database/'
+    | '/admin/media/'
+    | '/admin/posts/'
     | '/posts/$id/'
+    | '/admin/posts/edit/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
+  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   DbRoute: typeof DbRoute
   PostsIdRouteRoute: typeof PostsIdRouteRouteWithChildren
   ImagesSplatRoute: typeof ImagesSplatRoute
@@ -144,12 +215,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DbRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
       fullPath: ''
       preLoaderRoute: typeof PublicRouteRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/_public/': {
       id: '/_public/'
@@ -179,6 +264,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdIndexRouteImport
       parentRoute: typeof PostsIdRouteRoute
     }
+    '/admin/posts/': {
+      id: '/admin/posts/'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/admin/media/': {
+      id: '/admin/media/'
+      path: '/media'
+      fullPath: '/admin/media'
+      preLoaderRoute: typeof AdminMediaIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_public/database/': {
       id: '/_public/database/'
       path: '/database'
@@ -193,12 +292,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostsIdEditRouteImport
       parentRoute: typeof PostsIdRouteRoute
     }
+    '/admin/posts/new': {
+      id: '/admin/posts/new'
+      path: '/posts/new'
+      fullPath: '/admin/posts/new'
+      preLoaderRoute: typeof AdminPostsNewRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_public/post/$slug': {
       id: '/_public/post/$slug'
       path: '/post/$slug'
       fullPath: '/post/$slug'
       preLoaderRoute: typeof PublicPostSlugRouteImport
       parentRoute: typeof PublicRouteRoute
+    }
+    '/admin/posts/edit/$slug': {
+      id: '/admin/posts/edit/$slug'
+      path: '/posts/edit/$slug'
+      fullPath: '/admin/posts/edit/$slug'
+      preLoaderRoute: typeof AdminPostsEditSlugRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
   }
 }
@@ -219,6 +332,26 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
   PublicRouteRouteChildren,
 )
 
+interface AdminRouteRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminPostsNewRoute: typeof AdminPostsNewRoute
+  AdminMediaIndexRoute: typeof AdminMediaIndexRoute
+  AdminPostsIndexRoute: typeof AdminPostsIndexRoute
+  AdminPostsEditSlugRoute: typeof AdminPostsEditSlugRoute
+}
+
+const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminPostsNewRoute: AdminPostsNewRoute,
+  AdminMediaIndexRoute: AdminMediaIndexRoute,
+  AdminPostsIndexRoute: AdminPostsIndexRoute,
+  AdminPostsEditSlugRoute: AdminPostsEditSlugRoute,
+}
+
+const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
+  AdminRouteRouteChildren,
+)
+
 interface PostsIdRouteRouteChildren {
   PostsIdEditRoute: typeof PostsIdEditRoute
   PostsIdIndexRoute: typeof PostsIdIndexRoute
@@ -235,6 +368,7 @@ const PostsIdRouteRouteWithChildren = PostsIdRouteRoute._addFileChildren(
 
 const rootRouteChildren: RootRouteChildren = {
   PublicRouteRoute: PublicRouteRouteWithChildren,
+  AdminRouteRoute: AdminRouteRouteWithChildren,
   DbRoute: DbRoute,
   PostsIdRouteRoute: PostsIdRouteRouteWithChildren,
   ImagesSplatRoute: ImagesSplatRoute,

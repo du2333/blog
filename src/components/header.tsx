@@ -2,6 +2,7 @@ import TechButton from "@/components/ui/tech-button";
 import { Link } from "@tanstack/react-router";
 import { Disc, LayoutGrid, X, Zap } from "lucide-react";
 import { useState } from "react";
+import { Logo } from "@/components/logo";
 
 const navOptions = [
   { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
@@ -116,7 +117,7 @@ export function Header() {
           {/* Logo Area */}
           <Link to="/" className="flex items-center gap-3 cursor-pointer group">
             <div className="w-10 h-10 bg-zzz-lime flex items-center justify-center clip-corner-bl group-hover:bg-white transition-colors">
-              <Zap className="text-black fill-current" size={24} />
+              <Logo className="size-6 text-black fill-current" />
             </div>
             <div className="flex flex-col">
               <h1 className="font-sans font-bold text-2xl leading-none tracking-tighter uppercase italic">
