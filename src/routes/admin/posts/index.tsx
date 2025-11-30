@@ -259,7 +259,7 @@ function PostManager() {
 
               <div className="md:col-span-5 min-w-0">
                 <div className="flex items-center gap-3 mb-1">
-                  <h3 className="text-white font-bold font-sans uppercase truncate text-lg leading-none">
+                  <h3 className="text-white font-bold font-sans uppercase truncate text-lg">
                     {post.title}
                   </h3>
                   {post.status === "draft" && (
