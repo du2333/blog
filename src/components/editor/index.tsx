@@ -1,21 +1,20 @@
-import { BubbleMenu } from "@/components/editor/extensions/toolbar/bubble-menu";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
 import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
+import InsertModal, {
+  ModalType,
+} from "@/components/editor/extensions/toolbar/components/insert-modal";
+import EditorToolbar from "@/components/editor/extensions/toolbar/editor-toolbar";
+import { BlockQuoteExtension } from "@/components/editor/extensions/typography/block-quote";
 import { HeadingExtension } from "@/components/editor/extensions/typography/heading";
-import { BlockQuoteExtension } from "./extensions/typography/block-quote";
 import {
   BulletListExtension,
   ListItemExtension,
   OrderedListExtension,
-} from "./extensions/typography/list";
+} from "@/components/editor/extensions/typography/list";
+import Placeholder from "@tiptap/extension-placeholder";
 import type { JSONContent } from "@tiptap/react";
-
-// import { ImageExtension } from "@/components/editor/extensions/images";
-// import { uploadImageFn } from "@/functions/images";
-// import { FileHandler } from "@/components/editor/extensions/file-handler";
-// import { toast } from "sonner";
-// import { handleImageDeletes } from "./utils";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { useState, useCallback } from "react";
 
 export const extensions = [
   StarterKit.configure({
@@ -79,62 +78,9 @@ export const extensions = [
   CodeBlockExtension.configure({
     defaultTheme: "andromeeda",
   }),
-  // ImageExtension,
-  // FileHandler.configure({
-  //   allowedMimeTypes: ["image/*"],
-  //   allowBase64: true,
-  //   maxFileSize: 10 * 1024 * 1024,
-  //   onDrop: (editor, files, pos) => {
-  //     files.forEach(async (file) => {
-  //       const formData = new FormData();
-  //       formData.append("image", file);
-  //       toast.promise(uploadImageFn({ data: formData }), {
-  //         loading: "Uploading image...",
-  //         success: (result) => {
-  //           editor.commands.insertContentAt(pos, {
-  //             type: "image",
-  //             attrs: {
-  //               src: result.url,
-  //             },
-  //           });
-  //           return "Image uploaded successfully";
-  //         },
-  //         error: (error) =>
-  //           error instanceof Error ? error.message : "Unknown error",
-  //       });
-  //     });
-  //   },
-  //   onPaste(editor, files) {
-  //     files.forEach(async (file) => {
-  //       try {
-  //         const formData = new FormData();
-  //         formData.append("image", file);
-  //         toast.promise(uploadImageFn({ data: formData }), {
-  //           loading: "Uploading image...",
-  //           success: (result) => {
-  //             editor.commands.insertContent({
-  //               type: "image",
-  //               attrs: {
-  //                 src: result.url,
-  //               },
-  //             });
-  //             return "Image uploaded successfully";
-  //           },
-  //           error: (error) =>
-  //             error instanceof Error ? error.message : "Unknown error",
-  //         });
-  //       } catch (error) {
-  //         toast.error("Failed to upload image", {
-  //           description:
-  //             error instanceof Error ? error.message : "Unknown error",
-  //         });
-  //       }
-  //     });
-  //   },
-  //   onValidationError(errors) {
-  //     console.error(errors);
-  //   },
-  // }),
+  Placeholder.configure({
+    placeholder: "INITIATE LOG ENTRY... (Start typing)",
+  }),
 ];
 
 interface EditorProps {
@@ -143,26 +89,76 @@ interface EditorProps {
 }
 
 export function Editor({ content, onChange }: EditorProps) {
+  const [modalOpen, setModalOpen] = useState<ModalType>(null);
+  const [modalInitialUrl, setModalInitialUrl] = useState("");
+
   const editor = useEditor({
     extensions,
     content,
     onUpdate: ({ editor }) => {
       onChange?.(editor.getJSON());
     },
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-invert max-w-none focus:outline-none text-lg text-gray-300 font-body leading-relaxed min-h-[500px]",
+      },
+    },
   });
 
-  if (!editor) return null;
+  const openLinkModal = useCallback(() => {
+    if (!editor) return;
+    const previousUrl = editor.getAttributes("link").href;
+    setModalInitialUrl(previousUrl || "");
+    setModalOpen("LINK");
+  }, [editor]);
+
+  const openImageModal = useCallback(() => {
+    setModalInitialUrl("");
+    setModalOpen("IMAGE");
+  }, []);
+
+  const handleModalSubmit = (url: string) => {
+    if (!editor) return;
+
+    if (modalOpen === "LINK") {
+      if (url === "") {
+        editor.chain().focus().extendMarkRange("link").unsetLink().run();
+      } else {
+        editor
+          .chain()
+          .focus()
+          .extendMarkRange("link")
+          .setLink({ href: url })
+          .run();
+      }
+    } else if (modalOpen === "IMAGE") {
+      if (url) {
+        editor.chain().focus().setImage({ src: url }).run();
+      }
+    }
+
+    setModalOpen(null);
+  };
 
   return (
-    <div className="relative w-full bg-zzz-black border border-zzz-gray clip-corner-tr pb-[60px] sm:pb-0 overflow-hidden group">
-      {/* Decorative corner */}
-      <div className="absolute top-0 right-0 w-4 h-4 bg-zzz-lime opacity-0 group-hover:opacity-100 transition-opacity"></div>
-
-      <EditorContent
+    <div className="flex flex-col relative group">
+      <EditorToolbar
         editor={editor}
-        className="min-h-[600px] w-full min-w-full cursor-text sm:p-8"
+        onLinkClick={openLinkModal}
+        onImageClick={openImageModal}
       />
-      <BubbleMenu editor={editor} />
+
+      <div className="relative min-h-[500px]">
+        <EditorContent editor={editor} />
+      </div>
+
+      <InsertModal
+        type={modalOpen}
+        initialUrl={modalInitialUrl}
+        onClose={() => setModalOpen(null)}
+        onSubmit={handleModalSubmit}
+      />
     </div>
   );
 }
