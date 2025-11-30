@@ -1,10 +1,11 @@
 import { LoadingFallback } from "@/components/loading-fallback";
+import ConfirmationModal from "@/components/ui/confirmation-modal";
 import TechButton from "@/components/ui/tech-button";
-import type { PostStatus } from "@/db/schema";
-import { getPostsCountFn, getPostsFn } from "@/functions/posts";
+import type { Post, PostStatus } from "@/db/schema";
+import { deletePostFn, getPostsCountFn, getPostsFn } from "@/functions/posts";
 import { ADMIN_ITEMS_PER_PAGE, CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ClientOnly,
   createFileRoute,
@@ -49,9 +50,25 @@ export const Route = createFileRoute("/admin/posts/")({
 
 function PostManager() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { page, filter } = Route.useSearch();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
+  const [postToDelete, setPostToDelete] = useState<Omit<
+    Post,
+    "contentJson"
+  > | null>(null);
+
+  // Delete mutation
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => deletePostFn({ data: { id } }),
+    onSuccess: () => {
+      // Invalidate posts queries to refetch
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.invalidateQueries({ queryKey: ["postsCount"] });
+      setPostToDelete(null);
+    },
+  });
 
   const { data: posts, isPending } = useQuery({
     queryKey: ["posts", page, filter],
@@ -295,6 +312,7 @@ function PostManager() {
                 <button
                   className="p-2 bg-black border border-zzz-gray text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors cursor-pointer"
                   title="Delete"
+                  onClick={() => setPostToDelete(post)}
                 >
                   <Trash2 size={14} />
                 </button>
@@ -371,6 +389,18 @@ function PostManager() {
           </div>
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={!!postToDelete}
+        onClose={() => !deleteMutation.isPending && setPostToDelete(null)}
+        onConfirm={() => postToDelete && deleteMutation.mutate(postToDelete.id)}
+        title="CONFIRM DELETION"
+        message={`Are you sure you want to delete the entry "${postToDelete?.title}"?`}
+        confirmLabel="DELETE ENTRY"
+        isDanger={true}
+        isLoading={deleteMutation.isPending}
+      />
     </div>
   );
 }
