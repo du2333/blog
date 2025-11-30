@@ -1,10 +1,11 @@
 import { LoadingFallback } from "@/components/loading-fallback";
 import { PostEditor, type PostEditorData } from "@/components/post-editor";
+import { findPostBySlugFn, updatePostFn } from "@/functions/posts";
 import {
-  findPostBySlugFn,
-  updatePostFn
-} from "@/functions/posts";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+  queryOptions,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ErrorPage } from "@/components/error-page";
 
@@ -25,6 +26,7 @@ export const Route = createFileRoute("/admin/posts/edit/$slug")({
 
 function EditPost() {
   const { slug } = Route.useParams();
+  const queryClient = useQueryClient();
   const { data: post, isPending, error } = useSuspenseQuery(postQuery(slug));
 
   if (error) {
@@ -67,13 +69,18 @@ function EditPost() {
             : data.publishedAt,
       },
     });
+
+    // Invalidate cache to ensure fresh data on next visit
+    queryClient.invalidateQueries({ queryKey: ["post", slug] });
+    queryClient.invalidateQueries({ queryKey: ["posts"] });
+
+    // Update URL silently if slug changed (no page reload)
+    if (data.slug !== slug) {
+      // Prefetch new slug data first to avoid flash of not-found
+      await queryClient.prefetchQuery(postQuery(data.slug));
+      window.history.replaceState(null, "", `/admin/posts/edit/${data.slug}`);
+    }
   };
 
-  return (
-    <PostEditor
-      mode="edit"
-      initialData={post}
-      onSave={handleSave}
-    />
-  );
+  return <PostEditor mode="edit" initialData={post} onSave={handleSave} />;
 }

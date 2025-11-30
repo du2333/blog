@@ -30,6 +30,9 @@ export function useAutoSave({
 
   const isFirstMount = useRef(true);
   const isSaving = useRef(false);
+  // Store onSave in ref to avoid effect re-running when onSave reference changes
+  const onSaveRef = useRef(onSave);
+  onSaveRef.current = onSave;
 
   // Auto-save effect (edit mode only)
   useEffect(() => {
@@ -56,7 +59,7 @@ export function useAutoSave({
 
       try {
         setError(null);
-        await onSave(post);
+        await onSaveRef.current(post);
         setSaveStatus("SYNCED");
         setLastSaved(new Date());
       } catch (err) {
@@ -69,7 +72,7 @@ export function useAutoSave({
     }, debounceMs);
 
     return () => clearTimeout(timer);
-  }, [post, onSave, mode, debounceMs]);
+  }, [post, mode, debounceMs]);
 
   // Manual save for new posts
   const handleManualSave = async () => {
@@ -83,7 +86,7 @@ export function useAutoSave({
     setSaveStatus("SAVING");
     try {
       setError(null);
-      await onSave(post);
+      await onSaveRef.current(post);
       toast.success("POST CREATED", {
         description: "Your new entry has been saved successfully.",
       });

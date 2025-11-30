@@ -1,7 +1,7 @@
 import { Editor } from "@/components/editor";
 import type { JSONContent } from "@tiptap/react";
 import { useRouter } from "@tanstack/react-router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
 import { useAutoSave, usePostActions } from "./hooks";
@@ -34,22 +34,6 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     }
     return defaultPostData;
   });
-
-  // Sync with initialData changes (edit mode)
-  useEffect(() => {
-    if (initialData) {
-      setPost({
-        title: initialData.title,
-        summary: initialData.summary ?? "",
-        slug: initialData.slug,
-        category: initialData.category,
-        status: initialData.status,
-        readTimeInMinutes: initialData.readTimeInMinutes,
-        contentJson: initialData.contentJson ?? null,
-        publishedAt: initialData.publishedAt,
-      });
-    }
-  }, [initialData]);
 
   // Auto-save hook
   const { saveStatus, lastSaved, error, setError, handleManualSave } =
