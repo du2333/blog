@@ -1,7 +1,7 @@
 import { getDb } from "@/db";
 import { buildPostWhereClause, uniqueOrThrow } from "@/db/queries/helper";
 import { PostCategory, PostStatus, PostsTable } from "@/db/schema";
-import { and, count, desc, eq, lte } from "drizzle-orm";
+import { and, count, desc, eq, lte, ne } from "drizzle-orm";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
@@ -105,4 +105,26 @@ export async function updatePost(
 export async function deletePost(id: number) {
   const db = getDb();
   await db.delete(PostsTable).where(eq(PostsTable.id, id));
+}
+
+/**
+ * Check if a slug exists in the database
+ * @param slug - The slug to check
+ * @param excludeId - Optional post ID to exclude (for editing existing posts)
+ */
+export async function slugExists(
+  slug: string,
+  excludeId?: number
+): Promise<boolean> {
+  const db = getDb();
+  const conditions = [eq(PostsTable.slug, slug)];
+  if (excludeId) {
+    conditions.push(ne(PostsTable.id, excludeId));
+  }
+  const results = await db
+    .select({ id: PostsTable.id })
+    .from(PostsTable)
+    .where(and(...conditions))
+    .limit(1);
+  return results.length > 0;
 }

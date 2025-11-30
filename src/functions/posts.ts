@@ -6,13 +6,15 @@ import {
   getPosts,
   getPostsCount,
   insertPost,
+  slugExists,
   updatePost,
 } from "@/db/queries/posts";
+import { PostCategory, PostStatus } from "@/db/schema";
+import { slugify } from "@/lib/editor-utils";
 import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
 import type { JSONContent } from "@tiptap/react";
 import { z } from "zod";
-import { PostCategory, PostStatus } from "@/db/schema";
 
 export const createPostFn = createServerFn({
   method: "POST",
@@ -145,4 +147,35 @@ export const deletePostFn = createServerFn({
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data }) => {
     await deletePost(data.id);
+  });
+
+export const generateSlugFn = createServerFn()
+  .inputValidator(
+    z.object({
+      title: z.string().min(1, "Title is required"),
+      excludeId: z.number().optional(), // For editing existing posts
+    })
+  )
+  .handler(async ({ data }) => {
+    const baseSlug = slugify(data.title) || "untitled-log";
+
+    // Check if base slug is available
+    const baseExists = await slugExists(baseSlug, data.excludeId);
+    if (!baseExists) {
+      return { slug: baseSlug };
+    }
+
+    // Try numbered suffixes until we find a unique one
+    const MAX_ATTEMPTS = 100;
+    for (let i = 1; i <= MAX_ATTEMPTS; i++) {
+      const candidateSlug = `${baseSlug}-${i}`;
+      const exists = await slugExists(candidateSlug, data.excludeId);
+      if (!exists) {
+        return { slug: candidateSlug };
+      }
+    }
+
+    // Fallback: use timestamp
+    const fallbackSlug = `${baseSlug}-${Date.now()}`;
+    return { slug: fallbackSlug };
   });

@@ -5,7 +5,10 @@ import {
   type PostCategory,
   type PostStatus,
 } from "@/db/schema";
+import { generateSlugFn } from "@/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
+import { slugify } from "@/lib/editor-utils";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
 import {
@@ -72,9 +75,9 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     return defaultData;
   });
 
-  const [saveStatus, setSaveStatus] = useState<"SYNCED" | "SAVING" | "PENDING" | "ERROR">(
-    "SYNCED"
-  );
+  const [saveStatus, setSaveStatus] = useState<
+    "SYNCED" | "SAVING" | "PENDING" | "ERROR"
+  >("SYNCED");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [isGeneratingSlug, setIsGeneratingSlug] = useState(false);
@@ -165,20 +168,39 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     }
   };
 
-  const handleGenerateSlug = () => {
-    setIsGeneratingSlug(true);
-    setTimeout(() => {
-      const generated = post.title
-        .toLowerCase()
-        .trim()
-        .replace(/[^\w\s-]/g, "")
-        .replace(/[\s_-]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+  // Mutation for generating unique slug
+  const slugMutation = useMutation({
+    mutationFn: (title: string) =>
+      generateSlugFn({
+        data: {
+          title,
+          excludeId: mode === "edit" ? initialData?.id : undefined,
+        },
+      }),
+    onSuccess: (result) => {
+      setPost((prev) => ({ ...prev, slug: result.slug }));
+    },
+    onError: (error) => {
+      console.error("Slug generation failed:", error);
+      setError("SLUG_GENERATION_FAILED");
+      // Fallback to client-side generation (without uniqueness check)
+      const fallbackSlug = slugify(post.title) || "untitled-log";
+      setPost((prev) => ({ ...prev, slug: fallbackSlug }));
+    },
+  });
 
-      setPost((prev) => ({ ...prev, slug: generated || "untitled-log" }));
-      setIsGeneratingSlug(false);
-    }, 400);
+  const handleGenerateSlug = () => {
+    if (!post.title.trim()) {
+      setError("TITLE_REQUIRED_FOR_SLUG");
+      return;
+    }
+    slugMutation.mutate(post.title);
   };
+
+  // Sync isGeneratingSlug with mutation state
+  useEffect(() => {
+    setIsGeneratingSlug(slugMutation.isPending);
+  }, [slugMutation.isPending]);
 
   const handleCalculateReadTime = () => {
     if (!post.contentJson) return;
