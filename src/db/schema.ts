@@ -24,7 +24,8 @@ export const PostsTable = sqliteTable(
       .default(sql`(unixepoch())`),
     updatedAt: integer("updated_at", { mode: "timestamp" })
       .notNull()
-      .default(sql`(unixepoch())`),
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
   },
   (table) => [
     index("published_at_idx").on(table.publishedAt, table.status),
