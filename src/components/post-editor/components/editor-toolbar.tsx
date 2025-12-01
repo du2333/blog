@@ -35,12 +35,12 @@ export function EditorToolbar({
   onSave,
 }: EditorToolbarProps) {
   return (
-    <div className="h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-6 z-40 shrink-0">
+    <div className="h-14 md:h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-40 shrink-0 transition-all">
       {/* Left Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         <button
           onClick={onBack}
-          className="text-gray-500 hover:text-white transition-colors flex items-center gap-2 cursor-pointer"
+          className="text-gray-500 hover:text-white transition-colors flex items-center gap-2 cursor-pointer p-1"
         >
           <ArrowLeft size={18} />
           <span className="font-mono text-xs hidden md:inline">
@@ -48,9 +48,9 @@ export function EditorToolbar({
           </span>
         </button>
 
-        <div className="h-6 w-px bg-zzz-gray" />
+        <div className="h-4 md:h-6 w-px bg-zzz-gray" />
 
-        <div className="font-mono text-xs text-gray-500 uppercase">
+        <div className="font-mono text-[10px] md:text-xs text-gray-500 uppercase flex items-center whitespace-nowrap">
           <span
             className={
               status === "published" ? "text-zzz-lime" : "text-zzz-orange"
@@ -58,24 +58,24 @@ export function EditorToolbar({
           >
             {status || "DRAFT"}
           </span>
-          <span className="mx-2">//</span>
+          <span className="mx-1.5 md:mx-2">//</span>
           <span>{mode === "new" ? "NEW_ENTRY" : postId}</span>
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-2 md:gap-6">
         <SaveIndicator
           saveStatus={saveStatus}
           lastSaved={lastSaved}
           error={error}
         />
 
-        <div className="h-6 w-px bg-zzz-gray" />
+        <div className="h-4 md:h-6 w-px bg-zzz-gray hidden sm:block" />
 
         <button
           onClick={onToggleSettings}
-          className={`flex items-center gap-2 px-3 py-2 text-xs font-bold uppercase transition-colors border cursor-pointer ${
+          className={`flex items-center gap-2 px-2 md:px-3 py-2 text-xs font-bold uppercase transition-colors border cursor-pointer ${
             isSettingsOpen
               ? "bg-zzz-gray text-white border-white"
               : "text-gray-400 border-transparent hover:text-white"
@@ -89,14 +89,14 @@ export function EditorToolbar({
           <button
             onClick={onSave}
             disabled={saveStatus === "SAVING"}
-            className="flex items-center gap-2 px-4 py-2 bg-zzz-lime text-black text-xs font-bold uppercase transition-colors hover:bg-white disabled:opacity-50"
+            className="flex items-center gap-2 px-3 md:px-4 py-2 bg-zzz-lime text-black text-xs font-bold uppercase transition-colors hover:bg-white disabled:opacity-50 cursor-pointer whitespace-nowrap"
           >
             {saveStatus === "SAVING" ? (
               <Loader2 size={14} className="animate-spin" />
             ) : (
               <Save size={14} />
             )}
-            CREATE
+            <span>CREATE</span>
           </button>
         )}
       </div>
@@ -118,23 +118,30 @@ function SaveIndicator({
       {saveStatus === "ERROR" ? (
         <>
           <X size={12} className="text-zzz-orange" />
-          <span className="text-zzz-orange">{error}</span>
+          <span className="text-zzz-orange hidden sm:inline">{error}</span>
         </>
       ) : saveStatus === "SAVING" ? (
         <>
           <RefreshCw size={12} className="text-zzz-orange animate-spin" />
-          <span className="text-zzz-orange">TRANSMITTING...</span>
+          <span className="text-zzz-orange hidden sm:inline">
+            TRANSMITTING...
+          </span>
         </>
       ) : saveStatus === "PENDING" ? (
         <>
           <div className="w-3 h-3 rounded-full bg-gray-500 animate-pulse" />
-          <span className="text-gray-400">UNSAVED</span>
+          <span className="text-gray-400 hidden sm:inline">UNSAVED</span>
         </>
       ) : (
         <>
           <CheckCircle2 size={12} className="text-zzz-lime" />
-          <span className="text-zzz-lime">
-            SYNCED {lastSaved && `[${lastSaved.toLocaleTimeString()}]`}
+          <span className="text-zzz-lime hidden sm:inline">
+            SYNCED{" "}
+            {lastSaved && (
+              <span className="hidden lg:inline">
+                [{lastSaved.toLocaleTimeString()}]
+              </span>
+            )}
           </span>
         </>
       )}
