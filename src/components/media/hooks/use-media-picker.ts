@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { getMediaFn } from "@/functions/images";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -14,7 +14,7 @@ export const useMediaPicker = () => {
   // Infinite Query for media list (images only)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
     useInfiniteQuery({
-      queryKey: ["media-picker", debouncedSearch],
+      queryKey: ["media", debouncedSearch],
       queryFn: ({ pageParam }) =>
         getMediaFn({
           data: {
@@ -32,12 +32,12 @@ export const useMediaPicker = () => {
     return items.filter((m) => m.mimeType.startsWith("image/"));
   }, [data]);
 
-  // Load more handler
-  const loadMore = () => {
+  // Load more handler - memoized to prevent IntersectionObserver recreation
+  const loadMore = useCallback(() => {
     if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
-  };
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   return {
     mediaItems,

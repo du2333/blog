@@ -14,6 +14,7 @@ import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as ImagesSplatRouteImport } from './routes/images/$'
+import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
 import { Route as PublicDatabaseIndexRouteImport } from './routes/_public/database/index'
@@ -44,6 +45,11 @@ const ImagesSplatRoute = ImagesSplatRouteImport.update({
   id: '/images/$',
   path: '/images/$',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
+  id: '/settings/',
+  path: '/settings/',
+  getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
   id: '/posts/',
@@ -86,6 +92,7 @@ export interface FileRoutesByFullPath {
   '/database': typeof PublicDatabaseIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesByTo {
@@ -97,6 +104,7 @@ export interface FileRoutesByTo {
   '/database': typeof PublicDatabaseIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
+  '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRoutesById {
@@ -111,6 +119,7 @@ export interface FileRoutesById {
   '/_public/database/': typeof PublicDatabaseIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
+  '/admin/settings/': typeof AdminSettingsIndexRoute
   '/admin/posts/edit/$slug': typeof AdminPostsEditSlugRoute
 }
 export interface FileRouteTypes {
@@ -125,6 +134,7 @@ export interface FileRouteTypes {
     | '/database'
     | '/admin/media'
     | '/admin/posts'
+    | '/admin/settings'
     | '/admin/posts/edit/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
     | '/database'
     | '/admin/media'
     | '/admin/posts'
+    | '/admin/settings'
     | '/admin/posts/edit/$slug'
   id:
     | '__root__'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '/_public/database/'
     | '/admin/media/'
     | '/admin/posts/'
+    | '/admin/settings/'
     | '/admin/posts/edit/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -194,6 +206,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/images/$'
       preLoaderRoute: typeof ImagesSplatRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/settings/': {
+      id: '/admin/settings/'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
     }
     '/admin/posts/': {
       id: '/admin/posts/'
@@ -261,6 +280,7 @@ interface AdminRouteRouteChildren {
   AdminPostsNewRoute: typeof AdminPostsNewRoute
   AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPostsIndexRoute: typeof AdminPostsIndexRoute
+  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
   AdminPostsEditSlugRoute: typeof AdminPostsEditSlugRoute
 }
 
@@ -269,6 +289,7 @@ const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminPostsNewRoute: AdminPostsNewRoute,
   AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPostsIndexRoute: AdminPostsIndexRoute,
+  AdminSettingsIndexRoute: AdminSettingsIndexRoute,
   AdminPostsEditSlugRoute: AdminPostsEditSlugRoute,
 }
 

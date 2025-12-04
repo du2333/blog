@@ -11,28 +11,58 @@ import {
   FileText,
   HardDrive,
   Link2,
+  Loader2,
+  Check,
+  Pencil,
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { MediaAsset } from "../types";
+import { MediaAsset } from "@/components/media/types";
 
 interface MediaPreviewModalProps {
   asset: MediaAsset | null;
   onClose: () => void;
+  onUpdateName: (key: string, name: string) => Promise<void>;
 }
 
-export function MediaPreviewModal({ asset, onClose }: MediaPreviewModalProps) {
+export function MediaPreviewModal({
+  asset,
+  onClose,
+  onUpdateName,
+}: MediaPreviewModalProps) {
   const isMounted = !!asset;
   const shouldRender = useDelayUnmount(isMounted, 200);
 
   // Persist asset during exit animation
   const [activeAsset, setActiveAsset] = useState<MediaAsset | null>(asset);
 
+  // Editing state
+  const [isEditing, setIsEditing] = useState(false);
+  const [editName, setEditName] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+
   useEffect(() => {
     if (asset) {
       setActiveAsset(asset);
+      setEditName(asset.fileName);
+      setIsEditing(false);
     }
   }, [asset]);
+
+  const handleSaveName = async () => {
+    if (!activeAsset || !editName.trim()) return;
+
+    setIsSaving(true);
+    try {
+      await onUpdateName(activeAsset.key, editName);
+      setActiveAsset((prev) => (prev ? { ...prev, fileName: editName } : null));
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Failed to update name:", error);
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   // Query linked posts via server function
   const { data: linkedPosts = [] } = useQuery({
@@ -103,9 +133,49 @@ export function MediaPreviewModal({ asset, onClose }: MediaPreviewModalProps) {
             <div className="text-[10px] font-mono text-zzz-orange uppercase tracking-widest mb-2">
               Asset_Inspector // V.01
             </div>
-            <h2 className="text-xl font-bold font-sans text-white uppercase break-all leading-tight">
-              {activeAsset.fileName}
-            </h2>
+
+            {isEditing ? (
+              <div className="flex items-center gap-2">
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="w-full bg-black border border-zzz-lime text-white text-sm font-bold p-1 focus:outline-none"
+                  autoFocus
+                />
+                <button
+                  onClick={handleSaveName}
+                  disabled={isSaving}
+                  className="text-zzz-lime hover:bg-zzz-lime/10 p-1 rounded"
+                >
+                  {isSaving ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Check size={16} />
+                  )}
+                </button>
+                <button
+                  onClick={() => setIsEditing(false)}
+                  disabled={isSaving}
+                  className="text-red-500 hover:bg-red-500/10 p-1 rounded"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <div className="flex justify-between items-start gap-2 group/edit">
+                <h2 className="text-xl font-bold font-sans text-white uppercase break-all leading-tight">
+                  {activeAsset.fileName}
+                </h2>
+                  <button
+                    onClick={() => setIsEditing(true)}
+                    className="text-gray-600 hover:text-zzz-cyan transition-colors opacity-0 group-hover/edit:opacity-100"
+                    title="Rename Asset"
+                  >
+                    <Pencil size={14} />
+                  </button>
+              </div>
+            )}
           </div>
 
           {/* Details List */}
@@ -163,9 +233,8 @@ export function MediaPreviewModal({ asset, onClose }: MediaPreviewModalProps) {
                   {linkedPosts.map((post) => (
                     <Link
                       key={post.id}
-                      to={"/post/$slug"}
+                      to={"/admin/posts/edit/$slug"}
                       params={{ slug: post.slug }}
-                      target="_blank"
                       className="block p-2 bg-zzz-dark/50 border border-zzz-gray/30 hover:border-zzz-cyan hover:text-zzz-cyan transition-colors group"
                     >
                       <div className="text-[10px] font-bold uppercase truncate flex items-center gap-1">

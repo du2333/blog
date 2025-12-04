@@ -1,4 +1,4 @@
-import { getMediaList } from "@/db/queries/media";
+import { getMediaList, getTotalMediaSize, updateMediaName } from "@/db/queries/media";
 import {
   getLinkedMediaKeys,
   getPostsByMediaKey,
@@ -93,4 +93,20 @@ export const getLinkedMediaKeysFn = createServerFn()
   )
   .handler(async ({ data }) => {
     return await getLinkedMediaKeys(data.keys);
+  });
+
+export const getTotalMediaSizeFn = createServerFn()
+  .handler(async () => {
+    return await getTotalMediaSize();
+  });
+
+export const updateMediaNameFn = createServerFn()
+  .inputValidator(
+    z.object({
+      key: z.string().min(1, "Image key is required"),
+      name: z.string().min(1, "Image name is required"),
+    })
+  )
+  .handler(async ({ data }) => {
+    return await updateMediaName(data.key, data.name);
   });

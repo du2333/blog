@@ -1,17 +1,19 @@
-import { useState, useMemo, useEffect } from "react";
+import {
+  checkMediaInUseFn,
+  deleteImageFn,
+  getLinkedMediaKeysFn,
+  getMediaFn,
+  getTotalMediaSizeFn,
+  updateMediaNameFn,
+} from "@/functions/images";
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   useInfiniteQuery,
   useMutation,
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  checkMediaInUseFn,
-  deleteImageFn,
-  getLinkedMediaKeysFn,
-  getMediaFn,
-} from "@/functions/images";
-import { useDebounce } from "@/hooks/use-debounce";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const useMediaLibrary = () => {
@@ -65,6 +67,11 @@ export const useMediaLibrary = () => {
     staleTime: 30000, // Cache for 30 seconds
   });
 
+  const { data: totalMediaSize } = useQuery({
+    queryKey: ["media", "totalSize"],
+    queryFn: () => getTotalMediaSizeFn(),
+  });
+
   // Build linkedMediaIds set
   const linkedMediaIds = useMemo(() => {
     return new Set(linkedKeysData ?? []);
@@ -109,12 +116,28 @@ export const useMediaLibrary = () => {
     },
   });
 
-  // Load more handler
-  const loadMore = () => {
+  // Update name mutation
+  const updateAsset = useMutation({
+    mutationFn: updateMediaNameFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["media"] });
+      toast.success("ASSET UPDATED", {
+        description: `Metadata changes saved`,
+      });
+    },
+    onError: (error) => {
+      toast.error("FAILED TO UPDATE METADATA", {
+        description: error.message,
+      });
+    },
+  });
+
+  // Load more handler - memoized to prevent IntersectionObserver recreation
+  const loadMore = useCallback(() => {
     if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
-  };
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   // Selection handlers
   const toggleSelection = (key: string) => {
@@ -196,5 +219,7 @@ export const useMediaLibrary = () => {
     hasMore: hasNextPage ?? false,
     isPending,
     linkedMediaIds,
+    totalMediaSize,
+    updateAsset,
   };
 };

@@ -10,71 +10,77 @@ export const useMediaUpload = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [queue, setQueue] = useState<UploadItem[]>([]);
   const [isDragging, setIsDragging] = useState(false);
+
   const processingRef = useRef(false);
+  const isMountedRef = useRef(true);
+
+  // 监听组件挂载和卸载
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
 
   // Upload mutation
   const uploadMutation = useMutation({
     mutationFn: async (file: File) => {
       const formData = new FormData();
       formData.append("image", file);
-      return await uploadImageFn({ data: formData });
+      const result = await uploadImageFn({ data: formData });
+      return result;
     },
   });
 
   // Process upload queue
   useEffect(() => {
-    let isCancelled = false;
-
     const processQueue = async () => {
-      // Find next waiting item
       const waitingIndex = queue.findIndex((item) => item.status === "WAITING");
-      if (waitingIndex === -1 || processingRef.current) return;
-
-      processingRef.current = true;
       const item = queue[waitingIndex];
 
+      if (waitingIndex === -1 || processingRef.current) {
+        return;
+      }
+
+      // LOCK
+      processingRef.current = true;
+
       if (!item.file) {
-        // No file, mark as error
-        if (!isCancelled) {
-          setQueue((prev) =>
-            prev.map((q, i) =>
-              i === waitingIndex
-                ? { ...q, status: "ERROR" as const, log: "> ERROR: NO FILE" }
-                : q
-            )
-          );
-        }
+        setQueue((prev) =>
+          prev.map((q, i) =>
+            i === waitingIndex
+              ? { ...q, status: "ERROR", log: "> ERROR: NO FILE" }
+              : q
+          )
+        );
         processingRef.current = false;
         return;
       }
 
-      // Update to uploading
-      if (!isCancelled) {
-        setQueue((prev) =>
-          prev.map((q, i) =>
-            i === waitingIndex
-              ? {
-                  ...q,
-                  status: "UPLOADING" as const,
-                  progress: 50,
-                  log: "> UPLOAD_STREAM: PACKETS SENDING...",
-                }
-              : q
-          )
-        );
-      }
+      // Update to UPLOADING
+      setQueue((prev) =>
+        prev.map((q, i) =>
+          i === waitingIndex
+            ? {
+                ...q,
+                status: "UPLOADING",
+                progress: 50,
+                log: "> UPLOAD_STREAM: PACKETS SENDING...",
+              }
+            : q
+        )
+      );
 
       try {
         await uploadMutation.mutateAsync(item.file);
 
-        // Mark as complete (check if effect was cancelled)
-        if (!isCancelled) {
+        if (isMountedRef.current) {
           setQueue((prev) =>
             prev.map((q, i) =>
               i === waitingIndex
                 ? {
                     ...q,
-                    status: "COMPLETE" as const,
+                    status: "COMPLETE",
                     progress: 100,
                     log: "> UPLOAD COMPLETE. ASSET INDEXED.",
                   }
@@ -83,19 +89,17 @@ export const useMediaUpload = () => {
           );
 
           toast.success(`UPLOAD COMPLETE: ${item.name}`);
-
-          // Invalidate queries to refresh media list
           queryClient.invalidateQueries({ queryKey: ["media"] });
+        } else {
         }
       } catch (error) {
-        // Mark as error (check if effect was cancelled)
-        if (!isCancelled) {
+        if (isMountedRef.current) {
           setQueue((prev) =>
             prev.map((q, i) =>
               i === waitingIndex
                 ? {
                     ...q,
-                    status: "ERROR" as const,
+                    status: "ERROR",
                     progress: 0,
                     log: `> ERROR: ${
                       error instanceof Error ? error.message : "UPLOAD FAILED"
@@ -104,19 +108,15 @@ export const useMediaUpload = () => {
                 : q
             )
           );
-
           toast.error(`UPLOAD FAILED: ${item.name}`);
         }
+      } finally {
+        // 关键修复：使用 finally 确保锁一定会被释放
+        processingRef.current = false;
       }
-
-      processingRef.current = false;
     };
 
     processQueue();
-
-    return () => {
-      isCancelled = true;
-    };
   }, [queue, uploadMutation, queryClient]);
 
   const processFiles = (files: File[]) => {

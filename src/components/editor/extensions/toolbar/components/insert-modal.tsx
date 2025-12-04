@@ -272,14 +272,9 @@ const InsertModal: React.FC<InsertModalProps> = ({
               value={inputUrl}
               onChange={(e) => {
                 setInputUrl(e.target.value);
-                // Only deselect if user manually types something different
+                // deselect media if user types something different
                 if (selectedMediaKey) {
-                  const selected = mediaItems.find(
-                    (m) => m.key === selectedMediaKey
-                  );
-                  if (selected && selected.url !== e.target.value) {
-                    setSelectedMediaKey(null);
-                  }
+                  setSelectedMediaKey(null);
                 }
               }}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}

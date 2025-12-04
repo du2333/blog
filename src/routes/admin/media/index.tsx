@@ -9,6 +9,7 @@ import { useMediaLibrary, useMediaUpload } from "@/components/media/hooks";
 import { MediaAsset } from "@/components/media/types";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import TechButton from "@/components/ui/tech-button";
+import { formatBytes } from "@/lib/files";
 import { createFileRoute } from "@tanstack/react-router";
 import { Upload } from "lucide-react";
 import { useState } from "react";
@@ -37,6 +38,8 @@ function MediaLibrary() {
     isLoadingMore,
     isPending,
     linkedMediaIds,
+    totalMediaSize,
+    updateAsset,
   } = useMediaLibrary();
 
   const {
@@ -81,7 +84,8 @@ function MediaLibrary() {
       {/* Stats */}
       <div className="flex gap-8 text-xs font-mono text-gray-500 border-b border-zzz-gray pb-4 mb-4">
         <div>
-          STORAGE: <span className="text-white">1.2 GB / 5.0 GB</span>
+          STORAGE:{" "}
+          <span className="text-white">{formatBytes(totalMediaSize ?? 0)}</span>
         </div>
         <div>
           ITEMS: <span className="text-white">{totalCount}</span>
@@ -148,6 +152,9 @@ function MediaLibrary() {
       <MediaPreviewModal
         asset={previewAsset}
         onClose={() => setPreviewAsset(null)}
+        onUpdateName={async (key, name) => {
+          await updateAsset.mutateAsync({ data: { key, name } });
+        }}
       />
     </div>
   );

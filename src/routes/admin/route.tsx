@@ -61,7 +61,7 @@ function AdminLayout() {
       <aside
         className={`
         fixed inset-y-0 left-0 z-60 w-64 border-r border-zzz-gray flex flex-col bg-zzz-black/95 backdrop-blur md:bg-zzz-dark/50 
-        transform transition-transform duration-300 ease-in-out md:static md:translate-x-0
+        transform transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
         ${
           isMobileSidebarOpen
             ? "translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
@@ -113,13 +113,12 @@ function AdminLayout() {
           <div className="px-4 text-[10px] text-gray-600 font-bold mb-2">
             SYSTEM
           </div>
-          <button
-            className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors cursor-not-allowed opacity-50"
-            disabled
-            title="Coming soon"
+          <Link
+            to="/admin/settings"
+            className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors"
           >
             <Settings size={16} /> Config
-          </button>
+          </Link>
         </nav>
 
         {/* User Status */}

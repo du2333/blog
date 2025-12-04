@@ -1,6 +1,6 @@
 import { getDb } from "@/db";
 import { MediaTable } from "@/db/schema";
-import { and, desc, eq, lt, sql, type SQL } from "drizzle-orm";
+import { and, desc, eq, lt, sql, sum, type SQL } from "drizzle-orm";
 import { escapeLikeString } from "./helper";
 
 export type Media = typeof MediaTable.$inferSelect;
@@ -16,6 +16,14 @@ export async function insertMedia(
 export async function deleteMedia(key: string) {
   const db = getDb();
   await db.delete(MediaTable).where(eq(MediaTable.key, key));
+}
+
+export async function updateMediaName(key: string, name: string) {
+  const db = getDb();
+  await db
+    .update(MediaTable)
+    .set({ fileName: name })
+    .where(eq(MediaTable.key, key));
 }
 
 const DEFAULT_PAGE_SIZE = 20;
@@ -39,8 +47,8 @@ export async function getMediaList(options?: {
   if (cursor) {
     conditions.push(lt(MediaTable.id, cursor));
   }
-    if (search) {
-      const pattern = `%${escapeLikeString(search)}%`;
+  if (search) {
+    const pattern = `%${escapeLikeString(search)}%`;
     conditions.push(sql`${MediaTable.fileName} LIKE ${pattern} ESCAPE '\\'`);
   }
 
@@ -60,4 +68,14 @@ export async function getMediaList(options?: {
   const nextCursor = hasMore ? items[items.length - 1]?.id ?? null : null;
 
   return { items, nextCursor };
+}
+
+export async function getTotalMediaSize() {
+  const db = getDb();
+
+  const [result] = await db
+    .select({ total: sum(MediaTable.sizeInBytes) })
+    .from(MediaTable);
+
+  return Number(result?.total ?? 0);
 }
