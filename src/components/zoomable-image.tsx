@@ -40,7 +40,14 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
         className={`relative group cursor-zoom-in inline-block w-full h-auto`}
         onClick={() => setIsOpen(true)}
       >
-        <img src={src} alt={alt} className={className} {...props} />
+        <img
+          src={src}
+          alt={alt}
+          loading="lazy"
+          decoding="async"
+          className={className}
+          {...props}
+        />
 
         {/* Hover Hint Overlay */}
         {showHint && (
@@ -105,6 +112,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
               <img
                 src={src}
                 alt={alt}
+                loading="eager"
                 className="max-w-full max-h-full object-contain shadow-2xl drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-zzz-gray/20 bg-black"
               />
             </div>
