@@ -1,5 +1,6 @@
 import { getContentTypeFromKey } from "@/lib/files";
-import { waitUntil, env } from "cloudflare:workers";
+import { cacheGet, cachePut } from "@/lib/cache";
+import { env } from "cloudflare:workers";
 
 /**
  * 处理图片请求（支持 GET 和 HEAD）
@@ -29,17 +30,18 @@ export async function handleImageRequest(
   }
 
   // 3. 缓存检查逻辑
-  const cache = (caches as any).default as Cache;
   const cacheKey = new Request(url.toString(), request);
-  let response = await cache.match(cacheKey);
+  const cached = await cacheGet(cacheKey);
 
-  if (response) {
-    if (includeBody) return response;
+  if (cached) {
+    if (includeBody) return cached;
     return new Response(null, {
-      headers: response.headers,
-      status: response.status,
+      headers: cached.headers,
+      status: cached.status,
     });
   }
+
+  let response: Response;
 
   // 4. 构建参数对象给 Cloudflare
   const transformOptions: any = { quality: 80 }; // 默认值
@@ -88,7 +90,7 @@ export async function handleImageRequest(
 
     if (includeBody) {
       const responseForUser = responseToCache.clone();
-      waitUntil(cache.put(cacheKey, responseToCache));
+      await cachePut(cacheKey, responseToCache);
       return responseForUser;
     } else {
       return new Response(null, { headers: newHeaders });

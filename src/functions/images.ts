@@ -1,3 +1,9 @@
+import { getMediaList } from "@/db/queries/media";
+import {
+  getLinkedMediaKeys,
+  getPostsByMediaKey,
+  isMediaInUse,
+} from "@/db/queries/post-media";
 import { deleteImage, uploadImage } from "@/lib/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -45,4 +51,46 @@ export const deleteImageFn = createServerFn()
   .handler(async ({ data }) => {
     const { key } = data;
     await deleteImage(key);
+  });
+
+export const getMediaFn = createServerFn()
+  .inputValidator(
+    z.object({
+      cursor: z.number().optional(),
+      limit: z.number().optional(),
+      search: z.string().optional(),
+    })
+  )
+  .handler(async ({ data }) => {
+    return await getMediaList(data);
+  });
+
+export const checkMediaInUseFn = createServerFn()
+  .inputValidator(
+    z.object({
+      key: z.string().min(1, "Image key is required"),
+    })
+  )
+  .handler(async ({ data }) => {
+    return await isMediaInUse(data.key);
+  });
+
+export const getLinkedPostsFn = createServerFn()
+  .inputValidator(
+    z.object({
+      key: z.string().min(1, "Image key is required"),
+    })
+  )
+  .handler(async ({ data }) => {
+    return await getPostsByMediaKey(data.key);
+  });
+
+export const getLinkedMediaKeysFn = createServerFn()
+  .inputValidator(
+    z.object({
+      keys: z.array(z.string()),
+    })
+  )
+  .handler(async ({ data }) => {
+    return await getLinkedMediaKeys(data.keys);
   });

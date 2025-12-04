@@ -2,10 +2,15 @@ import { getDb } from "@/db";
 import { buildPostWhereClause, uniqueOrThrow } from "@/db/queries/helper";
 import { PostCategory, PostStatus, PostsTable } from "@/db/schema";
 import { and, count, desc, eq, lte, ne } from "drizzle-orm";
+import { syncPostMedia } from "@/db/queries/post-media";
 
 export async function insertPost(data: typeof PostsTable.$inferInsert) {
   const db = getDb();
-  await db.insert(PostsTable).values(data);
+  const [post] = await db.insert(PostsTable).values(data).returning();
+  if (post.contentJson) {
+    await syncPostMedia(post.id, post.contentJson);
+  }
+  return post;
 }
 
 export async function getPosts(options: {
@@ -95,11 +100,10 @@ export async function updatePost(
   data: Partial<typeof PostsTable.$inferInsert>
 ) {
   const db = getDb();
-  // Remove undefined values from the data object
-  const cleanData = Object.fromEntries(
-    Object.entries(data).filter(([_, v]) => v !== undefined)
-  );
-  await db.update(PostsTable).set(cleanData).where(eq(PostsTable.id, id));
+  await db.update(PostsTable).set(data).where(eq(PostsTable.id, id));
+  if (data.contentJson !== undefined) {
+    await syncPostMedia(id, data.contentJson);
+  }
 }
 
 export async function deletePost(id: number) {

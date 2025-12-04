@@ -1,19 +1,5 @@
-export function isValidUrl(url: string) {
-  return /^https?:\/\/\S+$/.test(url);
-}
-
-export function getUrlFromString(str: string) {
-  if (isValidUrl(str)) {
-    return str;
-  }
-  try {
-    if (str.includes(".") && !str.includes(" ")) {
-      return new URL(`https://${str}`).toString();
-    }
-  } catch {
-    return null;
-  }
-}
+import { extractImageKey } from "@/lib/files";
+import type { JSONContent } from "@tiptap/react";
 
 export function slugify(text: string) {
   if (!text) return "";
@@ -40,4 +26,19 @@ export function slugify(text: string) {
       .replace(/^-+/, "")
       .replace(/-+$/, "")
   );
+}
+
+export function extractAllImageKeys(doc: JSONContent | null): string[] {
+  const keys: string[] = [];
+
+  function traverse(node: JSONContent) {
+    if (node.type === "image" && node.attrs?.src) {
+      const key = extractImageKey(node.attrs.src);
+      if (key) keys.push(key);
+    }
+    if (node.content) node.content.forEach(traverse);
+  }
+
+  if (doc) traverse(doc);
+  return Array.from(new Set(keys)); // 去重
 }

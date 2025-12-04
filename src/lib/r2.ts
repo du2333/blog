@@ -1,14 +1,15 @@
-import { env, waitUntil } from "cloudflare:workers";
+import { deleteMedia, insertMedia, type Media } from "@/db/queries/media";
+import { cacheDelete } from "@/lib/cache";
 import { generateKey } from "@/lib/files";
+import { env, waitUntil } from "cloudflare:workers";
 
 /**
- * 上传图片到 R2，返回优化后的 URL
- * 默认应用 quality=80 的优化，前端可以通过添加查询参数进一步自定义
+ * 上传图片到 R2，返回完整的 Media 对象
  */
 export async function uploadImage(
   image: File,
   dimensions?: { width: number; height: number }
-) {
+): Promise<Media> {
   const key = generateKey(image.name);
   const contentType = image.type;
 
@@ -23,23 +24,22 @@ export async function uploadImage(
 
   const url = `/images/${key}`;
 
-  // TODO: 写入数据库
+  const media = await insertMedia({
+    key,
+    url,
+    fileName: image.name,
+    width: dimensions?.width,
+    height: dimensions?.height,
+    mimeType: contentType,
+    sizeInBytes: image.size,
+  });
 
-  return {
-    previewUrl: `${url}?quality=80`,
-  };
+  return media;
 }
 
 export async function deleteImage(key: string) {
   await env.R2.delete(key);
-  // TODO: 删除数据库记录
+  await deleteMedia(key);
 
-  // clear cache
-  const promise = new Promise((resolve, reject) => {
-    const cache = (caches as any).default as Cache;
-    const cacheKey = new Request(`/images/${key}`, { method: "GET" });
-    cache.delete(cacheKey).then(resolve).catch(reject);
-  });
-
-  waitUntil(promise);
+  waitUntil(cacheDelete(`/images/${key}`));
 }

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, memo } from "react";
+import React, { useState, useEffect, memo, useRef } from "react";
 import {
   X,
   Grid,
@@ -6,10 +6,14 @@ import {
   Check,
   Search,
   Image as ImageIcon,
+  Loader2,
 } from "lucide-react";
 import TechButton from "@/components/ui/tech-button";
-import { MOCK_MEDIA } from "@/lib/constants";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
+import { useMediaPicker } from "@/components/media/hooks";
+import { MediaAsset } from "@/components/media/types";
+import { getOptimizedImageUrl } from "@/lib/files";
+import { LoadingFallback } from "@/components/loading-fallback";
 
 export type ModalType = "LINK" | "IMAGE" | null;
 
@@ -27,9 +31,9 @@ const MediaItem = memo(
     isSelected,
     onSelect,
   }: {
-    media: (typeof MOCK_MEDIA)[0];
+    media: MediaAsset;
     isSelected: boolean;
-    onSelect: (m: (typeof MOCK_MEDIA)[0]) => void;
+    onSelect: (m: MediaAsset) => void;
   }) => {
     const [isLoaded, setIsLoaded] = useState(false);
 
@@ -53,8 +57,8 @@ const MediaItem = memo(
         )}
 
         <img
-          src={media.url}
-          alt={media.name}
+          src={getOptimizedImageUrl(media.key, 300)}
+          alt={media.fileName}
           className={`w-full h-full object-cover transition-opacity duration-500 ${
             isLoaded ? "opacity-100" : "opacity-0"
           }`}
@@ -72,7 +76,7 @@ const MediaItem = memo(
         )}
 
         <div className="absolute bottom-0 left-0 right-0 bg-black/90 p-1 text-[9px] font-mono text-white truncate px-2 opacity-0 group-hover:opacity-100 transition-opacity">
-          {media.name}
+          {media.fileName}
         </div>
       </div>
     );
@@ -96,49 +100,64 @@ const InsertModal: React.FC<InsertModalProps> = ({
   }, [type]);
 
   const [inputUrl, setInputUrl] = useState(initialUrl);
-  const [selectedMediaId, setSelectedMediaId] = useState<string | null>(null);
+  const [selectedMediaKey, setSelectedMediaKey] = useState<string | null>(null);
 
-  // Search State
-  const [searchTerm, setSearchTerm] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  // Use media picker hook for real data
+  const {
+    mediaItems,
+    searchQuery,
+    setSearchQuery,
+    loadMore,
+    hasMore,
+    isLoadingMore,
+    isPending,
+  } = useMediaPicker();
 
-  // Debounce logic to prevent grid re-renders on every keystroke
+  // Intersection observer for infinite scroll
+  const observerTarget = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchTerm);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [searchTerm]);
+    const target = observerTarget.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !isLoadingMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1 }
+    );
+
+    observer.observe(target);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, [hasMore, isLoadingMore, loadMore]);
 
   useEffect(() => {
     if (type) {
       setInputUrl(initialUrl);
-      setSelectedMediaId(null);
-      setSearchTerm("");
+      setSelectedMediaKey(null);
+      setSearchQuery("");
     }
-  }, [initialUrl, type]);
+  }, [initialUrl, type, setSearchQuery]);
 
   const handleSubmit = () => {
     onSubmit(inputUrl);
   };
 
-  const handleMediaSelect = (media: (typeof MOCK_MEDIA)[0]) => {
-    if (selectedMediaId === media.id) {
-      setSelectedMediaId(null);
+  const handleMediaSelect = (media: MediaAsset) => {
+    if (selectedMediaKey === media.key) {
+      setSelectedMediaKey(null);
       setInputUrl("");
     } else {
-      setSelectedMediaId(media.id);
+      setSelectedMediaKey(media.key);
+      // Use the original URL (server applies quality=80 by default)
       setInputUrl(media.url);
     }
   };
-
-  const filteredMedia = useMemo(() => {
-    return MOCK_MEDIA.filter(
-      (m) =>
-        m.type === "IMAGE" &&
-        m.name.toLowerCase().includes(debouncedSearch.toLowerCase())
-    );
-  }, [debouncedSearch]);
 
   if (!shouldRender) return null;
 
@@ -198,28 +217,42 @@ const InsertModal: React.FC<InsertModalProps> = ({
                 <input
                   type="text"
                   placeholder="SEARCH_MEDIA_BANK..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-3 focus:border-zzz-cyan focus:outline-none transition-colors"
                 />
               </div>
 
               {/* Media Grid */}
               <div className="flex-1 overflow-y-auto custom-scrollbar border border-zzz-gray/20 bg-zzz-dark/20 p-2 min-h-[200px]">
-                {filteredMedia.length === 0 ? (
+                {isPending ? (
+                  <LoadingFallback />
+                ) : mediaItems.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-gray-500 font-mono text-xs">
                     NO_ASSETS_FOUND
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 gap-2 content-start">
-                    {filteredMedia.map((media) => (
+                    {mediaItems.map((media) => (
                       <MediaItem
-                        key={media.id}
+                        key={media.key}
                         media={media}
-                        isSelected={selectedMediaId === media.id}
+                        isSelected={selectedMediaKey === media.key}
                         onSelect={handleMediaSelect}
                       />
                     ))}
+                    {/* Sentinel for infinite scroll */}
+                    <div
+                      ref={observerTarget}
+                      className="col-span-3 h-4 flex items-center justify-center"
+                    >
+                      {isLoadingMore && (
+                        <Loader2
+                          size={14}
+                          className="animate-spin text-zzz-lime"
+                        />
+                      )}
+                    </div>
                   </div>
                 )}
               </div>
@@ -240,12 +273,12 @@ const InsertModal: React.FC<InsertModalProps> = ({
               onChange={(e) => {
                 setInputUrl(e.target.value);
                 // Only deselect if user manually types something different
-                if (selectedMediaId) {
-                  const selected = MOCK_MEDIA.find(
-                    (m) => m.id === selectedMediaId
+                if (selectedMediaKey) {
+                  const selected = mediaItems.find(
+                    (m) => m.key === selectedMediaKey
                   );
                   if (selected && selected.url !== e.target.value) {
-                    setSelectedMediaId(null);
+                    setSelectedMediaKey(null);
                   }
                 }
               }}
