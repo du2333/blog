@@ -1,8 +1,8 @@
+import { Logo } from "@/components/logo";
 import TechButton from "@/components/ui/tech-button";
 import { Link } from "@tanstack/react-router";
-import { Disc, LayoutGrid, X, Zap } from "lucide-react";
+import { Disc, LayoutGrid, X } from "lucide-react";
 import { useState } from "react";
-import { Logo } from "@/components/logo";
 
 const navOptions = [
   { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
