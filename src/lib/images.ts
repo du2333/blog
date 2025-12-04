@@ -52,7 +52,14 @@ export async function handleImageRequest(
   if (searchParams.has("quality"))
     transformOptions.quality = parseInt(searchParams.get("quality")!);
   if (searchParams.has("fit")) transformOptions.fit = searchParams.get("fit");
-  // format 留空，让 Cloudflare 自动根据 Accept 头协商 (WebP/AVIF)
+  const accept = request.headers.get("Accept") || "";
+  if (/image\/avif/.test(accept)) {
+    transformOptions.format = "avif";
+  } else if (/image\/webp/.test(accept)) {
+    transformOptions.format = "webp";
+  } else {
+    transformOptions.format = "auto";
+  }
 
   // 5. 应用 transformation
   try {
