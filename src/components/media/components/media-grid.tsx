@@ -32,7 +32,7 @@ function MediaCard({
   onPreview: (asset: MediaAsset) => void;
   selectionModeActive: boolean;
 }) {
-  const thumbnailUrl = getOptimizedImageUrl(asset.key, 300);
+  const thumbnailUrl = getOptimizedImageUrl(asset.key);
 
   const handleStandardClick = () => {
     if (selectionModeActive) {
