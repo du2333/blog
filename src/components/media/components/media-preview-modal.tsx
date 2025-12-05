@@ -93,7 +93,7 @@ export function MediaPreviewModal({
       {/* Close Button (Absolute Top Right) */}
       <button
         onClick={onClose}
-        className={`absolute top-6 right-6 z-50 text-gray-500 hover:text-white transition-all p-2 bg-black/50 rounded-full border border-transparent hover:border-zzz-gray ${
+        className={`absolute top-4 right-4 z-50 text-gray-500 hover:text-white transition-all p-2 bg-black/80 rounded-full border border-zzz-gray hover:border-white ${
           isMounted ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
@@ -102,7 +102,7 @@ export function MediaPreviewModal({
 
       <div
         className={`
-        w-full max-w-6xl h-[85vh] flex flex-col md:flex-row bg-zzz-dark border border-zzz-gray shadow-[0_0_100px_rgba(0,0,0,0.8)] relative overflow-hidden clip-corner-tr z-10
+        w-full max-w-6xl h-full md:h-[85vh] flex flex-col md:flex-row bg-zzz-dark border border-zzz-gray shadow-[0_0_100px_rgba(0,0,0,0.8)] relative overflow-hidden clip-corner-tr z-10
         ${
           isMounted
             ? "animate-in fade-in zoom-in-95"
@@ -111,7 +111,7 @@ export function MediaPreviewModal({
       `}
       >
         {/* --- Image Viewport (Left/Top) --- */}
-        <div className="flex-1 bg-black relative flex items-center justify-center overflow-hidden p-8 group">
+        <div className="h-[40vh] md:h-auto md:flex-1 bg-black relative flex items-center justify-center overflow-hidden p-8 group border-b md:border-b-0 md:border-r border-zzz-gray">
           {/* Grid Background */}
           <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none"></div>
 
@@ -127,9 +127,9 @@ export function MediaPreviewModal({
         </div>
 
         {/* --- Metadata Sidebar (Right/Bottom) --- */}
-        <div className="w-full md:w-80 bg-zzz-black border-l border-zzz-gray flex flex-col shrink-0">
-          {/* Header */}
-          <div className="p-6 border-b border-zzz-gray">
+        <div className="flex-1 md:w-80 md:flex-none bg-zzz-black flex flex-col min-h-0">
+          {/* Header with Safe Area for Close Button */}
+          <div className="p-6 border-b border-zzz-gray pr-16 relative">
             <div className="text-[10px] font-mono text-zzz-orange uppercase tracking-widest mb-2">
               Asset_Inspector // V.01
             </div>
@@ -167,13 +167,13 @@ export function MediaPreviewModal({
                 <h2 className="text-xl font-bold font-sans text-white uppercase break-all leading-tight">
                   {activeAsset.fileName}
                 </h2>
-                  <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-gray-600 hover:text-zzz-cyan transition-colors opacity-0 group-hover/edit:opacity-100"
-                    title="Rename Asset"
-                  >
-                    <Pencil size={14} />
-                  </button>
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="text-gray-600 hover:text-zzz-cyan transition-colors opacity-0 group-hover/edit:opacity-100"
+                  title="Rename Asset"
+                >
+                  <Pencil size={14} />
+                </button>
               </div>
             )}
           </div>
@@ -264,7 +264,7 @@ export function MediaPreviewModal({
           </div>
 
           {/* Actions */}
-          <div className="p-6 border-t border-zzz-gray bg-zzz-dark/30">
+          <div className="p-6 border-t border-zzz-gray bg-zzz-dark/30 shrink-0">
             <a
               href={`${activeAsset.url}?original=true`}
               download={activeAsset.fileName}
