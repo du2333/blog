@@ -37,7 +37,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
   return (
     <>
       <div
-        className={`relative group cursor-zoom-in inline-block w-full h-auto`}
+        className={`relative group cursor-zoom-in block w-full h-auto`}
         onClick={() => setIsOpen(true)}
       >
         <img
@@ -45,7 +45,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
           alt={alt}
           loading="lazy"
           decoding="async"
-          className={className}
+          className={`${className} block`}
           {...props}
         />
 
