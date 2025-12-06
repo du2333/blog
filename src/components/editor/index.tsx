@@ -1,4 +1,5 @@
 import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
+import { ImageUpload } from "@/components/editor/extensions/upload-image";
 import { ImageExtension } from "@/components/editor/extensions/images";
 import InsertModal, {
   ModalType,
@@ -11,11 +12,45 @@ import {
   ListItemExtension,
   OrderedListExtension,
 } from "@/components/editor/extensions/typography/list";
+import { uploadImageFn } from "@/functions/images";
+import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
-import type { JSONContent } from "@tiptap/react";
+import type { Editor as TiptapEditor, JSONContent } from "@tiptap/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useState } from "react";
+import { toast } from "sonner";
+
+const ALLOWED_IMAGE_MIME_TYPES = [
+  "image/png",
+  "image/jpeg",
+  "image/jpg",
+  "image/gif",
+  "image/webp",
+];
+
+async function handleImageUpload(file: File): Promise<string> {
+  const formData = new FormData();
+  formData.append("image", file);
+  const result = await uploadImageFn({ data: formData });
+  return result.url;
+}
+
+function handleFileDrop(editor: TiptapEditor, files: File[], pos: number) {
+  files.forEach((file) => {
+    if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
+      editor.commands.uploadImage(file, pos);
+    }
+  });
+}
+
+function handleFilePaste(editor: TiptapEditor, files: File[]) {
+  files.forEach((file) => {
+    if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
+      editor.commands.uploadImage(file);
+    }
+  });
+}
 
 export const extensions = [
   StarterKit.configure({
@@ -80,6 +115,19 @@ export const extensions = [
     defaultTheme: "andromeeda",
   }),
   ImageExtension,
+  ImageUpload.configure({
+    onUpload: handleImageUpload,
+    onError: (error) => {
+      toast.error("IMAGE UPLOAD FAILED", {
+        description: error.message,
+      });
+    },
+  }),
+  FileHandler.configure({
+    allowedMimeTypes: ALLOWED_IMAGE_MIME_TYPES,
+    onDrop: handleFileDrop,
+    onPaste: handleFilePaste,
+  }),
   Placeholder.configure({
     placeholder: "INITIATE LOG ENTRY... (Start typing)",
   }),
