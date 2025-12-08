@@ -1,3 +1,4 @@
+import { useDebounce } from "@/hooks/use-debounce";
 import {
   checkMediaInUseFn,
   deleteImageFn,
@@ -6,7 +7,6 @@ import {
   getTotalMediaSizeFn,
   updateMediaNameFn,
 } from "@/lib/functions/images";
-import { useDebounce } from "@/hooks/use-debounce";
 import {
   useInfiniteQuery,
   useMutation,
