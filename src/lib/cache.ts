@@ -10,6 +10,23 @@ function getCache(): Cache {
 }
 
 /**
+ * 统一缓存键：强制使用虚拟 host，避免相对路径/不同域导致的 URL 解析错误或键不一致。
+ */
+function normalizeCacheKey(request: Request | string): Request {
+  if (typeof request === "string") {
+    const url = new URL(request, "http://cache");
+    return new Request(url.toString());
+  }
+
+  const url = new URL(request.url);
+  url.protocol = "http";
+  url.hostname = "cache";
+  url.port = "";
+
+  return new Request(url.toString(), request);
+}
+
+/**
  * 从缓存中获取响应
  * @param request - 请求对象或 URL 字符串
  * @returns 缓存的响应，如果未命中则返回 null
@@ -18,7 +35,7 @@ export async function cacheGet(
   request: Request | string
 ): Promise<Response | null> {
   const cache = getCache();
-  const cacheKey = typeof request === "string" ? new Request(request) : request;
+  const cacheKey = normalizeCacheKey(request);
   const response = await cache.match(cacheKey);
   return response ?? null;
 }
@@ -39,11 +56,20 @@ export async function cachePut(
   }
 ): Promise<void> {
   const cache = getCache();
-  const cacheKey = typeof request === "string" ? new Request(request) : request;
+  const cacheKey = normalizeCacheKey(request);
   const { async: isAsync = true } = options ?? {};
 
   if (isAsync) {
-    executionCtx.waitUntil(cache.put(cacheKey, response));
+    executionCtx.waitUntil(
+      (async (): Promise<void> => {
+        try {
+          await cache.put(cacheKey, response);
+          console.log(`Cache put: ${cacheKey.url}`);
+        } catch (error) {
+          console.error("Error putting cache:", error);
+        }
+      })()
+    );
   } else {
     await cache.put(cacheKey, response);
   }
@@ -56,8 +82,13 @@ export async function cachePut(
  */
 export async function cacheDelete(request: Request | string): Promise<boolean> {
   const cache = getCache();
-  const cacheKey = typeof request === "string" ? new Request(request) : request;
-  return cache.delete(cacheKey);
+  const cacheKey = normalizeCacheKey(request);
+  try {
+    return await cache.delete(cacheKey);
+  } catch (error) {
+    console.error("Error deleting cache:", error);
+    return false;
+  }
 }
 
 /**
