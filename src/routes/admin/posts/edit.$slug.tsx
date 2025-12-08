@@ -73,6 +73,9 @@ function EditPost() {
     // Invalidate cache to ensure fresh data on next visit
     queryClient.invalidateQueries({ queryKey: ["post", slug] });
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    queryClient.invalidateQueries({
+      predicate: (q) => q.queryKey[0] === "linkedMediaKeys",
+    });
 
     // Update URL silently if slug changed (no page reload)
     if (data.slug !== slug) {

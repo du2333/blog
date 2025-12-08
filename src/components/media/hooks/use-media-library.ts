@@ -59,9 +59,15 @@ export const useMediaLibrary = () => {
   // Get all visible media keys
   const mediaKeys = useMemo(() => mediaItems.map((m) => m.key), [mediaItems]);
 
+  // Stable query key for linked media; use joined keys to avoid referential changes
+  const linkedQueryKey = useMemo(
+    () => ["linkedMediaKeys", mediaKeys.join("|")],
+    [mediaKeys]
+  );
+
   // Query linked status for visible media items
   const { data: linkedKeysData } = useQuery({
-    queryKey: ["linkedMediaKeys", mediaKeys],
+    queryKey: linkedQueryKey,
     queryFn: () => getLinkedMediaKeysFn({ data: { keys: mediaKeys } }),
     enabled: mediaKeys.length > 0,
     staleTime: 30000, // Cache for 30 seconds
