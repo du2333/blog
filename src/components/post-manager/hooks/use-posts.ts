@@ -1,4 +1,8 @@
-import { deletePostFn, getPostsCountFn, getPostsFn } from "@/functions/posts";
+import {
+  deletePostFn,
+  getPostsCountFn,
+  getPostsFn,
+} from "@/lib/functions/posts";
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";

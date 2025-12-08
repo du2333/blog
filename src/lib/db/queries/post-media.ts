@@ -1,12 +1,15 @@
-import { getDb } from "@/db";
-import { MediaTable, PostMediaTable, PostsTable } from "@/db/schema";
+import { type DB } from "@/lib/db";
+import { MediaTable, PostMediaTable, PostsTable } from "@/lib/db/schema";
 import { extractAllImageKeys } from "@/lib/editor-utils";
 import type { JSONContent } from "@tiptap/react";
 import { eq, inArray } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 
-export async function syncPostMedia(postId: number, contentJson: JSONContent | null) {
-  const db = getDb();
+export async function syncPostMedia(
+  db: DB,
+  postId: number,
+  contentJson: JSONContent | null
+) {
   // 1. 获取文章中使用的图片 key
   const usedKeys = extractAllImageKeys(contentJson);
 
@@ -39,8 +42,7 @@ export async function syncPostMedia(postId: number, contentJson: JSONContent | n
   await db.batch([deleteQuery, ...batchQueries]);
 }
 
-export async function getPostsByMediaKey(key: string) {
-  const db = getDb();
+export async function getPostsByMediaKey(db: DB, key: string) {
   const posts = await db
     .select({
       id: PostsTable.id,
@@ -61,9 +63,7 @@ export async function getPostsByMediaKey(key: string) {
 /**
  * 检查媒体是否被文章使用
  */
-export async function isMediaInUse(key: string): Promise<boolean> {
-  const db = getDb();
-
+export async function isMediaInUse(db: DB, key: string): Promise<boolean> {
   const result = await db
     .select({ id: PostMediaTable.postId })
     .from(PostMediaTable)
@@ -77,11 +77,12 @@ export async function isMediaInUse(key: string): Promise<boolean> {
 /**
  * 批量检查
  */
-export async function getLinkedMediaKeys(keys: string[]): Promise<string[]> {
+export async function getLinkedMediaKeys(
+  db: DB,
+  keys: string[]
+): Promise<string[]> {
   if (keys.length === 0) return [];
 
-  const db = getDb();
-  
   // 查询哪些 keys 存在于中间表中
   const results = await db
     .selectDistinct({ key: MediaTable.key }) // 只需要 key

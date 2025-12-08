@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { uploadImageFn } from "@/functions/images";
+import { uploadImageFn } from "@/lib/functions/images";
 import { UploadItem } from "../types";
 import { formatBytes } from "@/lib/files";
 import { toast } from "sonner";

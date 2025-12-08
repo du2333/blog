@@ -1,28 +1,29 @@
-import { getDb } from "@/db";
-import { buildPostWhereClause, uniqueOrThrow } from "@/db/queries/helper";
-import { PostCategory, PostStatus, PostsTable } from "@/db/schema";
+import { type DB } from "@/lib/db";
+import { buildPostWhereClause, uniqueOrThrow } from "@/lib/db/queries/helper";
+import { PostCategory, PostStatus, PostsTable } from "@/lib/db/schema";
 import { and, count, desc, eq, lte, ne } from "drizzle-orm";
-import { syncPostMedia } from "@/db/queries/post-media";
+import { syncPostMedia } from "@/lib/db/queries/post-media";
 
-export async function insertPost(data: typeof PostsTable.$inferInsert) {
-  const db = getDb();
+export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
   const [post] = await db.insert(PostsTable).values(data).returning();
   if (post.contentJson) {
-    await syncPostMedia(post.id, post.contentJson);
+    await syncPostMedia(db, post.id, post.contentJson);
   }
   return post;
 }
 
-export async function getPosts(options: {
-  offset: number;
-  limit: number;
-  category?: PostCategory;
-  status?: PostStatus;
-  publicOnly?: boolean;
-}) {
+export async function getPosts(
+  db: DB,
+  options: {
+    offset: number;
+    limit: number;
+    category?: PostCategory;
+    status?: PostStatus;
+    publicOnly?: boolean;
+  }
+) {
   const whereClause = buildPostWhereClause(options);
 
-  const db = getDb();
   const posts = await db
     .select({
       id: PostsTable.id,
@@ -44,13 +45,15 @@ export async function getPosts(options: {
   return posts;
 }
 
-export async function getPostsCount(options: {
-  category?: PostCategory;
-  status?: PostStatus;
-  publicOnly?: boolean;
-}) {
+export async function getPostsCount(
+  db: DB,
+  options: {
+    category?: PostCategory;
+    status?: PostStatus;
+    publicOnly?: boolean;
+  }
+) {
   const whereClause = buildPostWhereClause(options);
-  const db = getDb();
   const totalNumberofPosts = await db
     .select({ count: count() })
     .from(PostsTable)
@@ -58,8 +61,7 @@ export async function getPostsCount(options: {
   return totalNumberofPosts[0].count;
 }
 
-export async function findPostById(id: number) {
-  const db = getDb();
+export async function findPostById(db: DB, id: number) {
   const results = await db
     .select()
     .from(PostsTable)
@@ -67,8 +69,7 @@ export async function findPostById(id: number) {
   return uniqueOrThrow(results);
 }
 
-export async function findPostBySlug(slug: string) {
-  const db = getDb();
+export async function findPostBySlug(db: DB, slug: string) {
   const results = await db
     .select()
     .from(PostsTable)
@@ -80,8 +81,7 @@ export async function findPostBySlug(slug: string) {
  * Find post by slug for public access
  * Only returns if status=published AND publishedAt <= now
  */
-export async function findPostBySlugPublic(slug: string) {
-  const db = getDb();
+export async function findPostBySlugPublic(db: DB, slug: string) {
   const results = await db
     .select()
     .from(PostsTable)
@@ -96,18 +96,17 @@ export async function findPostBySlugPublic(slug: string) {
 }
 
 export async function updatePost(
+  db: DB,
   id: number,
   data: Partial<typeof PostsTable.$inferInsert>
 ) {
-  const db = getDb();
   await db.update(PostsTable).set(data).where(eq(PostsTable.id, id));
   if (data.contentJson !== undefined) {
-    await syncPostMedia(id, data.contentJson);
+    await syncPostMedia(db, id, data.contentJson);
   }
 }
 
-export async function deletePost(id: number) {
-  const db = getDb();
+export async function deletePost(db: DB, id: number) {
   await db.delete(PostsTable).where(eq(PostsTable.id, id));
 }
 
@@ -117,10 +116,10 @@ export async function deletePost(id: number) {
  * @param excludeId - Optional post ID to exclude (for editing existing posts)
  */
 export async function slugExists(
+  db: DB,
   slug: string,
   excludeId?: number
 ): Promise<boolean> {
-  const db = getDb();
   const conditions = [eq(PostsTable.slug, slug)];
   if (excludeId) {
     conditions.push(ne(PostsTable.id, excludeId));

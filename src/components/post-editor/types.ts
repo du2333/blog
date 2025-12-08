@@ -1,4 +1,4 @@
-import type { Post, PostCategory, PostStatus } from "@/db/schema";
+import type { Post, PostCategory, PostStatus } from "@/lib/db/schema";
 import type { JSONContent } from "@tiptap/react";
 
 export interface PostEditorData {
@@ -30,4 +30,3 @@ export const defaultPostData: PostEditorData = {
   contentJson: null,
   publishedAt: null,
 };
-

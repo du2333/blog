@@ -1,5 +1,5 @@
 import TechButton from "@/components/ui/tech-button";
-import { getLinkedPostsFn } from "@/functions/images";
+import { getLinkedPostsFn } from "@/lib/functions/images";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { formatBytes } from "@/lib/files";
 import { useQuery } from "@tanstack/react-query";

@@ -8,8 +8,8 @@ import {
   insertPost,
   slugExists,
   updatePost,
-} from "@/db/queries/posts";
-import { PostCategory, PostStatus } from "@/db/schema";
+} from "@/lib/db/queries/posts";
+import { PostCategory, PostStatus } from "@/lib/db/schema";
 import { slugify } from "@/lib/editor-utils";
 import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
@@ -31,8 +31,8 @@ export const createPostFn = createServerFn({
       publishedAt: z.date().nullable(),
     })
   )
-  .handler(async ({ data }) => {
-    await insertPost({
+  .handler(async ({ data, context }) => {
+    await insertPost(context.db, {
       title: data.title,
       slug: data.slug,
       summary: data.summary,
@@ -54,8 +54,8 @@ export const getPostsFn = createServerFn()
       publicOnly: z.boolean().optional(),
     })
   )
-  .handler(async ({ data }) => {
-    return await getPosts({
+  .handler(async ({ data, context }) => {
+    return await getPosts(context.db, {
       offset: data.offset ?? 0,
       limit: data.limit ?? 10,
       category: data.category,
@@ -72,8 +72,8 @@ export const getPostsCountFn = createServerFn()
       publicOnly: z.boolean().optional(),
     })
   )
-  .handler(async ({ data }) => {
-    return await getPostsCount({
+  .handler(async ({ data, context }) => {
+    return await getPostsCount(context.db, {
       category: data.category,
       status: data.status,
       publicOnly: data.publicOnly,
@@ -82,8 +82,8 @@ export const getPostsCountFn = createServerFn()
 
 export const findPostBySlugFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
-  .handler(async ({ data }) => {
-    const post = await findPostBySlug(data.slug);
+  .handler(async ({ data, context }) => {
+    const post = await findPostBySlug(context.db, data.slug);
     if (!post) return null;
     return {
       ...post,
@@ -97,8 +97,8 @@ export const findPostBySlugFn = createServerFn()
  */
 export const findPostBySlugPublicFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
-  .handler(async ({ data }) => {
-    const post = await findPostBySlugPublic(data.slug);
+  .handler(async ({ data, context }) => {
+    const post = await findPostBySlugPublic(context.db, data.slug);
     if (!post) return null;
     return {
       ...post,
@@ -108,8 +108,8 @@ export const findPostBySlugPublicFn = createServerFn()
 
 export const findPostByIdFn = createServerFn()
   .inputValidator(z.object({ id: z.number() }))
-  .handler(async ({ data }) => {
-    return await findPostById(data.id);
+  .handler(async ({ data, context }) => {
+    return await findPostById(context.db, data.id);
   });
 
 export const updatePostFn = createServerFn({
@@ -128,8 +128,8 @@ export const updatePostFn = createServerFn({
       publishedAt: z.date().nullable().optional(),
     })
   )
-  .handler(async ({ data }) => {
-    await updatePost(data.id, {
+  .handler(async ({ data, context }) => {
+    await updatePost(context.db, data.id, {
       title: data.title,
       slug: data.slug,
       summary: data.summary,
@@ -145,8 +145,8 @@ export const deletePostFn = createServerFn({
   method: "POST",
 })
   .inputValidator(z.object({ id: z.number() }))
-  .handler(async ({ data }) => {
-    await deletePost(data.id);
+  .handler(async ({ data, context }) => {
+    await deletePost(context.db, data.id);
   });
 
 export const generateSlugFn = createServerFn()
@@ -156,11 +156,11 @@ export const generateSlugFn = createServerFn()
       excludeId: z.number().optional(), // For editing existing posts
     })
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const baseSlug = slugify(data.title) || "untitled-log";
 
     // Check if base slug is available
-    const baseExists = await slugExists(baseSlug, data.excludeId);
+    const baseExists = await slugExists(context.db, baseSlug, data.excludeId);
     if (!baseExists) {
       return { slug: baseSlug };
     }
@@ -169,7 +169,11 @@ export const generateSlugFn = createServerFn()
     const MAX_ATTEMPTS = 100;
     for (let i = 1; i <= MAX_ATTEMPTS; i++) {
       const candidateSlug = `${baseSlug}-${i}`;
-      const exists = await slugExists(candidateSlug, data.excludeId);
+      const exists = await slugExists(
+        context.db,
+        candidateSlug,
+        data.excludeId
+      );
       if (!exists) {
         return { slug: candidateSlug };
       }

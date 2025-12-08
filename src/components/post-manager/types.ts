@@ -1,4 +1,4 @@
-import type { Post, PostStatus } from "@/db/schema";
+import type { Post, PostStatus } from "@/lib/db/schema";
 
 /** Post without contentJson for list views */
 export type PostListItem = Omit<Post, "contentJson">;

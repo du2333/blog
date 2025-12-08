@@ -12,7 +12,7 @@ import {
   ListItemExtension,
   OrderedListExtension,
 } from "@/components/editor/extensions/typography/list";
-import { uploadImageFn } from "@/functions/images";
+import { uploadImageFn } from "@/lib/functions/images";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
 import type { Editor as TiptapEditor, JSONContent } from "@tiptap/react";

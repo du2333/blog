@@ -2,7 +2,7 @@ import { ContentRenderer } from "@/components/content-renderer";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TableOfContents from "@/components/table-of-content";
 import TechButton from "@/components/ui/tech-button";
-import { findPostBySlugPublicFn } from "@/functions/posts";
+import { findPostBySlugPublicFn } from "@/lib/functions/posts";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";

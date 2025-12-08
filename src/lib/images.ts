@@ -1,7 +1,5 @@
 import { getContentTypeFromKey } from "@/lib/files";
 import { cacheGet, cachePut } from "@/lib/cache";
-import { env } from "cloudflare:workers";
-
 /**
  * 处理图片请求（支持 GET 和 HEAD）
  * @param key - 图片在 R2 中的键
@@ -9,16 +7,17 @@ import { env } from "cloudflare:workers";
  * @param includeBody - 是否包含响应体（true=GET, false=HEAD）
  */
 export async function handleImageRequest(
+  env: Env,
+  executionCtx: ExecutionContext,
   key: string,
   request: Request,
   includeBody: boolean
 ) {
-  const r2 = env.R2;
   const viaHeader = request.headers.get("via");
 
   // 1. 防止循环调用
   if (viaHeader && /image-resizing/.test(viaHeader)) {
-    return await getOriginalImage(key, r2, includeBody);
+    return await getOriginalImage(key, env, includeBody);
   }
 
   const url = new URL(request.url);
@@ -26,7 +25,7 @@ export async function handleImageRequest(
 
   // 2. 如果请求原图，直接走流式返回
   if (searchParams.get("original") === "true") {
-    return await getOriginalImage(key, r2, includeBody);
+    return await getOriginalImage(key, env, includeBody);
   }
 
   // 3. 缓存检查逻辑
@@ -82,7 +81,7 @@ export async function handleImageRequest(
 
     if (!response.ok) {
       // 降级策略
-      return await getOriginalImage(key, r2, includeBody);
+      return await getOriginalImage(key, env, includeBody);
     }
 
     // 重建 Response 以强制缓存 (Immutable)
@@ -97,13 +96,13 @@ export async function handleImageRequest(
 
     if (includeBody) {
       const responseForUser = responseToCache.clone();
-      await cachePut(cacheKey, responseToCache);
+      await cachePut(executionCtx, cacheKey, responseToCache);
       return responseForUser;
     } else {
       return new Response(null, { headers: newHeaders });
     }
   } catch (e) {
-    return await getOriginalImage(key, r2, includeBody);
+    return await getOriginalImage(key, env, includeBody);
   }
 }
 
@@ -112,10 +111,10 @@ export async function handleImageRequest(
  */
 async function getOriginalImage(
   key: string,
-  r2: R2Bucket,
+  env: Env,
   includeBody: boolean
 ) {
-  const object = await r2.get(key);
+  const object = await env.R2.get(key);
 
   if (!object) {
     return new Response(includeBody ? "Image not found" : null, {

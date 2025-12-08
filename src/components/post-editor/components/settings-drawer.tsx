@@ -1,4 +1,8 @@
-import { POST_STATUSES, type PostCategory, type PostStatus } from "@/db/schema";
+import {
+  POST_STATUSES,
+  type PostCategory,
+  type PostStatus,
+} from "@/lib/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import DatePicker from "@/components/ui/date-picker";
 import {
@@ -347,7 +351,8 @@ function SummaryField({
         {isGenerating && (
           <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
             <div className="bg-black/80 border border-zzz-orange px-3 py-1 text-zzz-orange text-[10px] font-mono tracking-widest flex items-center gap-2">
-              <Sparkles size={10} className="animate-spin-slow" /> AI_GENERATING...
+              <Sparkles size={10} className="animate-spin-slow" />{" "}
+              AI_GENERATING...
             </div>
           </div>
         )}
@@ -355,4 +360,3 @@ function SummaryField({
     </div>
   );
 }
-

@@ -1,4 +1,4 @@
-import { FONT_URLS, PRELOAD_LINKS } from "@/config/assets";
+import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
 import { useAsyncFonts } from "@/hooks/use-async-fonts";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";

@@ -1,5 +1,5 @@
 import { PostEditor, type PostEditorData } from "@/components/post-editor";
-import { createPostFn } from "@/functions/posts";
+import { createPostFn } from "@/lib/functions/posts";
 import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/posts/new")({

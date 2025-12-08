@@ -1,8 +1,8 @@
 import { FeaturedTransmission } from "@/components/featured-transmission";
 import { LoadingFallback } from "@/components/loading-fallback";
 import TechButton from "@/components/ui/tech-button";
-import { HERO_ASSETS } from "@/config/assets";
-import { getPostsFn } from "@/functions/posts";
+import { HERO_ASSETS } from "@/lib/config/assets";
+import { getPostsFn } from "@/lib/functions/posts";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Disc } from "lucide-react";

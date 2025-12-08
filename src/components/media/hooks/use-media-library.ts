@@ -5,7 +5,7 @@ import {
   getMediaFn,
   getTotalMediaSizeFn,
   updateMediaNameFn,
-} from "@/functions/images";
+} from "@/lib/functions/images";
 import { useDebounce } from "@/hooks/use-debounce";
 import {
   useInfiniteQuery,

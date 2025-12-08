@@ -1,4 +1,4 @@
-import { PostCategory, PostsTable, PostStatus } from "@/db/schema";
+import { PostCategory, PostsTable, PostStatus } from "@/lib/db/schema";
 import { and, eq, lte } from "drizzle-orm";
 
 export function uniqueOrThrow<T>(array: T[]) {

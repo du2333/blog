@@ -1,5 +1,5 @@
 // 从 DB schema 推断类型，避免重复定义
-export type { Media as MediaAsset } from "@/db/queries/media";
+export type { Media as MediaAsset } from "@/lib/db/queries/media";
 
 export interface UploadItem {
   id: string;

@@ -1,4 +1,4 @@
-import type { Post } from "@/db/schema";
+import type { Post } from "@/lib/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";

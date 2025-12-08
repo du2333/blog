@@ -1,17 +1,29 @@
-// DO NOT DELETE THIS FILE!!!
-// This file is a good smoke test to make sure the custom server entry is working
-import { initDb } from "@/db";
 import handler from "@tanstack/react-start/server-entry";
-import { env } from "cloudflare:workers";
+import { drizzle } from "drizzle-orm/d1";
 
-console.log("[server-entry]: using custom server entry in 'src/server.ts'");
+declare module "@tanstack/react-start" {
+  interface Register {
+    server: {
+      requestContext: {
+        db: ReturnType<typeof drizzle>;
+        env: Env;
+        executionCtx: ExecutionContext;
+      };
+    };
+  }
+}
 
 export default {
-  async fetch(request: Request) {
-    initDb(env.DB);
+  async fetch(
+    request: Request,
+    env: Env,
+    executionCtx: ExecutionContext
+  ) {
     return handler.fetch(request, {
       context: {
-        fromFetch: true,
+        db: drizzle(env.DB),
+        env,
+        executionCtx,
       },
     });
   },

@@ -1,9 +1,13 @@
-import { getMediaList, getTotalMediaSize, updateMediaName } from "@/db/queries/media";
+import {
+  getMediaList,
+  getTotalMediaSize,
+  updateMediaName,
+} from "@/lib/db/queries/media";
 import {
   getLinkedMediaKeys,
   getPostsByMediaKey,
   isMediaInUse,
-} from "@/db/queries/post-media";
+} from "@/lib/db/queries/post-media";
 import { deleteImage, uploadImage } from "@/lib/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -22,7 +26,7 @@ export const uploadImageFn = createServerFn({
   method: "POST",
 })
   .inputValidator(z.instanceof(FormData))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const file = data.get("image");
 
     if (!(file instanceof File)) {
@@ -39,7 +43,7 @@ export const uploadImageFn = createServerFn({
       throw new Error("File type must be an image");
     }
 
-    return await uploadImage(file);
+    return await uploadImage(context.db, context.env, file);
   });
 
 export const deleteImageFn = createServerFn()
@@ -48,9 +52,9 @@ export const deleteImageFn = createServerFn()
       key: z.string().min(1, "Image key is required"),
     })
   )
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const { key } = data;
-    await deleteImage(key);
+    await deleteImage(context.db, context.env, context.executionCtx, key);
   });
 
 export const getMediaFn = createServerFn()
@@ -61,8 +65,8 @@ export const getMediaFn = createServerFn()
       search: z.string().optional(),
     })
   )
-  .handler(async ({ data }) => {
-    return await getMediaList(data);
+  .handler(async ({ data, context }) => {
+    return await getMediaList(context.db, data);
   });
 
 export const checkMediaInUseFn = createServerFn()
@@ -71,8 +75,8 @@ export const checkMediaInUseFn = createServerFn()
       key: z.string().min(1, "Image key is required"),
     })
   )
-  .handler(async ({ data }) => {
-    return await isMediaInUse(data.key);
+  .handler(async ({ data, context }) => {
+    return await isMediaInUse(context.db, data.key);
   });
 
 export const getLinkedPostsFn = createServerFn()
@@ -81,8 +85,8 @@ export const getLinkedPostsFn = createServerFn()
       key: z.string().min(1, "Image key is required"),
     })
   )
-  .handler(async ({ data }) => {
-    return await getPostsByMediaKey(data.key);
+  .handler(async ({ data, context }) => {
+    return await getPostsByMediaKey(context.db, data.key);
   });
 
 export const getLinkedMediaKeysFn = createServerFn()
@@ -91,14 +95,15 @@ export const getLinkedMediaKeysFn = createServerFn()
       keys: z.array(z.string()),
     })
   )
-  .handler(async ({ data }) => {
-    return await getLinkedMediaKeys(data.keys);
+  .handler(async ({ data, context }) => {
+    return await getLinkedMediaKeys(context.db, data.keys);
   });
 
-export const getTotalMediaSizeFn = createServerFn()
-  .handler(async () => {
-    return await getTotalMediaSize();
-  });
+export const getTotalMediaSizeFn = createServerFn().handler(
+  async ({ context }) => {
+    return await getTotalMediaSize(context.db);
+  }
+);
 
 export const updateMediaNameFn = createServerFn()
   .inputValidator(
@@ -107,6 +112,6 @@ export const updateMediaNameFn = createServerFn()
       name: z.string().min(1, "Image name is required"),
     })
   )
-  .handler(async ({ data }) => {
-    return await updateMediaName(data.key, data.name);
+  .handler(async ({ data, context }) => {
+    return await updateMediaName(context.db, data.key, data.name);
   });

@@ -4,7 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/images/$")({
   server: {
     handlers: {
-      GET: async ({ params, request }) => {
+      GET: async ({ params, request, context }) => {
         const key = params._splat;
 
         if (!key) {
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/images/$")({
         }
 
         try {
-          return await handleImageRequest(key, request, true);
+          return await handleImageRequest(context.env, context.executionCtx, key, request, true);
         } catch (error) {
           console.error("Error fetching image from R2:", error);
           return new Response("Internal server error", {
@@ -25,7 +25,7 @@ export const Route = createFileRoute("/images/$")({
         }
       },
 
-      HEAD: async ({ params, request }) => {
+      HEAD: async ({ params, request, context }) => {
         const key = params._splat;
 
         if (!key) {
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/images/$")({
         }
 
         try {
-          return await handleImageRequest(key, request, false);
+          return await handleImageRequest(context.env, context.executionCtx, key, request, false);
         } catch (error) {
           console.error("Error checking image from R2:", error);
           return new Response(null, {

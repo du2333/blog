@@ -1,5 +1,3 @@
-import { waitUntil } from "cloudflare:workers";
-
 // ============================================
 // Cloudflare Cache API
 // ============================================
@@ -32,6 +30,7 @@ export async function cacheGet(
  * @param options - 缓存选项
  */
 export async function cachePut(
+  executionCtx: ExecutionContext,
   request: Request | string,
   response: Response,
   options?: {
@@ -44,7 +43,7 @@ export async function cachePut(
   const { async: isAsync = true } = options ?? {};
 
   if (isAsync) {
-    waitUntil(cache.put(cacheKey, response));
+    executionCtx.waitUntil(cache.put(cacheKey, response));
   } else {
     await cache.put(cacheKey, response);
   }
@@ -69,6 +68,7 @@ export async function cacheDelete(request: Request | string): Promise<boolean> {
  * @returns 响应对象
  */
 export async function cacheWrap(
+  executionCtx: ExecutionContext,
   request: Request | string,
   fetcher: () => Promise<Response>,
   options?: {
@@ -100,7 +100,7 @@ export async function cacheWrap(
 
   if (shouldCacheResult && response.ok) {
     const responseToCache = response.clone();
-    await cachePut(request, responseToCache);
+    await cachePut(executionCtx, request, responseToCache);
   }
 
   return response;

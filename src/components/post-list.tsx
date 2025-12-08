@@ -1,4 +1,4 @@
-import type { Post } from "@/db/schema";
+import type { Post } from "@/lib/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { ArrowUpRight, Clock } from "lucide-react";
