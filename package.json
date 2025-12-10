@@ -13,6 +13,7 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
+    "@orama/orama": "^3.1.16",
     "@shikijs/langs": "^3.15.0",
     "@shikijs/themes": "^3.15.0",
     "@tailwindcss/vite": "^4.0.6",

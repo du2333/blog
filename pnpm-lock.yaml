@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@orama/orama':
+        specifier: ^3.1.16
+        version: 3.1.16
       '@shikijs/langs':
         specifier: ^3.15.0
         version: 3.15.0
@@ -1010,6 +1013,10 @@ packages:
   '@oozcitak/util@8.3.8':
     resolution: {integrity: sha512-T8TbSnGsxo6TDBJx/Sgv/BlVJL3tshxZP7Aq5R1mSnM5OcHY2dQaxLMu2+E8u3gN0MLOzdjurqN4ZRVuzQycOQ==}
     engines: {node: '>=8.0'}
+
+  '@orama/orama@3.1.16':
+    resolution: {integrity: sha512-scSmQBD8eANlMUOglxHrN1JdSW8tDghsPuS83otqealBiIeMukCQMOf/wc0JJjDXomqwNdEQFLXLGHrU6PGxuA==}
+    engines: {node: '>= 20.0.0'}
 
   '@poppinss/colors@4.1.5':
     resolution: {integrity: sha512-FvdDqtcRCtz6hThExcFOgW0cWX+xwSMWcRuQe5ZEb2m7cVQOAVZOIMt+/v9RxGiD9/OY16qJBXK4CVKWAPalBw==}
@@ -3777,6 +3784,8 @@ snapshots:
       '@oozcitak/util': 8.3.8
 
   '@oozcitak/util@8.3.8': {}
+
+  '@orama/orama@3.1.16': {}
 
   '@poppinss/colors@4.1.5':
     dependencies:

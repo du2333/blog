@@ -11,6 +11,7 @@ import {
 } from "@/lib/db/queries/posts";
 import { PostCategory, PostStatus } from "@/lib/db/schema";
 import { slugify } from "@/lib/editor-utils";
+import { deleteSearchDoc } from "@/lib/search/ops";
 import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
 import type { JSONContent } from "@tiptap/react";
@@ -147,6 +148,7 @@ export const deletePostFn = createServerFn({
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     await deletePost(context.db, data.id);
+    context.executionCtx.waitUntil(deleteSearchDoc(context.env, data.id));
   });
 
 export const generateSlugFn = createServerFn()

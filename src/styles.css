@@ -19,6 +19,10 @@ code {
     monospace;
 }
 
+mark {
+  @apply bg-zzz-orange/20 text-zzz-orange font-bold px-0.5 rounded-sm border-b border-zzz-orange;
+}
+
 @theme {
   --tw-transition-duration: 0.3s;
 
