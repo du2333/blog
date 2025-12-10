@@ -13,8 +13,7 @@ export interface PostEditorData {
 }
 
 export interface PostEditorProps {
-  mode: "new" | "edit";
-  initialData?: Post;
+  initialData: Post;
   onSave: (data: PostEditorData) => Promise<void>;
 }
 

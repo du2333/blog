@@ -1,8 +1,8 @@
 import { extractImageKey } from "@/lib/files";
 import type { JSONContent } from "@tiptap/react";
 
-export function slugify(text: string) {
-  if (!text) return "";
+export function slugify(text: string | null | undefined) {
+  if (!text) return "untitled-log";
 
   return (
     text

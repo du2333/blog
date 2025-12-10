@@ -19,8 +19,7 @@ import type { PostEditorData } from "../types";
 
 interface SettingsDrawerProps {
   isOpen: boolean;
-  mode: "new" | "edit";
-  postId?: number;
+  postId: number;
   post: PostEditorData;
   isGeneratingSlug: boolean;
   isCalculatingReadTime: boolean;
@@ -34,7 +33,6 @@ interface SettingsDrawerProps {
 
 export function SettingsDrawer({
   isOpen,
-  mode,
   postId,
   post,
   isGeneratingSlug,
@@ -102,7 +100,7 @@ export function SettingsDrawer({
 
       {/* Footer */}
       <div className="p-4 border-t border-zzz-gray bg-black text-[10px] font-mono text-gray-600 text-center">
-        SYSTEM_ID: {mode === "new" ? "PENDING" : postId}
+        SYSTEM_ID: #{postId}
       </div>
     </div>
   );

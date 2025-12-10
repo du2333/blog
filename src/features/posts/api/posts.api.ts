@@ -34,6 +34,28 @@ export const createPostFn = createServerFn({
     return post;
   });
 
+export const createEmptyPostFn = createServerFn({
+  method: "POST",
+}).handler(async ({ context }) => {
+  // Generate unique slug for untitled post
+  const { slug } = await generateSlugFn({
+    data: {
+      title: "",
+    },
+  });
+
+  const post = await insertPost(context.db, {
+    title: "",
+    slug,
+    summary: "",
+    status: "draft",
+    readTimeInMinutes: 1,
+    contentJson: null,
+  });
+
+  return { id: post.id };
+});
+
 export const getPostsFn = createServerFn()
   .inputValidator(
     z.object({
@@ -128,12 +150,12 @@ export const deletePostFn = createServerFn({
 export const generateSlugFn = createServerFn()
   .inputValidator(
     z.object({
-      title: z.string().min(1, "Title is required"),
+      title: z.string().optional(),
       excludeId: z.number().optional(), // For editing existing posts
     })
   )
   .handler(async ({ data, context }) => {
-    const baseSlug = slugify(data.title) || "untitled-log";
+    const baseSlug = slugify(data.title);
 
     // Check if base slug is available
     const baseExists = await slugExists(context.db, baseSlug, data.excludeId);

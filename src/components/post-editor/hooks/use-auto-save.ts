@@ -1,9 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 import type { PostEditorData, SaveStatus } from "../types";
 
 interface UseAutoSaveOptions {
-  mode: "new" | "edit";
   post: PostEditorData;
   onSave: (data: PostEditorData) => Promise<void>;
   debounceMs?: number;
@@ -15,11 +13,9 @@ interface UseAutoSaveReturn {
   error: string | null;
   setError: (error: string | null) => void;
   setSaveStatus: (status: SaveStatus) => void;
-  handleManualSave: () => Promise<void>;
 }
 
 export function useAutoSave({
-  mode,
   post,
   onSave,
   debounceMs = 1500,
@@ -34,20 +30,10 @@ export function useAutoSave({
   const onSaveRef = useRef(onSave);
   onSaveRef.current = onSave;
 
-  // Auto-save effect (edit mode only)
+  // Auto-save effect - always enabled
   useEffect(() => {
-    if (mode === "new") {
-      setSaveStatus("PENDING");
-      return;
-    }
-
     if (isFirstMount.current) {
       isFirstMount.current = false;
-      return;
-    }
-
-    if (!post.title.trim() || !post.slug.trim()) {
-      setSaveStatus("PENDING");
       return;
     }
 
@@ -72,30 +58,7 @@ export function useAutoSave({
     }, debounceMs);
 
     return () => clearTimeout(timer);
-  }, [post, mode, debounceMs]);
-
-  // Manual save for new posts
-  const handleManualSave = async () => {
-    if (!post.title.trim() || !post.slug.trim()) {
-      toast.error("VALIDATION ERROR", {
-        description: "Title and slug are required to create a post.",
-      });
-      return;
-    }
-
-    setSaveStatus("SAVING");
-    try {
-      setError(null);
-      await onSaveRef.current(post);
-      toast.success("POST CREATED", {
-        description: "Your new entry has been saved successfully.",
-      });
-    } catch (err) {
-      console.error("Save failed:", err);
-      setSaveStatus("ERROR");
-      setError("MANUAL_SAVE_FAILED");
-    }
-  };
+  }, [post, debounceMs]);
 
   return {
     saveStatus,
@@ -103,6 +66,5 @@ export function useAutoSave({
     error,
     setError,
     setSaveStatus,
-    handleManualSave,
   };
 }

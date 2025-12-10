@@ -87,8 +87,8 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         <button
           onClick={() =>
             navigate({
-              to: "/admin/posts/edit/$slug",
-              params: { slug: post.slug },
+              to: "/admin/posts/edit/$id",
+              params: { id: String(post.id) },
             })
           }
           className="p-2 bg-black border border-zzz-gray text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors cursor-pointer"

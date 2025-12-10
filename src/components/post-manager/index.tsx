@@ -2,8 +2,10 @@ import { ErrorPage } from "@/components/error-page";
 import { LoadingFallback } from "@/components/loading-fallback";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import TechButton from "@/components/ui/tech-button";
+import { createEmptyPostFn } from "@/features/posts/api/posts.api";
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
-import { Link } from "@tanstack/react-router";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -32,6 +34,8 @@ export function PostManager({
   onPageChange,
   onFilterChange,
 }: PostManagerProps) {
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [searchTerm, setSearchTerm] = useState("");
   const [filterOpen, setFilterOpen] = useState(false);
   const [postToDelete, setPostToDelete] = useState<PostListItem | null>(null);
@@ -40,6 +44,18 @@ export function PostManager({
   const { posts, totalCount, totalPages, isPending, error } = usePosts({
     page,
     filter,
+  });
+
+  // Create empty post mutation
+  const createMutation = useMutation({
+    mutationFn: () => createEmptyPostFn(),
+    onSuccess: (result) => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      navigate({
+        to: "/admin/posts/edit/$id",
+        params: { id: String(result.id) },
+      });
+    },
   });
 
   // Delete mutation
@@ -64,11 +80,14 @@ export function PostManager({
         <h1 className="text-3xl font-black font-sans uppercase text-white italic">
           Data <span className="text-zzz-lime">Logs</span>
         </h1>
-        <Link to="/admin/posts/new">
-          <TechButton size="sm" icon={<Plus size={14} />}>
-            New Entry
-          </TechButton>
-        </Link>
+        <TechButton
+          size="sm"
+          icon={<Plus size={14} />}
+          onClick={() => createMutation.mutate()}
+          disabled={createMutation.isPending}
+        >
+          {createMutation.isPending ? "Creating..." : "New Entry"}
+        </TechButton>
       </div>
 
       {/* Toolbar */}

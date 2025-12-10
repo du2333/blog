@@ -1,29 +1,39 @@
 import { generateSlugFn } from "@/features/posts/api/posts.api";
+import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/lib/editor-utils";
 import { useMutation } from "@tanstack/react-query";
 import type { JSONContent } from "@tiptap/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { PostEditorData } from "../types";
 
 interface UsePostActionsOptions {
-  mode: "new" | "edit";
-  postId?: number;
+  postId: number;
   post: PostEditorData;
   setPost: React.Dispatch<React.SetStateAction<PostEditorData>>;
   setError: (error: string | null) => void;
 }
 
 export function usePostActions({
-  mode,
   postId,
   post,
   setPost,
   setError,
 }: UsePostActionsOptions) {
-  const [isGeneratingSlug, setIsGeneratingSlug] = useState(false);
   const [isCalculatingReadTime, setIsCalculatingReadTime] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+
+  // Keep track of how slug was requested to control noisy toasts
+  const slugGenerationMode = useRef<"manual" | "auto">("manual");
+  // Track previous values to detect actual changes & skip first mount
+  const prevTitleRef = useRef(post.title);
+  const prevContentRef = useRef(post.contentJson);
+  const isFirstTitleMount = useRef(true);
+  const isFirstContentMount = useRef(true);
+
+  // Debounced values
+  const debouncedTitle = useDebounce(post.title, 500);
+  const debouncedContentJson = useDebounce(post.contentJson, 800);
 
   // Slug generation mutation
   const slugMutation = useMutation({
@@ -31,14 +41,16 @@ export function usePostActions({
       generateSlugFn({
         data: {
           title,
-          excludeId: mode === "edit" ? postId : undefined,
+          excludeId: postId,
         },
       }),
     onSuccess: (result) => {
       setPost((prev) => ({ ...prev, slug: result.slug }));
-      toast.success("SLUG GENERATED", {
-        description: `URL slug set to "${result.slug}"`,
-      });
+      if (slugGenerationMode.current === "manual") {
+        toast.success("SLUG GENERATED", {
+          description: `URL slug set to "${result.slug}"`,
+        });
+      }
     },
     onError: (error) => {
       console.error("Slug generation failed:", error);
@@ -48,24 +60,67 @@ export function usePostActions({
     },
   });
 
-  // Sync loading state
+  // Auto-generate slug on title change (debounced)
   useEffect(() => {
-    setIsGeneratingSlug(slugMutation.isPending);
-  }, [slugMutation.isPending]);
+    // Skip first mount to avoid regenerating slug on edit page load
+    if (isFirstTitleMount.current) {
+      isFirstTitleMount.current = false;
+      prevTitleRef.current = debouncedTitle;
+      return;
+    }
+
+    // Only run if title actually changed
+    if (debouncedTitle === prevTitleRef.current) {
+      return;
+    }
+    prevTitleRef.current = debouncedTitle;
+
+    if (!debouncedTitle.trim()) {
+      return;
+    }
+    if (slugMutation.isPending) return;
+    slugGenerationMode.current = "auto";
+    slugMutation.mutate(debouncedTitle);
+  }, [debouncedTitle]);
+
+  // Auto-calculate read time on content changes (debounced)
+  useEffect(() => {
+    // Skip first mount
+    if (isFirstContentMount.current) {
+      isFirstContentMount.current = false;
+      prevContentRef.current = debouncedContentJson;
+      return;
+    }
+
+    // Only run if content actually changed
+    if (debouncedContentJson === prevContentRef.current) {
+      return;
+    }
+    prevContentRef.current = debouncedContentJson;
+
+    if (!debouncedContentJson) {
+      return;
+    }
+    runReadTimeCalculation({ silent: true });
+  }, [debouncedContentJson]);
 
   const handleGenerateSlug = () => {
     if (!post.title.trim()) {
       setError("TITLE_REQUIRED_FOR_SLUG");
       return;
     }
+    slugGenerationMode.current = "manual";
     slugMutation.mutate(post.title);
   };
 
-  const handleCalculateReadTime = () => {
+  const runReadTimeCalculation = (options?: { silent?: boolean }) => {
+    const silent = options?.silent ?? false;
     if (!post.contentJson) {
-      toast.error("NO CONTENT", {
-        description: "Write some content first to calculate read time.",
-      });
+      if (!silent) {
+        toast.error("NO CONTENT", {
+          description: "Write some content first to calculate read time.",
+        });
+      }
       return;
     }
     setIsCalculatingReadTime(true);
@@ -105,12 +160,19 @@ export function usePostActions({
 
       setPost((prev) => ({ ...prev, readTimeInMinutes: mins }));
       setIsCalculatingReadTime(false);
-      toast.success("READ TIME CALCULATED", {
-        description: `Estimated ${mins} min read (${
-          cjkChars + englishWords
-        } words)`,
-      });
+
+      if (!silent) {
+        toast.success("READ TIME CALCULATED", {
+          description: `Estimated ${mins} min read (${
+            cjkChars + englishWords
+          } words)`,
+        });
+      }
     }, 400);
+  };
+
+  const handleCalculateReadTime = () => {
+    runReadTimeCalculation({ silent: false });
   };
 
   const handleGenerateSummary = () => {
@@ -134,7 +196,7 @@ export function usePostActions({
   };
 
   return {
-    isGeneratingSlug,
+    isGeneratingSlug: slugMutation.isPending,
     isCalculatingReadTime,
     isGeneratingSummary,
     handleGenerateSlug,

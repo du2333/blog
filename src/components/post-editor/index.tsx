@@ -5,43 +5,32 @@ import { useCallback, useState } from "react";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
 import { useAutoSave, usePostActions } from "./hooks";
-import {
-  defaultPostData,
-  type PostEditorData,
-  type PostEditorProps,
-} from "./types";
+import { type PostEditorData, type PostEditorProps } from "./types";
 
 // Re-export types for external use
 export type { PostEditorData, PostEditorProps } from "./types";
 
-export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
+export function PostEditor({ initialData, onSave }: PostEditorProps) {
   const router = useRouter();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
-  // Initialize post state
-  const [post, setPost] = useState<PostEditorData>(() => {
-    if (initialData) {
-      return {
-        title: initialData.title,
-        summary: initialData.summary ?? "",
-        slug: initialData.slug,
-        category: initialData.category,
-        status: initialData.status,
-        readTimeInMinutes: initialData.readTimeInMinutes,
-        contentJson: initialData.contentJson ?? null,
-        publishedAt: initialData.publishedAt,
-      };
-    }
-    return defaultPostData;
-  });
+  // Initialize post state from initialData (always provided)
+  const [post, setPost] = useState<PostEditorData>(() => ({
+    title: initialData.title,
+    summary: initialData.summary ?? "",
+    slug: initialData.slug,
+    category: initialData.category,
+    status: initialData.status,
+    readTimeInMinutes: initialData.readTimeInMinutes,
+    contentJson: initialData.contentJson ?? null,
+    publishedAt: initialData.publishedAt,
+  }));
 
-  // Auto-save hook
-  const { saveStatus, lastSaved, error, setError, handleManualSave } =
-    useAutoSave({
-      mode,
-      post,
-      onSave,
-    });
+  // Auto-save hook - always enabled
+  const { saveStatus, lastSaved, error, setError } = useAutoSave({
+    post,
+    onSave,
+  });
 
   // Post actions hook (slug, read time, summary)
   const {
@@ -52,8 +41,7 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     handleCalculateReadTime,
     handleGenerateSummary,
   } = usePostActions({
-    mode,
-    postId: initialData?.id,
+    postId: initialData.id,
     post,
     setPost,
     setError,
@@ -69,20 +57,11 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
     setPost((prev) => ({ ...prev, ...updates }));
   }, []);
 
-  // Manual save with navigation (new mode)
-  const handleSaveAndNavigate = async () => {
-    await handleManualSave();
-    if (post.title.trim() && post.slug.trim()) {
-      router.navigate({ to: "/admin/posts" });
-    }
-  };
-
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] relative overflow-hidden bg-black">
       {/* Top Control Bar */}
       <EditorToolbar
-        mode={mode}
-        postId={initialData?.id}
+        postId={initialData.id}
         status={post.status}
         saveStatus={saveStatus}
         lastSaved={lastSaved}
@@ -90,7 +69,6 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
         isSettingsOpen={isSettingsOpen}
         onBack={() => router.history.back()}
         onToggleSettings={() => setIsSettingsOpen(!isSettingsOpen)}
-        onSave={handleSaveAndNavigate}
       />
 
       {/* Main Document Area */}
@@ -126,8 +104,7 @@ export function PostEditor({ mode, initialData, onSave }: PostEditorProps) {
       {/* Settings Drawer */}
       <SettingsDrawer
         isOpen={isSettingsOpen}
-        mode={mode}
-        postId={initialData?.id}
+        postId={initialData.id}
         post={post}
         isGeneratingSlug={isGeneratingSlug}
         isCalculatingReadTime={isCalculatingReadTime}

@@ -233,8 +233,8 @@ export function MediaPreviewModal({
                   {linkedPosts.map((post) => (
                     <Link
                       key={post.id}
-                      to={"/admin/posts/edit/$slug"}
-                      params={{ slug: post.slug }}
+                      to={"/admin/posts/edit/$id"}
+                      params={{ id: String(post.id) }}
                       className="block p-2 bg-zzz-dark/50 border border-zzz-gray/30 hover:border-zzz-cyan hover:text-zzz-cyan transition-colors group"
                     >
                       <div className="text-[10px] font-bold uppercase truncate flex items-center gap-1">

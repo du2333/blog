@@ -1,6 +1,6 @@
 import { LoadingFallback } from "@/components/loading-fallback";
 import { PostEditor, type PostEditorData } from "@/components/post-editor";
-import { findPostBySlugFn, updatePostFn } from "@/features/posts/api/posts.api";
+import { findPostByIdFn, updatePostFn } from "@/features/posts/api/posts.api";
 import {
   queryOptions,
   useQueryClient,
@@ -9,25 +9,30 @@ import {
 import { createFileRoute } from "@tanstack/react-router";
 import { ErrorPage } from "@/components/error-page";
 
-const postQuery = (slug: string) =>
+const postQuery = (id: number) =>
   queryOptions({
-    queryKey: ["post", slug],
-    queryFn: () => findPostBySlugFn({ data: { slug } }),
+    queryKey: ["post", id],
+    queryFn: () => findPostByIdFn({ data: { id } }),
   });
 
-export const Route = createFileRoute("/admin/posts/edit/$slug")({
+export const Route = createFileRoute("/admin/posts/edit/$id")({
   ssr: false,
   component: EditPost,
   loader: async ({ context, params }) => {
-    await context.queryClient.ensureQueryData(postQuery(params.slug));
+    const postId = Number(params.id);
+    if (!Number.isFinite(postId)) {
+      throw new Error("INVALID_POST_ID");
+    }
+    await context.queryClient.ensureQueryData(postQuery(postId));
   },
   pendingComponent: LoadingFallback,
 });
 
 function EditPost() {
-  const { slug } = Route.useParams();
+  const { id } = Route.useParams();
+  const postId = Number(id);
   const queryClient = useQueryClient();
-  const { data: post, isPending, error } = useSuspenseQuery(postQuery(slug));
+  const { data: post, isPending, error } = useSuspenseQuery(postQuery(postId));
 
   if (error) {
     return <ErrorPage error={error} />;
@@ -45,7 +50,7 @@ function EditPost() {
             POST_NOT_FOUND
           </h2>
           <p className="text-gray-500 font-mono text-sm">
-            No entry found with slug: {slug}
+            No entry found with id: {id}
           </p>
         </div>
       </div>
@@ -67,19 +72,12 @@ function EditPost() {
     });
 
     // Invalidate cache to ensure fresh data on next visit
-    queryClient.invalidateQueries({ queryKey: ["post", slug] });
+    queryClient.invalidateQueries({ queryKey: ["post", postId] });
     queryClient.invalidateQueries({ queryKey: ["posts"] });
     queryClient.invalidateQueries({
       predicate: (q) => q.queryKey[0] === "linkedMediaKeys",
     });
-
-    // Update URL silently if slug changed (no page reload)
-    if (data.slug !== slug) {
-      // Prefetch new slug data first to avoid flash of not-found
-      await queryClient.prefetchQuery(postQuery(data.slug));
-      window.history.replaceState(null, "", `/admin/posts/edit/${data.slug}`);
-    }
   };
 
-  return <PostEditor mode="edit" initialData={post} onSave={handleSave} />;
+  return <PostEditor initialData={post} onSave={handleSave} />;
 }

@@ -1,17 +1,8 @@
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Loader2,
-  RefreshCw,
-  Save,
-  Settings,
-  X,
-} from "lucide-react";
+import { ArrowLeft, CheckCircle2, RefreshCw, Settings, X } from "lucide-react";
 import type { SaveStatus } from "../types";
 
 interface EditorToolbarProps {
-  mode: "new" | "edit";
-  postId?: number;
+  postId: number;
   status: string;
   saveStatus: SaveStatus;
   lastSaved: Date | null;
@@ -19,11 +10,9 @@ interface EditorToolbarProps {
   isSettingsOpen: boolean;
   onBack: () => void;
   onToggleSettings: () => void;
-  onSave: () => void;
 }
 
 export function EditorToolbar({
-  mode,
   postId,
   status,
   saveStatus,
@@ -32,7 +21,6 @@ export function EditorToolbar({
   isSettingsOpen,
   onBack,
   onToggleSettings,
-  onSave,
 }: EditorToolbarProps) {
   return (
     <div className="h-14 md:h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-40 shrink-0 transition-all">
@@ -59,7 +47,7 @@ export function EditorToolbar({
             {status || "DRAFT"}
           </span>
           <span className="mx-1.5 md:mx-2">//</span>
-          <span>{mode === "new" ? "NEW_ENTRY" : postId}</span>
+          <span>#{postId}</span>
         </div>
       </div>
 
@@ -84,21 +72,6 @@ export function EditorToolbar({
           <Settings size={16} />
           <span className="hidden md:inline">Config</span>
         </button>
-
-        {mode === "new" && (
-          <button
-            onClick={onSave}
-            disabled={saveStatus === "SAVING"}
-            className="flex items-center gap-2 px-3 md:px-4 py-2 bg-zzz-lime text-black text-xs font-bold uppercase transition-colors hover:bg-white disabled:opacity-50 cursor-pointer whitespace-nowrap"
-          >
-            {saveStatus === "SAVING" ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <Save size={14} />
-            )}
-            <span>CREATE</span>
-          </button>
-        )}
       </div>
     </div>
   );
