@@ -7,6 +7,11 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
 
 export const POST_CATEGORIES = ["DEV", "LIFE", "GAMING", "TECH"] as const;
 export const POST_STATUSES = ["draft", "published", "archived"] as const;
@@ -73,3 +78,7 @@ export const PostMediaTable = sqliteTable(
 export type Post = typeof PostsTable.$inferSelect;
 export type PostCategory = (typeof POST_CATEGORIES)[number];
 export type PostStatus = (typeof POST_STATUSES)[number];
+
+export const PostSelectSchema = createSelectSchema(PostsTable);
+export const PostInsertSchema = createInsertSchema(PostsTable);
+export const PostUpdateSchema = createUpdateSchema(PostsTable);

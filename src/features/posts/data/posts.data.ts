@@ -39,7 +39,7 @@ export async function getPosts(
     .from(PostsTable)
     .limit(Math.min(options.limit, 50))
     .offset(options.offset)
-    .orderBy(desc(PostsTable.publishedAt))
+    .orderBy(desc(PostsTable.updatedAt))
     .where(whereClause);
   return posts;
 }

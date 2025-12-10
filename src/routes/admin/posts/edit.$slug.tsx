@@ -56,17 +56,13 @@ function EditPost() {
     await updatePostFn({
       data: {
         id: post.id,
-        title: data.title,
-        slug: data.slug,
-        summary: data.summary || undefined,
-        category: data.category,
-        contentJson: data.contentJson,
-        status: data.status,
-        readTimeInMinutes: data.readTimeInMinutes,
-        publishedAt:
-          data.status === "published" && !post.publishedAt
-            ? new Date()
-            : data.publishedAt,
+        data: {
+          ...data,
+          publishedAt:
+            data.status === "published" && !post.publishedAt
+              ? new Date()
+              : data.publishedAt,
+        },
       },
     });
 

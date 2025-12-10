@@ -10,42 +10,26 @@ import {
   slugExists,
   updatePost,
 } from "@/features/posts/data/posts.data";
-import { PostCategory, PostStatus } from "@/lib/db/schema";
+import {
+  PostCategory,
+  PostInsertSchema,
+  PostStatus,
+  PostUpdateSchema,
+} from "@/lib/db/schema";
 import { slugify } from "@/lib/editor-utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
 import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
-import type { JSONContent } from "@tiptap/react";
 import { z } from "zod";
 
 export const createPostFn = createServerFn({
   method: "POST",
 })
-  .inputValidator(
-    z.object({
-      title: z.string(),
-      slug: z.string(),
-      summary: z.string().optional(),
-      category: z.custom<PostCategory>().optional(),
-      contentJson: z.custom<JSONContent>().nullable(),
-      status: z.enum(["draft", "published", "archived"]).catch("draft"),
-      readTimeInMinutes: z.number().optional(),
-      publishedAt: z.date().nullable(),
-    })
-  )
+  .inputValidator(PostInsertSchema)
   .handler(async ({ data, context }) => {
-    const post = await insertPost(context.db, {
-      title: data.title,
-      slug: data.slug,
-      summary: data.summary,
-      category: data.category,
-      contentJson: data.contentJson,
-      status: data.status,
-      readTimeInMinutes: data.readTimeInMinutes,
-      publishedAt: data.publishedAt,
-    });
+    const post = await insertPost(context.db, data);
     context.executionCtx.waitUntil(
-      syncPostMedia(context.db, post.id, data.contentJson)
+      syncPostMedia(context.db, post.id, post.contentJson)
     );
     return post;
   });
@@ -121,30 +105,9 @@ export const findPostByIdFn = createServerFn()
 export const updatePostFn = createServerFn({
   method: "POST",
 })
-  .inputValidator(
-    z.object({
-      id: z.number(),
-      title: z.string().optional(),
-      slug: z.string().optional(),
-      summary: z.string().optional(),
-      category: z.custom<PostCategory>().optional(),
-      contentJson: z.custom<JSONContent>().nullable().optional(),
-      status: z.enum(["draft", "published", "archived"]).optional(),
-      readTimeInMinutes: z.number().optional(),
-      publishedAt: z.date().nullable().optional(),
-    })
-  )
-  .handler(async ({ data, context }) => {
-    const post = await updatePost(context.db, data.id, {
-      title: data.title,
-      slug: data.slug,
-      summary: data.summary,
-      category: data.category,
-      contentJson: data.contentJson,
-      status: data.status,
-      readTimeInMinutes: data.readTimeInMinutes,
-      publishedAt: data.publishedAt,
-    });
+  .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
+  .handler(async ({ data: { id, data }, context }) => {
+    const post = await updatePost(context.db, id, data);
     if (data.contentJson !== undefined) {
       context.executionCtx.waitUntil(
         syncPostMedia(context.db, post.id, data.contentJson)

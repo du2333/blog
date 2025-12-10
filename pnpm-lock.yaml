@@ -86,6 +86,9 @@ importers:
       drizzle-orm:
         specifier: ^0.44.7
         version: 0.44.7
+      drizzle-zod:
+        specifier: ^0.8.3
+        version: 0.8.3(drizzle-orm@0.44.7)(zod@4.1.12)
       hono:
         specifier: ^4.10.8
         version: 4.10.8
@@ -2118,6 +2121,12 @@ packages:
         optional: true
       sqlite3:
         optional: true
+
+  drizzle-zod@0.8.3:
+    resolution: {integrity: sha512-66yVOuvGhKJnTdiqj1/Xaaz9/qzOdRJADpDa68enqS6g3t0kpNkwNYjUuaeXgZfO/UWuIM9HIhSlJ6C5ZraMww==}
+    peerDependencies:
+      drizzle-orm: '>=0.36.0'
+      zod: ^3.25.0 || ^4.0.0
 
   electron-to-chromium@1.5.240:
     resolution: {integrity: sha512-OBwbZjWgrCOH+g6uJsA2/7Twpas2OlepS9uvByJjR2datRDuKGYeD+nP8lBBks2qnB7bGJNHDUx7c/YLaT3QMQ==}
@@ -4958,6 +4967,11 @@ snapshots:
       - supports-color
 
   drizzle-orm@0.44.7: {}
+
+  drizzle-zod@0.8.3(drizzle-orm@0.44.7)(zod@4.1.12):
+    dependencies:
+      drizzle-orm: 0.44.7
+      zod: 4.1.12
 
   electron-to-chromium@1.5.240: {}
 

@@ -11,13 +11,7 @@ function NewPost() {
   const handleSave = async (data: PostEditorData) => {
     await createPostFn({
       data: {
-        title: data.title,
-        slug: data.slug,
-        summary: data.summary || undefined,
-        category: data.category,
-        contentJson: data.contentJson,
-        status: data.status,
-        readTimeInMinutes: data.readTimeInMinutes,
+        ...data,
         publishedAt: data.status === "published" ? new Date() : null,
       },
     });
