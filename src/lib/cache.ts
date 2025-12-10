@@ -136,9 +136,3 @@ export async function cacheWrap(
 
   return response;
 }
-
-// ============================================
-// Cloudflare KV (预留)
-// ============================================
-
-// TODO: KV 缓存逻辑

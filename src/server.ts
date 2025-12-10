@@ -1,6 +1,5 @@
 import { type DB } from "@/lib/db";
-import handler from "@tanstack/react-start/server-entry";
-import { drizzle } from "drizzle-orm/d1";
+import { app } from "@/lib/hono";
 
 declare module "@tanstack/react-start" {
   interface Register {
@@ -15,13 +14,7 @@ declare module "@tanstack/react-start" {
 }
 
 export default {
-  async fetch(request: Request, env: Env, executionCtx: ExecutionContext) {
-    return handler.fetch(request, {
-      context: {
-        db: drizzle(env.DB),
-        env,
-        executionCtx,
-      },
-    });
+  fetch(request, env, ctx) {
+    return app.fetch(request, env, ctx);
   },
-};
+} satisfies ExportedHandler<Env>;
