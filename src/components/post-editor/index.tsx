@@ -11,6 +11,7 @@ import { type PostEditorData, type PostEditorProps } from "./types";
 export type { PostEditorData, PostEditorProps } from "./types";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
+  if (!initialData) return null;
   const router = useRouter();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
