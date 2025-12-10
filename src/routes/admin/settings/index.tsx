@@ -9,7 +9,7 @@ import {
   Database,
 } from "lucide-react";
 import TechButton from "@/components/ui/tech-button";
-import { buildSearchIndexFn } from "@/lib/functions/search";
+import { buildSearchIndexFn } from "@/features/search/search.api";
 import { useState } from "react";
 import { toast } from "sonner";
 

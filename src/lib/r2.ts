@@ -1,5 +1,9 @@
 import { DB } from "@/lib/db";
-import { deleteMedia, insertMedia, type Media } from "@/lib/db/queries/media";
+import {
+  deleteMedia,
+  insertMedia,
+  type Media,
+} from "@/features/media/data/media.data";
 import { cacheDelete } from "@/lib/cache";
 import { generateKey } from "@/lib/files";
 

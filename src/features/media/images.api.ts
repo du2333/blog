@@ -2,12 +2,12 @@ import {
   getMediaList,
   getTotalMediaSize,
   updateMediaName,
-} from "@/lib/db/queries/media";
+} from "@/features/media/data/media.data";
 import {
   getLinkedMediaKeys,
   getPostsByMediaKey,
   isMediaInUse,
-} from "@/lib/db/queries/post-media";
+} from "@/features/posts/data/post-media.data";
 import { deleteImage, uploadImage } from "@/lib/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";

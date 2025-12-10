@@ -1,14 +1,13 @@
+import {
+  buildPostWhereClause,
+  uniqueOrThrow,
+} from "@/features/posts/data/helper";
 import { type DB } from "@/lib/db";
-import { buildPostWhereClause, uniqueOrThrow } from "@/lib/db/queries/helper";
 import { PostCategory, PostStatus, PostsTable } from "@/lib/db/schema";
 import { and, count, desc, eq, lte, ne } from "drizzle-orm";
-import { syncPostMedia } from "@/lib/db/queries/post-media";
 
 export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
   const [post] = await db.insert(PostsTable).values(data).returning();
-  if (post.contentJson) {
-    await syncPostMedia(db, post.id, post.contentJson);
-  }
   return post;
 }
 
@@ -100,10 +99,12 @@ export async function updatePost(
   id: number,
   data: Partial<typeof PostsTable.$inferInsert>
 ) {
-  await db.update(PostsTable).set(data).where(eq(PostsTable.id, id));
-  if (data.contentJson !== undefined) {
-    await syncPostMedia(db, id, data.contentJson);
-  }
+  const [post] = await db
+    .update(PostsTable)
+    .set(data)
+    .where(eq(PostsTable.id, id))
+    .returning();
+  return post;
 }
 
 export async function deletePost(db: DB, id: number) {

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useMemo } from "react";
 import { useDebounce } from "@/hooks/use-debounce";
-import { searchDocsFn } from "@/lib/functions/search";
+import { searchDocsFn } from "@/features/search/search.api";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import {

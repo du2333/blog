@@ -1,6 +1,6 @@
 import { LoadingFallback } from "@/components/loading-fallback";
 import { PostEditor, type PostEditorData } from "@/components/post-editor";
-import { findPostBySlugFn, updatePostFn } from "@/lib/functions/posts";
+import { findPostBySlugFn, updatePostFn } from "@/features/posts/api/posts.api";
 import {
   queryOptions,
   useQueryClient,

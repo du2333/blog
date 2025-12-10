@@ -1,4 +1,4 @@
-import { generateSlugFn } from "@/lib/functions/posts";
+import { generateSlugFn } from "@/features/posts/api/posts.api";
 import { slugify } from "@/lib/editor-utils";
 import { useMutation } from "@tanstack/react-query";
 import type { JSONContent } from "@tiptap/react";

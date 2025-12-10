@@ -1,3 +1,4 @@
+import { syncPostMedia } from "@/features/posts/data/post-media.data";
 import {
   deletePost,
   findPostById,
@@ -8,7 +9,7 @@ import {
   insertPost,
   slugExists,
   updatePost,
-} from "@/lib/db/queries/posts";
+} from "@/features/posts/data/posts.data";
 import { PostCategory, PostStatus } from "@/lib/db/schema";
 import { slugify } from "@/lib/editor-utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
@@ -33,7 +34,7 @@ export const createPostFn = createServerFn({
     })
   )
   .handler(async ({ data, context }) => {
-    await insertPost(context.db, {
+    const post = await insertPost(context.db, {
       title: data.title,
       slug: data.slug,
       summary: data.summary,
@@ -43,6 +44,10 @@ export const createPostFn = createServerFn({
       readTimeInMinutes: data.readTimeInMinutes,
       publishedAt: data.publishedAt,
     });
+    context.executionCtx.waitUntil(
+      syncPostMedia(context.db, post.id, data.contentJson)
+    );
+    return post;
   });
 
 export const getPostsFn = createServerFn()
@@ -130,7 +135,7 @@ export const updatePostFn = createServerFn({
     })
   )
   .handler(async ({ data, context }) => {
-    await updatePost(context.db, data.id, {
+    const post = await updatePost(context.db, data.id, {
       title: data.title,
       slug: data.slug,
       summary: data.summary,
@@ -140,6 +145,12 @@ export const updatePostFn = createServerFn({
       readTimeInMinutes: data.readTimeInMinutes,
       publishedAt: data.publishedAt,
     });
+    if (data.contentJson !== undefined) {
+      context.executionCtx.waitUntil(
+        syncPostMedia(context.db, post.id, data.contentJson)
+      );
+    }
+    return post;
   });
 
 export const deletePostFn = createServerFn({

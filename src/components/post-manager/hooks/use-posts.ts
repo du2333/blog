@@ -2,7 +2,7 @@ import {
   deletePostFn,
   getPostsCountFn,
   getPostsFn,
-} from "@/lib/functions/posts";
+} from "@/features/posts/api/posts.api";
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";

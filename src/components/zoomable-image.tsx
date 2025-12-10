@@ -89,7 +89,12 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
                 </span>
               </div>
               <div className="flex gap-4">
-                <a href={src} download target="_blank" rel="noreferrer">
+                <a
+                  href={`${src}?original=true`}
+                  download
+                  target="_blank"
+                  rel="noreferrer"
+                >
                   <button className="p-2 text-gray-400 hover:text-zzz-cyan transition-colors bg-black/50 rounded-full border border-transparent hover:border-zzz-cyan/50">
                     <Download size={20} />
                   </button>

@@ -6,7 +6,7 @@ import {
   getMediaFn,
   getTotalMediaSizeFn,
   updateMediaNameFn,
-} from "@/lib/functions/images";
+} from "@/features/media/images.api";
 import {
   useInfiniteQuery,
   useMutation,

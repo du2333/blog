@@ -46,7 +46,3 @@ export function buildPostWhereClause(options: {
 
   return whereClauses.length > 0 ? and(...whereClauses) : undefined;
 }
-
-export function escapeLikeString(str: string) {
-  return str.replace(/[%_\\]/g, "\\$&");
-}
