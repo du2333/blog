@@ -34,6 +34,20 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 
   if (!src) return null;
 
+  const originalSrc = React.useMemo(() => {
+    try {
+      const base =
+        typeof window !== "undefined" ? window.location.origin : undefined;
+      const url = base ? new URL(src, base) : new URL(src);
+      url.searchParams.set("original", "true");
+      return url.toString();
+    } catch {
+      return src.includes("?")
+        ? `${src}&original=true`
+        : `${src}?original=true`;
+    }
+  }, [src]);
+
   return (
     <>
       <div
@@ -89,12 +103,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
                 </span>
               </div>
               <div className="flex gap-4">
-                <a
-                  href={`${src}?original=true`}
-                  download
-                  target="_blank"
-                  rel="noreferrer"
-                >
+                <a href={originalSrc} download target="_blank" rel="noreferrer">
                   <button className="p-2 text-gray-400 hover:text-zzz-cyan transition-colors bg-black/50 rounded-full border border-transparent hover:border-zzz-cyan/50">
                     <Download size={20} />
                   </button>
