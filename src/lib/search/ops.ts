@@ -14,14 +14,12 @@ type UpsertInput = {
   title: string;
   summary?: string | null;
   contentJson?: JSONContent | null;
-  plainText?: string;
 };
 
 export async function addOrUpdateSearchDoc(env: Env, input: UpsertInput) {
   const db = await getOramaDb(env);
   await removeById(db, input.id);
-  const plain =
-    input.plainText ?? convertToPlainText(input.contentJson ?? null) ?? "";
+  const plain = convertToPlainText(input.contentJson ?? null);
   const content =
     plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
   const summary =

@@ -36,5 +36,12 @@
 			"id": "b2804b2d5ca94cf58663160401cd3754",
 			"remote": true
 		}
+	],
+	"workflows": [
+		{
+			"name": "post-process-workflow",
+			"binding": "POST_PROCESS_WORKFLOW",
+			"class_name": "PostProcessWorkflow",
+		}
 	]
 }

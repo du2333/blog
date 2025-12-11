@@ -1,8 +1,8 @@
-import handler from "@tanstack/react-start/server-entry";
-import { drizzle } from "drizzle-orm/d1";
-import { Hono } from "hono";
-import { handleImageRequest } from "@/lib/images";
 import { cacheWrap } from "@/lib/cache";
+import { createDb } from "@/lib/db";
+import { handleImageRequest } from "@/lib/images";
+import handler from "@tanstack/react-start/server-entry";
+import { Hono } from "hono";
 
 export const app = new Hono<{ Bindings: Env }>();
 
@@ -29,7 +29,7 @@ app.get("/images/:key", async (c) => {
 app.all("*", (c) => {
   return handler.fetch(c.req.raw, {
     context: {
-      db: drizzle(c.env.DB),
+      db: createDb(c.env),
       env: c.env,
       executionCtx: c.executionCtx,
     },

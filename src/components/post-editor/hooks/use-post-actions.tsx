@@ -1,4 +1,7 @@
-import { generateSlugFn } from "@/features/posts/api/posts.api";
+import {
+  generateSlugFn,
+  startPostProcessWorkflowFn,
+} from "@/features/posts/api/posts.api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/lib/editor-utils";
 import { useMutation } from "@tanstack/react-query";
@@ -44,7 +47,7 @@ export function usePostActions({
     setProcessState("PROCESSING");
 
     setTimeout(() => {
-      processDataMutation.mutate();
+      processDataMutation.mutate({ data: { postId } });
 
       // Feedback: Notify user task is running
       toast("WORKFLOW STARTED", {
@@ -89,7 +92,7 @@ export function usePostActions({
 
   const processDataMutation = useMutation({
     // TODO: Trigger workflow here
-    mutationFn: () => Promise.resolve(),
+    mutationFn: startPostProcessWorkflowFn,
   });
 
   // Auto-generate slug on title change (debounced)

@@ -1,6 +1,10 @@
 import { type DB } from "@/lib/db";
 import { app } from "@/lib/hono";
 
+import { PostProcessWorkflow } from "@/features/posts/workflows/post-process";
+
+export { PostProcessWorkflow };
+
 declare module "@tanstack/react-start" {
   interface Register {
     server: {

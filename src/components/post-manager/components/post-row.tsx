@@ -35,7 +35,15 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 
       {/* Title & Summary */}
       <div className="md:col-span-5 min-w-0">
-        <div className="flex items-center gap-3 mb-1">
+        <div
+          className="flex items-center gap-3 mb-1 cursor-pointer"
+          onClick={() =>
+            navigate({
+              to: "/admin/posts/edit/$id",
+              params: { id: String(post.id) },
+            })
+          }
+        >
           <h3 className="text-white font-bold font-sans uppercase truncate text-lg">
             {post.title}
           </h3>

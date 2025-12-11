@@ -181,3 +181,13 @@ export const generateSlugFn = createServerFn()
     const fallbackSlug = `${baseSlug}-${Date.now()}`;
     return { slug: fallbackSlug };
   });
+
+export const startPostProcessWorkflowFn = createServerFn()
+  .inputValidator(z.object({ postId: z.number() }))
+  .handler(async ({ data, context }) => {
+    await context.env.POST_PROCESS_WORKFLOW.create({
+      params: {
+        postId: data.postId,
+      },
+    });
+  });

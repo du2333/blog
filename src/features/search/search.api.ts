@@ -22,7 +22,6 @@ export const upsertSearchDocFn = createServerFn({ method: "POST" })
       title: z.string().min(1),
       summary: z.string().nullable().optional(),
       contentJson: z.custom<JSONContent>().nullable().optional(),
-      plainText: z.string().optional(),
     })
   )
   .handler(async ({ data, context }) => {
