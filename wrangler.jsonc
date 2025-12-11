@@ -32,7 +32,7 @@
 	],
 	"kv_namespaces": [
 		{
-			"binding": "SEARCH_KV",
+			"binding": "KV",
 			"id": "b2804b2d5ca94cf58663160401cd3754",
 			"remote": true
 		}

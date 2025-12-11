@@ -7,8 +7,8 @@ let cachedDb: MyOramaDB | null = null;
 let inflight: Promise<MyOramaDB> | null = null;
 
 async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
-  if (!env.SEARCH_KV) return null;
-  const raw = await env.SEARCH_KV.get<RawData>(KV_KEY, { type: "json" });
+  if (!env.KV) return null;
+  const raw = await env.KV.get<RawData>(KV_KEY, { type: "json" });
   if (!raw) return null;
 
   try {
@@ -38,9 +38,9 @@ export async function getOramaDb(env: Env): Promise<MyOramaDB> {
 }
 
 export async function persistOramaDb(env: Env, db: MyOramaDB) {
-  if (!env.SEARCH_KV) return;
+  if (!env.KV) return;
   const raw = save(db);
-  await env.SEARCH_KV.put(KV_KEY, JSON.stringify(raw));
+  await env.KV.put(KV_KEY, JSON.stringify(raw));
 }
 
 export function setOramaDb(db: MyOramaDB) {
