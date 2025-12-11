@@ -22,7 +22,7 @@ export const PostsTable = sqliteTable(
     id: integer().primaryKey({ autoIncrement: true }),
     title: text().notNull(),
     summary: text(),
-    readTimeInMinutes: integer().default(1).notNull(),
+    readTimeInMinutes: integer("read_time_in_minutes").default(1).notNull(),
     slug: text().notNull().unique(),
     category: text("category", { enum: POST_CATEGORIES })
       .default("DEV")
@@ -50,7 +50,7 @@ export const MediaTable = sqliteTable(
     id: integer().primaryKey({ autoIncrement: true }),
     key: text().notNull().unique(),
     url: text().notNull(),
-    fileName: text().notNull(),
+    fileName: text("file_name").notNull(),
     width: integer("width"),
     height: integer("height"),
     mimeType: text("mime_type").notNull(),
@@ -65,10 +65,10 @@ export const MediaTable = sqliteTable(
 export const PostMediaTable = sqliteTable(
   "post_media",
   {
-    postId: integer()
+    postId: integer("post_id")
       .notNull()
       .references(() => PostsTable.id, { onDelete: "cascade" }),
-    mediaId: integer()
+    mediaId: integer("media_id")
       .notNull()
       .references(() => MediaTable.id, { onDelete: "cascade" }),
   },

@@ -9,7 +9,7 @@
     "serve": "vite preview",
     "test": "vitest run",
     "cf-typegen": "wrangler types --env-interface Env",
-    "db:studio": "drizzle-kit studio",
+    "db:studio": "drizzle-kit studio --port 5555",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
