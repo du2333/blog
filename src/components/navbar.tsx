@@ -18,17 +18,40 @@ export function Navbar({
   return (
     <header className="sticky top-0 z-40 bg-zzz-black/90 backdrop-blur-md border-b border-zzz-gray h-20">
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
-        <Link to="/" className="flex items-center gap-3 cursor-pointer group">
-          <div className="w-10 h-10 bg-zzz-lime flex items-center justify-center clip-corner-bl group-hover:bg-white transition-colors">
-            <Logo className="w-6 h-6 text-black fill-current" />
+        <Link to="/" className="flex items-center gap-4 group select-none">
+          {/* Logo with Tech Ring Animation */}
+          <div className="relative w-10 h-10 flex items-center justify-center">
+            {/* Static outer ring */}
+            <div className="absolute inset-0 border border-zzz-gray/40 rounded-full"></div>
+            {/* Spinning tech ring */}
+            <div className="absolute inset-0 border border-t-zzz-lime border-r-transparent border-b-transparent border-l-transparent rounded-full animate-[spin_3s_linear_infinite]"></div>
+            {/* Inner Logo */}
+            <Logo className="w-5 h-5 text-white group-hover:text-zzz-lime transition-colors relative z-10" />
           </div>
-          <div className="flex flex-col">
-            <h1 className="font-sans font-bold text-2xl leading-none tracking-tighter uppercase italic">
-              PROXY<span className="text-zzz-lime">ARCHIVE</span>
-            </h1>
-            <span className="font-mono text-[10px] text-gray-500 tracking-widest">
-              VER 2.5 // ONLINE
-            </span>
+
+          {/* Angled Divider */}
+          <div className="h-8 w-px bg-zzz-gray -skew-x-12 hidden xs:block"></div>
+
+          {/* Text Lockup */}
+          <div className="flex flex-col justify-center">
+            <div className="flex items-baseline gap-1 leading-none">
+              <span className="font-sans font-bold text-xl md:text-2xl text-white tracking-tight group-hover:text-zzz-cyan transition-colors">
+                PROXY
+              </span>
+              <span className="font-sans font-black text-xl md:text-2xl text-zzz-lime tracking-tighter uppercase">
+                ARCHIVE
+              </span>
+            </div>
+            {/* Micro Metadata */}
+            <div className="flex items-center gap-2 mt-1 opacity-60 group-hover:opacity-100 transition-opacity">
+              <span className="font-mono text-[9px] text-gray-400 tracking-[0.3em] uppercase">
+                Sys_Online
+              </span>
+              <div className="flex gap-0.5">
+                <div className="w-0.5 h-0.5 bg-zzz-lime rounded-full"></div>
+                <div className="w-0.5 h-0.5 bg-zzz-lime rounded-full animate-pulse delay-75"></div>
+              </div>
+            </div>
           </div>
         </Link>
 
