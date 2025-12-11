@@ -1,9 +1,9 @@
+import { LoadingFallback } from "@/components/loading-fallback";
 import { Pagination } from "@/components/pagination";
 import { PostList } from "@/components/post-list";
-import { DatabaseSkeleton } from "@/components/skeletons/database-skeleton";
-import { POST_CATEGORIES, PostCategory } from "@/lib/db/schema";
 import { getPostsCountFn, getPostsFn } from "@/features/posts/api/posts.api";
 import { ITEMS_PER_PAGE } from "@/lib/constants";
+import { POST_CATEGORIES, PostCategory } from "@/lib/db/schema";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
@@ -36,7 +36,7 @@ const postsCountQueryOptions = (category?: PostCategory) =>
 
 export const Route = createFileRoute("/_public/database/")({
   component: RouteComponent,
-  pendingComponent: DatabaseSkeleton,
+  pendingComponent: LoadingFallback,
   validateSearch: searchSchema,
   loaderDeps: ({ search: { page, category } }) => ({ page, category }),
   loader: async ({ context, deps: { page, category } }) => {

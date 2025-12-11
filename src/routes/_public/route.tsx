@@ -43,7 +43,7 @@ function PublicLayout() {
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
       />
-      <main className="flex-1 container mx-auto px-4 py-8 md:py-12 min-h-[calc(100vh-10rem)]">
+      <main className="flex flex-col min-h-screen container mx-auto px-4 py-8 md:py-12">
         <Outlet />
       </main>
       <Footer />

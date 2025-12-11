@@ -91,6 +91,7 @@ mark {
 @layer base {
   body {
     background-color: #050505;
+    color: #f0f0f0;
     overflow-x: hidden;
   }
 

@@ -1,7 +1,7 @@
-import type { Post } from "@/lib/db/schema";
 import { CATEGORY_COLORS } from "@/lib/constants";
+import type { Post } from "@/lib/db/schema";
 import { formatDate } from "@/lib/utils";
-import { ClientOnly, useNavigate } from "@tanstack/react-router";
+import { ClientOnly, Link } from "@tanstack/react-router";
 import { ArrowUpRight, Clock, Zap } from "lucide-react";
 
 export function FeaturedTransmission({
@@ -18,7 +18,6 @@ export function FeaturedTransmission({
     | "updatedAt"
   >[];
 }) {
-  const navigate = useNavigate();
   if (posts.length === 0) return null;
 
   const heroPost = posts[0];
@@ -28,10 +27,9 @@ export function FeaturedTransmission({
     <div className="w-full max-w-[1600px] mx-auto">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* --- HERO SECTION (Left / Top) --- */}
-        <div
-          onClick={() =>
-            navigate({ to: `/post/$slug`, params: { slug: heroPost.slug } })
-          }
+        <Link
+          to={"/post/$slug"}
+          params={{ slug: heroPost.slug }}
           className="lg:col-span-8 group relative bg-zzz-dark border-2 border-zzz-gray hover:border-zzz-lime cursor-pointer transition-all duration-500 overflow-hidden min-h-[500px] flex flex-col"
         >
           {/* Background Video / Pattern */}
@@ -74,10 +72,10 @@ export function FeaturedTransmission({
 
             {/* Main Title Area */}
             <div className="mt-8 md:mt-0">
-              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-[1.1] mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl wrap-break-word line-clamp-3 md:line-clamp-4">
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-none mb-6 py-1 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl wrap-break-word line-clamp-3 md:line-clamp-4">
                 {heroPost.title}
               </h3>
-              <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8">
+              <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8 line-clamp-3">
                 {heroPost.summary}
               </p>
             </div>
@@ -90,9 +88,11 @@ export function FeaturedTransmission({
                   {heroPost.readTimeInMinutes} MINS
                 </span>
                 <span>//</span>
-                <ClientOnly fallback={<span>-</span>}>
-                  <span>{formatDate(heroPost.updatedAt)}</span>
-                </ClientOnly>
+                <span>
+                  <ClientOnly fallback={<span>-</span>}>
+                    {formatDate(heroPost.updatedAt)}
+                  </ClientOnly>
+                </span>
               </div>
               <div className="flex items-center gap-2 text-zzz-lime font-bold font-sans uppercase tracking-wider text-sm group-hover:translate-x-2 transition-transform">
                 Read_Log <ArrowUpRight size={18} />
@@ -103,7 +103,7 @@ export function FeaturedTransmission({
           {/* Decorative Corners */}
           <div className="absolute top-0 right-0 w-16 h-16 border-t-4 border-r-4 border-zzz-lime opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
           <div className="absolute bottom-0 left-0 w-16 h-16 border-b-4 border-l-4 border-zzz-lime opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        </div>
+        </Link>
 
         {/* --- SIDEBAR FEED (Right / Bottom) --- */}
         <div className="lg:col-span-4 flex flex-col gap-4">
@@ -121,12 +121,11 @@ export function FeaturedTransmission({
 
           {/* List Items */}
           {sidePosts.map((post, index) => (
-            <div
+            <Link
               key={post.id}
-              onClick={() =>
-                navigate({ to: `/post/$slug`, params: { slug: post.slug } })
-              }
-              className="group bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center clip-corner-bl"
+              to={"/post/$slug"}
+              params={{ slug: post.slug }}
+              className="group flex-1 bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
             >
               <div className="flex justify-between items-start mb-2">
                 <div className="font-mono text-[10px] text-gray-500 group-hover:text-zzz-cyan transition-colors">
@@ -141,22 +140,29 @@ export function FeaturedTransmission({
                 </div>
               </div>
 
-              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2 wrap-break-word">
+              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2">
                 {post.title}
               </h4>
 
               <div className="flex items-center gap-4 mt-2 opacity-50 group-hover:opacity-100 transition-opacity">
-                <ClientOnly fallback={<span>-</span>}>
-                  <span className="text-[10px] font-mono text-gray-400">
+                <span className="text-[10px] font-mono text-gray-400">
+                  <ClientOnly fallback={<span>-</span>}>
                     {formatDate(post.updatedAt)}
-                  </span>
-                </ClientOnly>
+                  </ClientOnly>
+                </span>
               </div>
 
               {/* Hover Indicator */}
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-zzz-cyan transform scale-y-0 group-hover:scale-y-100 transition-transform origin-bottom duration-300"></div>
-            </div>
+            </Link>
           ))}
+
+          {/* "More" Hint */}
+          <div className="mt-auto text-center border-t border-dashed border-zzz-gray pt-2">
+            <span className="font-mono text-[10px] text-gray-600">
+              SCROLL FOR ARCHIVE ACCESS
+            </span>
+          </div>
         </div>
       </div>
     </div>
