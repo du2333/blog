@@ -52,7 +52,7 @@ export function Navbar({
           {/* Desktop Search Trigger */}
           <button
             onClick={onSearchClick}
-            className="hidden md:flex group items-center gap-3 px-4 h-9 bg-black border border-zzz-gray hover:border-zzz-lime transition-all duration-300 clip-corner-tr active:scale-95"
+            className="hidden md:flex group items-center gap-3 px-4 h-9 bg-black border border-zzz-gray hover:border-zzz-lime transition-all duration-300 clip-corner-tr active:scale-95 cursor-pointer"
             title="Search Database (Ctrl+K)"
           >
             <Search

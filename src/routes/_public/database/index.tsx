@@ -1,125 +1,141 @@
+import { PostFeed } from "@/components/database-feed/post-feed";
+import { PostLoader } from "@/components/database-feed/post-loader";
+import { PostMobileFilter } from "@/components/database-feed/post-mobile-filter";
+import { PostSidebar } from "@/components/database-feed/post-sidebar";
 import { LoadingFallback } from "@/components/loading-fallback";
-import { Pagination } from "@/components/pagination";
-import { PostList } from "@/components/post-list";
-import { getPostsCountFn, getPostsFn } from "@/features/posts/api/posts.api";
-import { ITEMS_PER_PAGE } from "@/lib/constants";
-import { POST_CATEGORIES, PostCategory } from "@/lib/db/schema";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { getPostsCursorFn } from "@/features/posts/api/posts.api";
+import { PostCategory } from "@/lib/db/schema";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Database } from "lucide-react";
+import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
 const searchSchema = z.object({
-  page: z.number().int().positive().optional().default(1).catch(1),
   category: z.custom<PostCategory>().optional(),
 });
-
-const postsQueryOptions = (page: number, category?: PostCategory) =>
-  queryOptions({
-    queryKey: ["posts", "public", page, category],
-    queryFn: () =>
-      getPostsFn({
-        data: {
-          offset: (page - 1) * ITEMS_PER_PAGE,
-          limit: ITEMS_PER_PAGE,
-          category: category,
-          publicOnly: true,
-        },
-      }),
-  });
-
-const postsCountQueryOptions = (category?: PostCategory) =>
-  queryOptions({
-    queryKey: ["postsCount", "public", category],
-    queryFn: () =>
-      getPostsCountFn({ data: { category: category, publicOnly: true } }),
-  });
 
 export const Route = createFileRoute("/_public/database/")({
   component: RouteComponent,
   pendingComponent: LoadingFallback,
   validateSearch: searchSchema,
-  loaderDeps: ({ search: { page, category } }) => ({ page, category }),
-  loader: async ({ context, deps: { page, category } }) => {
-    await Promise.all([
-      context.queryClient.ensureQueryData(postsQueryOptions(page, category)),
-      context.queryClient.ensureQueryData(postsCountQueryOptions(category)),
-    ]);
-  },
 });
 
 function RouteComponent() {
-  const { page: currentPage, category } = Route.useSearch();
-  const { data: paginatedPosts } = useSuspenseQuery(
-    postsQueryOptions(currentPage, category)
-  );
-  const { data: postsCount } = useSuspenseQuery(
-    postsCountQueryOptions(category)
-  );
+  const { category } = Route.useSearch();
   const navigate = useNavigate();
-  const totalPages = Math.ceil(postsCount / ITEMS_PER_PAGE);
 
-  const CATEGORIES = ["ALL", ...POST_CATEGORIES] as const;
+  // Active category for UI (convert undefined to "ALL")
+  const activeCategory = category ?? "ALL";
+
+  // Handle category change
+  const handleCategoryChange = useCallback(
+    (cat: string) => {
+      navigate({
+        to: "/database",
+        search: cat === "ALL" ? {} : { category: cat as PostCategory },
+      });
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    },
+    [navigate]
+  );
+
+  // Infinite query for posts
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["posts", "public", "cursor", category],
+      queryFn: ({ pageParam }) =>
+        getPostsCursorFn({
+          data: {
+            cursor: pageParam,
+            category: category,
+            publicOnly: true,
+          },
+        }),
+      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+      initialPageParam: undefined as number | undefined,
+    });
+
+  // Flatten all pages into a single array
+  const posts = useMemo(() => {
+    return data?.pages.flatMap((page) => page.items) ?? [];
+  }, [data]);
+
+  // Load more handler
+  const loadMore = useCallback(() => {
+    if (!isFetchingNextPage && hasNextPage) {
+      fetchNextPage();
+    }
+  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-right-4 fill-mode-forwards duration-500 max-w-6xl mx-auto">
-      {/* Header */}
-      <div className="border-b border-zzz-gray pb-6 mb-8 flex flex-col md:flex-row justify-between items-end gap-4">
+    <div className="w-full max-w-[1800px] mx-auto min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards">
+      {/* Header Section */}
+      <div className="mb-8 md:mb-12 border-b border-zzz-gray pb-6 flex flex-col items-start md:flex-row md:items-end justify-between gap-6">
         <div>
-          <h2 className="text-4xl font-black font-sans uppercase text-white mb-2">
-            Database <span className="text-zzz-cyan">// Archive</span>
-          </h2>
-          <p className="text-gray-400 font-mono text-sm">
-            FULL ACCESS GRANTED. VIEWING RECORDS{" "}
-            {(currentPage - 1) * ITEMS_PER_PAGE + 1} -{" "}
-            {Math.min(currentPage * ITEMS_PER_PAGE, postsCount)} OF {postsCount}
+          {/* 
+              Fix: Removed outer pr-14. 
+              Added 'pr-4' specifically to the inner span with 'bg-clip-text'. 
+              This extends the background gradient box to cover the italic slant of the last letter 'e'.
+           */}
+          <h1 className="text-5xl md:text-7xl font-black font-sans uppercase text-white italic tracking-tighter flex items-center gap-4">
+            <Database
+              size={48}
+              className="text-zzz-lime hidden md:block shrink-0"
+            />
+            <span>
+              Data
+              <span className="text-transparent bg-clip-text bg-linear-to-r from-zzz-lime to-zzz-cyan pr-4">
+                base
+              </span>
+            </span>
+          </h1>
+          <p className="font-mono text-xs md:text-sm text-gray-500 mt-2 pl-2 border-l-2 border-zzz-lime">
+            ACCESSING ARCHIVE SECTOR 01 // PROXY LOGS
           </p>
         </div>
 
-        <div className="flex gap-2">
-          {CATEGORIES.map((cat) => {
-            const isActive = cat === "ALL" ? !category : category === cat;
-            return (
-              <button
-                key={cat}
-                className={`text-xs font-bold font-sans bg-black border px-3 py-1 transition-colors uppercase cursor-pointer ${
-                  isActive
-                    ? "border-zzz-lime text-zzz-lime"
-                    : "border-zzz-gray text-gray-400 hover:border-zzz-lime hover:text-white"
-                }`}
-                onClick={() =>
-                  navigate({
-                    to: "/database",
-                    search: {
-                      page: 1,
-                      category: cat === "ALL" ? undefined : cat,
-                    },
-                  })
-                }
-              >
-                {cat}
-              </button>
-            );
-          })}
+        {/* Stats / Deco - Force left alignment on all breakpoints for consistency */}
+        <div className="flex gap-8 font-mono text-[10px] text-gray-600 uppercase tracking-widest text-left w-full md:w-auto">
+          <div>
+            <div className="text-zzz-lime font-bold text-xl">
+              {posts.length}
+            </div>
+            <div>Entries Loaded</div>
+          </div>
+          <div>
+            <div className="text-white font-bold text-xl">100%</div>
+            <div>Integrity</div>
+          </div>
         </div>
       </div>
 
-      {/* Paginated List - Uses Standard List */}
-      <PostList posts={paginatedPosts} />
+      <div className="flex flex-col lg:flex-row gap-8 relative items-start">
+        {/* Desktop Sidebar (Sticky) */}
+        <PostSidebar
+          activeCategory={activeCategory}
+          onSelectCategory={handleCategoryChange}
+        />
 
-      {/* Pagination Controls */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        goToPage={(page) =>
-          navigate({
-            to: "/database",
-            search: {
-              page,
-              category,
-            },
-          })
-        }
-      />
+        {/* Main Feed Area */}
+        <div className="flex-1 min-w-0 w-full">
+          {/* Mobile Filter (Sticky) */}
+          <PostMobileFilter
+            activeCategory={activeCategory}
+            onSelectCategory={handleCategoryChange}
+          />
+
+          {/* Content Feed */}
+          <PostFeed posts={posts} />
+
+          {/* Infinite Scroll Loader */}
+          <PostLoader
+            onLoadMore={loadMore}
+            isLoading={isFetchingNextPage}
+            hasMore={hasNextPage ?? false}
+          />
+        </div>
+      </div>
     </div>
   );
 }

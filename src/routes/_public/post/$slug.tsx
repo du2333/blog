@@ -47,6 +47,26 @@ function RouteComponent() {
   const router = useRouter();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
+  // Handle initial scroll position
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // Decode URL-encoded hash and remove the leading #
+      const id = decodeURIComponent(hash.slice(1));
+      const element = document.getElementById(id);
+      if (element) {
+        // Small delay to ensure content is rendered
+        setTimeout(() => {
+          element.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    } else {
+      // No hash, scroll to top
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, []);
+
+  // Show/hide back to top button based on scroll position
   useEffect(() => {
     const handleScroll = () => {
       if (window.scrollY > 400) {

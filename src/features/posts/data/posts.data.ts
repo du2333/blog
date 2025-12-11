@@ -3,8 +3,13 @@ import {
   uniqueOrThrow,
 } from "@/features/posts/data/helper";
 import { type DB } from "@/lib/db";
-import { PostCategory, PostStatus, PostsTable } from "@/lib/db/schema";
-import { and, count, desc, eq, lte, ne } from "drizzle-orm";
+import {
+  PostCategory,
+  PostListItem,
+  PostStatus,
+  PostsTable,
+} from "@/lib/db/schema";
+import { and, count, desc, eq, lt, lte, ne } from "drizzle-orm";
 
 export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
   const [post] = await db.insert(PostsTable).values(data).returning();
@@ -58,6 +63,69 @@ export async function getPostsCount(
     .from(PostsTable)
     .where(whereClause);
   return totalNumberofPosts[0].count;
+}
+
+const DEFAULT_PAGE_SIZE = 12;
+
+/**
+ * Get posts with cursor-based pagination
+ * @param cursor - The id of the last item from previous page
+ * @param limit - Number of items per page
+ */
+export async function getPostsCursor(
+  db: DB,
+  options?: {
+    cursor?: number;
+    limit?: number;
+    category?: PostCategory;
+    publicOnly?: boolean;
+  }
+): Promise<{
+  items: PostListItem[];
+  nextCursor: number | null;
+}> {
+  const { cursor, limit = DEFAULT_PAGE_SIZE, category, publicOnly } =
+    options ?? {};
+
+  // Build base conditions from helper
+  const baseConditions = buildPostWhereClause({ category, publicOnly });
+
+  // Add cursor condition if provided
+  const conditions = [];
+  if (baseConditions) {
+    conditions.push(baseConditions);
+  }
+  if (cursor) {
+    conditions.push(lt(PostsTable.id, cursor));
+  }
+
+  const items = await db
+    .select({
+      id: PostsTable.id,
+      title: PostsTable.title,
+      summary: PostsTable.summary,
+      readTimeInMinutes: PostsTable.readTimeInMinutes,
+      slug: PostsTable.slug,
+      category: PostsTable.category,
+      status: PostsTable.status,
+      publishedAt: PostsTable.publishedAt,
+      createdAt: PostsTable.createdAt,
+      updatedAt: PostsTable.updatedAt,
+    })
+    .from(PostsTable)
+    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .orderBy(desc(PostsTable.id))
+    .limit(limit + 1);
+
+  // Check if there's a next page
+  const hasMore = items.length > limit;
+  if (hasMore) {
+    items.pop();
+  }
+
+  const nextCursor = hasMore ? items[items.length - 1]?.id ?? null : null;
+
+  return { items, nextCursor };
 }
 
 export async function findPostById(db: DB, id: number) {

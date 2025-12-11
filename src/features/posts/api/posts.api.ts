@@ -6,6 +6,7 @@ import {
   findPostBySlugPublic,
   getPosts,
   getPostsCount,
+  getPostsCursor,
   insertPost,
   slugExists,
   updatePost,
@@ -88,6 +89,24 @@ export const getPostsCountFn = createServerFn()
     return await getPostsCount(context.db, {
       category: data.category,
       status: data.status,
+      publicOnly: data.publicOnly,
+    });
+  });
+
+export const getPostsCursorFn = createServerFn()
+  .inputValidator(
+    z.object({
+      cursor: z.number().optional(),
+      limit: z.number().optional(),
+      category: z.custom<PostCategory>().optional(),
+      publicOnly: z.boolean().optional(),
+    })
+  )
+  .handler(async ({ data, context }) => {
+    return await getPostsCursor(context.db, {
+      cursor: data.cursor,
+      limit: data.limit,
+      category: data.category,
       publicOnly: data.publicOnly,
     });
   });
