@@ -5,7 +5,10 @@ import { PostSidebar } from "@/components/database-feed/post-sidebar";
 import { LoadingFallback } from "@/components/loading-fallback";
 import { getPostsCursorFn } from "@/features/posts/api/posts.api";
 import { PostCategory } from "@/lib/db/schema";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import {
+  infiniteQueryOptions,
+  useSuspenseInfiniteQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Database } from "lucide-react";
 import { useCallback, useMemo } from "react";
@@ -15,10 +18,31 @@ const searchSchema = z.object({
   category: z.custom<PostCategory>().optional(),
 });
 
+const postsInfiniteQueryOptions = (category?: PostCategory) =>
+  infiniteQueryOptions({
+    queryKey: ["posts", "public", "cursor", category],
+    queryFn: ({ pageParam }) =>
+      getPostsCursorFn({
+        data: {
+          cursor: pageParam,
+          category: category,
+          publicOnly: true,
+        },
+      }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialPageParam: undefined as number | undefined,
+  });
+
 export const Route = createFileRoute("/_public/database/")({
   component: RouteComponent,
   pendingComponent: LoadingFallback,
   validateSearch: searchSchema,
+  loaderDeps: ({ search: { category } }) => ({ category }),
+  loader: async ({ context, deps: { category } }) => {
+    await context.queryClient.prefetchInfiniteQuery(
+      postsInfiniteQueryOptions(category)
+    );
+  },
 });
 
 function RouteComponent() {
@@ -40,21 +64,9 @@ function RouteComponent() {
     [navigate]
   );
 
-  // Infinite query for posts
+  // Infinite query for posts (SSR prefetched in loader)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["posts", "public", "cursor", category],
-      queryFn: ({ pageParam }) =>
-        getPostsCursorFn({
-          data: {
-            cursor: pageParam,
-            category: category,
-            publicOnly: true,
-          },
-        }),
-      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-      initialPageParam: undefined as number | undefined,
-    });
+    useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
 
   // Flatten all pages into a single array
   const posts = useMemo(() => {
