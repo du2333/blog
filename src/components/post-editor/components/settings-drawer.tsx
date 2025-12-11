@@ -1,11 +1,13 @@
+import DatePicker from "@/components/ui/date-picker";
+import TechButton from "@/components/ui/tech-button";
+import { CATEGORY_COLORS } from "@/lib/constants";
 import {
   POST_STATUSES,
   type PostCategory,
   type PostStatus,
 } from "@/lib/db/schema";
-import { CATEGORY_COLORS } from "@/lib/constants";
-import DatePicker from "@/components/ui/date-picker";
 import {
+  Check,
   Clock,
   FileText,
   Layout,
@@ -29,6 +31,8 @@ interface SettingsDrawerProps {
   onGenerateSlug: () => void;
   onCalculateReadTime: () => void;
   onGenerateSummary: () => void;
+  handleProcessData: () => void;
+  processState: "IDLE" | "PROCESSING" | "SUCCESS";
 }
 
 export function SettingsDrawer({
@@ -43,6 +47,8 @@ export function SettingsDrawer({
   onGenerateSlug,
   onCalculateReadTime,
   onGenerateSummary,
+  handleProcessData,
+  processState,
 }: SettingsDrawerProps) {
   return (
     <div
@@ -96,11 +102,29 @@ export function SettingsDrawer({
           onChange={(summary) => onPostChange({ summary })}
           onGenerate={onGenerateSummary}
         />
+        <div className="md:hidden space-y-3 pt-4 border-t border-zzz-gray/30">
+          <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
+            Mobile Actions
+          </div>
+          <TechButton
+            variant={processState === "SUCCESS" ? "primary" : "secondary"}
+            onClick={handleProcessData}
+            disabled={processState !== "IDLE"}
+            className="w-full justify-center"
+            icon={processState === "SUCCESS" ? <Check size={14} /> : undefined}
+          >
+            {processState === "PROCESSING"
+              ? "TRANSMITTING..."
+              : processState === "SUCCESS"
+              ? "WORKFLOW_QUEUED"
+              : "RUN SYSTEM DIAGNOSTICS"}
+          </TechButton>
+        </div>
       </div>
 
       {/* Footer */}
       <div className="p-4 border-t border-zzz-gray bg-black text-[10px] font-mono text-gray-600 text-center">
-        SYSTEM_ID: #{postId}
+        BUFFER_ID: {postId}
       </div>
     </div>
   );

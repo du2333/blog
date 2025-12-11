@@ -1,4 +1,14 @@
-import { ArrowLeft, CheckCircle2, RefreshCw, Settings, X } from "lucide-react";
+import TechButton from "@/components/ui/tech-button";
+import {
+  ArrowLeft,
+  Check,
+  CheckCircle2,
+  Cpu,
+  Loader2,
+  RefreshCw,
+  Settings,
+  X
+} from "lucide-react";
 import type { SaveStatus } from "../types";
 
 interface EditorToolbarProps {
@@ -10,6 +20,8 @@ interface EditorToolbarProps {
   isSettingsOpen: boolean;
   onBack: () => void;
   onToggleSettings: () => void;
+  handleProcessData: () => void;
+  processState: "IDLE" | "PROCESSING" | "SUCCESS";
 }
 
 export function EditorToolbar({
@@ -21,7 +33,11 @@ export function EditorToolbar({
   isSettingsOpen,
   onBack,
   onToggleSettings,
+  handleProcessData,
+  processState,
 }: EditorToolbarProps) {
+  
+
   return (
     <div className="h-14 md:h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-40 shrink-0 transition-all">
       {/* Left Section */}
@@ -53,6 +69,38 @@ export function EditorToolbar({
 
       {/* Right Section */}
       <div className="flex items-center gap-2 md:gap-6">
+        <div className="hidden md:flex items-center gap-2">
+          <TechButton
+            variant={processState === "SUCCESS" ? "primary" : "secondary"}
+            size="sm"
+            onClick={handleProcessData}
+            disabled={processState !== "IDLE"}
+            icon={
+              processState === "PROCESSING" ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : processState === "SUCCESS" ? (
+                <Check size={14} />
+              ) : (
+                <Cpu size={14} />
+              )
+            }
+            className={`
+                        transition-all duration-300 min-w-[140px] justify-center
+                        ${
+                          processState === "IDLE"
+                            ? "border-dashed opacity-80 hover:opacity-100"
+                            : ""
+                        }
+                    `}
+          >
+            {processState === "PROCESSING"
+              ? "TRANSMITTING..."
+              : processState === "SUCCESS"
+              ? "SIGNAL_QUEUED"
+              : "PROCESS_DATA"}
+          </TechButton>
+        </div>
+
         <SaveIndicator
           saveStatus={saveStatus}
           lastSaved={lastSaved}

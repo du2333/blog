@@ -3,6 +3,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/lib/editor-utils";
 import { useMutation } from "@tanstack/react-query";
 import type { JSONContent } from "@tiptap/react";
+import { Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { PostEditorData } from "../types";
@@ -22,7 +23,9 @@ export function usePostActions({
 }: UsePostActionsOptions) {
   const [isCalculatingReadTime, setIsCalculatingReadTime] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
-
+  const [processState, setProcessState] = useState<
+    "IDLE" | "PROCESSING" | "SUCCESS"
+  >("IDLE");
   // Keep track of how slug was requested to control noisy toasts
   const slugGenerationMode = useRef<"manual" | "auto">("manual");
   // Track previous values to detect actual changes & skip first mount
@@ -34,6 +37,30 @@ export function usePostActions({
   // Debounced values
   const debouncedTitle = useDebounce(post.title, 500);
   const debouncedContentJson = useDebounce(post.contentJson, 800);
+
+  const handleProcessData = () => {
+    if (processState !== "IDLE") return;
+
+    setProcessState("PROCESSING");
+
+    setTimeout(() => {
+      processDataMutation.mutate();
+
+      // Feedback: Notify user task is running
+      toast("WORKFLOW STARTED", {
+        description: "Deep analysis running in background thread.",
+        icon: <Radio className="animate-pulse text-zzz-lime" />,
+        className: "bg-zzz-black/95 border-zzz-lime text-white",
+      });
+
+      setProcessState("SUCCESS");
+
+      // Reset after cooldown
+      setTimeout(() => {
+        setProcessState("IDLE");
+      }, 3000);
+    }, 800);
+  };
 
   // Slug generation mutation
   const slugMutation = useMutation({
@@ -58,6 +85,11 @@ export function usePostActions({
       const fallbackSlug = slugify(post.title) || "untitled-log";
       setPost((prev) => ({ ...prev, slug: fallbackSlug }));
     },
+  });
+
+  const processDataMutation = useMutation({
+    // TODO: Trigger workflow here
+    mutationFn: () => Promise.resolve(),
   });
 
   // Auto-generate slug on title change (debounced)
@@ -202,5 +234,7 @@ export function usePostActions({
     handleGenerateSlug,
     handleCalculateReadTime,
     handleGenerateSummary,
+    handleProcessData,
+    processState,
   };
 }

@@ -1,6 +1,6 @@
 import { Editor } from "@/components/editor";
-import type { JSONContent } from "@tiptap/react";
 import { useRouter } from "@tanstack/react-router";
+import type { JSONContent } from "@tiptap/react";
 import { useCallback, useState } from "react";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
@@ -41,6 +41,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     handleGenerateSlug,
     handleCalculateReadTime,
     handleGenerateSummary,
+    handleProcessData,
+    processState,
   } = usePostActions({
     postId: initialData.id,
     post,
@@ -70,6 +72,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         isSettingsOpen={isSettingsOpen}
         onBack={() => router.history.back()}
         onToggleSettings={() => setIsSettingsOpen(!isSettingsOpen)}
+        handleProcessData={handleProcessData}
+        processState={processState}
       />
 
       {/* Main Document Area */}
@@ -115,6 +119,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         onGenerateSlug={handleGenerateSlug}
         onCalculateReadTime={handleCalculateReadTime}
         onGenerateSummary={handleGenerateSummary}
+        handleProcessData={handleProcessData}
+        processState={processState}
       />
     </div>
   );
