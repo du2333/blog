@@ -1,6 +1,8 @@
 import {
+  deleteMedia,
   getMediaList,
   getTotalMediaSize,
+  insertMedia,
   updateMediaName,
 } from "@/features/media/data/media.data";
 import {
@@ -8,7 +10,8 @@ import {
   getPostsByMediaKey,
   isMediaInUse,
 } from "@/features/posts/data/post-media.data";
-import { deleteImage, uploadImage } from "@/lib/r2";
+import { cacheDelete } from "@/lib/cache";
+import { deleteImage, uploadImage } from "@/lib/images/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -43,7 +46,24 @@ export const uploadImageFn = createServerFn({
       throw new Error("File type must be an image");
     }
 
-    return await uploadImage(context.db, context.env, file);
+    const uploadedResult = await uploadImage(context.env, file);
+
+    try {
+      const mediaRecord = await insertMedia(context.db, {
+        key: uploadedResult.key,
+        url: uploadedResult.url,
+        fileName: uploadedResult.fileName,
+        mimeType: uploadedResult.mimeType,
+        sizeInBytes: uploadedResult.sizeInBytes,
+      });
+      return mediaRecord;
+    } catch (error) {
+      console.error("DB Insert Failed, rolling back R2 upload:", error);
+      context.executionCtx.waitUntil(
+        deleteImage(context.env, uploadedResult.key).catch(console.error)
+      );
+      throw new Error("Failed to insert media record");
+    }
   });
 
 export const deleteImageFn = createServerFn()
@@ -54,7 +74,18 @@ export const deleteImageFn = createServerFn()
   )
   .handler(async ({ data, context }) => {
     const { key } = data;
-    await deleteImage(context.db, context.env, context.executionCtx, key);
+
+    await deleteMedia(context.db, key);
+
+    const backgroundTasks = Promise.all([
+      deleteImage(context.env, key).catch((err) =>
+        console.error("Failed to delete image from R2:", err)
+      ),
+      cacheDelete(`/images/${key}`).catch((err) =>
+        console.error("Failed to delete image from cache:", err)
+      ),
+    ]);
+    context.executionCtx.waitUntil(backgroundTasks);
   });
 
 export const getMediaFn = createServerFn()

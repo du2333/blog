@@ -1,4 +1,4 @@
-import { StatCard } from "@/components/stat-card";
+import { StatCard } from "@/components/admin/dashboard/stat-card";
 import { ADMIN_STATS } from "@/lib/constants";
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, AlertTriangle, Database, Users } from "lucide-react";

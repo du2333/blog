@@ -1,6 +1,6 @@
 import { cacheWrap } from "@/lib/cache";
 import { createDb } from "@/lib/db";
-import { handleImageRequest } from "@/lib/images";
+import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
 

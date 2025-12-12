@@ -1,15 +1,18 @@
-import { LoadingFallback } from "@/components/loading-fallback";
 import {
   MediaGrid,
   MediaPreviewModal,
   MediaToolbar,
   UploadModal,
-} from "@/components/media/components";
-import { useMediaLibrary, useMediaUpload } from "@/components/media/hooks";
-import { MediaAsset } from "@/components/media/types";
+} from "@/components/admin/media-library/components";
+import {
+  useMediaLibrary,
+  useMediaUpload,
+} from "@/components/admin/media-library/hooks";
+import { MediaAsset } from "@/components/admin/media-library/types";
+import { LoadingFallback } from "@/components/common/loading-fallback";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import TechButton from "@/components/ui/tech-button";
-import { formatBytes } from "@/lib/files";
+import { formatBytes } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
 import { Upload } from "lucide-react";
 import { useState } from "react";

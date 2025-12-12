@@ -1,4 +1,4 @@
-import { convertToPlainText } from "@/lib/editor-utils";
+import { convertToPlainText } from "@/lib/editor/utils";
 import { getOramaDb, persistOramaDb } from "@/lib/search/loader";
 import type { MyOramaDB } from "@/lib/search/schema";
 import { insert, remove, search } from "@orama/orama";

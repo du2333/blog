@@ -1,6 +1,6 @@
-import { ContentRenderer } from "@/components/content-renderer";
+import { ContentRenderer } from "@/components/article/content-renderer";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
-import TableOfContents from "@/components/table-of-content";
+import TableOfContents from "@/components/article/table-of-content";
 import TechButton from "@/components/ui/tech-button";
 import { findPostBySlugPublicFn } from "@/features/posts/api/posts.api";
 import { CATEGORY_COLORS } from "@/lib/constants";

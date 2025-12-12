@@ -1,5 +1,5 @@
-import { FeaturedTransmission } from "@/components/featured-transmission";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { FeaturedTransmission } from "@/components/home/featured-transmission";
+import { LoadingFallback } from "@/components/common/loading-fallback";
 import TechButton from "@/components/ui/tech-button";
 import { HERO_ASSETS } from "@/lib/config/assets";
 import { getPostsFn } from "@/features/posts/api/posts.api";

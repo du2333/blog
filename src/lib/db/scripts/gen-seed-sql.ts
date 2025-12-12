@@ -1,4 +1,4 @@
-import { slugify } from "@/lib/editor-utils";
+import { slugify } from "@/lib/editor/utils";
 
 const DEFAULT_COUNT = 100;
 const DEFAULT_PUBLISHED_RATIO = 1.0; // 0~1

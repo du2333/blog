@@ -1,4 +1,4 @@
-import { PostManager, POST_FILTERS } from "@/components/post-manager";
+import { PostManager, POST_FILTERS } from "@/components/admin/posts/post-manager";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 

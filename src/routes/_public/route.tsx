@@ -1,8 +1,8 @@
-import { Footer } from "@/components/footer";
-import { Navbar, MobileMenu } from "@/components/navbar";
+import { Footer } from "@/components/layout/footer";
+import { Navbar, MobileMenu } from "@/components/layout/navbar";
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { SearchCommandCenter } from "@/components/search-command-center";
+import { SearchCommandCenter } from "@/components/layout/search-command-center";
 
 export const Route = createFileRoute("/_public")({
   component: PublicLayout,

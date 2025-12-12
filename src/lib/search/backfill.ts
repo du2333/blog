@@ -1,6 +1,6 @@
 import { type DB } from "@/lib/db";
 import { PostsTable } from "@/lib/db/schema";
-import { convertToPlainText } from "@/lib/editor-utils";
+import { convertToPlainText } from "@/lib/editor/utils";
 import { persistOramaDb, setOramaDb } from "@/lib/search/loader";
 import { createMyDb } from "@/lib/search/schema";
 import { insert } from "@orama/orama";

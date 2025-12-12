@@ -1,4 +1,4 @@
-import { generateSummaryByPostId } from "@/lib/agent/summarizer";
+import { generateSummaryByPostId } from "@/lib/ai/summarizer";
 import { createDb } from "@/lib/db";
 import { addOrUpdateSearchDoc } from "@/lib/search/ops";
 import {

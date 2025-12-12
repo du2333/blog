@@ -17,9 +17,9 @@ import {
   PostStatus,
   PostUpdateSchema,
 } from "@/lib/db/schema";
-import { slugify } from "@/lib/editor-utils";
+import { generateTableOfContents } from "@/lib/editor/toc";
+import { slugify } from "@/lib/editor/utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
-import { generateTableOfContents } from "@/lib/toc";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 

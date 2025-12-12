@@ -2,7 +2,7 @@ import { PostFeed } from "@/components/database-feed/post-feed";
 import { PostLoader } from "@/components/database-feed/post-loader";
 import { PostMobileFilter } from "@/components/database-feed/post-mobile-filter";
 import { PostSidebar } from "@/components/database-feed/post-sidebar";
-import { LoadingFallback } from "@/components/loading-fallback";
+import { LoadingFallback } from "@/components/common/loading-fallback";
 import { getPostsCursorFn } from "@/features/posts/api/posts.api";
 import { PostCategory } from "@/lib/db/schema";
 import {

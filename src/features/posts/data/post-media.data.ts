@@ -1,6 +1,6 @@
 import { type DB } from "@/lib/db";
 import { MediaTable, PostMediaTable, PostsTable } from "@/lib/db/schema";
-import { extractAllImageKeys } from "@/lib/editor-utils";
+import { extractAllImageKeys } from "@/lib/editor/utils";
 import type { JSONContent } from "@tiptap/react";
 import { eq, inArray } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";

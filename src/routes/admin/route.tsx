@@ -1,4 +1,4 @@
-import { Logo } from "@/components/logo";
+import { Logo } from "@/components/common/logo";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 import {
   FileText,
