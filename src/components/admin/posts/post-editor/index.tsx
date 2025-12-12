@@ -2,6 +2,7 @@ import { Editor } from "@/components/tiptap-editor";
 import { useRouter } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
 import { useCallback, useState } from "react";
+import TextareaAutosize from "react-textarea-autosize";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
 import { useAutoSave, usePostActions } from "./hooks";
@@ -79,14 +80,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       {/* Main Document Area */}
       <div className="flex-1 overflow-y-auto custom-scrollbar relative">
         <div className="w-full max-w-4xl mx-auto py-12 px-6 md:px-12 min-h-full bg-black">
-          {/* Document Title */}
+          {/* Title Field (Auto-expanding Textarea) */}
           <div className="mb-8 relative group">
-            <input
-              type="text"
+            <TextareaAutosize
               value={post.title}
               onChange={(e) => setPost({ ...post, title: e.target.value })}
-              placeholder="ENTER TITLE..."
-              className="w-full bg-transparent text-4xl md:text-6xl font-black font-sans uppercase text-white placeholder-gray-800 focus:outline-none border-l-4 border-transparent focus:border-zzz-lime pl-4 transition-all"
+              minRows={1}
+              placeholder="UNTITLED_LOG..."
+              className="w-full bg-transparent text-4xl md:text-6xl font-black font-sans uppercase text-white placeholder-gray-800 focus:outline-none border-l-4 border-transparent focus:border-zzz-lime pl-4 py-1 transition-all overflow-hidden leading-none"
             />
             <div className="absolute -left-6 top-2 bottom-2 w-1 bg-zzz-gray/20 group-hover:bg-zzz-gray/50 transition-colors pointer-events-none" />
           </div>
