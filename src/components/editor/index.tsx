@@ -1,5 +1,4 @@
 import { CodeBlockExtension } from "@/components/editor/extensions/code-block";
-import { ImageUpload } from "@/components/editor/extensions/upload-image";
 import { ImageExtension } from "@/components/editor/extensions/images";
 import InsertModal, {
   ModalType,
@@ -12,10 +11,11 @@ import {
   ListItemExtension,
   OrderedListExtension,
 } from "@/components/editor/extensions/typography/list";
+import { ImageUpload } from "@/components/editor/extensions/upload-image";
 import { uploadImageFn } from "@/features/media/images.api";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
-import type { Editor as TiptapEditor, JSONContent } from "@tiptap/react";
+import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useState } from "react";
