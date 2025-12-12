@@ -10,7 +10,9 @@
     "test": "vitest run",
     "cf-typegen": "wrangler types --env-interface Env",
     "db:studio": "drizzle-kit studio --port 5555",
-    "db:push": "drizzle-kit push"
+    "db:push": "drizzle-kit push",
+    "auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
+
   },
   "dependencies": {
     "@orama/orama": "^3.1.16",
@@ -34,6 +36,7 @@
     "@tiptap/react": "^3.8.0",
     "@tiptap/starter-kit": "^3.8.0",
     "@tiptap/static-renderer": "^3.8.0",
+    "better-auth": "^1.4.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "drizzle-orm": "^0.44.7",

@@ -13,6 +13,8 @@ import {
   createUpdateSchema,
 } from "drizzle-zod";
 
+export * from "./auth.schema";
+
 export const POST_CATEGORIES = ["DEV", "LIFE", "GAMING", "TECH"] as const;
 export const POST_STATUSES = ["draft", "published", "archived"] as const;
 

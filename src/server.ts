@@ -1,5 +1,6 @@
-import { type DB } from "@/lib/db";
+import type { DB } from "@/lib/db";
 import { app } from "@/lib/hono";
+import type { Auth } from "better-auth";
 
 import { PostProcessWorkflow } from "@/features/posts/workflows/post-process";
 
@@ -12,6 +13,7 @@ declare module "@tanstack/react-start" {
         db: DB;
         env: Env;
         executionCtx: ExecutionContext;
+        auth: Auth;
       };
     };
   }

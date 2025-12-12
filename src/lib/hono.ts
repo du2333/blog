@@ -1,3 +1,4 @@
+import { createAuth } from "@/lib/auth/auth.server";
 import { cacheWrap } from "@/lib/cache";
 import { createDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
@@ -26,10 +27,19 @@ app.get("/images/:key", async (c) => {
   }
 });
 
+app.on(["POST", "GET"], "/api/auth/*", (c) => {
+  const db = createDb(c.env);
+  const auth = createAuth(db, c.env);
+  return auth.handler(c.req.raw);
+});
+
 app.all("*", (c) => {
+  const db = createDb(c.env);
+  const auth = createAuth(db, c.env);
   return handler.fetch(c.req.raw, {
     context: {
-      db: createDb(c.env),
+      db,
+      auth,
       env: c.env,
       executionCtx: c.executionCtx,
     },
