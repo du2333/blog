@@ -9,7 +9,7 @@ export function Footer() {
           <br />
           SYSTEM STATUS: STABLE
           <div className="mt-2 flex gap-2 opacity-50 hover:opacity-100 transition-opacity">
-            <Link to="/admin" className="hover:text-zzz-lime">
+            <Link to="/sign-in" className="hover:text-zzz-lime">
               [ADMIN_LOGIN]
             </Link>
           </div>
