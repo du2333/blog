@@ -9,6 +9,7 @@ import { Zap } from "lucide-react";
 import { ShieldCheck } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 
 export function SignInForm() {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export function SignInForm() {
   const [error, setError] = useState("");
 
   const login = async (proxyId: string, accessKey: string) => {
-    return proxyId === "phaethon" && accessKey === "admin";
+    return proxyId === "admin" && accessKey === "admin";
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -102,9 +103,18 @@ export function SignInForm() {
         </div>
 
         <div className="space-y-1 group">
-          <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-zzz-cyan transition-colors">
-            Access Key
-          </label>
+          <div className="flex justify-between items-center">
+            <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-zzz-cyan transition-colors">
+              Access Key
+            </label>
+            <Link
+              to="/forgot-password"
+              tabIndex={-1}
+              className="text-[9px] font-mono font-bold text-gray-600 hover:text-zzz-cyan uppercase tracking-wider transition-colors"
+            >
+              Lost Key?
+            </Link>
+          </div>
           <div className="relative">
             <Lock
               className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-zzz-cyan transition-colors"
@@ -149,18 +159,6 @@ export function SignInForm() {
         {loginStep === "SYNCING" && "SYNCING NEURAL CLOUD..."}
         {loginStep === "SUCCESS" && "ACCESS GRANTED"}
       </TechButton>
-
-      {/* Footer Hint */}
-      <div className="mt-8 pt-4 border-t border-zzz-gray/30 text-center">
-        <p className="text-[10px] font-mono text-gray-600">
-          UNAUTHORIZED ACCESS IS A VIOLATION OF <br /> NEW ERIDU SECURITY
-          PROTOCOL 704.
-        </p>
-        <p className="text-[10px] font-mono text-gray-700 mt-2">
-          Try ID: <span className="text-gray-500 select-all">phaethon</span> /
-          Key: <span className="text-gray-500 select-all">admin</span>
-        </p>
-      </div>
     </form>
   );
 }
