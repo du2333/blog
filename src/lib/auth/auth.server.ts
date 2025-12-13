@@ -3,19 +3,29 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { DB } from "@/lib/db";
 import { authConfig } from "@/lib/auth/auth.config";
 import * as authSchema from "@/lib/db/schema/auth.schema";
+import { serverEnv } from "@/lib/env/server.env";
 
 export function createAuth(db: DB, env: Env) {
+  const {
+    REQUIRE_EMAIL_VERIFICATION,
+    BETTER_AUTH_SECRET,
+    BETTER_AUTH_URL,
+    ADMIN_EMAIL,
+    GITHUB_CLIENT_ID,
+    GITHUB_CLIENT_SECRET,
+  } = serverEnv(env);
+
   return betterAuth({
     ...authConfig,
     socialProviders: {
       github: {
-        clientId: env.GITHUB_CLIENT_ID,
-        clientSecret: env.GITHUB_CLIENT_SECRET,
+        clientId: GITHUB_CLIENT_ID,
+        clientSecret: GITHUB_CLIENT_SECRET,
       },
     },
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: env.REQUIRE_EMAIL_VERIFICATION === "true",
+      requireEmailVerification: REQUIRE_EMAIL_VERIFICATION,
       sendResetPassword({ user, url, token }) {
         // TODO: Send reset password email, use waitUntil to send email in background
         console.log(user, url, token);
@@ -38,7 +48,7 @@ export function createAuth(db: DB, env: Env) {
       user: {
         create: {
           before: async (user) => {
-            if (user.email === env.ADMIN_EMAIL) {
+            if (user.email === ADMIN_EMAIL) {
               return { data: { ...user, role: "admin" } };
             }
             return { data: user };
@@ -46,8 +56,8 @@ export function createAuth(db: DB, env: Env) {
         },
       },
     },
-    secret: env.BETTER_AUTH_SECRET,
-    baseURL: env.BETTER_AUTH_URL,
+    secret: BETTER_AUTH_SECRET,
+    baseURL: BETTER_AUTH_URL,
   });
 }
 
