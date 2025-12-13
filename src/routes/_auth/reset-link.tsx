@@ -1,11 +1,18 @@
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 import { createFileRoute } from "@tanstack/react-router";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_auth/reset-link")({
+  validateSearch: z.object({
+    token: z.string().optional(),
+    error: z.string().optional(),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { token, error } = Route.useSearch();
+
   return (
     <>
       {/* Page Specific Header */}
@@ -27,7 +34,7 @@ function RouteComponent() {
         <div className="absolute top-0 left-0 w-16 h-1 bg-zzz-cyan"></div>
         <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-zzz-gray"></div>
 
-        <ResetPasswordForm />
+        <ResetPasswordForm token={token} error={error} />
       </div>
     </>
   );

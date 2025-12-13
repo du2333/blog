@@ -1,10 +1,15 @@
 import { Footer } from "@/components/layout/footer";
-import { Navbar, MobileMenu } from "@/components/layout/navbar";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { MobileMenu, Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/components/layout/search-command-center";
+import { authClient } from "@/lib/auth/auth.client";
+import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/_public")({
+  loader: async ({ context }) => {
+    return { user: context.session?.user };
+  },
   component: PublicLayout,
 });
 
@@ -12,6 +17,21 @@ function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
+  const { user } = Route.useLoaderData();
+  const navigate = useNavigate();
+  const logout = async () => {
+    const { error } = await authClient.signOut();
+    if (error) {
+      toast.error("LOGOUT FAILED", {
+        description: "Failed to terminate session.",
+      });
+      return;
+    }
+    toast.success("SESSION TERMINATED", {
+      description: "You have been logged out.",
+    });
+    navigate({ to: "/login" });
+  };
   // Global shortcut: Cmd/Ctrl + K to toggle search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -37,8 +57,15 @@ function PublicLayout() {
       <Navbar
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
+        user={user}
+        logout={logout}
       />
-      <MobileMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
+      <MobileMenu
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        user={user}
+        logout={logout}
+      />
       <SearchCommandCenter
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}

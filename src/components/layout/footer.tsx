@@ -1,5 +1,3 @@
-import { Link } from "@tanstack/react-router";
-
 export function Footer() {
   return (
     <footer className="border-t border-zzz-gray bg-zzz-dark py-8 mt-12 relative overflow-hidden z-10">
@@ -8,11 +6,6 @@ export function Footer() {
           © {new Date().getFullYear()} PROXY ARCHIVE. ALL RIGHTS RESERVED.
           <br />
           SYSTEM STATUS: STABLE
-          <div className="mt-2 flex gap-2 opacity-50 hover:opacity-100 transition-opacity">
-            <Link to="/sign-in" className="hover:text-zzz-lime">
-              [ADMIN_LOGIN]
-            </Link>
-          </div>
         </div>
         <div className="flex gap-4">
           <div className="w-2 h-2 bg-zzz-lime rounded-full animate-pulse"></div>

@@ -1,7 +1,15 @@
 import { Logo } from "@/components/common/logo";
 import TechButton from "@/components/ui/tech-button";
 import { Link } from "@tanstack/react-router";
-import { Disc, LayoutGrid, Search, X } from "lucide-react";
+import {
+  Disc,
+  LayoutGrid,
+  Search,
+  X,
+  LogIn,
+  LogOut,
+  UserIcon,
+} from "lucide-react";
 
 const navOptions = [
   { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
@@ -11,12 +19,20 @@ const navOptions = [
 export function Navbar({
   onSearchClick,
   onMenuClick,
+  user,
+  logout,
 }: {
   onSearchClick: () => void;
   onMenuClick: () => void;
+  user?: {
+    name: string;
+    image?: string | null;
+  };
+  logout: () => Promise<void>;
 }) {
   return (
     <header className="sticky top-0 z-40 bg-zzz-black/90 backdrop-blur-md border-b border-zzz-gray h-20">
+      {/* Left Section: Brand / Logo */}
       <div className="container mx-auto px-4 h-full flex items-center justify-between">
         <Link to="/" className="flex items-center gap-4 group select-none">
           {/* Logo with Tech Ring Animation */}
@@ -55,7 +71,8 @@ export function Navbar({
           </div>
         </Link>
 
-        <div className="flex items-center gap-3 md:gap-8">
+        {/* Right Section: Navigation & Actions */}
+        <div className="flex items-center gap-3 md:gap-6">
           <nav className="hidden md:flex items-center gap-8 font-sans font-bold text-sm tracking-widest uppercase">
             {navOptions.map((option) => (
               <Link
@@ -93,6 +110,57 @@ export function Navbar({
             </div>
           </button>
 
+          {/* Login / Profile Button (Desktop & Tablet) */}
+          <div className="hidden md:block">
+            {user ? (
+              <Link
+                to="/admin"
+                className="flex items-center gap-3 group pl-2"
+                title="Access HDD System"
+              >
+                <div className="text-right hidden lg:block">
+                  <div className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">
+                    Signal_ID
+                  </div>
+                  <div className="text-xs font-bold text-white group-hover:text-zzz-lime transition-colors uppercase max-w-[100px] truncate">
+                    {user.name}
+                  </div>
+                </div>
+                <div className="w-10 h-10 bg-zzz-dark border border-zzz-gray group-hover:border-zzz-lime flex items-center justify-center relative overflow-hidden clip-corner-br transition-all shadow-[0_0_15px_rgba(0,0,0,0.3)] group-hover:shadow-[0_0_15px_rgba(204,255,0,0.2)] p-0.5">
+                  {/* User image or Default Icon */}
+                  {user.image ? (
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      className="w-full h-full object-cover bg-black"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-zzz-gray/10 flex items-center justify-center group-hover:bg-zzz-lime/10 transition-colors">
+                      <UserIcon
+                        size={20}
+                        className="text-gray-500 group-hover:text-zzz-lime transition-colors"
+                      />
+                    </div>
+                  )}
+
+                  {/* Online Status Dot */}
+                  <div className="absolute top-1 right-1 w-1.5 h-1.5 bg-zzz-lime rounded-full shadow-[0_0_5px_#ccff00] animate-pulse ring-1 ring-black"></div>
+                  {/* Scanline effect */}
+                  <div className="absolute inset-0 bg-white/5 translate-y-full group-hover:translate-y-0 transition-transform duration-300 pointer-events-none"></div>
+                </div>
+              </Link>
+            ) : (
+              <Link to="/login">
+                <button className="flex items-center gap-2 px-4 h-9 border border-zzz-gray hover:bg-zzz-lime hover:text-black hover:border-zzz-lime transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-br group cursor-pointer">
+                  <LogIn
+                    size={14}
+                    className="group-hover:translate-x-0.5 transition-transform"
+                  />
+                  <span>Connect</span>
+                </button>
+              </Link>
+            )}
+          </div>
           {/* Mobile Search Trigger - Square Design */}
           <button
             onClick={onSearchClick}
@@ -123,9 +191,16 @@ export function Navbar({
 export function MobileMenu({
   isOpen,
   onClose,
+  user,
+  logout,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  user?: {
+    name: string;
+    image?: string | null;
+  };
+  logout: () => Promise<void>;
 }) {
   return (
     <div
@@ -141,11 +216,11 @@ export function MobileMenu({
       />
       <div
         className={`
-            absolute right-0 top-0 bottom-0 w-full sm:w-[400px] bg-zzz-dark border-l-2 border-zzz-lime 
-            flex flex-col shadow-[-20px_0_50px_rgba(204,255,0,0.1)]
-            transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1)
-            ${isOpen ? "translate-x-0" : "translate-x-full"}
-        `}
+              absolute right-0 top-0 bottom-0 w-full sm:w-[400px] bg-zzz-dark border-l-2 border-zzz-lime 
+              flex flex-col shadow-[-20px_0_50px_rgba(204,255,0,0.1)]
+              transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1)
+              ${isOpen ? "translate-x-0" : "translate-x-full"}
+          `}
       >
         <div className="flex items-center justify-between p-6 border-b border-zzz-gray bg-zzz-black relative overflow-hidden shrink-0 h-20">
           <div
@@ -171,20 +246,20 @@ export function MobileMenu({
             <X size={24} className="relative z-10" />
           </button>
         </div>
-        <div className="flex-1 flex flex-col justify-center px-10 gap-10 bg-[radial-gradient(circle_at_top_right,#1a1a1a_0%,transparent_40%)] overflow-y-auto">
+        <div className="flex-1 flex flex-col justify-center px-10 gap-10 bg-[radial-gradient(circle_at_top_right,#1a1a1a_0%,transparent_40%)] overflow-y-auto relative z-10">
           {navOptions.map((item, idx) => (
             <Link
               key={item.id}
               to={item.to}
               onClick={onClose}
               className={`
-                            text-4xl font-black font-sans uppercase text-white text-left flex items-center gap-6 group transition-all duration-300
-                            ${
-                              isOpen
-                                ? "translate-x-0 opacity-100"
-                                : "translate-x-10 opacity-0"
-                            }
-                        `}
+                              text-4xl font-black font-sans uppercase text-white text-left flex items-center gap-6 group transition-all duration-300
+                              ${
+                                isOpen
+                                  ? "translate-x-0 opacity-100"
+                                  : "translate-x-10 opacity-0"
+                              }
+                          `}
               style={{ transitionDelay: `${150 + idx * 100}ms` }}
             >
               <span
@@ -197,15 +272,83 @@ export function MobileMenu({
               </span>
             </Link>
           ))}
+
+          {/* Mobile specific admin link if logged in */}
+          {user && (
+            <Link
+              to="/admin"
+              onClick={onClose}
+              className={`
+                              text-4xl font-black font-sans uppercase text-white text-left flex items-center gap-6 group transition-all duration-300
+                              ${
+                                isOpen
+                                  ? "translate-x-0 opacity-100"
+                                  : "translate-x-10 opacity-0"
+                              }
+                          `}
+              style={{ transitionDelay: "350ms" }}
+            >
+              <span className="w-1 h-1 bg-zzz-cyan group-hover:h-8 group-hover:w-2 transition-all duration-300"></span>
+              <span className="group-hover:text-zzz-cyan transition-colors">
+                HDD_SYSTEM
+              </span>
+            </Link>
+          )}
         </div>
-        <div className="absolute bottom-32 -left-16 text-zzz-gray/5 pointer-events-none">
+
+        <div className="absolute bottom-32 -left-16 text-zzz-gray/5 pointer-events-none z-0">
           <Disc size={300} className="animate-[spin_10s_linear_infinite]" />
         </div>
-        <div className="p-8 border-t border-zzz-gray bg-zzz-black relative shrink-0">
+
+        <div className="p-8 border-t border-zzz-gray bg-zzz-black relative shrink-0 z-20">
           <div className="absolute top-0 left-0 w-full h-1 bg-stripe-pattern opacity-20"></div>
-          <TechButton className="w-full justify-center" onClick={onClose}>
-            TERMINATE_SESSION
-          </TechButton>
+          {user ? (
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                {/* image */}
+                <div className="w-10 h-10 border border-zzz-lime p-0.5 bg-zzz-dark shrink-0 clip-corner-tl flex items-center justify-center">
+                  {user.image ? (
+                    <img
+                      src={user.image}
+                      alt={user.name}
+                      className="w-full h-full object-cover bg-black"
+                    />
+                  ) : (
+                    <UserIcon size={20} className="text-gray-500" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="text-xs font-mono text-gray-500 truncate">
+                    PROXY_ID: {user.name}
+                  </div>
+                  <div className="text-[10px] font-mono text-zzz-lime flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-zzz-lime rounded-full animate-pulse"></div>
+                    ONLINE
+                  </div>
+                </div>
+              </div>
+              <TechButton
+                className="w-full justify-center"
+                onClick={() => {
+                  logout();
+                  onClose();
+                }}
+                icon={<LogOut size={16} />}
+              >
+                TERMINATE_SESSION
+              </TechButton>
+            </div>
+          ) : (
+            <Link to="/login" onClick={onClose}>
+              <TechButton
+                className="w-full justify-center"
+                variant="primary"
+                icon={<LogIn size={16} />}
+              >
+                ESTABLISH_CONNECTION
+              </TechButton>
+            </Link>
+          )}
         </div>
       </div>
     </div>

@@ -7,3 +7,9 @@ export const getSessionFn = createServerFn().handler(async ({ context }) => {
     headers,
   });
 });
+
+export const isEmailVerficationRequiredFn = createServerFn().handler(
+  async ({ context }) => {
+    return context.env.REQUIRE_EMAIL_VERIFICATION === "true";
+  }
+);

@@ -1,6 +1,5 @@
 import { RegisterForm } from "@/components/auth/register-form";
-import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
@@ -35,7 +34,7 @@ function RouteComponent() {
             Already registered?{" "}
           </span>
           <Link
-            to="/sign-in"
+            to="/login"
             className="text-[10px] font-mono font-bold text-zzz-cyan hover:underline uppercase tracking-wider ml-2"
           >
             Access Terminal

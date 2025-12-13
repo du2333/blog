@@ -1,197 +1,269 @@
 import TechButton from "@/components/ui/tech-button";
+import { authClient } from "@/lib/auth/auth.client";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useNavigate } from "@tanstack/react-router";
 import {
   ChevronRight,
-  Key,
   Loader2,
   Lock,
   Mail,
   Shield,
+  Sparkles,
   User,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import React from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import { z } from "zod";
+import { useRouteContext } from "@tanstack/react-router";
 
-export function RegisterForm() {
-  const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    code: "",
-    password: "",
-    confirmPassword: "",
+const registerSchema = z
+  .object({
+    name: z.string().min(2, "ALIAS_TOO_SHORT (MIN 2)"),
+    email: z.email("INVALID_CHANNEL_FORMAT"),
+    password: z.string().min(8, "KEY_TOO_WEAK (MIN 8 CHARS)"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "KEYS_DO_NOT_MATCH",
+    path: ["confirmPassword"],
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [codeCountdown, setCodeCountdown] = useState(0);
+type RegisterSchema = z.infer<typeof registerSchema>;
 
-  // Countdown timer logic
-  useEffect(() => {
-    if (codeCountdown > 0) {
-      const timer = setTimeout(() => setCodeCountdown((c) => c - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [codeCountdown]);
+export function RegisterForm() {
+  const { isEmailVerficationRequired } = useRouteContext({ from: "__root__" });
+  const navigate = useNavigate();
+  const [isSuccess, setIsSuccess] = React.useState(false);
 
-  const handleSendCode = () => {
-    if (!formData.email) {
-      toast.error("MISSING TARGET", {
-        description: "Please enter an email address first.",
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterSchema>({
+    resolver: standardSchemaResolver(registerSchema),
+  });
+
+  const onSubmit = async (data: RegisterSchema) => {
+    const { error } = await authClient.signUp.email({
+      email: data.email,
+      password: data.password,
+      name: data.name,
+      callbackURL: `${window.location.origin}/verify-email`,
+    });
+
+    if (error) {
+      toast.error("REGISTRATION FAILED", {
+        description: error.message || "Signal blocked by firewall.",
       });
       return;
     }
-    toast.success("SIGNAL TRANSMITTED", {
-      description: `Verification code sent to ${formData.email}`,
-    });
-    setCodeCountdown(60);
-  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-
-    // Simulation
-    setTimeout(() => {
-      setIsLoading(false);
+    if (isEmailVerficationRequired) {
+      setIsSuccess(true);
       toast.success("PROXY ID CREATED", {
-        description: "Registration complete. Redirecting to login...",
+        description: "Verification signal sent. Check your inbox.",
       });
-      navigate({ to: "/sign-in" });
-    }, 1500);
+    } else {
+      toast.success("ACCESS GRANTED", {
+        description: "Welcome to the Inter-Knot.",
+      });
+      navigate({ to: "/admin" });
+    }
   };
+
+  if (isSuccess) {
+    return (
+      <div className="text-center py-8 animate-in fade-in zoom-in-95">
+        <div className="w-16 h-16 bg-zzz-lime/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-zzz-lime animate-pulse">
+          <Sparkles size={32} className="text-zzz-lime" />
+        </div>
+        <h3 className="text-xl font-bold font-sans uppercase text-white mb-2">
+          Verify Signal
+        </h3>
+        <p className="text-xs font-mono text-gray-400 mb-8 leading-relaxed px-4">
+          A neural link verification has been transmitted to your email channel.
+          <br />
+          <br />
+          Please confirm the link to activate your HDD system access.
+        </p>
+        <TechButton
+          onClick={() => navigate({ to: "/login" })}
+          className="w-full justify-center"
+        >
+          RETURN TO LOGIN
+        </TechButton>
+      </div>
+    );
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-5">
-      {/* Username */}
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+      {/* Name */}
       <div className="space-y-1 group">
-        <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-zzz-lime transition-colors">
-          Codename
+        <label
+          className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+            errors.name
+              ? "text-zzz-orange"
+              : "text-gray-500 group-focus-within:text-zzz-lime"
+          }`}
+        >
+          Proxy Name
         </label>
         <div className="relative">
           <User
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-zzz-lime transition-colors"
+            className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+              errors.name
+                ? "text-zzz-orange"
+                : "text-gray-600 group-focus-within:text-zzz-lime"
+            }`}
             size={16}
           />
           <input
             type="text"
-            value={formData.username}
-            onChange={(e) =>
-              setFormData({ ...formData, username: e.target.value })
-            }
-            className="w-full bg-black border border-zzz-gray text-white font-mono text-xs py-3 pl-10 pr-4 focus:border-zzz-lime focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800"
-            placeholder="ENTER_PROXY_NAME"
-            required
+            {...register("name")}
+            className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
+              errors.name
+                ? "border-zzz-orange focus:border-zzz-orange"
+                : "border-zzz-gray focus:border-zzz-lime"
+            }`}
+            placeholder="ENTER_ALIAS"
           />
         </div>
+        {errors.name && (
+          <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+            {errors.name.message}
+          </div>
+        )}
       </div>
 
       {/* Email */}
       <div className="space-y-1 group">
-        <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-zzz-cyan transition-colors">
+        <label
+          className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+            errors.email
+              ? "text-zzz-orange"
+              : "text-gray-500 group-focus-within:text-zzz-cyan"
+          }`}
+        >
           Comms Channel (Email)
         </label>
         <div className="relative">
           <Mail
-            className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-zzz-cyan transition-colors"
+            className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+              errors.email
+                ? "text-zzz-orange"
+                : "text-gray-600 group-focus-within:text-zzz-cyan"
+            }`}
             size={16}
           />
           <input
             type="email"
-            value={formData.email}
-            onChange={(e) =>
-              setFormData({ ...formData, email: e.target.value })
-            }
-            className="w-full bg-black border border-zzz-gray text-white font-mono text-xs py-3 pl-10 pr-4 focus:border-zzz-cyan focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800"
+            {...register("email")}
+            className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
+              errors.email
+                ? "border-zzz-orange focus:border-zzz-orange"
+                : "border-zzz-gray focus:border-zzz-cyan"
+            }`}
             placeholder="name@example.com"
-            required
           />
         </div>
-      </div>
-
-      {/* Verification Code */}
-      <div className="space-y-1 group">
-        <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-zzz-orange transition-colors">
-          Auth Token
-        </label>
-        <div className="flex gap-2">
-          <div className="relative flex-1">
-            <Key
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-zzz-orange transition-colors"
-              size={16}
-            />
-            <input
-              type="text"
-              value={formData.code}
-              onChange={(e) =>
-                setFormData({ ...formData, code: e.target.value })
-              }
-              className="w-full bg-black border border-zzz-gray text-white font-mono text-xs py-3 pl-10 pr-4 focus:border-zzz-orange focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800"
-              placeholder="000000"
-              maxLength={6}
-              required
-            />
+        {errors.email && (
+          <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+            {errors.email.message}
           </div>
-          <button
-            type="button"
-            onClick={handleSendCode}
-            disabled={codeCountdown > 0}
-            className="px-3 min-w-[100px] border border-zzz-gray bg-zzz-dark text-[10px] font-bold font-mono text-zzz-cyan hover:border-zzz-cyan hover:bg-zzz-cyan/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed uppercase"
-          >
-            {codeCountdown > 0 ? `${codeCountdown}s` : "Get_Code"}
-          </button>
-        </div>
+        )}
       </div>
 
       {/* Passwords */}
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1 group">
-          <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-white transition-colors">
+          <label
+            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+              errors.password
+                ? "text-zzz-orange"
+                : "text-gray-500 group-focus-within:text-white"
+            }`}
+          >
             Password
           </label>
           <div className="relative">
             <Lock
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-white transition-colors"
+              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+                errors.password
+                  ? "text-zzz-orange"
+                  : "text-gray-600 group-focus-within:text-white"
+              }`}
               size={16}
             />
             <input
               type="password"
-              className="w-full bg-black border border-zzz-gray text-white font-mono text-xs py-3 pl-10 pr-2 focus:border-white focus:outline-none transition-all placeholder-gray-800"
-              placeholder="••••••"
-              required
+              {...register("password")}
+              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 ${
+                errors.password
+                  ? "border-zzz-orange focus:border-zzz-orange"
+                  : "border-zzz-gray focus:border-white"
+              }`}
+              placeholder="••••••••"
             />
           </div>
+          {errors.password && (
+            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+              {errors.password.message}
+            </div>
+          )}
         </div>
         <div className="space-y-1 group">
-          <label className="text-[10px] font-mono text-gray-500 font-bold uppercase tracking-widest group-focus-within:text-white transition-colors">
+          <label
+            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
+              errors.confirmPassword
+                ? "text-zzz-orange"
+                : "text-gray-500 group-focus-within:text-white"
+            }`}
+          >
             Confirm
           </label>
           <div className="relative">
             <Shield
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-600 group-focus-within:text-white transition-colors"
+              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+                errors.confirmPassword
+                  ? "text-zzz-orange"
+                  : "text-gray-600 group-focus-within:text-white"
+              }`}
               size={16}
             />
             <input
               type="password"
-              className="w-full bg-black border border-zzz-gray text-white font-mono text-xs py-3 pl-10 pr-2 focus:border-white focus:outline-none transition-all placeholder-gray-800"
-              placeholder="••••••"
-              required
+              {...register("confirmPassword")}
+              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 ${
+                errors.confirmPassword
+                  ? "border-zzz-orange focus:border-zzz-orange"
+                  : "border-zzz-gray focus:border-white"
+              }`}
+              placeholder="••••••••"
             />
           </div>
+          {errors.confirmPassword && (
+            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+              {errors.confirmPassword.message}
+            </div>
+          )}
         </div>
       </div>
 
       <TechButton
         type="submit"
-        disabled={isLoading}
+        disabled={isSubmitting}
         className="w-full h-12 text-sm justify-center mt-4"
         icon={
-          isLoading ? (
+          isSubmitting ? (
             <Loader2 className="animate-spin" size={18} />
           ) : (
             <ChevronRight size={18} />
           )
         }
       >
-        {isLoading ? "REGISTERING..." : "INITIATE REGISTRATION"}
+        {isSubmitting ? "REGISTERING..." : "INITIATE REGISTRATION"}
       </TechButton>
     </form>
   );
