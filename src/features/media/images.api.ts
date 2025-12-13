@@ -14,6 +14,7 @@ import { cacheDelete } from "@/lib/cache";
 import { deleteImage, uploadImage } from "@/lib/images/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { createAdminFn } from "@/lib/auth/procedure";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -25,7 +26,7 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/gif",
 ];
 
-export const uploadImageFn = createServerFn({
+export const uploadImageFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(z.instanceof(FormData))
@@ -66,7 +67,7 @@ export const uploadImageFn = createServerFn({
     }
   });
 
-export const deleteImageFn = createServerFn()
+export const deleteImageFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -88,7 +89,7 @@ export const deleteImageFn = createServerFn()
     context.executionCtx.waitUntil(backgroundTasks);
   });
 
-export const getMediaFn = createServerFn()
+export const getMediaFn = createAdminFn()
   .inputValidator(
     z.object({
       cursor: z.number().optional(),
@@ -100,7 +101,7 @@ export const getMediaFn = createServerFn()
     return await getMediaList(context.db, data);
   });
 
-export const checkMediaInUseFn = createServerFn()
+export const checkMediaInUseFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -120,7 +121,7 @@ export const getLinkedPostsFn = createServerFn()
     return await getPostsByMediaKey(context.db, data.key);
   });
 
-export const getLinkedMediaKeysFn = createServerFn()
+export const getLinkedMediaKeysFn = createAdminFn()
   .inputValidator(
     z.object({
       keys: z.array(z.string()),
@@ -130,13 +131,13 @@ export const getLinkedMediaKeysFn = createServerFn()
     return await getLinkedMediaKeys(context.db, data.keys);
   });
 
-export const getTotalMediaSizeFn = createServerFn().handler(
+export const getTotalMediaSizeFn = createAdminFn().handler(
   async ({ context }) => {
     return await getTotalMediaSize(context.db);
   }
 );
 
-export const updateMediaNameFn = createServerFn()
+export const updateMediaNameFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),

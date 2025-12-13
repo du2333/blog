@@ -2,7 +2,7 @@ import { ErrorPage } from "@/components/common/error-page";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import TechButton from "@/components/ui/tech-button";
-import { createEmptyPostFn } from "@/features/posts/api/posts.api";
+import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";

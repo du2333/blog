@@ -2,15 +2,19 @@ import { FeaturedTransmission } from "@/components/home/featured-transmission";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import TechButton from "@/components/ui/tech-button";
 import { HERO_ASSETS } from "@/lib/config/assets";
-import { getPostsFn } from "@/features/posts/api/posts.api";
+import { getPostsCursorFn } from "@/features/posts/api/posts.public.api";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Disc } from "lucide-react";
 
 const postsQuery = queryOptions({
-  queryKey: ["posts"],
-  queryFn: () =>
-    getPostsFn({ data: { offset: 0, limit: 4, publicOnly: true } }),
+  queryKey: ["posts", "home"],
+  queryFn: async () => {
+    const result = await getPostsCursorFn({
+      data: { limit: 4 },
+    });
+    return result.items;
+  },
 });
 
 export const Route = createFileRoute("/_public/")({

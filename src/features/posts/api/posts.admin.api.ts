@@ -3,38 +3,22 @@ import {
   deletePost,
   findPostById,
   findPostBySlug,
-  findPostBySlugPublic,
   getPosts,
   getPostsCount,
-  getPostsCursor,
   insertPost,
   slugExists,
   updatePost,
 } from "@/features/posts/data/posts.data";
+import { createAdminFn } from "@/lib/auth/procedure";
 import {
   PostCategory,
-  PostInsertSchema,
   PostStatus,
-  PostUpdateSchema,
+  PostUpdateSchema
 } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createAdminFn } from "@/lib/auth/procedure";
-
-export const createPostFn = createAdminFn({
-  method: "POST",
-})
-  .inputValidator(PostInsertSchema)
-  .handler(async ({ data, context }) => {
-    const post = await insertPost(context.db, data);
-    context.executionCtx.waitUntil(
-      syncPostMedia(context.db, post.id, post.contentJson)
-    );
-    return post;
-  });
 
 export const createEmptyPostFn = createAdminFn({
   method: "POST",
@@ -58,7 +42,7 @@ export const createEmptyPostFn = createAdminFn({
   return { id: post.id };
 });
 
-export const getPostsFn = createServerFn()
+export const getPostsFn = createAdminFn()
   .inputValidator(
     z.object({
       offset: z.number().optional(),
@@ -78,7 +62,7 @@ export const getPostsFn = createServerFn()
     });
   });
 
-export const getPostsCountFn = createServerFn()
+export const getPostsCountFn = createAdminFn()
   .inputValidator(
     z.object({
       category: z.custom<PostCategory>().optional(),
@@ -94,25 +78,7 @@ export const getPostsCountFn = createServerFn()
     });
   });
 
-export const getPostsCursorFn = createServerFn()
-  .inputValidator(
-    z.object({
-      cursor: z.number().optional(),
-      limit: z.number().optional(),
-      category: z.custom<PostCategory>().optional(),
-      publicOnly: z.boolean().optional(),
-    })
-  )
-  .handler(async ({ data, context }) => {
-    return await getPostsCursor(context.db, {
-      cursor: data.cursor,
-      limit: data.limit,
-      category: data.category,
-      publicOnly: data.publicOnly,
-    });
-  });
-
-export const findPostBySlugFn = createServerFn()
+export const findPostBySlugFn = createAdminFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context }) => {
     const post = await findPostBySlug(context.db, data.slug);
@@ -123,28 +89,13 @@ export const findPostBySlugFn = createServerFn()
     };
   });
 
-/**
- * Find post by slug for public access
- * Only returns if published AND publishedAt <= now
- */
-export const findPostBySlugPublicFn = createServerFn()
-  .inputValidator(z.object({ slug: z.string() }))
-  .handler(async ({ data, context }) => {
-    const post = await findPostBySlugPublic(context.db, data.slug);
-    if (!post) return null;
-    return {
-      ...post,
-      toc: generateTableOfContents(post.contentJson),
-    };
-  });
-
-export const findPostByIdFn = createServerFn()
+export const findPostByIdFn = createAdminFn()
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     return await findPostById(context.db, data.id);
   });
 
-export const updatePostFn = createServerFn({
+export const updatePostFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
@@ -158,7 +109,7 @@ export const updatePostFn = createServerFn({
     return post;
   });
 
-export const deletePostFn = createServerFn({
+export const deletePostFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(z.object({ id: z.number() }))
@@ -167,7 +118,7 @@ export const deletePostFn = createServerFn({
     context.executionCtx.waitUntil(deleteSearchDoc(context.env, data.id));
   });
 
-export const generateSlugFn = createServerFn()
+export const generateSlugFn = createAdminFn()
   .inputValidator(
     z.object({
       title: z.string().optional(),
@@ -202,7 +153,7 @@ export const generateSlugFn = createServerFn()
     return { slug: fallbackSlug };
   });
 
-export const startPostProcessWorkflowFn = createServerFn()
+export const startPostProcessWorkflowFn = createAdminFn()
   .inputValidator(z.object({ postId: z.number() }))
   .handler(async ({ data, context }) => {
     await context.env.POST_PROCESS_WORKFLOW.create({

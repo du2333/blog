@@ -1,8 +1,8 @@
 import { ContentRenderer } from "@/components/article/content-renderer";
-import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TableOfContents from "@/components/article/table-of-content";
+import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TechButton from "@/components/ui/tech-button";
-import { findPostBySlugPublicFn } from "@/features/posts/api/posts.api";
+import { findPostBySlugFn } from "@/features/posts/api/posts.public.api";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -20,12 +20,12 @@ import {
   RefreshCw,
   Share2,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 function postQuery(slug: string) {
   return queryOptions({
     queryKey: ["post", "public", slug],
-    queryFn: () => findPostBySlugPublicFn({ data: { slug } }),
+    queryFn: () => findPostBySlugFn({ data: { slug } }),
   });
 }
 

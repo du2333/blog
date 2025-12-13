@@ -1,7 +1,7 @@
 import {
   generateSlugFn,
   startPostProcessWorkflowFn,
-} from "@/features/posts/api/posts.api";
+} from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/lib/editor/utils";
 import { useMutation } from "@tanstack/react-query";

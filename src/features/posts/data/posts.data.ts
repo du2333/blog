@@ -9,7 +9,7 @@ import {
   PostStatus,
   PostsTable,
 } from "@/lib/db/schema";
-import { and, count, desc, eq, lt, lte, ne } from "drizzle-orm";
+import { and, count, desc, eq, lt, ne } from "drizzle-orm";
 
 export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
   const [post] = await db.insert(PostsTable).values(data).returning();
@@ -84,8 +84,12 @@ export async function getPostsCursor(
   items: PostListItem[];
   nextCursor: number | null;
 }> {
-  const { cursor, limit = DEFAULT_PAGE_SIZE, category, publicOnly } =
-    options ?? {};
+  const {
+    cursor,
+    limit = DEFAULT_PAGE_SIZE,
+    category,
+    publicOnly,
+  } = options ?? {};
 
   // Build base conditions from helper
   const baseConditions = buildPostWhereClause({ category, publicOnly });
@@ -136,29 +140,16 @@ export async function findPostById(db: DB, id: number) {
   return uniqueOrThrow(results);
 }
 
-export async function findPostBySlug(db: DB, slug: string) {
+export async function findPostBySlug(
+  db: DB,
+  slug: string,
+  publicOnly?: boolean
+) {
+  const whereClause = buildPostWhereClause({ publicOnly });
   const results = await db
     .select()
     .from(PostsTable)
-    .where(eq(PostsTable.slug, slug));
-  return uniqueOrThrow(results);
-}
-
-/**
- * Find post by slug for public access
- * Only returns if status=published AND publishedAt <= now
- */
-export async function findPostBySlugPublic(db: DB, slug: string) {
-  const results = await db
-    .select()
-    .from(PostsTable)
-    .where(
-      and(
-        eq(PostsTable.slug, slug),
-        eq(PostsTable.status, "published"),
-        lte(PostsTable.publishedAt, new Date())
-      )
-    );
+    .where(and(eq(PostsTable.slug, slug), whereClause));
   return uniqueOrThrow(results);
 }
 
