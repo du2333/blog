@@ -17,6 +17,7 @@ import {
 } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
 import { type PostFilter, type PostListItem } from "./types";
+import { toast } from "sonner";
 
 // Re-export types for external use
 export { POST_FILTERS, type PostFilter } from "./types";
@@ -54,6 +55,11 @@ export function PostManager({
       navigate({
         to: "/admin/posts/edit/$id",
         params: { id: String(result.id) },
+      });
+    },
+    onError: (error) => {
+      toast.error("FAILED TO CREATE ENTRY", {
+        description: error.message,
       });
     },
   });

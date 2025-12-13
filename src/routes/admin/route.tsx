@@ -1,5 +1,10 @@
 import { Logo } from "@/components/common/logo";
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
 import {
   FileText,
   Image as ImageIcon,
@@ -39,12 +44,16 @@ const inactiveClass =
   "text-gray-400 border-transparent hover:bg-white/5 hover:text-white";
 
 export const Route = createFileRoute("/admin")({
+  // beforeLoad: async ({ context: { session } }) => {
+  //   if (!session || session.user?.role !== "admin") {
+  //     throw redirect({ to: "/sign-in" });
+  //   }
+  // },
   component: AdminLayout,
 });
 
 function AdminLayout() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   return (

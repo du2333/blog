@@ -1,6 +1,6 @@
+import type { Auth } from "@/lib/auth/auth.server";
 import type { DB } from "@/lib/db";
 import { app } from "@/lib/hono";
-import type { Auth } from "better-auth";
 
 import { PostProcessWorkflow } from "@/features/posts/workflows/post-process";
 

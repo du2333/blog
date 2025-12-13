@@ -15,3 +15,5 @@ export function createAuth(db: DB, env: Env) {
     baseURL: env.BETTER_AUTH_URL,
   });
 }
+
+export type Auth = ReturnType<typeof createAuth>;

@@ -22,8 +22,9 @@ import { slugify } from "@/lib/editor/utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { createAdminFn } from "@/lib/auth/procedure";
 
-export const createPostFn = createServerFn({
+export const createPostFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(PostInsertSchema)
@@ -35,7 +36,7 @@ export const createPostFn = createServerFn({
     return post;
   });
 
-export const createEmptyPostFn = createServerFn({
+export const createEmptyPostFn = createAdminFn({
   method: "POST",
 }).handler(async ({ context }) => {
   // Generate unique slug for untitled post

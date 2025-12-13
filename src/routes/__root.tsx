@@ -1,5 +1,6 @@
-import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
+import { getSessionFn } from "@/features/auth/auth.api";
 import { useAsyncFonts } from "@/hooks/use-async-fonts";
+import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -42,8 +43,14 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       },
     ],
   }),
-
   shellComponent: RootDocument,
+  beforeLoad: async () => {
+    const session = await getSessionFn();
+
+    return {
+      session,
+    };
+  },
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
