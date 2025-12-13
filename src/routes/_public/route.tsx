@@ -1,8 +1,10 @@
+import { UserProfileModal } from "@/components/auth/user-profile-modal";
 import { Footer } from "@/components/layout/footer";
-import { MobileMenu, Navbar } from "@/components/layout/navbar";
+import { MobileMenu } from "@/components/layout/mobile-menu";
+import { Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/components/layout/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
-import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -16,9 +18,15 @@ export const Route = createFileRoute("/_public")({
 function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
+
+  const navOptions = [
+    { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
+    { label: "Database", to: "/database", id: "database", color: "zzz-lime" },
+  ];
 
   const { user } = Route.useLoaderData();
-  const navigate = useNavigate();
+  const router = useRouter();
   const logout = async () => {
     const { error } = await authClient.signOut();
     if (error) {
@@ -30,7 +38,7 @@ function PublicLayout() {
     toast.success("SESSION TERMINATED", {
       description: "You have been logged out.",
     });
-    navigate({ to: "/login" });
+    router.invalidate();
   };
   // Global shortcut: Cmd/Ctrl + K to toggle search
   useEffect(() => {
@@ -58,17 +66,27 @@ function PublicLayout() {
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
         user={user}
-        logout={logout}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
+        navOptions={navOptions}
       />
       <MobileMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
         user={user}
         logout={logout}
+        onOpenProfile={() => setIsProfileModalOpen(true)}
+        navOptions={navOptions}
       />
       <SearchCommandCenter
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
+      />
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={isProfileModalOpen}
+        onClose={() => setIsProfileModalOpen(false)}
+        user={user}
+        logout={logout}
       />
       <main className="flex flex-col min-h-screen container mx-auto px-4 py-8 md:py-12">
         <Outlet />
