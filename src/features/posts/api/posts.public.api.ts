@@ -1,10 +1,8 @@
 import {
   findPostBySlug,
-  getPostsCursor
+  getPostsCursor,
 } from "@/features/posts/data/posts.data";
-import {
-  PostCategory
-} from "@/lib/db/schema";
+import { PostCategory } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -29,7 +27,9 @@ export const getPostsCursorFn = createServerFn()
 export const findPostBySlugFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context }) => {
-    const post = await findPostBySlug(context.db, data.slug, true);
+    const post = await findPostBySlug(context.db, data.slug, {
+      publicOnly: true,
+    });
     if (!post) return null;
     return {
       ...post,

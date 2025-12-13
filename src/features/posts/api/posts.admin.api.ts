@@ -10,11 +10,7 @@ import {
   updatePost,
 } from "@/features/posts/data/posts.data";
 import { createAdminFn } from "@/lib/auth/procedure";
-import {
-  PostCategory,
-  PostStatus,
-  PostUpdateSchema
-} from "@/lib/db/schema";
+import { PostCategory, PostStatus, PostUpdateSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
 import { deleteSearchDoc } from "@/lib/search/ops";
@@ -81,7 +77,9 @@ export const getPostsCountFn = createAdminFn()
 export const findPostBySlugFn = createAdminFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context }) => {
-    const post = await findPostBySlug(context.db, data.slug);
+    const post = await findPostBySlug(context.db, data.slug, {
+      publicOnly: false,
+    });
     if (!post) return null;
     return {
       ...post,
@@ -129,7 +127,9 @@ export const generateSlugFn = createAdminFn()
     const baseSlug = slugify(data.title);
 
     // Check if base slug is available
-    const baseExists = await slugExists(context.db, baseSlug, data.excludeId);
+    const baseExists = await slugExists(context.db, baseSlug, {
+      excludeId: data.excludeId,
+    });
     if (!baseExists) {
       return { slug: baseSlug };
     }
@@ -138,11 +138,9 @@ export const generateSlugFn = createAdminFn()
     const MAX_ATTEMPTS = 100;
     for (let i = 1; i <= MAX_ATTEMPTS; i++) {
       const candidateSlug = `${baseSlug}-${i}`;
-      const exists = await slugExists(
-        context.db,
-        candidateSlug,
-        data.excludeId
-      );
+      const exists = await slugExists(context.db, candidateSlug, {
+        excludeId: data.excludeId,
+      });
       if (!exists) {
         return { slug: candidateSlug };
       }

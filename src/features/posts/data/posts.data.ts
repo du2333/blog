@@ -11,6 +11,8 @@ import {
 } from "@/lib/db/schema";
 import { and, count, desc, eq, lt, ne } from "drizzle-orm";
 
+const DEFAULT_PAGE_SIZE = 12;
+
 export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
   const [post] = await db.insert(PostsTable).values(data).returning();
   return post;
@@ -19,14 +21,15 @@ export async function insertPost(db: DB, data: typeof PostsTable.$inferInsert) {
 export async function getPosts(
   db: DB,
   options: {
-    offset: number;
-    limit: number;
+    offset?: number;
+    limit?: number;
     category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
-  }
+  } = {}
 ) {
-  const whereClause = buildPostWhereClause(options);
+  const { offset = 0, limit = DEFAULT_PAGE_SIZE, ...filters } = options;
+  const whereClause = buildPostWhereClause(filters);
 
   const posts = await db
     .select({
@@ -42,9 +45,9 @@ export async function getPosts(
       updatedAt: PostsTable.updatedAt,
     })
     .from(PostsTable)
-    .limit(Math.min(options.limit, 50))
-    .offset(options.offset)
-    .orderBy(desc(PostsTable.updatedAt))
+    .limit(Math.min(limit, 50))
+    .offset(offset)
+    .orderBy(desc(PostsTable.createdAt))
     .where(whereClause);
   return posts;
 }
@@ -55,7 +58,7 @@ export async function getPostsCount(
     category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
-  }
+  } = {}
 ) {
   const whereClause = buildPostWhereClause(options);
   const totalNumberofPosts = await db
@@ -65,8 +68,6 @@ export async function getPostsCount(
   return totalNumberofPosts[0].count;
 }
 
-const DEFAULT_PAGE_SIZE = 12;
-
 /**
  * Get posts with cursor-based pagination
  * @param cursor - The id of the last item from previous page
@@ -74,22 +75,17 @@ const DEFAULT_PAGE_SIZE = 12;
  */
 export async function getPostsCursor(
   db: DB,
-  options?: {
+  options: {
     cursor?: number;
     limit?: number;
     category?: PostCategory;
     publicOnly?: boolean;
-  }
+  } = {}
 ): Promise<{
   items: PostListItem[];
   nextCursor: number | null;
 }> {
-  const {
-    cursor,
-    limit = DEFAULT_PAGE_SIZE,
-    category,
-    publicOnly,
-  } = options ?? {};
+  const { cursor, limit = DEFAULT_PAGE_SIZE, category, publicOnly } = options;
 
   // Build base conditions from helper
   const baseConditions = buildPostWhereClause({ category, publicOnly });
@@ -143,8 +139,10 @@ export async function findPostById(db: DB, id: number) {
 export async function findPostBySlug(
   db: DB,
   slug: string,
-  publicOnly?: boolean
+  options: { publicOnly?: boolean } = {}
 ) {
+  const { publicOnly = false } = options;
+
   const whereClause = buildPostWhereClause({ publicOnly });
   const results = await db
     .select()
@@ -156,7 +154,7 @@ export async function findPostBySlug(
 export async function updatePost(
   db: DB,
   id: number,
-  data: Partial<typeof PostsTable.$inferInsert>
+  data: Partial<Omit<typeof PostsTable.$inferInsert, "id" | "createdAt">>
 ) {
   const [post] = await db
     .update(PostsTable)
@@ -178,8 +176,9 @@ export async function deletePost(db: DB, id: number) {
 export async function slugExists(
   db: DB,
   slug: string,
-  excludeId?: number
+  options: { excludeId?: number } = {}
 ): Promise<boolean> {
+  const { excludeId } = options;
   const conditions = [eq(PostsTable.slug, slug)];
   if (excludeId) {
     conditions.push(ne(PostsTable.id, excludeId));

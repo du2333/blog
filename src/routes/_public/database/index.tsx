@@ -26,7 +26,6 @@ const postsInfiniteQueryOptions = (category?: PostCategory) =>
         data: {
           cursor: pageParam,
           category: category,
-          publicOnly: true,
         },
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
