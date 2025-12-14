@@ -1,40 +1,22 @@
 import { authClient } from "@/lib/auth/auth.client";
-import { useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Github, Loader2 } from "lucide-react";
 import { useState } from "react";
-import { toast } from "sonner";
 
-export function SocialLogin() {
-  const navigate = useNavigate();
-
+export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleGithubLogin = async () => {
     if (isLoading) return;
 
     setIsLoading(true);
-    const toastId = toast.loading("ESTABLISHING SECURE TUNNEL...");
 
-    const { error } = await authClient.signIn.social({
+    await authClient.signIn.social({
       provider: "github",
       errorCallbackURL: `${window.location.origin}/login`,
+      callbackURL: redirectTo
+        ? `${window.location.origin}${redirectTo}`
+        : `${window.location.origin}/admin`,
     });
-
-    if (error) {
-      toast.dismiss(toastId);
-      toast.error("EXTERNAL SIGNAL VERIFICATION FAILED", {
-        description: error.message,
-      });
-      setIsLoading(false);
-      return;
-    }
-
-    toast.dismiss(toastId);
-    toast.success("EXTERNAL SIGNAL VERIFIED", {
-      description: "Identity confirmed via GitHub Protocol.",
-    });
-    navigate({ to: "/admin" });
-    setIsLoading(false);
   };
 
   return (
@@ -51,7 +33,7 @@ export function SocialLogin() {
         type="button"
         onClick={handleGithubLogin}
         disabled={isLoading}
-        className="group relative w-full h-12 bg-black border border-zzz-gray hover:border-white transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden clip-corner-bl disabled:opacity-50 disabled:cursor-not-allowed"
+        className="group relative w-full h-12 bg-black border border-zzz-gray hover:border-white transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden clip-corner-bl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
       >
         {/* Hover Fill Effect */}
         <div className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0"></div>

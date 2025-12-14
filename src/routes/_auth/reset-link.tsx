@@ -4,8 +4,8 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_auth/reset-link")({
   validateSearch: z.object({
-    token: z.string().optional(),
-    error: z.string().optional(),
+    token: z.string().optional().catch(undefined),
+    error: z.string().optional().catch(undefined),
   }),
   component: RouteComponent,
 });

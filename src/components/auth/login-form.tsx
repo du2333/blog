@@ -23,7 +23,7 @@ const loginSchema = z.object({
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
-export function LoginForm() {
+export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   const [loginStep, setLoginStep] = useState<
     "IDLE" | "VERIFYING" | "SYNCING" | "SUCCESS"
   >("IDLE");
@@ -74,7 +74,7 @@ export function LoginForm() {
     setTimeout(() => {
       setLoginStep("SUCCESS");
       setTimeout(() => {
-        navigate({ to: "/admin" });
+        navigate({ to: redirectTo ? redirectTo : "/admin" });
       }, 800);
     }, 800);
   };

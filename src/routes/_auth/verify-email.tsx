@@ -14,7 +14,7 @@ import { z } from "zod";
 
 export const Route = createFileRoute("/_auth/verify-email")({
   validateSearch: z.object({
-    error: z.string().optional(),
+    error: z.string().optional().catch(undefined),
   }),
   beforeLoad: ({ context }) => {
     // If email verification is not required, redirect to login

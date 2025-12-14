@@ -172,7 +172,7 @@ export function Navbar({
                   </button>
                 </>
               ) : (
-                <Link to="/login">
+                <Link to="/login" search={{ redirectTo: location.pathname }}>
                   <button className="flex items-center gap-2 px-4 h-9 border border-zzz-gray hover:bg-zzz-lime hover:text-black hover:border-zzz-lime transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-br group cursor-pointer">
                     <LogIn
                       size={14}

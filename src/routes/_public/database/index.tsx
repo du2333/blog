@@ -15,7 +15,7 @@ import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
 const searchSchema = z.object({
-  category: z.custom<PostCategory>().optional(),
+  category: z.custom<PostCategory>().optional().catch(undefined),
 });
 
 const postsInfiniteQueryOptions = (category?: PostCategory) =>

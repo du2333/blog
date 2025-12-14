@@ -1,12 +1,18 @@
 import { LoginForm } from "@/components/auth/login-form";
 import { SocialLogin } from "@/components/auth/social-login";
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { z } from "zod";
 
 export const Route = createFileRoute("/_auth/login")({
+  validateSearch: z.object({
+    redirectTo: z.string().optional().catch(undefined),
+  }),
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const { redirectTo } = Route.useSearch();
+
   return (
     <>
       {/* Page Specific Header */}
@@ -28,10 +34,10 @@ function RouteComponent() {
         <div className="absolute top-0 left-0 w-16 h-1 bg-zzz-lime"></div>
         <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-zzz-gray"></div>
 
-        <LoginForm />
+        <LoginForm redirectTo={redirectTo} />
 
         <div className="mt-8">
-          <SocialLogin />
+          <SocialLogin redirectTo={redirectTo} />
         </div>
 
         <div className="mt-6 text-center pt-6 border-t border-zzz-gray/30">
