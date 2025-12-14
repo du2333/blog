@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
 
-      - name: import environment variables
+      - name: import cloudflare secrets
         uses: hashicorp/vault-action@v3
         with:
           url: https://vault.dukda.com
@@ -29,7 +29,7 @@ jobs:
           secrets: |
             secrets/data/cloudflare *
 
-      - name: import environment variables
+      - name: import runtime secrets
         uses: hashicorp/vault-action@v3
         with:
           url: https://vault.dukda.com
@@ -37,5 +37,20 @@ jobs:
           secrets: |
             secrets/data/blog *
 
+      - name: Generate Secrets JSON
+        run: |
+          cat <<EOF > secrets.json
+          {
+            "BETTER_AUTH_SECRET": "$BETTER_AUTH_SECRET",
+            "BETTER_AUTH_URL": "$BETTER_AUTH_URL",
+            "ADMIN_EMAIL": "$ADMIN_EMAIL",
+            "REQUIRE_EMAIL_VERIFICATION": "$REQUIRE_EMAIL_VERIFICATION",
+            "GITHUB_CLIENT_ID": "$GITHUB_CLIENT_ID",
+            "GITHUB_CLIENT_SECRET": "$GITHUB_CLIENT_SECRET"
+          }
+          EOF
+
       - name: Deploy to Cloudflare Workers
-        run: pnpm run deploy
+        run: |
+          npx wrangler secret bulk secrets.json
+          pnpm run deploy
