@@ -72,7 +72,7 @@ export function FeaturedTransmission({
 
             {/* Main Title Area */}
             <div className="mt-8 md:mt-0">
-              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-none mb-6 py-1 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl wrap-break-word line-clamp-3 md:line-clamp-4">
+              <h3 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight mb-6 group-hover:text-zzz-lime transition-colors max-w-4xl drop-shadow-2xl wrap-break-word line-clamp-3 md:line-clamp-4">
                 {heroPost.title}
               </h3>
               <p className="text-gray-300 font-mono text-sm md:text-base max-w-2xl leading-relaxed border-l-2 border-zzz-lime pl-4 mb-8 line-clamp-3">
