@@ -1,138 +1,186 @@
-// ============================================
-// Cloudflare Cache API
-// ============================================
+import { z } from "zod";
 
-/**
- * 获取 Cloudflare 默认缓存实例
- */
-function getCache(): Cache {
-  return (caches as unknown as { default: Cache }).default;
+interface Context {
+  env: Env;
+  waitUntil: ExecutionContext["waitUntil"];
 }
 
-/**
- * 统一缓存键：强制使用虚拟 host，避免相对路径/不同域导致的 URL 解析错误或键不一致。
- */
-function normalizeCacheKey(request: Request | string): Request {
-  if (typeof request === "string") {
-    const url = new URL(request, "http://cache");
-    return new Request(url.toString());
-  }
+// workers cache api
+const getCache = () => (caches as any).default as Cache;
 
-  const url = new URL(request.url);
-  url.protocol = "http";
-  url.hostname = "cache";
-  url.port = "";
+const logCache = (level: "L1" | "L2" | "MISS", key: string) => {
+  console.log(`[Cache] [${level}] ${key}`);
+};
 
-  return new Request(url.toString(), request);
-}
+// ==========================================
+// 核心工具 1: 数据缓存 (L1 Cache API -> L2 KV -> L3 DB)
+// ==========================================
 
 /**
- * 从缓存中获取响应
- * @param request - 请求对象或 URL 字符串
- * @returns 缓存的响应，如果未命中则返回 null
+ * 智能数据缓存函数
+ * @param context Workers 上下文
+ * @param key 业务键 (如 "post-123")，不要带 http 前缀
+ * @param schema Zod Schema 用于验证数据
+ * @param fetcher 数据库查询函数
+ * @param options TTL 配置 (秒)
  */
-export async function cacheGet(
-  request: Request | string
-): Promise<Response | null> {
+export async function cachedData<T extends z.ZodTypeAny>(
+  context: Context,
+  key: string,
+  schema: T,
+  fetcher: () => Promise<z.infer<T>>,
+  options: { ttlL1?: number; ttlL2?: number } = {}
+): Promise<z.infer<T>> {
+  const { ttlL1 = 60, ttlL2 = 3600 } = options;
+  const cacheKeyUrl = `http://cache/${key}`; // 统一构建 Cache API 用的伪造 URL
   const cache = getCache();
-  const cacheKey = normalizeCacheKey(request);
-  const response = await cache.match(cacheKey);
-  return response ?? null;
+
+  // 1. 尝试 L1 (Cache API)
+  const cachedRes = await cache.match(cacheKeyUrl);
+  if (cachedRes) {
+    const data = await cachedRes.json();
+    const result = schema.safeParse(data);
+    if (result.success) {
+      logCache("L1", key);
+      return result.data;
+    }
+  }
+
+  // 2. 尝试 L2 (KV)
+  const kvData = await context.env.KV.get(key, "json");
+  if (kvData) {
+    const result = schema.safeParse(kvData);
+    if (result.success) {
+      logCache("L2", key);
+      // 命中 KV -> 异步回写 L1 (热启动 Cache API)
+      context.waitUntil(
+        cache.put(cacheKeyUrl, createJsonResponse(result.data, ttlL1))
+      );
+      return result.data;
+    }
+  }
+
+  // 3. 尝试 L3 (源数据/DB)
+  logCache("MISS", key);
+  const data = await fetcher();
+
+  // 如果数据为空，直接返回 (或者你可以选择是否缓存空值)
+  if (data === null || data === undefined) return data;
+
+  // 4. 双写缓存 (L1 + L2)
+  context.waitUntil(
+    Promise.all([
+      // 写 L1: 依赖 Cache-Control 头自动管理过期
+      cache.put(cacheKeyUrl, createJsonResponse(data, ttlL1)),
+      // 写 L2: 依赖 KV 的 expirationTtl
+      context.env.KV.put(key, JSON.stringify(data), {
+        expirationTtl: ttlL2,
+      }),
+    ])
+  );
+
+  return data;
 }
 
 /**
- * 将响应存入缓存
- * @param request - 请求对象或 URL 字符串
- * @param response - 要缓存的响应
- * @param options - 缓存选项
+ * 删除数据缓存 (同时清除 L1 和 L2)
+ * @param context 需要 env
+ * @param key 业务键 (如 "post-123")
  */
-export async function cachePut(
-  executionCtx: ExecutionContext,
-  request: Request | string,
-  response: Response,
-  options?: {
-    /** 是否使用 waitUntil 异步写入（默认 true） */
-    async?: boolean;
-  }
+export async function deleteCachedData(
+  context: { env: Env },
+  key: string
 ): Promise<void> {
+  const cacheKeyUrl = `http://cache/${key}`;
   const cache = getCache();
-  const cacheKey = normalizeCacheKey(request);
-  const { async: isAsync = true } = options ?? {};
 
-  if (isAsync) {
-    executionCtx.waitUntil(
-      (async (): Promise<void> => {
-        try {
-          await cache.put(cacheKey, response);
-          console.log(`Cache put: ${cacheKey.url}`);
-        } catch (error) {
-          console.error("Error putting cache:", error);
-        }
-      })()
-    );
-  } else {
-    await cache.put(cacheKey, response);
-  }
+  await Promise.all([
+    cache.delete(cacheKeyUrl).then((success) => {
+      if (!success) {
+        console.error(
+          "[Data Cache] Failed to delete cached data:",
+          cacheKeyUrl
+        );
+      }
+    }), // 删 L1
+    context.env.KV.delete(key), // 删 L2
+  ]);
 }
 
-/**
- * 从缓存中删除响应
- * @param request - 请求对象或 URL 字符串
- * @returns 是否成功删除
- */
-export async function cacheDelete(request: Request | string): Promise<boolean> {
-  const cache = getCache();
-  const cacheKey = normalizeCacheKey(request);
-  try {
-    return await cache.delete(cacheKey);
-  } catch (error) {
-    console.error("Error deleting cache:", error);
-    return false;
-  }
-}
+// ==========================================
+// 核心工具 2: 静态资源/图片缓存 (L1 Cache API Only)
+// ==========================================
 
 /**
- * 缓存包装器 - 自动处理缓存命中/未命中逻辑
- * @param request - 请求对象或 URL 字符串
- * @param fetcher - 缓存未命中时执行的获取函数
- * @param options - 缓存选项
- * @returns 响应对象
+ * 图片/文件流缓存
+ * @param context 需要 waitUntil
+ * @param request 原始 Request 或 URL 字符串
+ * @param fetcher获取资源的函数 (如 fetch(r2_url))
  */
-export async function cacheWrap(
-  executionCtx: ExecutionContext,
+export async function cachedAsset(
+  context: { waitUntil: ExecutionContext["waitUntil"] },
   request: Request | string,
-  fetcher: () => Promise<Response>,
-  options?: {
-    /** 是否缓存响应（默认 true） */
-    shouldCache?: boolean | ((response: Response) => boolean);
-    /** 响应预处理（在缓存前修改响应） */
-    transform?: (response: Response) => Response;
-  }
+  fetcher: () => Promise<Response>
 ): Promise<Response> {
-  const { shouldCache = true, transform } = options ?? {};
+  const cache = getCache();
+  // 统一转为 Request 对象以便 Cache API 识别
+  const cacheKey =
+    typeof request === "string"
+      ? new Request(new URL(request, "http://cache"), { method: "GET" })
+      : request;
 
-  // 1. 尝试从缓存获取
-  const cached = await cacheGet(request);
-  if (cached) {
-    return cached;
+  // 1. 查 Cache
+  const cachedRes = await cache.match(cacheKey);
+  if (cachedRes) {
+    const newRes = new Response(cachedRes.body, cachedRes);
+    newRes.headers.set("X-Cache-Status", "HIT-L1");
+    return newRes;
   }
 
-  // 2. 执行 fetcher 获取新响应
-  let response = await fetcher();
+  // 2. 回源
+  const originRes = await fetcher();
 
-  // 3. 应用转换
-  if (transform) {
-    response = transform(response);
+  // 3. 写入 Cache (仅当请求成功时)
+  // 必须在读取 body 之前 clone，因为 body 只能读一次
+  if (originRes.ok) {
+    context.waitUntil(cache.put(cacheKey, originRes.clone()));
   }
 
-  // 4. 判断是否需要缓存
-  const shouldCacheResult =
-    typeof shouldCache === "function" ? shouldCache(response) : shouldCache;
+  // 4. 返回响应（添加缓存状态头）
+  const responseToReturn = new Response(originRes.body, originRes);
+  responseToReturn.headers.set("X-Cache-Status", "MISS");
+  return responseToReturn;
+}
 
-  if (shouldCacheResult && response.ok) {
-    const responseToCache = response.clone();
-    await cachePut(executionCtx, request, responseToCache);
+/**
+ * 删除资源缓存
+ */
+export async function deleteCachedAsset(
+  request: Request | string
+): Promise<boolean> {
+  const cache = getCache();
+  const cacheKey =
+    typeof request === "string"
+      ? new Request(new URL(request, "http://cache"), { method: "GET" })
+      : request;
+
+  const success = await cache.delete(cacheKey);
+  if (!success) {
+    console.error("[Asset Cache] Failed to delete cached asset:", cacheKey);
   }
+  return success;
+}
 
-  return response;
+// ==========================================
+// 内部辅助函数
+// ==========================================
+
+function createJsonResponse(data: any, maxAge: number): Response {
+  return new Response(JSON.stringify(data), {
+    headers: {
+      "Content-Type": "application/json",
+      // Cache API 极其依赖这个 Header
+      "Cache-Control": `public, max-age=${maxAge}`,
+    },
+  });
 }

@@ -1,5 +1,5 @@
 import { createAuth } from "@/lib/auth/auth.server";
-import { cacheWrap } from "@/lib/cache";
+import { cachedAsset } from "@/lib/cache";
 import { createDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
@@ -15,11 +15,8 @@ app.get("/images/:key", async (c) => {
   }
 
   try {
-    return await cacheWrap(
-      c.executionCtx,
-      c.req.raw,
-      () => handleImageRequest(c.env, key, c.req.raw),
-      { shouldCache: (response) => response.ok }
+    return await cachedAsset(c.executionCtx, c.req.raw, () =>
+      handleImageRequest(c.env, key, c.req.raw)
     );
   } catch (error) {
     console.error("Error fetching image from R2:", error);

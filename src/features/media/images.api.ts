@@ -10,7 +10,7 @@ import {
   getPostsByMediaKey,
   isMediaInUse,
 } from "@/features/posts/data/post-media.data";
-import { cacheDelete } from "@/lib/cache";
+import { deleteCachedAsset } from "@/lib/cache";
 import { deleteImage, uploadImage } from "@/lib/images/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
@@ -82,9 +82,7 @@ export const deleteImageFn = createAdminFn()
       deleteImage(context.env, key).catch((err) =>
         console.error("Failed to delete image from R2:", err)
       ),
-      cacheDelete(`/images/${key}`).catch((err) =>
-        console.error("Failed to delete image from cache:", err)
-      ),
+      deleteCachedAsset(`/images/${key}`),
     ]);
     context.executionCtx.waitUntil(backgroundTasks);
   });

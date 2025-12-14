@@ -45,6 +45,7 @@ export async function handleImageRequest(
 
     const newHeaders = new Headers(response.headers);
     newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+    newHeaders.set("Vary", "Accept");
 
     return new Response(response.body, {
       status: response.status,
