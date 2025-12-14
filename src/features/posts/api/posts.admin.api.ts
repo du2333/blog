@@ -107,12 +107,6 @@ export const updatePostFn = createAdminFn({
       );
     }
 
-    const tasks = [];
-    tasks.push(deleteCachedData(context, ["post", post.slug]));
-    tasks.push(bumpCacheVersion(context, "posts:list"));
-
-    context.executionCtx.waitUntil(Promise.all(tasks));
-
     return post;
   });
 
@@ -169,11 +163,19 @@ export const generateSlugFn = createAdminFn()
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()
-  .inputValidator(z.object({ postId: z.number() }))
+  .inputValidator(z.object({ postId: z.number(), slug: z.string() }))
   .handler(async ({ data, context }) => {
+    // 生成摘要， 更新搜索索引
     await context.env.POST_PROCESS_WORKFLOW.create({
       params: {
         postId: data.postId,
       },
     });
+
+    // 删除缓存， 更新缓存版本
+    const tasks = [];
+    tasks.push(deleteCachedData(context, ["post", data.slug]));
+    tasks.push(bumpCacheVersion(context, "posts:list"));
+
+    context.executionCtx.waitUntil(Promise.all(tasks));
   });
