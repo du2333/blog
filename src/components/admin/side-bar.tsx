@@ -1,17 +1,19 @@
-import { Logo } from "../common/logo";
+import ConfirmationModal from "@/components/ui/confirmation-modal";
+import { authClient } from "@/lib/auth/auth.client";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
-  FileText,
-  LayoutDashboard,
-  X,
-  Image as ImageIcon,
-  Settings,
-  LogOut,
   ArrowUpRight,
+  FileText,
   Globe,
+  Image as ImageIcon,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  X,
 } from "lucide-react";
-import { authClient } from "@/lib/auth/auth.client";
+import { useState } from "react";
 import { toast } from "sonner";
+import { Logo } from "../common/logo";
 
 export function SideBar({
   isMobileSidebarOpen,
@@ -21,9 +23,19 @@ export function SideBar({
   closeMobileSidebar: () => void;
 }) {
   const navigate = useNavigate();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleSignOut = async () => {
+  const handleSignOutClick = () => {
+    setShowLogoutConfirm(true);
+  };
+
+  const handleConfirmSignOut = async () => {
+    setIsLoggingOut(true);
     const { error } = await authClient.signOut();
+    setIsLoggingOut(false);
+    setShowLogoutConfirm(false);
+
     if (error) {
       toast.error("LOGOUT FAILED", {
         description: "Failed to terminate session.",
@@ -162,7 +174,7 @@ export function SideBar({
               <span className="text-xs text-zzz-lime font-bold">ONLINE</span>
             </div>
             <button
-              onClick={handleSignOut}
+              onClick={handleSignOutClick}
               className="text-gray-500 hover:text-white transition-colors cursor-pointer"
               title="Logout"
             >
@@ -172,6 +184,17 @@ export function SideBar({
           <div className="text-[10px] text-gray-500">ID: PHAETHON_01</div>
         </div>
       </aside>
+
+      {/* Logout Confirmation Modal */}
+      <ConfirmationModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={handleConfirmSignOut}
+        title="TERMINATE SESSION"
+        message="Are you sure you want to log out? "
+        confirmLabel="TERMINATE"
+        isLoading={isLoggingOut}
+      />
     </>
   );
 }
