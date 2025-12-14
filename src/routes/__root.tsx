@@ -1,8 +1,5 @@
 import Toaster from "@/components/ui/toaster";
-import {
-  getSessionFn,
-  isEmailVerficationRequiredFn,
-} from "@/features/auth/auth.api";
+import { getRootContextFn } from "@/features/auth/auth.api";
 import { useAsyncFonts } from "@/hooks/use-async-fonts";
 import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
 import { TanStackDevtools } from "@tanstack/react-devtools";
@@ -49,12 +46,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
   }),
   shellComponent: RootDocument,
   beforeLoad: async () => {
-    const session = await getSessionFn();
-    const isEmailVerficationRequired = await isEmailVerficationRequiredFn();
-    return {
-      session,
-      isEmailVerficationRequired,
-    };
+    const context = await getRootContextFn();
+    return context;
   },
 });
 
