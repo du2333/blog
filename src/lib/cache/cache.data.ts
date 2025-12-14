@@ -135,6 +135,7 @@ export async function bumpCacheVersion(
       next = parsed + 1;
     }
   }
-  
+
   await context.env.KV.put(key, next.toString());
+  console.log(`[Cache] Bumped version ${key} to ${next}`);
 }
