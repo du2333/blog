@@ -1,103 +1,53 @@
 import { z } from "zod";
-import {
-  createJsonResponse,
-  getCache,
-  logCache,
-  serializeKey,
-} from "./cache.utils";
+import { serializeKey } from "./cache.utils";
 import { CacheKey, CacheNamespace, Context } from "./types";
 
 /**
- * 智能数据缓存
- * 流程: L1 (Cache API) -> L2 (KV) -> L3 (Fetcher) -> 回写 L1 & L2
+ * 缓存数据
+ * @param options.ttl - 缓存时间 (秒) 默认 3600 秒 (1 小时)
  */
 export async function cachedData<T extends z.ZodTypeAny>(
   context: Context,
   key: CacheKey,
   schema: T,
   fetcher: () => Promise<z.infer<T>>,
-  options: { ttlL1?: number; ttlL2?: number } = {}
+  options: { ttl?: number } = {}
 ): Promise<z.infer<T>> {
-  const { ttlL1 = 60, ttlL2 = 3600 } = options;
-
-  // 1. 序列化 Key
+  const { ttl = 3600 } = options;
+  const { env, executionCtx } = context;
   const serializedKey = serializeKey(key);
-  const cacheKeyUrl = `http://cache/${serializedKey}`; // 统一构建 Cache API 用的伪造 URL
-  const cache = getCache();
 
-  // 1. 尝试 L1 (Cache API)
-  const cachedRes = await cache.match(cacheKeyUrl);
-  if (cachedRes) {
-    const data = await cachedRes.json();
-    const result = schema.safeParse(data);
-    if (result.success) {
-      logCache("L1", serializedKey);
-      return result.data;
-    }
-  }
+  const kvData = await env.KV.get(serializedKey, "json");
 
-  // 2. 尝试 L2 (KV)
-  const kvData = await context.env.KV.get(serializedKey, "json");
   if (kvData) {
     const result = schema.safeParse(kvData);
     if (result.success) {
-      logCache("L2", serializedKey);
-      // 命中 KV -> 异步回写 L1 (热启动 Cache API)
-      context.executionCtx.waitUntil(
-        cache.put(cacheKeyUrl, createJsonResponse(result.data, ttlL1))
-      );
+      console.log(`[Cache] HIT: ${serializedKey}`);
       return result.data;
     }
   }
 
-  // 3. 尝试 L3 (源数据/DB)
-  logCache("MISS", serializedKey);
+  console.log(`[Cache] MISS: ${serializedKey}`);
   const data = await fetcher();
 
-  // 如果数据为空，直接返回 (或者你可以选择是否缓存空值)
   if (data === null || data === undefined) return data;
 
-  // 4. 双写缓存 (L1 + L2)
-  context.executionCtx.waitUntil(
-    Promise.all([
-      cache.put(cacheKeyUrl, createJsonResponse(data, ttlL1)),
-      context.env.KV.put(serializedKey, JSON.stringify(data), {
-        expirationTtl: ttlL2,
-      }),
-    ])
+  executionCtx.waitUntil(
+    env.KV.put(serializedKey, JSON.stringify(data), {
+      expirationTtl: ttl,
+    })
   );
 
   return data;
 }
 
-/**
- * 精确删除指定 Key 的缓存 (同时删 L1 和 L2)
- * 支持传入多个 Key，每个 Key 可以是字符串或数组
- */
 export async function deleteCachedData(
   context: { env: Env },
   ...keys: CacheKey[]
 ): Promise<void> {
-  const cache = getCache();
   const serializedKeys = keys.map(serializeKey);
 
-  await Promise.all(
-    serializedKeys.map(async (key) => {
-      const cacheKeyUrl = `http://cache/${key}`;
-      // 同时删除 L1 和 L2
-      await Promise.all([
-        cache.delete(cacheKeyUrl).then((success) => {
-          if (!success) {
-            console.error(
-              "[Data Cache] Failed to delete cached data:",
-              cacheKeyUrl
-            );
-          }
-        }),
-        context.env.KV.delete(key),
-      ]);
-    })
-  );
+  await Promise.all(serializedKeys.map((key) => context.env.KV.delete(key)));
 }
 
 /**

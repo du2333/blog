@@ -11,9 +11,7 @@ import {
   isMediaInUse,
 } from "@/features/posts/data/post-media.data";
 import { createAdminFn } from "@/lib/auth/procedure";
-import { deleteCachedAsset } from "@/lib/cache/cache.asset";
 import { deleteImage, uploadImage } from "@/lib/images/r2";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -72,13 +70,11 @@ export const deleteImageFn = createAdminFn()
 
     await deleteMedia(context.db, key);
 
-    const backgroundTasks = Promise.all([
+    context.executionCtx.waitUntil(
       deleteImage(context.env, key).catch((err) =>
         console.error("Failed to delete image from R2:", err)
-      ),
-      deleteCachedAsset(key),
-    ]);
-    context.executionCtx.waitUntil(backgroundTasks);
+      )
+    );
   });
 
 export const getMediaFn = createAdminFn()
@@ -103,7 +99,7 @@ export const checkMediaInUseFn = createAdminFn()
     return await isMediaInUse(context.db, data.key);
   });
 
-export const getLinkedPostsFn = createServerFn()
+export const getLinkedPostsFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),

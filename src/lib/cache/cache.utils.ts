@@ -13,19 +13,3 @@ export function serializeKey(key: CacheKey): string {
     })
     .join(":");
 }
-
-export function createJsonResponse(data: any, maxAge: number): Response {
-  return new Response(JSON.stringify(data), {
-    headers: {
-      "Content-Type": "application/json",
-      // Cache API 极其依赖这个 Header
-      "Cache-Control": `public, max-age=${maxAge}`,
-    },
-  });
-}
-
-export const getCache = () => (caches as any).default as Cache;
-
-export const logCache = (level: "L1" | "L2" | "MISS", key: string) => {
-  console.log(`[Cache] [${level}] ${key}`);
-};

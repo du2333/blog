@@ -1,6 +1,5 @@
 import { createAuth } from "@/lib/auth/auth.server";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
-import { cachedAsset } from "@/lib/cache/cache.asset";
 import { createDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
@@ -11,22 +10,47 @@ export const app = new Hono<{ Bindings: Env }>();
 app.use("*", async (c, next) => {
   await next();
 
-  const status = c.res.status;
+  if (c.req.method !== "GET") return;
 
-  if (status !== 404 && status < 500) {
+  const status = c.res.status;
+  const path = c.req.path;
+  const contentType = c.res.headers.get("Content-Type") || "";
+
+  if (path.startsWith("/admin") || path.startsWith("/api/auth")) {
+    const newHeaders = new Headers(c.res.headers);
+    Object.entries(CACHE_CONTROL.private).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
+
+    c.res = new Response(c.res.body, { status, headers: newHeaders });
     return;
   }
 
-  const contentType = c.res.headers.get("Content-Type") || "";
-  if (!contentType.includes("text/html")) return;
+  if (path.startsWith("/images/")) {
+    const newHeaders = new Headers(c.res.headers);
+    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
+
+    c.res = new Response(c.res.body, { status, headers: newHeaders });
+    return;
+  }
+
+  const isHtml = contentType.includes("text/html");
+  if (!isHtml) return;
+  if (status !== 200 && status !== 404 && status < 500) return;
 
   const newHeaders = new Headers(c.res.headers);
 
-  if (status === 404) {
+  if (status === 200) {
+    Object.entries(CACHE_CONTROL.public).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
+  } else if (status === 404) {
     Object.entries(CACHE_CONTROL.notFound).forEach(([k, v]) =>
       newHeaders.set(k, v)
     );
-  } else if (status === 500) {
+  } else if (status >= 500) {
     Object.entries(CACHE_CONTROL.serverError).forEach(([k, v]) =>
       newHeaders.set(k, v)
     );
@@ -42,14 +66,10 @@ app.use("*", async (c, next) => {
 app.get("/images/:key", async (c) => {
   const key = c.req.param("key");
 
-  if (!key) {
-    return c.text("Image key is required", 400);
-  }
+  if (!key) return c.text("Image key is required", 400);
 
   try {
-    return await cachedAsset(c.executionCtx, key, () =>
-      handleImageRequest(c.env, key, c.req.raw)
-    );
+    return await handleImageRequest(c.env, key, c.req.raw);
   } catch (error) {
     console.error("Error fetching image from R2:", error);
     return c.text("Internal server error", 500);

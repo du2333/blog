@@ -63,11 +63,7 @@ export const getPostsCursorFn = createServerFn()
       },
       cacheKey,
       PostListResponseSchema,
-      fetcher,
-      {
-        ttlL1: 60,
-        ttlL2: 60 * 60, // 1 hour
-      }
+      fetcher
     );
   });
 
@@ -95,8 +91,7 @@ export const findPostBySlugFn = createServerFn()
       PostWithTocSchema,
       fetcher,
       {
-        ttlL1: 60,
-        ttlL2: 60 * 60 * 24 * 7, // 7 days
+        ttl: 60 * 60 * 24 * 7, // 7 days
       }
     );
   });

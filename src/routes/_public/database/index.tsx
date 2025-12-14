@@ -4,7 +4,6 @@ import { PostLoader } from "@/components/database-feed/post-loader";
 import { PostMobileFilter } from "@/components/database-feed/post-mobile-filter";
 import { PostSidebar } from "@/components/database-feed/post-sidebar";
 import { getPostsCursorFn } from "@/features/posts/api/posts.public.api";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { PostCategory } from "@/lib/db/schema";
 import {
   infiniteQueryOptions,
@@ -42,9 +41,6 @@ export const Route = createFileRoute("/_public/database/")({
     await context.queryClient.prefetchInfiniteQuery(
       postsInfiniteQueryOptions(category)
     );
-  },
-  headers: () => {
-    return CACHE_CONTROL.public;
   },
 });
 

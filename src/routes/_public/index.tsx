@@ -2,7 +2,6 @@ import { LoadingFallback } from "@/components/common/loading-fallback";
 import { FeaturedTransmission } from "@/components/home/featured-transmission";
 import TechButton from "@/components/ui/tech-button";
 import { getPostsCursorFn } from "@/features/posts/api/posts.public.api";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { HERO_ASSETS } from "@/lib/config/assets";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
@@ -27,9 +26,6 @@ export const Route = createFileRoute("/_public/")({
     links: [...HERO_ASSETS],
   }),
   pendingComponent: LoadingFallback,
-  headers: () => {
-    return CACHE_CONTROL.public;
-  },
 });
 
 function App() {

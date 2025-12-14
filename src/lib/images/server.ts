@@ -1,33 +1,48 @@
 import { getContentTypeFromKey } from "@/lib/images/utils";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 
 export async function handleImageRequest(
   env: Env,
   key: string,
   request: Request
 ) {
-  const viaHeader = request.headers.get("via");
-
-  // 1. 防止循环调用
-  if (viaHeader && /image-resizing/.test(viaHeader)) {
-    return await getOriginalImage(key, env);
-  }
-
   const url = new URL(request.url);
   const searchParams = url.searchParams;
 
-  // 2. 如果请求原图，直接走流式返回
-  if (searchParams.get("original") === "true") {
-    return await getOriginalImage(key, env);
+  const serveOriginal = async () => {
+    const object = await env.R2.get(key);
+    if (!object) {
+      return new Response("Image not found", { status: 404 });
+    }
+
+    const contentType =
+      object.httpMetadata?.contentType ||
+      getContentTypeFromKey(key) ||
+      "application/octet-stream";
+
+    const headers = new Headers();
+    object.writeHttpMetadata(headers);
+    headers.set("Content-Type", contentType);
+    headers.set("ETag", object.httpEtag);
+
+    return new Response(object.body as ReadableStream, { headers });
+  };
+
+  // 1. 防止循环调用 & 显式请求原图
+  const viaHeader = request.headers.get("via");
+  const isLoop = viaHeader && /image-resizing/.test(viaHeader);
+  const wantsOriginal = searchParams.get("original") === "true";
+
+  if (isLoop || wantsOriginal) {
+    return await serveOriginal();
   }
 
-  // 3. 构建参数对象给 Cloudflare
+  // 2. 构建 Cloudflare Image Resizing 参数
   const transformOptions = buildTransformOptions(
     searchParams,
     request.headers.get("Accept") || ""
   );
 
-  // 4. 应用 transformation
+  // 3. 尝试进行图片处理
   try {
     const origin = url.origin;
     const sourceImageUrl = `${origin}/images/${key}?original=true`;
@@ -36,29 +51,35 @@ export async function handleImageRequest(
       headers: request.headers,
     });
 
+    // 调用 Cloudflare Images 变换
     const response = await fetch(imageRequest, {
       cf: { image: transformOptions },
     });
 
+    // 如果变换失败 (如格式不支持)，降级回原图
     if (!response.ok) {
-      return await getOriginalImage(key, env);
+      return await serveOriginal();
     }
 
+    // 4. 返回处理后的图片
     const newHeaders = new Headers(response.headers);
-    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
-      newHeaders.set(k, v)
-    );
-    newHeaders.set("Vary", "Accept");
+
+    // 清理掉可能存在的上游缓存头，确保干净
+    newHeaders.delete("Cache-Control");
+    newHeaders.delete("CDN-Cache-Control");
+    if (!newHeaders.has("Vary")) {
+      newHeaders.set("Vary", "Accept");
+    }
 
     return new Response(response.body, {
       status: response.status,
       headers: newHeaders,
     });
   } catch (e) {
-    return await getOriginalImage(key, env);
+    console.error("Image transform failed:", e);
+    return await serveOriginal();
   }
 }
-
 function buildTransformOptions(searchParams: URLSearchParams, accept: string) {
   const transformOptions: Record<string, unknown> = { quality: 80 };
 
@@ -75,35 +96,7 @@ function buildTransformOptions(searchParams: URLSearchParams, accept: string) {
   } else if (/image\/webp/.test(accept)) {
     transformOptions.format = "webp";
   } else {
-    transformOptions.format = "auto";
   }
 
   return transformOptions;
-}
-
-async function getOriginalImage(key: string, env: Env) {
-  const object = await env.R2.get(key);
-
-  if (!object) {
-    return new Response("Image not found", {
-      status: 404,
-    });
-  }
-
-  const contentType =
-    object.httpMetadata?.contentType ||
-    getContentTypeFromKey(key) ||
-    "application/octet-stream";
-
-  const headers = new Headers();
-  object.writeHttpMetadata(headers);
-  headers.set("Content-Type", contentType);
-  headers.set("ETag", object.httpEtag);
-  Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
-    headers.set(k, v)
-  );
-
-  return new Response(object.body as ReadableStream, {
-    headers,
-  });
 }

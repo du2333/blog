@@ -3,7 +3,6 @@ import TableOfContents from "@/components/article/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TechButton from "@/components/ui/tech-button";
 import { findPostBySlugFn } from "@/features/posts/api/posts.public.api";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -41,9 +40,6 @@ export const Route = createFileRoute("/_public/post/$slug")({
     }
   },
   pendingComponent: ArticleSkeleton,
-  headers: () => {
-    return CACHE_CONTROL.public;
-  },
 });
 
 function RouteComponent() {
