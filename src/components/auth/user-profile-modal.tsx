@@ -54,8 +54,6 @@ export function UserProfileModal({
   user,
   logout,
 }: UserProfileModalProps) {
-  if (!user) return null;
-
   const shouldRender = useDelayUnmount(isOpen, 200);
 
   const {
@@ -68,7 +66,7 @@ export function UserProfileModal({
   });
 
   const { data: hasPassword } = useQuery({
-    queryKey: ["user-has-password", user.id],
+    queryKey: ["user-has-password", user?.id],
     queryFn: () => userHasPasswordFn(),
     enabled: !!user,
   });

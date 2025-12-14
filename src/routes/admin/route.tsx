@@ -1,4 +1,5 @@
 import { SideBar } from "@/components/admin/side-bar";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Menu, Terminal } from "lucide-react";
 import { useState } from "react";
@@ -13,6 +14,9 @@ export const Route = createFileRoute("/admin")({
     }
   },
   component: AdminLayout,
+  headers: () => {
+    return CACHE_CONTROL.private;
+  },
 });
 
 function AdminLayout() {

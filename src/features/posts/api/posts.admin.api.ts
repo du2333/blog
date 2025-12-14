@@ -9,38 +9,42 @@ import {
   slugExists,
   updatePost,
 } from "@/features/posts/data/posts.data";
-import { createAdminFn } from "@/lib/auth/procedure";
 import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { PostCategory, PostStatus, PostUpdateSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
+import { adminMiddleware } from "@/lib/middlewares";
 import { deleteSearchDoc } from "@/lib/search/ops";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-export const createEmptyPostFn = createAdminFn({
+export const createEmptyPostFn = createServerFn({
   method: "POST",
-}).handler(async ({ context }) => {
-  const { slug } = await generateSlugFn({
-    data: {
+})
+  .middleware([adminMiddleware])
+  .handler(async ({ context }) => {
+    const { slug } = await generateSlugFn({
+      data: {
+        title: "",
+      },
+    });
+
+    const post = await insertPost(context.db, {
       title: "",
-    },
+      slug,
+      summary: "",
+      status: "draft",
+      readTimeInMinutes: 1,
+      contentJson: null,
+    });
+
+    context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
+
+    return { id: post.id };
   });
 
-  const post = await insertPost(context.db, {
-    title: "",
-    slug,
-    summary: "",
-    status: "draft",
-    readTimeInMinutes: 1,
-    contentJson: null,
-  });
-
-  context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
-
-  return { id: post.id };
-});
-
-export const getPostsFn = createAdminFn()
+export const getPostsFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       offset: z.number().optional(),
@@ -60,7 +64,8 @@ export const getPostsFn = createAdminFn()
     });
   });
 
-export const getPostsCountFn = createAdminFn()
+export const getPostsCountFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       category: z.custom<PostCategory>().optional(),
@@ -76,7 +81,8 @@ export const getPostsCountFn = createAdminFn()
     });
   });
 
-export const findPostBySlugFn = createAdminFn()
+export const findPostBySlugFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context }) => {
     const post = await findPostBySlug(context.db, data.slug, {
@@ -89,15 +95,17 @@ export const findPostBySlugFn = createAdminFn()
     };
   });
 
-export const findPostByIdFn = createAdminFn()
+export const findPostByIdFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     return await findPostById(context.db, data.id);
   });
 
-export const updatePostFn = createAdminFn({
+export const updatePostFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
   .handler(async ({ data: { id, data }, context }) => {
     const post = await updatePost(context.db, id, data);
@@ -110,9 +118,10 @@ export const updatePostFn = createAdminFn({
     return post;
   });
 
-export const deletePostFn = createAdminFn({
+export const deletePostFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     const post = await findPostById(context.db, data.id);
@@ -127,7 +136,8 @@ export const deletePostFn = createAdminFn({
     context.executionCtx.waitUntil(Promise.all(tasks));
   });
 
-export const generateSlugFn = createAdminFn()
+export const generateSlugFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       title: z.string().optional(),
@@ -162,7 +172,8 @@ export const generateSlugFn = createAdminFn()
     return { slug: fallbackSlug };
   });
 
-export const startPostProcessWorkflowFn = createAdminFn()
+export const startPostProcessWorkflowFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(z.object({ postId: z.number(), slug: z.string() }))
   .handler(async ({ data, context }) => {
     // 生成摘要， 更新搜索索引

@@ -10,43 +10,25 @@ export const app = new Hono<{ Bindings: Env }>();
 app.use("*", async (c, next) => {
   await next();
 
+  // 只处理 GET 请求
   if (c.req.method !== "GET") return;
 
   const status = c.res.status;
   const path = c.req.path;
   const contentType = c.res.headers.get("Content-Type") || "";
 
-  if (path.startsWith("/admin") || path.startsWith("/api/auth")) {
-    const newHeaders = new Headers(c.res.headers);
-    Object.entries(CACHE_CONTROL.private).forEach(([k, v]) =>
-      newHeaders.set(k, v)
-    );
-
-    c.res = new Response(c.res.body, { status, headers: newHeaders });
-    return;
-  }
-
-  if (path.startsWith("/images/")) {
-    const newHeaders = new Headers(c.res.headers);
-    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
-      newHeaders.set(k, v)
-    );
-
-    c.res = new Response(c.res.body, { status, headers: newHeaders });
+  if (path.startsWith("/api/") || path.startsWith("/images/")) {
     return;
   }
 
   const isHtml = contentType.includes("text/html");
   if (!isHtml) return;
-  if (status !== 200 && status !== 404 && status < 500) return;
+
+  if (status !== 404 && status < 500) return;
 
   const newHeaders = new Headers(c.res.headers);
 
-  if (status === 200) {
-    Object.entries(CACHE_CONTROL.public).forEach(([k, v]) =>
-      newHeaders.set(k, v)
-    );
-  } else if (status === 404) {
+  if (status === 404) {
     Object.entries(CACHE_CONTROL.notFound).forEach(([k, v]) =>
       newHeaders.set(k, v)
     );
@@ -69,7 +51,11 @@ app.get("/images/:key", async (c) => {
   if (!key) return c.text("Image key is required", 400);
 
   try {
-    return await handleImageRequest(c.env, key, c.req.raw);
+    const response = await handleImageRequest(c.env, key, c.req.raw);
+    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
+      response.headers.set(k, v)
+    );
+    return response;
   } catch (error) {
     console.error("Error fetching image from R2:", error);
     return c.text("Internal server error", 500);

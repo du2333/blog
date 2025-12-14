@@ -4,12 +4,16 @@ import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/components/layout/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_public")({
   component: PublicLayout,
+  headers: () => {
+    return CACHE_CONTROL.public;
+  },
 });
 
 function PublicLayout() {

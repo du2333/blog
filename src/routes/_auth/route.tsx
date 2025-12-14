@@ -1,4 +1,5 @@
 import { Logo } from "@/components/common/logo";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import {
   createFileRoute,
   Link,
@@ -15,6 +16,9 @@ export const Route = createFileRoute("/_auth")({
     }
   },
   component: RouteComponent,
+  headers: () => {
+    return CACHE_CONTROL.private;
+  },
 });
 
 function RouteComponent() {
