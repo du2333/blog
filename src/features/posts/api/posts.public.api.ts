@@ -63,7 +63,10 @@ export const getPostsCursorFn = createServerFn()
       },
       cacheKey,
       PostListResponseSchema,
-      fetcher
+      fetcher,
+      {
+        ttl: 60 * 60 * 24 * 7, // 7 days
+      }
     );
   });
 
