@@ -9,7 +9,7 @@ export function NotFound() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[60vh] w-full relative overflow-hidden p-6 text-center">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden p-6 text-center">
       {/* Background Noise Effect */}
       <div className="absolute inset-0 bg-stripe-pattern opacity-10 pointer-events-none"></div>
 
@@ -52,12 +52,13 @@ export function NotFound() {
         onClick={onReturn}
         variant="primary"
         icon={<ArrowLeft size={16} />}
+        className="mb-16 md:mb-10"
       >
         RETURN TO NEW ERIDU
       </TechButton>
 
       {/* Footer code */}
-      <div className="absolute bottom-10 left-0 w-full text-center">
+      <div className="absolute bottom-6 md:bottom-10 left-0 w-full text-center px-6">
         <div className="text-[10px] font-mono text-zzz-gray uppercase tracking-widest">
           Error_Code: hollow_void_null_ref
         </div>
