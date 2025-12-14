@@ -59,7 +59,7 @@ export const getPostsCursorFn = createServerFn()
     return await cachedData(
       {
         env,
-        waitUntil: executionCtx.waitUntil,
+        executionCtx,
       },
       cacheKey,
       PostListResponseSchema,
@@ -89,7 +89,7 @@ export const findPostBySlugFn = createServerFn()
     return await cachedData(
       {
         env,
-        waitUntil: executionCtx.waitUntil,
+        executionCtx,
       },
       cacheKey,
       PostWithTocSchema,

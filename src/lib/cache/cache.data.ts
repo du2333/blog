@@ -43,7 +43,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
     if (result.success) {
       logCache("L2", serializedKey);
       // 命中 KV -> 异步回写 L1 (热启动 Cache API)
-      context.waitUntil(
+      context.executionCtx.waitUntil(
         cache.put(cacheKeyUrl, createJsonResponse(result.data, ttlL1))
       );
       return result.data;
@@ -58,7 +58,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
   if (data === null || data === undefined) return data;
 
   // 4. 双写缓存 (L1 + L2)
-  context.waitUntil(
+  context.executionCtx.waitUntil(
     Promise.all([
       cache.put(cacheKeyUrl, createJsonResponse(data, ttlL1)),
       context.env.KV.put(serializedKey, JSON.stringify(data), {

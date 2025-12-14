@@ -1,6 +1,6 @@
 export interface Context {
   env: Env;
-  waitUntil: ExecutionContext["waitUntil"];
+  executionCtx: ExecutionContext;
 }
 
 export type CacheKey =
