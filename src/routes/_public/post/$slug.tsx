@@ -3,6 +3,7 @@ import TableOfContents from "@/components/article/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TechButton from "@/components/ui/tech-button";
 import { findPostBySlugFn } from "@/features/posts/api/posts.public.api";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
@@ -41,11 +42,7 @@ export const Route = createFileRoute("/_public/post/$slug")({
   },
   pendingComponent: ArticleSkeleton,
   headers: () => {
-    return {
-      "Cache-Control": "public, max-age=0, must-revalidate",
-      "CDN-Cache-Control": "public, max-age=30, stale-while-revalidate=86400", // dev only
-      // "CDN-Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
-    };
+    return CACHE_CONTROL.public;
   },
 });
 

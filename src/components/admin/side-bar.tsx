@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Logo } from "../common/logo";
+import { Logo } from "@/components/common/logo";
 
 export function SideBar({
   isMobileSidebarOpen,

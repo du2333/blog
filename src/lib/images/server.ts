@@ -1,4 +1,5 @@
 import { getContentTypeFromKey } from "@/lib/images/utils";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 
 export async function handleImageRequest(
   env: Env,
@@ -44,7 +45,9 @@ export async function handleImageRequest(
     }
 
     const newHeaders = new Headers(response.headers);
-    newHeaders.set("Cache-Control", "public, max-age=31536000, immutable");
+    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
     newHeaders.set("Vary", "Accept");
 
     return new Response(response.body, {
@@ -96,7 +99,9 @@ async function getOriginalImage(key: string, env: Env) {
   object.writeHttpMetadata(headers);
   headers.set("Content-Type", contentType);
   headers.set("ETag", object.httpEtag);
-  headers.set("Cache-Control", "public, max-age=31536000, immutable");
+  Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
+    headers.set(k, v)
+  );
 
   return new Response(object.body as ReadableStream, {
     headers,

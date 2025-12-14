@@ -4,8 +4,40 @@ import { createDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 
 export const app = new Hono<{ Bindings: Env }>();
+
+app.use("*", async (c, next) => {
+  await next();
+
+  const status = c.res.status;
+
+  if (status !== 404 && status < 500) {
+    return;
+  }
+
+  const contentType = c.res.headers.get("Content-Type") || "";
+  if (!contentType.includes("text/html")) return;
+
+  const newHeaders = new Headers(c.res.headers);
+
+  if (status === 404) {
+    Object.entries(CACHE_CONTROL.notFound).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
+  } else if (status === 500) {
+    Object.entries(CACHE_CONTROL.serverError).forEach(([k, v]) =>
+      newHeaders.set(k, v)
+    );
+  }
+
+  c.res = new Response(c.res.body, {
+    status: c.res.status,
+    statusText: c.res.statusText,
+    headers: newHeaders,
+  });
+});
 
 app.get("/images/:key", async (c) => {
   const key = c.req.param("key");
