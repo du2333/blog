@@ -9,9 +9,6 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_public")({
-  loader: async ({ context }) => {
-    return { user: context.session?.user };
-  },
   component: PublicLayout,
 });
 
@@ -25,7 +22,7 @@ function PublicLayout() {
     { label: "Database", to: "/database", id: "database", color: "zzz-lime" },
   ];
 
-  const { user } = Route.useLoaderData();
+  const { data: session } = authClient.useSession();
   const router = useRouter();
   const logout = async () => {
     const { error } = await authClient.signOut();
@@ -65,14 +62,14 @@ function PublicLayout() {
       <Navbar
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
-        user={user}
+        user={session?.user}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         navOptions={navOptions}
       />
       <MobileMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        user={user}
+        user={session?.user}
         logout={logout}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         navOptions={navOptions}
@@ -85,7 +82,7 @@ function PublicLayout() {
       <UserProfileModal
         isOpen={isProfileModalOpen}
         onClose={() => setIsProfileModalOpen(false)}
-        user={user}
+        user={session?.user}
         logout={logout}
       />
       <main className="flex flex-col min-h-screen container mx-auto px-4 py-8 md:py-12">
