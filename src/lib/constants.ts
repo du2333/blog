@@ -1,4 +1,3 @@
-export const ITEMS_PER_PAGE = 6;
 export const ADMIN_ITEMS_PER_PAGE = 12;
 
 export const CATEGORY_COLORS = {

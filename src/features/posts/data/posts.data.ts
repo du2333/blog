@@ -1,6 +1,5 @@
 import {
-  buildPostWhereClause,
-  uniqueOrThrow,
+  buildPostWhereClause
 } from "@/features/posts/data/helper";
 import { type DB } from "@/lib/db";
 import {
@@ -129,11 +128,7 @@ export async function getPostsCursor(
 }
 
 export async function findPostById(db: DB, id: number) {
-  const results = await db
-    .select()
-    .from(PostsTable)
-    .where(eq(PostsTable.id, id));
-  return uniqueOrThrow(results);
+  return await db.query.PostsTable.findFirst({ where: eq(PostsTable.id, id) });
 }
 
 export async function findPostBySlug(
@@ -144,11 +139,9 @@ export async function findPostBySlug(
   const { publicOnly = false } = options;
 
   const whereClause = buildPostWhereClause({ publicOnly });
-  const results = await db
-    .select()
-    .from(PostsTable)
-    .where(and(eq(PostsTable.slug, slug), whereClause));
-  return uniqueOrThrow(results);
+  return await db.query.PostsTable.findFirst({
+    where: and(eq(PostsTable.slug, slug), whereClause),
+  });
 }
 
 export async function updatePost(

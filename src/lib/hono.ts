@@ -1,5 +1,5 @@
 import { createAuth } from "@/lib/auth/auth.server";
-import { cachedAsset } from "@/lib/cache";
+import { cachedAsset } from "@/lib/cache/cache.asset";
 import { createDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
@@ -15,7 +15,7 @@ app.get("/images/:key", async (c) => {
   }
 
   try {
-    return await cachedAsset(c.executionCtx, c.req.raw, () =>
+    return await cachedAsset(c.executionCtx, key, () =>
       handleImageRequest(c.env, key, c.req.raw)
     );
   } catch (error) {

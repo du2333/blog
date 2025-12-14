@@ -10,11 +10,11 @@ import {
   getPostsByMediaKey,
   isMediaInUse,
 } from "@/features/posts/data/post-media.data";
-import { deleteCachedAsset } from "@/lib/cache";
+import { createAdminFn } from "@/lib/auth/procedure";
+import { deleteCachedAsset } from "@/lib/cache/cache.asset";
 import { deleteImage, uploadImage } from "@/lib/images/r2";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
-import { createAdminFn } from "@/lib/auth/procedure";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -29,24 +29,18 @@ const ACCEPTED_IMAGE_TYPES = [
 export const uploadImageFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(z.instanceof(FormData))
-  .handler(async ({ data, context }) => {
-    const file = data.get("image");
-
-    if (!(file instanceof File)) {
-      throw new Error("Image file is required");
-    }
-
-    // 验证文件大小
-    if (file.size > MAX_FILE_SIZE) {
-      throw new Error("File size must be less than 10MB");
-    }
-
-    // 验证文件类型
-    if (!ACCEPTED_IMAGE_TYPES.includes(file.type)) {
-      throw new Error("File type must be an image");
-    }
-
+  .inputValidator(
+    z.instanceof(FormData).transform((formData) => {
+      const file = formData.get("image");
+      if (!(file instanceof File)) throw new Error("Image file is required");
+      if (file.size > MAX_FILE_SIZE)
+        throw new Error("File size must be less than 10MB");
+      if (!ACCEPTED_IMAGE_TYPES.includes(file.type))
+        throw new Error("File type must be an image");
+      return file;
+    })
+  )
+  .handler(async ({ data: file, context }) => {
     const uploadedResult = await uploadImage(context.env, file);
 
     try {
@@ -82,7 +76,7 @@ export const deleteImageFn = createAdminFn()
       deleteImage(context.env, key).catch((err) =>
         console.error("Failed to delete image from R2:", err)
       ),
-      deleteCachedAsset(`/images/${key}`),
+      deleteCachedAsset(key),
     ]);
     context.executionCtx.waitUntil(backgroundTasks);
   });

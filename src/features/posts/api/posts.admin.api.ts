@@ -10,6 +10,7 @@ import {
   updatePost,
 } from "@/features/posts/data/posts.data";
 import { createAdminFn } from "@/lib/auth/procedure";
+import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { PostCategory, PostStatus, PostUpdateSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
@@ -19,7 +20,6 @@ import { z } from "zod";
 export const createEmptyPostFn = createAdminFn({
   method: "POST",
 }).handler(async ({ context }) => {
-  // Generate unique slug for untitled post
   const { slug } = await generateSlugFn({
     data: {
       title: "",
@@ -34,6 +34,8 @@ export const createEmptyPostFn = createAdminFn({
     readTimeInMinutes: 1,
     contentJson: null,
   });
+
+  context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
 
   return { id: post.id };
 });
@@ -104,6 +106,13 @@ export const updatePostFn = createAdminFn({
         syncPostMedia(context.db, post.id, data.contentJson)
       );
     }
+
+    const tasks = [];
+    tasks.push(deleteCachedData(context, ["post", post.slug]));
+    tasks.push(bumpCacheVersion(context, "posts:list"));
+
+    context.executionCtx.waitUntil(Promise.all(tasks));
+
     return post;
   });
 
@@ -112,8 +121,16 @@ export const deletePostFn = createAdminFn({
 })
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
+    const post = await findPostById(context.db, data.id);
+    if (!post) return;
+
     await deletePost(context.db, data.id);
-    context.executionCtx.waitUntil(deleteSearchDoc(context.env, data.id));
+
+    const tasks = [];
+    tasks.push(deleteCachedData(context, ["post", post.slug]));
+    tasks.push(bumpCacheVersion(context, "posts:list"));
+    tasks.push(deleteSearchDoc(context.env, data.id));
+    context.executionCtx.waitUntil(Promise.all(tasks));
   });
 
 export const generateSlugFn = createAdminFn()

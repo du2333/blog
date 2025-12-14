@@ -40,6 +40,13 @@ export const Route = createFileRoute("/_public/post/$slug")({
     }
   },
   pendingComponent: ArticleSkeleton,
+  headers: () => {
+    return {
+      "Cache-Control": "public, max-age=0, must-revalidate",
+      "CDN-Cache-Control": "public, max-age=30, stale-while-revalidate=86400", // dev only
+      // "CDN-Cache-Control": "public, max-age=300, stale-while-revalidate=86400",
+    };
+  },
 });
 
 function RouteComponent() {

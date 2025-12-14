@@ -2,10 +2,32 @@ import {
   findPostBySlug,
   getPostsCursor,
 } from "@/features/posts/data/posts.data";
-import { PostCategory } from "@/lib/db/schema";
+import { cachedData, getCacheVersion } from "@/lib/cache/cache.data";
+import { PostCategory, PostSelectSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+
+const CachedPostSchema = PostSelectSchema.extend({
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  publishedAt: z.coerce.date().nullable(),
+});
+
+const PostItemSchema = CachedPostSchema.omit({ contentJson: true });
+const PostListResponseSchema = z.object({
+  items: z.array(PostItemSchema),
+  nextCursor: z.number().nullable(),
+});
+const PostWithTocSchema = CachedPostSchema.extend({
+  toc: z.array(
+    z.object({
+      id: z.string(),
+      text: z.string(),
+      level: z.number(),
+    })
+  ),
+}).nullable();
 
 export const getPostsCursorFn = createServerFn()
   .inputValidator(
@@ -15,24 +37,66 @@ export const getPostsCursorFn = createServerFn()
       category: z.custom<PostCategory>().optional(),
     })
   )
-  .handler(async ({ data, context }) => {
-    return await getPostsCursor(context.db, {
-      cursor: data.cursor,
-      limit: data.limit,
-      category: data.category,
-      publicOnly: true,
-    });
+  .handler(async ({ data, context: { env, executionCtx, db } }) => {
+    const fetcher = async () =>
+      await getPostsCursor(db, {
+        cursor: data.cursor,
+        limit: data.limit,
+        category: data.category,
+        publicOnly: true,
+      });
+
+    const version = await getCacheVersion({ env }, "posts:list");
+    const cacheKey = [
+      "posts",
+      "list",
+      version,
+      data.category ?? "all",
+      data.limit ?? 10,
+      data.cursor ?? 0,
+    ];
+
+    return await cachedData(
+      {
+        env,
+        waitUntil: executionCtx.waitUntil,
+      },
+      cacheKey,
+      PostListResponseSchema,
+      fetcher,
+      {
+        ttlL1: 60,
+        ttlL2: 60 * 60, // 1 hour
+      }
+    );
   });
 
 export const findPostBySlugFn = createServerFn()
   .inputValidator(z.object({ slug: z.string() }))
-  .handler(async ({ data, context }) => {
-    const post = await findPostBySlug(context.db, data.slug, {
-      publicOnly: true,
-    });
-    if (!post) return null;
-    return {
-      ...post,
-      toc: generateTableOfContents(post.contentJson),
+  .handler(async ({ data, context: { db, executionCtx, env } }) => {
+    const fetcher = async () => {
+      const post = await findPostBySlug(db, data.slug, {
+        publicOnly: true,
+      });
+      if (!post) return null;
+      return {
+        ...post,
+        toc: generateTableOfContents(post.contentJson),
+      };
     };
+
+    const cacheKey = ["post", data.slug];
+    return await cachedData(
+      {
+        env,
+        waitUntil: executionCtx.waitUntil,
+      },
+      cacheKey,
+      PostWithTocSchema,
+      fetcher,
+      {
+        ttlL1: 60,
+        ttlL2: 60 * 60 * 24 * 7, // 7 days
+      }
+    );
   });

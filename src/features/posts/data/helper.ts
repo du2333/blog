@@ -1,14 +1,6 @@
 import { PostCategory, PostsTable, PostStatus } from "@/lib/db/schema";
 import { and, eq, lte } from "drizzle-orm";
 
-export function uniqueOrThrow<T>(array: T[]) {
-  if (array.length === 0) return null;
-  if (array.length !== 1)
-    throw new Error(`Expected 1 item, got ${array.length}`);
-
-  return array[0];
-}
-
 /**
  * Check if a post is publicly viewable
  * - Must be published
