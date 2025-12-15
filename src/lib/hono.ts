@@ -10,6 +10,15 @@ export const app = new Hono<{ Bindings: Env }>();
 app.use("*", async (c, next) => {
   await next();
 
+  const cacheStatus = c.res.headers.get("cf-cache-status");
+  c.executionCtx.waitUntil(
+    (async () => {
+      if (cacheStatus) {
+        console.log("[CDN] Cache status:", cacheStatus);
+      }
+    })()
+  );
+
   // 只处理 GET 请求
   if (c.req.method !== "GET") return;
 
