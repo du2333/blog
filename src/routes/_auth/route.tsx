@@ -1,4 +1,8 @@
 import { Logo } from "@/components/common/logo";
+import {
+  getSessionFn,
+  getIsEmailVerficationRequiredFn,
+} from "@/features/auth/auth.api";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import {
   createFileRoute,
@@ -9,11 +13,15 @@ import {
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: ({ context: { session }, location }) => {
-    // Redirect logged-in users away from auth pages (except verify-email)
+  beforeLoad: async ({ location }) => {
+    const session = await getSessionFn();
+    const isEmailVerficationRequired = await getIsEmailVerficationRequiredFn();
+
     if (session && !location.pathname.includes("verify-email")) {
       throw redirect({ to: "/" });
     }
+
+    return { session, isEmailVerficationRequired };
   },
   component: RouteComponent,
   headers: () => {

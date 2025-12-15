@@ -32,7 +32,7 @@ const registerSchema = z
 type RegisterSchema = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
-  const { isEmailVerficationRequired } = useRouteContext({ from: "__root__" });
+  const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = React.useState(false);
 

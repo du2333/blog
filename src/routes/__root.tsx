@@ -1,7 +1,8 @@
 import Toaster from "@/components/ui/toaster";
-import { getRootContextFn } from "@/features/auth/auth.api";
 import { useAsyncFonts } from "@/hooks/use-async-fonts";
+import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
 import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
+import appCss from "@/styles.css?url";
 import { TanStackDevtools } from "@tanstack/react-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import {
@@ -10,8 +11,6 @@ import {
   createRootRouteWithContext,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
-import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
-import appCss from "@/styles.css?url";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -45,10 +44,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
     ],
   }),
   shellComponent: RootDocument,
-  beforeLoad: async () => {
-    const context = await getRootContextFn();
-    return context;
-  },
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {

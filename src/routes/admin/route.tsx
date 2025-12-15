@@ -1,17 +1,22 @@
 import { SideBar } from "@/components/admin/side-bar";
+import { getSessionFn } from "@/features/auth/auth.api";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { Menu, Terminal } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/admin")({
-  beforeLoad: async ({ context: { session } }) => {
+  beforeLoad: async () => {
+    const session = await getSessionFn();
+
     if (!session) {
       throw redirect({ to: "/login" });
     }
     if (session.user?.role !== "admin") {
       throw redirect({ to: "/" });
     }
+
+    return { session };
   },
   component: AdminLayout,
   headers: () => {
