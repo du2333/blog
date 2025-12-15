@@ -9,7 +9,12 @@ const serverEnvSchema = z.object({
   GITHUB_CLIENT_SECRET: z.string(),
   CLOUDFLARE_ZONE_ID: z.string(),
   CLOUDFLARE_API_TOKEN: z.string(),
-  DOMAIN: z.url(),
+  DOMAIN: z
+    .string()
+    .regex(
+      /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
+      "Must be a valid domain (e.g., www.example.com)"
+    ),
 });
 
 export const serverEnv = (env: Env) => {
