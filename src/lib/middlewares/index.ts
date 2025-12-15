@@ -1,4 +1,6 @@
+import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import { createMiddleware, json } from "@tanstack/react-start";
+import { setResponseHeader } from "@tanstack/react-start/server";
 
 export const authMiddleware = createMiddleware().server(
   async ({ next, context, request }) => {
@@ -33,3 +35,13 @@ export const adminMiddleware = createMiddleware()
       },
     });
   });
+
+export const cachedMiddleware = createMiddleware().server(async ({ next }) => {
+  const result = await next();
+
+  Object.entries(CACHE_CONTROL.public).forEach(([k, v]) => {
+    setResponseHeader(k, v);
+  });
+
+  return result;
+});

@@ -5,6 +5,7 @@ import {
 import { cachedData, getCacheVersion } from "@/lib/cache/cache.data";
 import { PostCategory, PostSelectSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
+import { cachedMiddleware } from "@/lib/middlewares";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
@@ -30,6 +31,7 @@ const PostWithTocSchema = CachedPostSchema.extend({
 }).nullable();
 
 export const getPostsCursorFn = createServerFn()
+  .middleware([cachedMiddleware])
   .inputValidator(
     z.object({
       cursor: z.number().optional(),
@@ -71,8 +73,11 @@ export const getPostsCursorFn = createServerFn()
   });
 
 export const findPostBySlugFn = createServerFn()
+  .middleware([cachedMiddleware])
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context: { db, executionCtx, env } }) => {
+    // artificial delay to test cache
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     const fetcher = async () => {
       const post = await findPostBySlug(db, data.slug, {
         publicOnly: true,
