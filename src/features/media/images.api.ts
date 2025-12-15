@@ -10,10 +10,9 @@ import {
   getPostsByMediaKey,
   isMediaInUse,
 } from "@/features/posts/data/post-media.data";
-import { adminMiddleware } from "@/lib/middlewares";
+import { createAdminFn } from "@/lib/middlewares";
 import { deleteImage, uploadImage } from "@/lib/images/r2";
 import { z } from "zod";
-import { createServerFn } from "@tanstack/react-start";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
@@ -25,10 +24,9 @@ const ACCEPTED_IMAGE_TYPES = [
   "image/gif",
 ];
 
-export const uploadImageFn = createServerFn({
+export const uploadImageFn = createAdminFn({
   method: "POST",
 })
-  .middleware([adminMiddleware])
   .inputValidator(
     z.instanceof(FormData).transform((formData) => {
       const file = formData.get("image");
@@ -61,10 +59,9 @@ export const uploadImageFn = createServerFn({
     }
   });
 
-export const deleteImageFn = createServerFn({
+export const deleteImageFn = createAdminFn({
   method: "POST",
 })
-  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -82,8 +79,7 @@ export const deleteImageFn = createServerFn({
     );
   });
 
-export const getMediaFn = createServerFn()
-  .middleware([adminMiddleware])
+export const getMediaFn = createAdminFn()
   .inputValidator(
     z.object({
       cursor: z.number().optional(),
@@ -95,8 +91,7 @@ export const getMediaFn = createServerFn()
     return await getMediaList(context.db, data);
   });
 
-export const checkMediaInUseFn = createServerFn()
-  .middleware([adminMiddleware])
+export const checkMediaInUseFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -106,8 +101,7 @@ export const checkMediaInUseFn = createServerFn()
     return await isMediaInUse(context.db, data.key);
   });
 
-export const getLinkedPostsFn = createServerFn()
-  .middleware([adminMiddleware])
+export const getLinkedPostsFn = createAdminFn()
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -117,8 +111,7 @@ export const getLinkedPostsFn = createServerFn()
     return await getPostsByMediaKey(context.db, data.key);
   });
 
-export const getLinkedMediaKeysFn = createServerFn()
-  .middleware([adminMiddleware])
+export const getLinkedMediaKeysFn = createAdminFn()
   .inputValidator(
     z.object({
       keys: z.array(z.string()),
@@ -128,16 +121,15 @@ export const getLinkedMediaKeysFn = createServerFn()
     return await getLinkedMediaKeys(context.db, data.keys);
   });
 
-export const getTotalMediaSizeFn = createServerFn()
-  .middleware([adminMiddleware])
-  .handler(async ({ context }) => {
+export const getTotalMediaSizeFn = createAdminFn().handler(
+  async ({ context }) => {
     return await getTotalMediaSize(context.db);
-  });
+  }
+);
 
-export const updateMediaNameFn = createServerFn({
+export const updateMediaNameFn = createAdminFn({
   method: "POST",
 })
-  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),

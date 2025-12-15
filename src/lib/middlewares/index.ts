@@ -1,5 +1,5 @@
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
-import { createMiddleware, json } from "@tanstack/react-start";
+import { createMiddleware, createServerFn, json } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 
 export const authMiddleware = createMiddleware().server(
@@ -45,3 +45,7 @@ export const cachedMiddleware = createMiddleware().server(async ({ next }) => {
 
   return result;
 });
+
+export const createAuthedFn = createServerFn().middleware([authMiddleware]);
+export const createAdminFn = createServerFn().middleware([adminMiddleware]);
+export const createCachedFn = createServerFn().middleware([cachedMiddleware]);

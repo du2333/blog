@@ -1,7 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { userHasPassword } from "@/features/auth/auth.data";
-import { authMiddleware } from "@/lib/middlewares";
+import { createAuthedFn } from "@/lib/middlewares";
 
 export const getRootContextFn = createServerFn().handler(
   async ({ context }) => {
@@ -18,8 +18,8 @@ export const getRootContextFn = createServerFn().handler(
   }
 );
 
-export const userHasPasswordFn = createServerFn()
-  .middleware([authMiddleware])
-  .handler(async ({ context }) => {
+export const userHasPasswordFn = createAuthedFn().handler(
+  async ({ context }) => {
     return await userHasPassword(context.db, context.session.user.id);
-  });
+  }
+);

@@ -13,38 +13,34 @@ import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { PostCategory, PostStatus, PostUpdateSchema } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
-import { adminMiddleware } from "@/lib/middlewares";
+import { createAdminFn } from "@/lib/middlewares";
 import { deleteSearchDoc } from "@/lib/search/ops";
-import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-export const createEmptyPostFn = createServerFn({
+export const createEmptyPostFn = createAdminFn({
   method: "POST",
-})
-  .middleware([adminMiddleware])
-  .handler(async ({ context }) => {
-    const { slug } = await generateSlugFn({
-      data: {
-        title: "",
-      },
-    });
-
-    const post = await insertPost(context.db, {
+}).handler(async ({ context }) => {
+  const { slug } = await generateSlugFn({
+    data: {
       title: "",
-      slug,
-      summary: "",
-      status: "draft",
-      readTimeInMinutes: 1,
-      contentJson: null,
-    });
-
-    context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
-
-    return { id: post.id };
+    },
   });
 
-export const getPostsFn = createServerFn()
-  .middleware([adminMiddleware])
+  const post = await insertPost(context.db, {
+    title: "",
+    slug,
+    summary: "",
+    status: "draft",
+    readTimeInMinutes: 1,
+    contentJson: null,
+  });
+
+  context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
+
+  return { id: post.id };
+});
+
+export const getPostsFn = createAdminFn()
   .inputValidator(
     z.object({
       offset: z.number().optional(),
@@ -64,8 +60,7 @@ export const getPostsFn = createServerFn()
     });
   });
 
-export const getPostsCountFn = createServerFn()
-  .middleware([adminMiddleware])
+export const getPostsCountFn = createAdminFn()
   .inputValidator(
     z.object({
       category: z.custom<PostCategory>().optional(),
@@ -81,8 +76,7 @@ export const getPostsCountFn = createServerFn()
     });
   });
 
-export const findPostBySlugFn = createServerFn()
-  .middleware([adminMiddleware])
+export const findPostBySlugFn = createAdminFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context }) => {
     const post = await findPostBySlug(context.db, data.slug, {
@@ -95,17 +89,15 @@ export const findPostBySlugFn = createServerFn()
     };
   });
 
-export const findPostByIdFn = createServerFn()
-  .middleware([adminMiddleware])
+export const findPostByIdFn = createAdminFn()
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     return await findPostById(context.db, data.id);
   });
 
-export const updatePostFn = createServerFn({
+export const updatePostFn = createAdminFn({
   method: "POST",
 })
-  .middleware([adminMiddleware])
   .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
   .handler(async ({ data: { id, data }, context }) => {
     const post = await updatePost(context.db, id, data);
@@ -118,10 +110,9 @@ export const updatePostFn = createServerFn({
     return post;
   });
 
-export const deletePostFn = createServerFn({
+export const deletePostFn = createAdminFn({
   method: "POST",
 })
-  .middleware([adminMiddleware])
   .inputValidator(z.object({ id: z.number() }))
   .handler(async ({ data, context }) => {
     const post = await findPostById(context.db, data.id);
@@ -136,8 +127,7 @@ export const deletePostFn = createServerFn({
     context.executionCtx.waitUntil(Promise.all(tasks));
   });
 
-export const generateSlugFn = createServerFn()
-  .middleware([adminMiddleware])
+export const generateSlugFn = createAdminFn()
   .inputValidator(
     z.object({
       title: z.string().optional(),
@@ -172,8 +162,7 @@ export const generateSlugFn = createServerFn()
     return { slug: fallbackSlug };
   });
 
-export const startPostProcessWorkflowFn = createServerFn()
-  .middleware([adminMiddleware])
+export const startPostProcessWorkflowFn = createAdminFn()
   .inputValidator(z.object({ postId: z.number(), slug: z.string() }))
   .handler(async ({ data, context }) => {
     // 生成摘要， 更新搜索索引
