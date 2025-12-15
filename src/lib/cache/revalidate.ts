@@ -7,7 +7,7 @@ import { serverEnv } from "@/lib/env/server.env";
  * @returns Promise that resolves when purge is complete
  */
 export async function purgeCDNCache(env: Env, paths: string[]) {
-  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_API_TOKEN, DOMAIN } = serverEnv(env);
+  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN } = serverEnv(env);
 
   // Build full URLs with proper encoding
   const urls = paths.map((path) => {
@@ -23,7 +23,7 @@ export async function purgeCDNCache(env: Env, paths: string[]) {
     {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${CLOUDFLARE_API_TOKEN}`,
+        Authorization: `Bearer ${CLOUDFLARE_PURGE_API_TOKEN}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ files: urls }),

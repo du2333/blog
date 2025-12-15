@@ -8,7 +8,7 @@ const serverEnvSchema = z.object({
   GITHUB_CLIENT_ID: z.string(),
   GITHUB_CLIENT_SECRET: z.string(),
   CLOUDFLARE_ZONE_ID: z.string(),
-  CLOUDFLARE_API_TOKEN: z.string(),
+  CLOUDFLARE_PURGE_API_TOKEN: z.string(),
   DOMAIN: z
     .string()
     .regex(
