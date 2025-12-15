@@ -19,7 +19,7 @@ export const userHasPasswordFn = createAuthedFn().handler(
   }
 );
 
-export const getIsEmailVerficationRequiredFn = createAuthedFn().handler(
+export const getIsEmailVerficationRequiredFn = createServerFn().handler(
   async ({ context }) => {
     const { REQUIRE_EMAIL_VERIFICATION } = serverEnv(context.env);
     return REQUIRE_EMAIL_VERIFICATION;
