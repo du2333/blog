@@ -140,7 +140,7 @@ export function FeaturedTransmission({
                 </div>
               </div>
 
-              <h4 className="text-xl font-bold font-sans text-white uppercase leading-none mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2">
+              <h4 className="text-xl font-bold font-sans text-white uppercase leading-tight mb-2 group-hover:text-zzz-cyan transition-colors line-clamp-2">
                 {post.title}
               </h4>
 
