@@ -73,8 +73,6 @@ export const getPostsCursorFn = createCachedFn()
 export const findPostBySlugFn = createCachedFn()
   .inputValidator(z.object({ slug: z.string() }))
   .handler(async ({ data, context: { db, executionCtx, env } }) => {
-    // artificial delay to test cache
-    await new Promise((resolve) => setTimeout(resolve, 2000));
     const fetcher = async () => {
       const post = await findPostBySlug(db, data.slug, {
         publicOnly: true,

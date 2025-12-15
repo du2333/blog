@@ -7,13 +7,14 @@ import {
   Loader2,
   RefreshCw,
   Settings,
-  X
+  X,
 } from "lucide-react";
 import type { SaveStatus } from "../types";
+import { PostStatus } from "@/lib/db/schema";
 
 interface EditorToolbarProps {
   postId: number;
-  status: string;
+  status: PostStatus;
   saveStatus: SaveStatus;
   lastSaved: Date | null;
   error: string | null;
@@ -36,8 +37,6 @@ export function EditorToolbar({
   handleProcessData,
   processState,
 }: EditorToolbarProps) {
-  
-
   return (
     <div className="h-14 md:h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-40 shrink-0 transition-all">
       {/* Left Section */}
@@ -74,7 +73,7 @@ export function EditorToolbar({
             variant={processState === "SUCCESS" ? "primary" : "secondary"}
             size="sm"
             onClick={handleProcessData}
-            disabled={processState !== "IDLE"}
+            disabled={status !== "published" || processState !== "IDLE"}
             icon={
               processState === "PROCESSING" ? (
                 <Loader2 size={14} className="animate-spin" />

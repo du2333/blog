@@ -47,7 +47,9 @@ export function usePostActions({
     setProcessState("PROCESSING");
 
     setTimeout(() => {
-      processDataMutation.mutate({ data: { postId, slug: post.slug } });
+      processDataMutation.mutate({
+        data: { id: postId, slug: post.slug, status: post.status },
+      });
 
       // Feedback: Notify user task is running
       toast("WORKFLOW STARTED", {

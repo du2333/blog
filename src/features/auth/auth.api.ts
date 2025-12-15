@@ -2,6 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { userHasPassword } from "@/features/auth/auth.data";
 import { createAuthedFn } from "@/lib/middlewares";
+import { serverEnv } from "@/lib/env/server.env";
 
 export const getSessionFn = createServerFn().handler(async ({ context }) => {
   const headers = getRequestHeaders();
@@ -20,6 +21,7 @@ export const userHasPasswordFn = createAuthedFn().handler(
 
 export const getIsEmailVerficationRequiredFn = createAuthedFn().handler(
   async ({ context }) => {
-    return context.env.REQUIRE_EMAIL_VERIFICATION === "true";
+    const { REQUIRE_EMAIL_VERIFICATION } = serverEnv(context.env);
+    return REQUIRE_EMAIL_VERIFICATION;
   }
 );

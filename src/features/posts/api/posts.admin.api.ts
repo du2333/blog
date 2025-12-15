@@ -10,7 +10,13 @@ import {
   updatePost,
 } from "@/features/posts/data/posts.data";
 import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
-import { PostCategory, PostStatus, PostUpdateSchema } from "@/lib/db/schema";
+import { purgePostCDNCache } from "@/lib/cache/revalidate";
+import {
+  POST_STATUSES,
+  PostCategory,
+  PostStatus,
+  PostUpdateSchema,
+} from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { slugify } from "@/lib/editor/utils";
 import { createAdminFn } from "@/lib/middlewares";
@@ -35,7 +41,7 @@ export const createEmptyPostFn = createAdminFn({
     contentJson: null,
   });
 
-  context.executionCtx.waitUntil(bumpCacheVersion(context, "posts:list"));
+  // No cache/index operations for drafts
 
   return { id: post.id };
 });
@@ -120,11 +126,16 @@ export const deletePostFn = createAdminFn({
 
     await deletePost(context.db, data.id);
 
-    const tasks = [];
-    tasks.push(deleteCachedData(context, ["post", post.slug]));
-    tasks.push(bumpCacheVersion(context, "posts:list"));
-    tasks.push(deleteSearchDoc(context.env, data.id));
-    context.executionCtx.waitUntil(Promise.all(tasks));
+    // Only clear cache/index for published posts
+    if (post.status === "published") {
+      const tasks = [];
+      tasks.push(deleteCachedData(context, ["post", post.slug]));
+      tasks.push(bumpCacheVersion(context, "posts:list"));
+      tasks.push(deleteSearchDoc(context.env, data.id));
+      tasks.push(purgePostCDNCache(context.env, post.slug));
+
+      context.executionCtx.waitUntil(Promise.all(tasks));
+    }
   });
 
 export const generateSlugFn = createAdminFn()
@@ -163,18 +174,27 @@ export const generateSlugFn = createAdminFn()
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()
-  .inputValidator(z.object({ postId: z.number(), slug: z.string() }))
-  .handler(async ({ data, context }) => {
+  .inputValidator(
+    z.object({
+      id: z.number(),
+      slug: z.string(),
+      status: z.enum(POST_STATUSES),
+    })
+  )
+  .handler(async ({ data: { id, slug, status }, context }) => {
+    if (status !== "published") return;
+
     // 生成摘要， 更新搜索索引
     await context.env.POST_PROCESS_WORKFLOW.create({
       params: {
-        postId: data.postId,
+        postId: id,
       },
     });
 
-    // 删除缓存， 更新缓存版本
+    // 删除 KV 缓存、更新缓存版本、清除 CDN 缓存
     const tasks = [];
-    tasks.push(deleteCachedData(context, ["post", data.slug]));
+    tasks.push(deleteCachedData(context, ["post", slug]));
+    tasks.push(purgePostCDNCache(context.env, slug));
     tasks.push(bumpCacheVersion(context, "posts:list"));
 
     context.executionCtx.waitUntil(Promise.all(tasks));
