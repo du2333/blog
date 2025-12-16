@@ -132,14 +132,14 @@ export function PostManager({
         onPageChange={onPageChange}
       />
 
-      {/* Delete Confirmation Modal */}
+      {/* --- Confirmation Modal --- */}
       <ConfirmationModal
         isOpen={!!postToDelete}
         onClose={() => !deleteMutation.isPending && setPostToDelete(null)}
         onConfirm={confirmDelete}
-        title="CONFIRM DELETION"
-        message={`Are you sure you want to delete the entry "${postToDelete?.title}"?`}
-        confirmLabel="DELETE ENTRY"
+        title="PURGE DATA LOG"
+        message={`Are you sure you want to permanently delete the entry "${postToDelete?.title}"? This action cannot be undone.`}
+        confirmLabel="DELETE FOREVER"
         isDanger={true}
         isLoading={deleteMutation.isPending}
       />

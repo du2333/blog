@@ -10,7 +10,7 @@ import {
 import {
   queryOptions,
   useQueryClient,
-  useSuspenseQuery,
+  useQuery,
 } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ErrorPage } from "@/components/common/error-page";
@@ -24,21 +24,13 @@ const postQuery = (id: number) =>
 export const Route = createFileRoute("/admin/posts/edit/$id")({
   ssr: false,
   component: EditPost,
-  loader: async ({ context, params }) => {
-    const postId = Number(params.id);
-    if (!Number.isFinite(postId)) {
-      throw new Error("INVALID_POST_ID");
-    }
-    await context.queryClient.ensureQueryData(postQuery(postId));
-  },
-  pendingComponent: LoadingFallback,
 });
 
 function EditPost() {
   const { id } = Route.useParams();
   const postId = Number(id);
   const queryClient = useQueryClient();
-  const { data: post, isPending, error } = useSuspenseQuery(postQuery(postId));
+  const { data: post, isPending, error } = useQuery(postQuery(postId));
 
   if (error) {
     return <ErrorPage error={error} />;

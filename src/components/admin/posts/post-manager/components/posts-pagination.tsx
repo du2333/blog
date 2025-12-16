@@ -63,7 +63,7 @@ export function PostsPagination({
   return (
     <div className="flex items-center justify-between border-t border-zzz-gray pt-6 mt-6">
       <div className="text-xs font-mono text-gray-500">
-        SHOWING {startItem} - {endItem} OF {totalItems} RECORDS
+        SECTOR {startItem} - {endItem} OF {totalItems}
       </div>
 
       <div className="flex gap-2">
@@ -71,7 +71,7 @@ export function PostsPagination({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
+          className="h-8 w-8 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors bg-black"
         >
           <ChevronLeft size={16} />
         </button>
@@ -80,13 +80,13 @@ export function PostsPagination({
         {pageNumbers.map((pageNumber, index) => (
           <React.Fragment key={index}>
             {pageNumber === "..." ? (
-              <div className="h-9 w-9 flex items-center justify-center text-gray-600 font-mono text-xs">
+              <div className="h-8 w-8 flex items-center justify-center text-gray-600 font-mono text-xs">
                 <MoreHorizontal size={14} />
               </div>
             ) : (
               <button
                 onClick={() => onPageChange(pageNumber)}
-                className={`h-9 w-9 flex items-center justify-center font-bold font-mono text-xs border transition-colors ${
+                className={`h-8 w-8 flex items-center justify-center font-bold font-mono text-xs border transition-colors ${
                   currentPage === pageNumber
                     ? "bg-zzz-lime text-black border-zzz-lime"
                     : "bg-black text-gray-400 border-zzz-gray hover:text-white hover:border-white"
@@ -102,7 +102,7 @@ export function PostsPagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
+          className="h-8 w-8 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors bg-black"
         >
           <ChevronRight size={16} />
         </button>
