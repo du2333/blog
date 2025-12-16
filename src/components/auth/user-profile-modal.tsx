@@ -6,6 +6,7 @@ import {
   Check,
   Fingerprint,
   Key,
+  Link,
   Loader2,
   Lock,
   LogOut,
@@ -52,6 +53,7 @@ const profileSchema = z.object({
     .string()
     .min(2, "ALIAS_TOO_SHORT (MIN 2)")
     .max(30, "ALIAS_TOO_LONG (MAX 30)"),
+  image: z.union([z.literal(""), z.url("INVALID_URL").trim()]).optional(),
 });
 
 type PasswordSchema = z.infer<typeof passwordSchema>;
@@ -82,6 +84,7 @@ export function UserProfileModal({
     resolver: standardSchemaResolver(profileSchema),
     defaultValues: {
       name: user?.name || "",
+      image: user?.image || "",
     },
   });
 
@@ -112,6 +115,7 @@ export function UserProfileModal({
   const onProfileSubmit = async (data: ProfileSchema) => {
     const { error } = await authClient.updateUser({
       name: data.name,
+      image: data.image,
     });
     if (error) {
       toast.error("UPDATE FAILED", {
@@ -249,9 +253,9 @@ export function UserProfileModal({
             </h3>
             <form
               onSubmit={handleSubmitProfile(onProfileSubmit)}
-              className="flex gap-2 items-start"
+              className="space-y-4"
             >
-              <div className="flex-1 space-y-1">
+              <div className="space-y-1">
                 <div className="relative group">
                   <UserIcon
                     className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
@@ -278,17 +282,47 @@ export function UserProfileModal({
                   </div>
                 )}
               </div>
-              <button
-                type="submit"
-                disabled={isProfileSubmitting}
-                className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
-              >
-                {isProfileSubmitting ? (
-                  <Loader2 size={16} className="animate-spin" />
-                ) : (
-                  <Check size={16} />
-                )}
-              </button>
+
+              <div className="flex gap-2 items-start">
+                <div className="flex-1 space-y-1">
+                  <div className="relative group">
+                    <Link
+                      className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+                        profileErrors.image
+                          ? "text-zzz-orange"
+                          : "text-gray-600 group-focus-within:text-zzz-lime"
+                      }`}
+                      size={14}
+                    />
+                    <input
+                      type="text"
+                      {...registerProfile("image")}
+                      placeholder="Avatar URL"
+                      className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
+                        profileErrors.image
+                          ? "border-zzz-orange"
+                          : "border-zzz-gray focus:border-zzz-lime"
+                      }`}
+                    />
+                  </div>
+                  {profileErrors.image && (
+                    <div className="text-[9px] text-zzz-orange font-mono uppercase pl-1">
+                      {profileErrors.image.message}
+                    </div>
+                  )}
+                </div>
+                <button
+                  type="submit"
+                  disabled={isProfileSubmitting}
+                  className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
+                >
+                  {isProfileSubmitting ? (
+                    <Loader2 size={16} className="animate-spin" />
+                  ) : (
+                    <Check size={16} />
+                  )}
+                </button>
+              </div>
             </form>
           </div>
 
