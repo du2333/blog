@@ -1,5 +1,7 @@
 import {
-  buildPostWhereClause
+  buildPostOrderByClause,
+  buildPostWhereClause,
+  type SortDirection,
 } from "@/features/posts/data/helper";
 import { type DB } from "@/lib/db";
 import {
@@ -25,10 +27,18 @@ export async function getPosts(
     category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
+    search?: string;
+    sortDir?: SortDirection;
   } = {}
 ) {
-  const { offset = 0, limit = DEFAULT_PAGE_SIZE, ...filters } = options;
+  const {
+    offset = 0,
+    limit = DEFAULT_PAGE_SIZE,
+    sortDir,
+    ...filters
+  } = options;
   const whereClause = buildPostWhereClause(filters);
+  const orderByClause = buildPostOrderByClause(sortDir);
 
   const posts = await db
     .select({
@@ -46,7 +56,7 @@ export async function getPosts(
     .from(PostsTable)
     .limit(Math.min(limit, 50))
     .offset(offset)
-    .orderBy(desc(PostsTable.createdAt))
+    .orderBy(orderByClause)
     .where(whereClause);
   return posts;
 }
@@ -57,6 +67,7 @@ export async function getPostsCount(
     category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
+    search?: string;
   } = {}
 ) {
   const whereClause = buildPostWhereClause(options);

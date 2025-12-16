@@ -1,11 +1,24 @@
-import { PostManager, POST_FILTERS } from "@/components/admin/posts/post-manager";
+import { PostManager } from "@/components/admin/posts/post-manager";
+import {
+  CATEGORY_FILTERS,
+  SORT_DIRECTIONS,
+  STATUS_FILTERS,
+  type CategoryFilter,
+  type SortDirection,
+  type StatusFilter,
+} from "@/components/admin/posts/post-manager/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 
 const searchSchema = z.object({
   page: z.number().int().positive().optional().default(1).catch(1),
-  filter: z.enum(POST_FILTERS).optional().default("ALL").catch("ALL"),
+  status: z.enum(STATUS_FILTERS).optional().default("ALL").catch("ALL"),
+  category: z.enum(CATEGORY_FILTERS).optional().default("ALL").catch("ALL"),
+  sortDir: z.enum(SORT_DIRECTIONS).optional().default("DESC").catch("DESC"),
+  search: z.string().optional().default("").catch(""),
 });
+
+export type PostsSearchParams = z.infer<typeof searchSchema>;
 
 export const Route = createFileRoute("/admin/posts/")({
   validateSearch: searchSchema,
@@ -14,28 +27,66 @@ export const Route = createFileRoute("/admin/posts/")({
 
 function PostManagerPage() {
   const navigate = useNavigate();
-  const { page, filter } = Route.useSearch();
+  const { page, status, category, sortDir, search } = Route.useSearch();
 
-  const handlePageChange = (newPage: number) => {
+  const updateSearch = (updates: Partial<PostsSearchParams>) => {
     navigate({
       to: "/admin/posts",
-      search: { page: newPage, filter },
+      search: (prev) => ({
+        ...prev,
+        ...updates,
+        // Reset to page 1 when filters change (except for page changes)
+        page: updates.page ?? 1,
+      }),
     });
   };
 
-  const handleFilterChange = (newFilter: (typeof POST_FILTERS)[number]) => {
+  const handlePageChange = (newPage: number) => {
+    updateSearch({ page: newPage });
+  };
+
+  const handleStatusChange = (newStatus: StatusFilter) => {
+    updateSearch({ status: newStatus });
+  };
+
+  const handleCategoryChange = (newCategory: CategoryFilter) => {
+    updateSearch({ category: newCategory });
+  };
+
+  const handleSortChange = (dir: SortDirection) => {
+    updateSearch({ sortDir: dir });
+  };
+
+  const handleSearchChange = (newSearch: string) => {
+    updateSearch({ search: newSearch });
+  };
+
+  const handleResetFilters = () => {
     navigate({
       to: "/admin/posts",
-      search: { page: 1, filter: newFilter },
+      search: {
+        page: 1,
+        status: "ALL",
+        category: "ALL",
+        sortDir: "DESC",
+        search: "",
+      },
     });
   };
 
   return (
     <PostManager
       page={page}
-      filter={filter}
+      status={status}
+      category={category}
+      sortDir={sortDir}
+      search={search}
       onPageChange={handlePageChange}
-      onFilterChange={handleFilterChange}
+      onStatusChange={handleStatusChange}
+      onCategoryChange={handleCategoryChange}
+      onSortChange={handleSortChange}
+      onSearchChange={handleSearchChange}
+      onResetFilters={handleResetFilters}
     />
   );
 }

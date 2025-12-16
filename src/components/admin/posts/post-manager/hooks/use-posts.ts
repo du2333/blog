@@ -7,31 +7,58 @@ import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { filterToStatus, type PostFilter, type PostListItem } from "../types";
+import {
+  categoryFilterToApi,
+  statusFilterToApi,
+  type CategoryFilter,
+  type PostListItem,
+  type SortDirection,
+  type StatusFilter,
+} from "../types";
 
 interface UsePostsOptions {
   page: number;
-  filter: PostFilter;
+  status: StatusFilter;
+  category: CategoryFilter;
+  sortDir: SortDirection;
+  search: string;
 }
 
-export function usePosts({ page, filter }: UsePostsOptions) {
-  const status = filterToStatus(filter);
+export function usePosts({
+  page,
+  status,
+  category,
+  sortDir,
+  search,
+}: UsePostsOptions) {
+  const apiStatus = statusFilterToApi(status);
+  const apiCategory = categoryFilterToApi(category);
 
   const postsQuery = useQuery({
-    queryKey: ["posts", page, filter],
+    queryKey: ["posts", page, status, category, sortDir, search],
     queryFn: () =>
       getPostsFn({
         data: {
           offset: (page - 1) * ADMIN_ITEMS_PER_PAGE,
           limit: ADMIN_ITEMS_PER_PAGE,
-          status,
+          status: apiStatus,
+          category: apiCategory,
+          sortDir,
+          search: search || undefined,
         },
       }),
   });
 
   const countQuery = useQuery({
-    queryKey: ["postsCount", filter],
-    queryFn: () => getPostsCountFn({ data: { status } }),
+    queryKey: ["postsCount", status, category, search],
+    queryFn: () =>
+      getPostsCountFn({
+        data: {
+          status: apiStatus,
+          category: apiCategory,
+          search: search || undefined,
+        },
+      }),
   });
 
   const totalPages = Math.ceil((countQuery.data ?? 0) / ADMIN_ITEMS_PER_PAGE);

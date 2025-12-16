@@ -23,10 +23,14 @@ export function PostRow({ post, onDelete }: PostRowProps) {
     <div className="group bg-zzz-dark border border-zzz-gray p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center hover:border-zzz-lime transition-all relative overflow-hidden">
       {/* Status Stripe */}
       <div
-        className={`absolute left-0 top-0 bottom-0 w-1 ${
-          post.status === "draft" ? "bg-zzz-orange" : "bg-zzz-lime"
+        className={`absolute left-0 top-0 bottom-0 w-1 transition-colors ${
+          post.status === "published"
+            ? "bg-zzz-lime group-hover:bg-white"
+            : post.status === "draft"
+            ? "bg-zzz-orange"
+            : "bg-red-600"
         }`}
-      />
+      ></div>
 
       {/* ID */}
       <div className="md:col-span-1 font-mono text-gray-500 text-xs flex justify-between md:block">

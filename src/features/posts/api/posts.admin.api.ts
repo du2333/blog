@@ -46,6 +46,8 @@ export const createEmptyPostFn = createAdminFn({
   return { id: post.id };
 });
 
+const SORT_DIRECTIONS = ["ASC", "DESC"] as const;
+
 export const getPostsFn = createAdminFn()
   .inputValidator(
     z.object({
@@ -54,6 +56,8 @@ export const getPostsFn = createAdminFn()
       category: z.custom<PostCategory>().optional(),
       status: z.custom<PostStatus>().optional(),
       publicOnly: z.boolean().optional(),
+      search: z.string().optional(),
+      sortDir: z.enum(SORT_DIRECTIONS).optional(),
     })
   )
   .handler(async ({ data, context }) => {
@@ -63,6 +67,8 @@ export const getPostsFn = createAdminFn()
       category: data.category,
       status: data.status,
       publicOnly: data.publicOnly,
+      search: data.search,
+      sortDir: data.sortDir,
     });
   });
 
@@ -72,6 +78,7 @@ export const getPostsCountFn = createAdminFn()
       category: z.custom<PostCategory>().optional(),
       status: z.custom<PostStatus>().optional(),
       publicOnly: z.boolean().optional(),
+      search: z.string().optional(),
     })
   )
   .handler(async ({ data, context }) => {
@@ -79,6 +86,7 @@ export const getPostsCountFn = createAdminFn()
       category: data.category,
       status: data.status,
       publicOnly: data.publicOnly,
+      search: data.search,
     });
   });
 

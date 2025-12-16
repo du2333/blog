@@ -1,5 +1,8 @@
 import { PostCategory, PostsTable, PostStatus } from "@/lib/db/schema";
-import { and, eq, lte } from "drizzle-orm";
+import { and, asc, desc, eq, like, lte, type SQL } from "drizzle-orm";
+
+export type SortField = "DATE";
+export type SortDirection = "ASC" | "DESC";
 
 /**
  * Check if a post is publicly viewable
@@ -19,6 +22,7 @@ export function buildPostWhereClause(options: {
   category?: PostCategory;
   status?: PostStatus;
   publicOnly?: boolean; // For public pages - checks publishedAt <= now
+  search?: string;
 }) {
   const whereClauses = [];
 
@@ -36,5 +40,19 @@ export function buildPostWhereClause(options: {
     whereClauses.push(lte(PostsTable.publishedAt, new Date()));
   }
 
+  // Search by title
+  if (options.search) {
+    const searchTerm = options.search.trim();
+    if (searchTerm) {
+      whereClauses.push(like(PostsTable.title, `%${searchTerm}%`));
+    }
+  }
+
   return whereClauses.length > 0 ? and(...whereClauses) : undefined;
+}
+
+export function buildPostOrderByClause(sortDir?: SortDirection): SQL {
+  const direction = sortDir ?? "DESC";
+  const orderFn = direction === "DESC" ? desc : asc;
+  return orderFn(PostsTable.createdAt);
 }
