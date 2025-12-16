@@ -42,13 +42,13 @@ function RouteComponent() {
 
         <div className="mt-6 text-center pt-6 border-t border-zzz-gray/30">
           <span className="text-[10px] font-mono text-gray-600 uppercase">
-            New Proxy?{" "}
+           新代理人?{" "}
           </span>
           <Link
             to="/register"
             className="text-[10px] font-mono font-bold text-zzz-lime hover:underline uppercase tracking-wider ml-2"
           >
-            Initialize Account
+            初始化账户
           </Link>
         </div>
       </div>

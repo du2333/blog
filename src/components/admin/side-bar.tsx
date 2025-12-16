@@ -37,13 +37,13 @@ export function SideBar({
     setShowLogoutConfirm(false);
 
     if (error) {
-      toast.error("LOGOUT FAILED", {
-        description: "Failed to terminate session.",
+      toast.error("注销失败", {
+        description: "会话终止失败。",
       });
       return;
     }
-    toast.success("SESSION TERMINATED", {
-      description: "You have been logged out.",
+    toast.success("会话已终止", {
+      description: "你已注销。",
     });
     navigate({ to: "/login" });
   };
@@ -52,19 +52,19 @@ export function SideBar({
     {
       path: "/admin" as const,
       icon: LayoutDashboard,
-      label: "Overview",
+      label: "概览",
       exact: true,
     },
     {
       path: "/admin/posts" as const,
       icon: FileText,
-      label: "Data Logs",
+      label: "数据日志",
       exact: false,
     },
     {
       path: "/admin/media" as const,
       icon: ImageIcon,
-      label: "Memory Bank",
+      label: "存储库",
       exact: false,
     },
   ];
@@ -145,7 +145,7 @@ export function SideBar({
           >
             <div className="flex items-center gap-3">
               <Globe size={16} className="group-hover:animate-pulse" />
-              Public Net
+              公共网络
             </div>
             <ArrowUpRight
               size={12}
@@ -162,7 +162,7 @@ export function SideBar({
             to="/admin/settings"
             className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors"
           >
-            <Settings size={16} /> Config
+            <Settings size={16} /> 系统配置
           </Link>
         </nav>
 
@@ -191,8 +191,8 @@ export function SideBar({
         onClose={() => setShowLogoutConfirm(false)}
         onConfirm={handleConfirmSignOut}
         title="TERMINATE SESSION"
-        message="Are you sure you want to log out? "
-        confirmLabel="TERMINATE"
+        message="你确定要注销吗？ "
+        confirmLabel="注销"
         isLoading={isLoggingOut}
       />
     </>

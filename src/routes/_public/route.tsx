@@ -22,8 +22,8 @@ function PublicLayout() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navOptions = [
-    { label: "Transmission", to: "/", id: "transmission", color: "zzz-lime" },
-    { label: "Database", to: "/database", id: "database", color: "zzz-lime" },
+    { label: "传输", to: "/", id: "transmission", color: "zzz-lime" },
+    { label: "数据库", to: "/database", id: "database", color: "zzz-lime" },
   ];
 
   const { data: session } = authClient.useSession();
@@ -32,12 +32,12 @@ function PublicLayout() {
     const { error } = await authClient.signOut();
     if (error) {
       toast.error("LOGOUT FAILED", {
-        description: "Failed to terminate session.",
+        description: "会话终止失败，请稍后重试。",
       });
       return;
     }
     toast.success("SESSION TERMINATED", {
-      description: "You have been logged out.",
+      description: "你已安全退出当前会话。",
     });
     router.invalidate();
   };

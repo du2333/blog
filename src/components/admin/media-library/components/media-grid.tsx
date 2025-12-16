@@ -200,7 +200,7 @@ export function MediaGrid({
   if (media.length === 0) {
     return (
       <div className="p-12 text-center border-2 border-dashed border-zzz-gray bg-black/50 text-gray-500 font-mono text-xs">
-        NO_ASSETS_FOUND_IN_SECTOR
+        扇区内未找到资产
       </div>
     );
   }

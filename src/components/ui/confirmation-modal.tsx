@@ -84,8 +84,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
 
           {isDanger && (
             <div className="mt-4 p-3 border border-red-500/30 bg-red-500/5 text-[10px] font-mono text-red-400">
-              WARNING: THIS ACTION CANNOT BE UNDONE. DATA WILL BE PURGED FROM
-              THE HDD.
+              警告：此操作无法撤销。数据将从 HDD 中清除。
             </div>
           )}
         </div>
@@ -97,7 +96,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
             disabled={isLoading}
             className="px-4 py-2 text-xs font-bold font-mono text-gray-500 hover:text-white uppercase tracking-wider transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            CANCEL_OP
+            取消操作
           </button>
           <TechButton
             variant={isDanger ? "danger" : "primary"}

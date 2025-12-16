@@ -40,7 +40,7 @@ interface UserProfileModalProps {
 const passwordSchema = z
   .object({
     currentPassword: z.string().min(1, "CURRENT_KEY_REQUIRED"),
-    newPassword: z.string().min(8, "NEW_KEY_TOO_WEAK (MIN 8 CHARS)"),
+    newPassword: z.string().min(8, "NEW_KEY_TOO_WEAK (至少 8 位)"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
@@ -51,8 +51,8 @@ const passwordSchema = z
 const profileSchema = z.object({
   name: z
     .string()
-    .min(2, "ALIAS_TOO_SHORT (MIN 2)")
-    .max(30, "ALIAS_TOO_LONG (MAX 30)"),
+    .min(2, "ALIAS_TOO_SHORT (至少 2 位)")
+    .max(30, "ALIAS_TOO_LONG (最多 30 位)"),
   image: z.union([z.literal(""), z.url("INVALID_URL").trim()]).optional(),
 });
 
@@ -107,7 +107,7 @@ export function UserProfileModal({
       return;
     }
     toast.success("PROTOCOL OVERWRITTEN", {
-      description: "New access key established.",
+      description: "新访问密钥已建立。",
     });
     resetPassword();
   };
@@ -119,12 +119,12 @@ export function UserProfileModal({
     });
     if (error) {
       toast.error("UPDATE FAILED", {
-        description: error.message || "Could not update profile alias.",
+        description: error.message || "无法更新代理人别名。",
       });
       return;
     }
     toast.success("ALIAS UPDATED", {
-      description: `Identity re-registered as: ${data.name}`,
+      description: `身份已重新注册为: ${data.name}`,
     });
   };
 
@@ -214,7 +214,7 @@ export function UserProfileModal({
           {/* Identity Data */}
           <div className="mb-8 shrink-0">
             <h3 className="text-sm font-bold font-mono text-zzz-gray uppercase tracking-widest mb-4 flex items-center gap-2">
-              <Fingerprint size={16} /> Identity_Data
+              <Fingerprint size={16} /> 身份数据 (Identity_Data)
             </h3>
             <div className="grid grid-cols-1 gap-4">
               <div className="bg-zzz-dark border border-zzz-gray p-3 flex items-center gap-3">
@@ -236,7 +236,7 @@ export function UserProfileModal({
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="text-[9px] font-mono text-gray-500 uppercase">
-                    Communication Channel
+                    通讯频道 (Email)
                   </div>
                   <div className="text-xs font-mono text-white truncate">
                     {user.email}
@@ -268,7 +268,7 @@ export function UserProfileModal({
                   <input
                     type="text"
                     {...registerProfile("name")}
-                    placeholder="Proxy Alias"
+                    placeholder="代理人别名"
                     className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
                       profileErrors.name
                         ? "border-zzz-orange"
@@ -297,7 +297,7 @@ export function UserProfileModal({
                     <input
                       type="text"
                       {...registerProfile("image")}
-                      placeholder="Avatar URL"
+                      placeholder="头像 URL"
                       className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
                         profileErrors.image
                           ? "border-zzz-orange"
@@ -350,7 +350,7 @@ export function UserProfileModal({
                     <input
                       type="password"
                       {...registerPassword("currentPassword")}
-                      placeholder="Current Access Key"
+                      placeholder="当前访问密钥"
                       className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
                         passwordErrors.currentPassword
                           ? "border-zzz-orange"
@@ -378,7 +378,7 @@ export function UserProfileModal({
                     <input
                       type="password"
                       {...registerPassword("newPassword")}
-                      placeholder="New Access Key"
+                      placeholder="新访问密钥"
                       className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
                         passwordErrors.newPassword
                           ? "border-zzz-orange"
@@ -407,7 +407,7 @@ export function UserProfileModal({
                       <input
                         type="password"
                         {...registerPassword("confirmPassword")}
-                        placeholder="Confirm Key"
+                        placeholder="确认密钥"
                         className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
                           passwordErrors.confirmPassword
                             ? "border-zzz-orange"
@@ -442,12 +442,11 @@ export function UserProfileModal({
                 />
                 <div>
                   <div className="text-xs font-bold text-gray-300 uppercase mb-1">
-                    External Protocol Detected
+                    检测到外部协议
                   </div>
                   <p className="text-[10px] font-mono text-gray-500 leading-relaxed">
-                    This identity is managed via an external provider (e.g.
-                    GitHub/Google). Security settings must be updated through
-                    the source provider's interface.
+                    此身份由外部提供商 (如 GitHub) 管理。
+                    安全设置必须通过源提供商的界面进行更新。
                   </p>
                 </div>
               </div>
@@ -466,7 +465,7 @@ export function UserProfileModal({
               className="border-red-900/50 text-red-500 hover:bg-red-900/20 hover:border-red-500"
               icon={<LogOut size={14} />}
             >
-              TERMINATE SESSION
+              终止会话
             </TechButton>
           </div>
         </div>

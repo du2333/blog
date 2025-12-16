@@ -19,9 +19,9 @@ import { useRouteContext } from "@tanstack/react-router";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, "ALIAS_TOO_SHORT (MIN 2)"),
+    name: z.string().min(2, "ALIAS_TOO_SHORT (至少 2 位)"),
     email: z.email("INVALID_CHANNEL_FORMAT"),
-    password: z.string().min(8, "KEY_TOO_WEAK (MIN 8 CHARS)"),
+    password: z.string().min(8, "KEY_TOO_WEAK (至少 8 位)"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -54,7 +54,7 @@ export function RegisterForm() {
 
     if (error) {
       toast.error("REGISTRATION FAILED", {
-        description: error.message || "Signal blocked by firewall.",
+        description: error.message || "信号被防火墙阻塞。",
       });
       return;
     }
@@ -62,11 +62,11 @@ export function RegisterForm() {
     if (isEmailVerficationRequired) {
       setIsSuccess(true);
       toast.success("PROXY ID CREATED", {
-        description: "Verification signal sent. Check your inbox.",
+        description: "验证信号已发送。请检查您的收件箱。",
       });
     } else {
       toast.success("ACCESS GRANTED", {
-        description: "Welcome to the Inter-Knot.",
+        description: "欢迎来到绳网。",
       });
       navigate({ to: "/admin" });
     }
@@ -82,16 +82,16 @@ export function RegisterForm() {
           Verify Signal
         </h3>
         <p className="text-xs font-mono text-gray-400 mb-8 leading-relaxed px-4">
-          A neural link verification has been transmitted to your email channel.
+          神经连接验证已发送至您的通讯频道。
           <br />
           <br />
-          Please confirm the link to activate your HDD system access.
+          请确认链接以激活您的 HDD 系统访问权限。
         </p>
         <TechButton
           onClick={() => navigate({ to: "/login" })}
           className="w-full justify-center"
         >
-          RETURN TO LOGIN
+          返回登录
         </TechButton>
       </div>
     );
@@ -108,7 +108,7 @@ export function RegisterForm() {
               : "text-gray-500 group-focus-within:text-zzz-lime"
           }`}
         >
-          Proxy Name
+          代理人代号 (Proxy Name)
         </label>
         <div className="relative">
           <User
@@ -127,7 +127,7 @@ export function RegisterForm() {
                 ? "border-zzz-orange focus:border-zzz-orange"
                 : "border-zzz-gray focus:border-zzz-lime"
             }`}
-            placeholder="ENTER_ALIAS"
+            placeholder="输入代号..."
           />
         </div>
         {errors.name && (
@@ -146,7 +146,7 @@ export function RegisterForm() {
               : "text-gray-500 group-focus-within:text-zzz-cyan"
           }`}
         >
-          Comms Channel (Email)
+          通讯频道 (Email)
         </label>
         <div className="relative">
           <Mail
@@ -185,7 +185,7 @@ export function RegisterForm() {
                 : "text-gray-500 group-focus-within:text-white"
             }`}
           >
-            Password
+            访问密钥 (Password)
           </label>
           <div className="relative">
             <Lock
@@ -221,7 +221,7 @@ export function RegisterForm() {
                 : "text-gray-500 group-focus-within:text-white"
             }`}
           >
-            Confirm
+            确认密钥
           </label>
           <div className="relative">
             <Shield

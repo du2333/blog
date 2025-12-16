@@ -9,7 +9,7 @@ import { z } from "zod";
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, "KEY_TOO_WEAK (MIN 8 CHARS)"),
+    password: z.string().min(8, "KEY_TOO_WEAK (至少 8 位)"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -37,7 +37,7 @@ export function ResetPasswordForm({
 
   const onSubmit = async (data: ResetPasswordSchema) => {
     if (!token) {
-      toast.error("INVALID TOKEN", { description: "Missing security token." });
+      toast.error("INVALID TOKEN", { description: "缺少安全令牌。" });
       return;
     }
 
@@ -48,13 +48,13 @@ export function ResetPasswordForm({
 
     if (error) {
       toast.error("RESET FAILED", {
-        description: "Token may have expired.",
+        description: "令牌可能已过期。",
       });
       return;
     }
 
     toast.success("PROTOCOL OVERWRITTEN", {
-      description: "New access key established. Redirecting to login...",
+      description: "新访问密钥已建立。重定向至登录...",
     });
     navigate({ to: "/login" });
   };
@@ -63,13 +63,13 @@ export function ResetPasswordForm({
     return (
       <div className="text-center p-4">
         <div className="text-zzz-orange font-mono text-xs uppercase mb-4">
-          ERROR: MISSING_AUTH_TOKEN
+          ERROR: 缺少授权令牌
         </div>
         <TechButton
           onClick={() => navigate({ to: "/login" })}
           className="w-full justify-center"
         >
-          RETURN
+          返回登录
         </TechButton>
       </div>
     );
@@ -79,13 +79,13 @@ export function ResetPasswordForm({
     return (
       <div className="text-center p-4">
         <div className="text-zzz-orange font-mono text-xs uppercase mb-4">
-          ERROR: INVALID_LINK ({error})
+          ERROR: 无效链接 ({error})
         </div>
         <TechButton
           onClick={() => navigate({ to: "/forgot-password" })}
           className="w-full justify-center"
         >
-          REQUEST NEW LINK
+          请求新链接
         </TechButton>
       </div>
     );
@@ -97,9 +97,9 @@ export function ResetPasswordForm({
         <div className="flex items-center gap-2 mb-1 font-bold">
           <Terminal size={12} /> SYSTEM_NOTICE
         </div>
-        AUTHORIZATION: RESET_TOKEN_VERIFIED
+        AUTHORIZATION: 重置令牌已验证
         <br />
-        STATUS: AWAITING NEW KEY INPUT
+        STATUS: 等待新密钥输入
         <div className="absolute top-0 right-0 w-8 h-8 bg-linear-to-bl from-zzz-cyan/20 to-transparent"></div>
       </div>
 
@@ -112,7 +112,7 @@ export function ResetPasswordForm({
                 : "text-gray-500 group-focus-within:text-white"
             }`}
           >
-            New Access Key
+            新访问密钥 (New Access Key)
           </label>
           <div className="relative">
             <Lock
@@ -148,7 +148,7 @@ export function ResetPasswordForm({
                 : "text-gray-500 group-focus-within:text-white"
             }`}
           >
-            Confirm Key
+            确认密钥 (Confirm Key)
           </label>
           <div className="relative">
             <Shield

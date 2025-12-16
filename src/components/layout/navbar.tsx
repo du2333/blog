@@ -106,7 +106,7 @@ export function Navbar({
               />
               <div className="flex items-center gap-2">
                 <span className="font-mono text-xs font-bold text-gray-500 group-hover:text-white uppercase tracking-wider transition-colors">
-                  Search_DB
+                  检索_DB
                 </span>
                 <div className="w-px h-3 bg-zzz-gray group-hover:bg-zzz-lime/50 transition-colors"></div>
                 <span className="text-[10px] font-mono text-zzz-gray group-hover:text-zzz-lime/80 transition-colors">
@@ -180,7 +180,7 @@ export function Navbar({
                       size={14}
                       className="group-hover:translate-x-0.5 transition-transform"
                     />
-                    <span>Connect</span>
+                    <span>连接绳网</span>
                   </button>
                 </Link>
               )}

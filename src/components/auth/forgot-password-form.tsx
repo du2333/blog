@@ -35,7 +35,7 @@ export function ForgotPasswordForm() {
 
     if (error) {
       toast.error("TRANSMISSION FAILED", {
-        description: "Could not send recovery signal.",
+        description: "无法发送恢复信号。",
       });
       return;
     }
@@ -43,7 +43,7 @@ export function ForgotPasswordForm() {
     setSentEmail(data.email);
     setIsSent(true);
     toast.success("RECOVERY BEACON ACTIVE", {
-      description: "Check your comms channel for the reset key.",
+      description: "请检查您的通讯频道以获取重置密钥。",
     });
   };
 
@@ -57,15 +57,14 @@ export function ForgotPasswordForm() {
           Signal Sent
         </h3>
         <p className="text-xs font-mono text-gray-400 mb-8 leading-relaxed">
-          We have transmitted a recovery key to{" "}
-          <span className="text-zzz-cyan">{sentEmail}</span>. Please use the
-          link to restore your HDD access.
+          我们已向 <span className="text-zzz-cyan">{sentEmail}</span>{" "}
+          发送了恢复密钥。 请使用链接恢复您的 HDD 访问权限。
         </p>
         <TechButton
           onClick={() => navigate({ to: "/login" })}
           className="w-full justify-center"
         >
-          RETURN TO LOGIN
+          返回登录
         </TechButton>
       </div>
     );
@@ -74,8 +73,7 @@ export function ForgotPasswordForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
       <div className="p-4 bg-zzz-orange/5 border border-zzz-orange/30 text-zzz-orange text-[10px] font-mono leading-relaxed">
-        NOTICE: Lost keys cannot be recovered from the Hollow. A reset link will
-        be sent to your registered channel.
+        注意：遗失的密钥无法从空洞中找回。重置链接将发送至您的注册频道
       </div>
 
       <div className="space-y-1 group">
@@ -86,7 +84,7 @@ export function ForgotPasswordForm() {
               : "text-gray-500 group-focus-within:text-zzz-lime"
           }`}
         >
-          Registered Email
+          注册邮箱 (Registered Email)
         </label>
         <div className="relative">
           <Mail
@@ -140,7 +138,7 @@ export function ForgotPasswordForm() {
             size={12}
             className="rotate-180 group-hover:-translate-x-1 transition-transform"
           />{" "}
-          Back to Login
+          返回登录
         </button>
       </div>
     </form>

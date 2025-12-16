@@ -102,7 +102,7 @@ function RouteComponent() {
             </span>
           </h1>
           <p className="font-mono text-xs md:text-sm text-gray-500 mt-2 pl-2 border-l-2 border-zzz-lime">
-            ACCESSING ARCHIVE SECTOR 01 // PROXY LOGS
+            正在接入档案区段 01 // PROXY LOGS
           </p>
         </div>
 
@@ -112,11 +112,11 @@ function RouteComponent() {
             <div className="text-zzz-lime font-bold text-xl">
               {posts.length}
             </div>
-            <div>Entries Loaded</div>
+            <div>条记录已加载</div>
           </div>
           <div>
             <div className="text-white font-bold text-xl">100%</div>
-            <div>Integrity</div>
+            <div>数据完整性</div>
           </div>
         </div>
       </div>

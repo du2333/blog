@@ -91,7 +91,7 @@ function RouteComponent() {
           variant="secondary"
           icon={<ArrowLeft size={16} />}
         >
-          RETURN
+          返回
         </TechButton>
         <div className="hidden md:flex flex-col items-end font-mono text-xs text-zzz-gray">
           <span>
@@ -145,7 +145,7 @@ function RouteComponent() {
                   <Clock size={14} />
                 </div>
                 <span className="tracking-widest text-white">
-                  {post.readTimeInMinutes} MINS READ TIME
+                  {post.readTimeInMinutes} 分钟阅读
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -153,7 +153,7 @@ function RouteComponent() {
                   <RefreshCw size={14} />
                 </div>
                 <span className="tracking-widest text-white">
-                  UPDATED:{" "}
+                  最后更新于:{" "}
                   <ClientOnly fallback={<span>-</span>}>
                     {formatDate(post.updatedAt)}
                   </ClientOnly>
@@ -180,7 +180,7 @@ function RouteComponent() {
                 ID: {post.id} // END OF DATA STREAM // VERIFIED
               </div>
               <TechButton variant="secondary" icon={<Share2 size={16} />}>
-                SHARE_LOG
+                分享日志
               </TechButton>
             </div>
           </div>

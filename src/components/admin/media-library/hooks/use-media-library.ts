@@ -112,11 +112,11 @@ export const useMediaLibrary = () => {
       });
       setDeleteTarget(null);
       toast.success("ASSETS PURGED", {
-        description: `${deletedKeys.length} items permanently deleted from storage.`,
+        description: `${deletedKeys.length} 个项目已从存储中永久删除。`,
       });
     },
     onError: (error) => {
-      toast.error("DELETE FAILED", {
+      toast.error("删除失败", {
         description: error.message,
       });
     },
@@ -128,11 +128,11 @@ export const useMediaLibrary = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["media"] });
       toast.success("ASSET UPDATED", {
-        description: `Metadata changes saved`,
+        description: `元数据更改已保存。`,
       });
     },
     onError: (error) => {
-      toast.error("FAILED TO UPDATE METADATA", {
+      toast.error("更新元数据失败", {
         description: error.message,
       });
     },
@@ -183,7 +183,7 @@ export const useMediaLibrary = () => {
 
     if (blockedKeys.length > 0) {
       toast.warning("PROTECTED ASSETS DETECTED", {
-        description: `${blockedKeys.length} item(s) are currently used in posts and cannot be deleted.`,
+        description: `${blockedKeys.length} 个项目当前正在被日志使用，无法删除。`,
       });
     }
 

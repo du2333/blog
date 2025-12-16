@@ -33,6 +33,9 @@ async function handleImageUpload(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("image", file);
   const result = await uploadImageFn({ data: formData });
+  toast.success("IMAGE UPLOADED", {
+    description: `${file.name} 已归档保存`,
+  });
   return result.url;
 }
 
@@ -129,7 +132,7 @@ export const extensions = [
     onPaste: handleFilePaste,
   }),
   Placeholder.configure({
-    placeholder: "INITIATE LOG ENTRY... (Start typing)",
+    placeholder: "初始化日志条目... (开始输入)",
   }),
 ];
 

@@ -182,7 +182,7 @@ export function MediaPreviewModal({
           <div className="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar">
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <HardDrive size={14} /> File Size
+                <HardDrive size={14} /> 文件大小
               </div>
               <div className="text-white font-mono">
                 {formatBytes(activeAsset.sizeInBytes)}
@@ -191,14 +191,14 @@ export function MediaPreviewModal({
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <FileText size={14} /> Type
+                <FileText size={14} /> 文件类型
               </div>
               <div className="text-white font-mono">{activeAsset.mimeType}</div>
             </div>
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <Calendar size={14} /> Upload Date
+                <Calendar size={14} /> 上传日期
               </div>
               <div className="text-white font-mono">
                 {activeAsset.createdAt
@@ -211,7 +211,7 @@ export function MediaPreviewModal({
             {activeAsset.width && activeAsset.height && (
               <div className="space-y-1">
                 <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                  Dimensions
+                  尺寸
                 </div>
                 <div className="text-white font-mono">
                   {activeAsset.width} × {activeAsset.height}
@@ -222,11 +222,11 @@ export function MediaPreviewModal({
             {/* Linked Posts Section */}
             <div className="pt-4 border-t border-dashed border-zzz-gray/30">
               <div className="flex items-center gap-2 text-xs font-mono text-zzz-cyan uppercase mb-3">
-                <Link2 size={14} /> Linked Entries ({linkedPosts.length})
+                <Link2 size={14} /> 关联条目 ({linkedPosts.length})
               </div>
               {linkedPosts.length === 0 ? (
                 <div className="text-[10px] text-gray-600 font-mono italic">
-                  NO_LINKS_DETECTED
+                  未检测到关联条目
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -255,7 +255,7 @@ export function MediaPreviewModal({
 
             <div className="space-y-1 pt-4 border-t border-dashed border-zzz-gray/30">
               <div className="text-xs font-mono text-gray-500 uppercase mb-2">
-                Asset Key
+                资产密钥
               </div>
               <div className="bg-zzz-dark p-2 text-[10px] font-mono text-zzz-cyan break-all border border-zzz-gray/50">
                 {activeAsset.key}
@@ -277,7 +277,7 @@ export function MediaPreviewModal({
                 className="w-full"
                 icon={<Download size={16} />}
               >
-                Download Original
+                下载原始文件
               </TechButton>
             </a>
           </div>

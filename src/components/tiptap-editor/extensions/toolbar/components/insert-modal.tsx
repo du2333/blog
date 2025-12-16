@@ -194,7 +194,7 @@ const InsertModal: React.FC<InsertModalProps> = ({
             ) : (
               <Grid size={16} />
             )}
-            {activeType === "LINK" ? "INSERT_HYPERLINK" : "SELECT_ASSET"}
+            {activeType === "LINK" ? "插入超链接" : "选择资产"}
           </div>
           <button
             onClick={onClose}
@@ -216,7 +216,7 @@ const InsertModal: React.FC<InsertModalProps> = ({
                 />
                 <input
                   type="text"
-                  placeholder="SEARCH_MEDIA_BANK..."
+                  placeholder="检索媒体库..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-3 focus:border-zzz-cyan focus:outline-none transition-colors"
@@ -229,7 +229,7 @@ const InsertModal: React.FC<InsertModalProps> = ({
                   <LoadingFallback />
                 ) : mediaItems.length === 0 ? (
                   <div className="h-full flex items-center justify-center text-gray-500 font-mono text-xs">
-                    NO_ASSETS_FOUND
+                    未找到资产
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 gap-2 content-start">
@@ -263,8 +263,8 @@ const InsertModal: React.FC<InsertModalProps> = ({
           <div className="shrink-0">
             <label className="text-[10px] text-gray-500 font-bold font-mono uppercase tracking-widest block mb-2">
               {activeType === "IMAGE"
-                ? "Or External Source URL"
-                : "Target Link URL"}
+                ? "或外部链接"
+                : "目标链接"}
             </label>
             <input
               type="text"
@@ -290,14 +290,14 @@ const InsertModal: React.FC<InsertModalProps> = ({
             onClick={onClose}
             className="px-6 py-2 border border-zzz-gray text-gray-400 text-xs font-bold uppercase hover:text-white hover:border-white transition-colors"
           >
-            Cancel
+            取消
           </button>
           <TechButton
             size="sm"
             onClick={handleSubmit}
             icon={<Check size={14} />}
           >
-            CONFIRM
+            确认
           </TechButton>
         </div>
 

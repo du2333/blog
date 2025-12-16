@@ -49,7 +49,7 @@ export const useMediaUpload = () => {
         setQueue((prev) =>
           prev.map((q, i) =>
             i === waitingIndex
-              ? { ...q, status: "ERROR", log: "> ERROR: NO FILE" }
+              ? { ...q, status: "ERROR", log: "> ERROR: 没有数据包" }
               : q
           )
         );
@@ -65,7 +65,7 @@ export const useMediaUpload = () => {
                 ...q,
                 status: "UPLOADING",
                 progress: 50,
-                log: "> UPLOAD_STREAM: PACKETS SENDING...",
+                log: "> UPLOAD_STREAM: 数据包发送中...",
               }
             : q
         )
@@ -82,7 +82,7 @@ export const useMediaUpload = () => {
                     ...q,
                     status: "COMPLETE",
                     progress: 100,
-                    log: "> UPLOAD COMPLETE. ASSET INDEXED.",
+                    log: "> 上传完成。资产已索引。",
                   }
                 : q
             )
@@ -102,7 +102,7 @@ export const useMediaUpload = () => {
                     status: "ERROR",
                     progress: 0,
                     log: `> ERROR: ${
-                      error instanceof Error ? error.message : "UPLOAD FAILED"
+                      error instanceof Error ? error.message : "上传失败"
                     }`,
                   }
                 : q
@@ -126,7 +126,7 @@ export const useMediaUpload = () => {
       size: formatBytes(file.size),
       progress: 0,
       status: "WAITING" as const,
-      log: "> INITIALIZING UPLOAD HANDSHAKE...",
+      log: "> 初始化上传握手...",
       file: file,
     }));
     setQueue((prev) => [...prev, ...newItems]);

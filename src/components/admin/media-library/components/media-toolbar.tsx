@@ -19,7 +19,7 @@ export function MediaToolbar({ searchQuery, onSearchChange, selectedCount, total
         />
         <input
           type="text"
-          placeholder="SEARCH_ASSETS..."
+          placeholder="检索资产..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-2 focus:border-zzz-cyan focus:outline-none"
@@ -37,8 +37,8 @@ export function MediaToolbar({ searchQuery, onSearchChange, selectedCount, total
             <Square size={14} />
           )}
           {selectedCount > 0 && selectedCount === totalCount
-            ? "Deselect All"
-            : "Select All"}
+            ? "取消全选"
+            : "全选"}
         </button>
 
         {selectedCount > 0 && (
@@ -47,7 +47,7 @@ export function MediaToolbar({ searchQuery, onSearchChange, selectedCount, total
             className="h-8 px-3 bg-zzz-orange/10 border border-zzz-orange text-zzz-orange hover:bg-zzz-orange hover:text-black flex items-center gap-2 text-[10px] font-bold uppercase transition-colors animate-in fade-in slide-in-from-right-4"
           >
             <Trash2 size={14} />
-            Delete ({selectedCount})
+            删除 ({selectedCount})
           </button>
         )}
       </div>

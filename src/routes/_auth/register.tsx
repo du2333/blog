@@ -31,13 +31,13 @@ function RouteComponent() {
 
         <div className="mt-6 text-center pt-6 border-t border-zzz-gray/30">
           <span className="text-[10px] font-mono text-gray-600 uppercase">
-            Already registered?{" "}
+            已有账户?{" "}
           </span>
           <Link
             to="/login"
             className="text-[10px] font-mono font-bold text-zzz-cyan hover:underline uppercase tracking-wider ml-2"
           >
-            Access Terminal
+            访问终端
           </Link>
         </div>
       </div>

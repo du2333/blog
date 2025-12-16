@@ -59,7 +59,7 @@ export function SettingsDrawer({
       {/* Header */}
       <div className="h-16 flex items-center justify-between px-6 border-b border-zzz-gray bg-zzz-black">
         <div className="flex items-center gap-2 font-mono text-xs font-bold text-zzz-cyan uppercase">
-          <Layout size={14} /> Entry_Config
+          <Layout size={14} /> 日志配置
         </div>
         <button onClick={onClose} className="text-gray-500 hover:text-white">
           <X size={18} />
@@ -104,7 +104,7 @@ export function SettingsDrawer({
         />
         <div className="md:hidden space-y-3 pt-4 border-t border-zzz-gray/30">
           <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-            Mobile Actions
+            移动端操作
           </div>
           <TechButton
             variant={processState === "SUCCESS" ? "primary" : "secondary"}
@@ -142,7 +142,7 @@ function StatusSelector({
   return (
     <div className="space-y-2">
       <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-        Post Status
+        日志状态
       </label>
       <div className="grid grid-cols-3 gap-2">
         {POST_STATUSES.map((s) => (
@@ -173,7 +173,7 @@ function CategorySelector({
   return (
     <div className="space-y-2">
       <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-        Category
+        日志分类
       </label>
       <div className="relative">
         <Tag
@@ -267,7 +267,7 @@ function DateTimeFields({
     <div className="grid grid-cols-1 gap-4">
       <div className="space-y-2">
         <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-          Publish Date
+          发布日期
         </label>
         <DatePicker
           value={publishedAt ? publishedAt.toISOString().split("T")[0] : ""}
@@ -279,7 +279,7 @@ function DateTimeFields({
 
       <div className="space-y-2">
         <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
-          <span>Read Time</span>
+          <span>阅读时长</span>
           <button
             onClick={onCalculateReadTime}
             disabled={isCalculating}
@@ -313,7 +313,7 @@ function DateTimeFields({
             }`}
           />
           <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-500 pointer-events-none">
-            MIN
+            分钟
           </span>
         </div>
       </div>
@@ -336,7 +336,7 @@ function SummaryField({
     <div className="space-y-2 relative">
       <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <FileText size={12} /> Briefing
+          <FileText size={12} /> 摘要
         </div>
         <button
           onClick={onGenerate}

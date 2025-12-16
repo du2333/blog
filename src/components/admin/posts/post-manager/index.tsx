@@ -99,7 +99,7 @@ export function PostManager({
       });
     },
     onError: (error) => {
-      toast.error("FAILED TO CREATE ENTRY", {
+      toast.error("新建条目失败", {
         description: error.message,
       });
     },
@@ -138,7 +138,7 @@ export function PostManager({
           onClick={() => createMutation.mutate()}
           disabled={createMutation.isPending}
         >
-          {createMutation.isPending ? "Creating..." : "New Entry"}
+          {createMutation.isPending ? "创建中..." : "新建条目"}
         </TechButton>
       </div>
 
@@ -184,10 +184,10 @@ export function PostManager({
               {/* Desktop Header */}
               <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-[10px] font-mono text-gray-600 font-bold uppercase tracking-wider border-b border-zzz-gray/30">
                 <div className="col-span-1">ID</div>
-                <div className="col-span-5">Subject</div>
-                <div className="col-span-2">Class</div>
-                <div className="col-span-2">Date</div>
-                <div className="col-span-2 text-right">Ops</div>
+                <div className="col-span-5">主题 (Subject)</div>
+                <div className="col-span-2">分类 (Class)</div>
+                <div className="col-span-2">日期 (Date)</div>
+                <div className="col-span-2 text-right">操作 (Ops)</div>
               </div>
 
               {posts.map((post) => (

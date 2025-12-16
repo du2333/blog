@@ -33,17 +33,16 @@ function App() {
   const { data: posts } = useSuspenseQuery(postsQuery);
 
   return (
-    <div className="flex flex-col gap-16 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1600px] mx-auto">
+    <div className="flex flex-col gap-16 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1600px] mx-auto fill-mode-forwards">
       {/* Hero Section - Split Layout */}
       <section className="text-center py-10 relative">
-        <h2 className="text-5xl md:text-8xl font-black font-sans italic uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter">
-          New Eridu
+        <h2 className="text-5xl md:text-8xl font-black font-sans italic uppercase text-transparent bg-clip-text bg-linear-to-br from-white to-gray-600 mb-4 tracking-tighter leading-[1.1]">
+          新艾利都
           <br />
-          <span className="text-stroke-lime text-zzz-lime">Chronicles</span>
+          <span className="text-stroke-lime text-zzz-lime">编年史</span>
         </h2>
         <p className="max-w-xl mx-auto text-gray-400 font-mono">
-          Documenting the anomalies of the digital realm. Avoid corruption. Stay
-          connected.
+          记录数字领域的异常现象。规避「侵蚀」，保持连接。
         </p>
 
         {/* Decorative elements */}
@@ -56,7 +55,7 @@ function App() {
       <div className="flex items-center gap-4 mb-2">
         <div className="h-4 w-4 bg-zzz-lime transform rotate-45"></div>
         <h3 className="text-xl font-bold font-sans uppercase tracking-widest text-white">
-          Latest Transmissions
+          最新传输
         </h3>
         <div className="h-px bg-zzz-gray flex-1"></div>
         <span className="font-mono text-xs text-zzz-lime">LATEST_4</span>
@@ -71,7 +70,7 @@ function App() {
           onClick={() => router.navigate({ to: "/database" })}
           icon={<ArrowRight size={16} />}
         >
-          ACCESS FULL DATABASE
+          访问完整数据库
         </TechButton>
       </div>
     </div>

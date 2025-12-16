@@ -51,7 +51,7 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
         )}
 
         <span className="relative z-10 font-mono text-xs font-bold uppercase tracking-wider text-white group-hover:text-black transition-colors">
-          {isLoading ? "HANDSHAKE..." : "Github Protocol"}
+          {isLoading ? "HANDSHAKE..." : "Github 协议"}
         </span>
 
         {!isLoading && (

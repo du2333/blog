@@ -79,8 +79,8 @@ export function usePostActions({
     onSuccess: (result) => {
       setPost((prev) => ({ ...prev, slug: result.slug }));
       if (slugGenerationMode.current === "manual") {
-        toast.success("SLUG GENERATED", {
-          description: `URL slug set to "${result.slug}"`,
+        toast.success("URL slug 已设置", {
+          description: `URL slug 已设置为 "${result.slug}"`,
         });
       }
     },
@@ -154,7 +154,7 @@ export function usePostActions({
     if (!post.contentJson) {
       if (!silent) {
         toast.error("NO CONTENT", {
-          description: "Write some content first to calculate read time.",
+          description: "需要先写一些内容才能计算阅读时间。",
         });
       }
       return;
@@ -198,10 +198,10 @@ export function usePostActions({
       setIsCalculatingReadTime(false);
 
       if (!silent) {
-        toast.success("READ TIME CALCULATED", {
-          description: `Estimated ${mins} min read (${
+        toast.success("阅读时间计算完成", {
+          description: `预计阅读时间 ${mins} 分钟 (${
             cjkChars + englishWords
-          } words)`,
+          } 字)`,
         });
       }
     }, 400);
@@ -214,7 +214,7 @@ export function usePostActions({
   const handleGenerateSummary = () => {
     if (!post.contentJson) {
       toast.error("NO CONTENT", {
-        description: "Write some content first to generate a summary.",
+        description: "需要先写一些内容才能生成摘要。",
       });
       return;
     }

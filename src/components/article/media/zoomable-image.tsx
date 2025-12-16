@@ -138,7 +138,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
               }`}
             >
               <span className="text-[10px] font-mono text-zzz-gray uppercase tracking-[0.5em]">
-                Click outside to close
+                点击外部关闭
               </span>
             </div>
           </div>,

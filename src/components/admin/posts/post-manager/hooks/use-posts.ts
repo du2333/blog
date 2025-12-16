@@ -85,13 +85,13 @@ export function useDeletePost({ onSuccess }: UseDeletePostOptions = {}) {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.invalidateQueries({ queryKey: ["postsCount"] });
       toast.success("POST DELETED", {
-        description: `ENTRY "${post.title}" deleted successfully`,
+        description: `条目 "${post.title}" 已删除成功`,
       });
       onSuccess?.();
     },
     onError: (_error, post) => {
       toast.error("FAILED TO DELETE ENTRY", {
-        description: `Failed to delete entry "${post.title}"`,
+        description: `删除条目 "${post.title}" 失败`,
       });
     },
   });

@@ -17,8 +17,8 @@ import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { z } from "zod";
 
 const loginSchema = z.object({
-  email: z.email("INVALID_CHANNEL_FORMAT"),
-  password: z.string().min(1, "ACCESS_KEY_REQUIRED"),
+  email: z.email("无效的频道格式"),
+  password: z.string().min(1, "需要访问密钥"),
 });
 
 type LoginSchema = z.infer<typeof loginSchema>;
@@ -56,16 +56,16 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       setLoginStep("IDLE");
       if (error.status === 403) {
         setError("root", {
-          message: "ACCESS_DENIED: Unverified Email",
+          message: "ACCESS_DENIED: 未验证的邮箱",
         });
         setIsUnverifiedEmail(true);
       } else {
         setError("root", {
-          message: "ACCESS_DENIED: Invalid Credentials",
+          message: "ACCESS_DENIED: 无效的凭据",
         });
       }
       toast.error("ACCESS_DENIED", {
-        description: error.message,
+        description: error.message || "访问被拒绝",
       });
       return;
     }
@@ -75,6 +75,9 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       setLoginStep("SUCCESS");
       setTimeout(() => {
         navigate({ to: redirectTo ? redirectTo : "/admin" });
+        toast.success("ACCESS_GRANTED", {
+          description: "欢迎回来，绳匠！",
+        });
       }, 800);
     }, 800);
   };
@@ -87,9 +90,9 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
         callbackURL: `${window.location.origin}/verify-email`,
       }),
       {
-        loading: "TRANSMITTING SIGNAL...",
-        success: "VERIFICATION LINK RESENT",
-        error: "TRANSMISSION FAILED",
+        loading: "正在传输信号...",
+        success: "验证链接已重新发送",
+        error: "传输失败",
       }
     );
   };
@@ -111,7 +114,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
               onClick={handleResendVerification}
               className="text-[10px] font-mono text-white underline hover:text-zzz-lime ml-7"
             >
-              [RESEND_VERIFICATION_SIGNAL]
+              [重发验证信号]
             </button>
           )}
         </div>
@@ -127,7 +130,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
                 : "text-gray-500 group-focus-within:text-zzz-lime"
             }`}
           >
-            Proxy Email
+            代理人频道 (Email)
           </label>
           <div className="relative">
             <Mail
@@ -168,14 +171,14 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
                   : "text-gray-500 group-focus-within:text-zzz-cyan"
               }`}
             >
-              Access Key
+              访问密钥 (Access Key)
             </label>
             <Link
               to="/forgot-password"
               tabIndex={-1}
               className="text-[9px] font-mono font-bold text-gray-600 hover:text-zzz-cyan uppercase tracking-wider transition-colors"
             >
-              Lost Key?
+              丢失密钥？
             </Link>
           </div>
           <div className="relative">
@@ -229,10 +232,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
           )
         }
       >
-        {loginStep === "IDLE" && "ESTABLISH CONNECTION"}
-        {loginStep === "VERIFYING" && "VERIFYING CREDENTIALS..."}
-        {loginStep === "SYNCING" && "SYNCING NEURAL CLOUD..."}
-        {loginStep === "SUCCESS" && "ACCESS GRANTED"}
+        {loginStep === "IDLE" && "建立连接"}
+        {loginStep === "VERIFYING" && "验证凭据..."}
+        {loginStep === "SYNCING" && "同步中..."}
+        {loginStep === "SUCCESS" && "访问已授予"}
       </TechButton>
     </form>
   );

@@ -45,7 +45,7 @@ function RouteComponent() {
         </div>
         <div className=" flex-col items-start hidden sm:flex">
           <span className="font-sans font-bold text-sm uppercase leading-none text-white group-hover:text-zzz-lime transition-colors">
-            Abort
+            终止连接
           </span>
           <span className="font-mono text-[9px] uppercase tracking-widest opacity-60">
             Return_Signal

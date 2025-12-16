@@ -47,7 +47,7 @@ export function EditorToolbar({
         >
           <ArrowLeft size={18} />
           <span className="font-mono text-xs hidden md:inline">
-            RETURN_LOGS
+            返回日志
           </span>
         </button>
 
@@ -96,7 +96,7 @@ export function EditorToolbar({
               ? "TRANSMITTING..."
               : processState === "SUCCESS"
               ? "SIGNAL_QUEUED"
-              : "PROCESS_DATA"}
+              : "发布更新"}
           </TechButton>
         </div>
 
@@ -117,7 +117,7 @@ export function EditorToolbar({
           }`}
         >
           <Settings size={16} />
-          <span className="hidden md:inline">Config</span>
+          <span className="hidden md:inline">日志配置</span>
         </button>
       </div>
     </div>
@@ -144,19 +144,19 @@ function SaveIndicator({
         <>
           <RefreshCw size={12} className="text-zzz-orange animate-spin" />
           <span className="text-zzz-orange hidden sm:inline">
-            TRANSMITTING...
+            传输中...
           </span>
         </>
       ) : saveStatus === "PENDING" ? (
         <>
           <div className="w-3 h-3 rounded-full bg-gray-500 animate-pulse" />
-          <span className="text-gray-400 hidden sm:inline">UNSAVED</span>
+          <span className="text-gray-400 hidden sm:inline">未同步</span>
         </>
       ) : (
         <>
           <CheckCircle2 size={12} className="text-zzz-lime" />
           <span className="text-zzz-lime hidden sm:inline">
-            SYNCED{" "}
+            已同步{" "}
             {lastSaved && (
               <span className="hidden lg:inline">
                 [{lastSaved.toLocaleTimeString()}]

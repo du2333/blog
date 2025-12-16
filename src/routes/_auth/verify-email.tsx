@@ -105,10 +105,10 @@ function RouteComponent() {
                 <ShieldCheck size={40} className="text-black" />
               </div>
               <h2 className="text-xl font-bold text-white uppercase tracking-widest text-center">
-                Identity Confirmed
+                身份已确认
               </h2>
               <div className="text-[10px] font-mono text-zzz-lime text-center mt-1">
-                SESSION_ACTIVE
+                会话已激活
               </div>
             </div>
           )}
@@ -120,7 +120,7 @@ function RouteComponent() {
                 <AlertTriangle size={40} className="text-black" />
               </div>
               <h2 className="text-xl font-bold text-zzz-orange uppercase tracking-widest text-center">
-                Link Failed
+                链接失败
               </h2>
               <p className="text-[10px] font-mono text-gray-400 mt-2 text-center uppercase">
                 {error === "invalid_token" ? "TOKEN_EXPIRED_OR_INVALID" : error}
@@ -157,7 +157,7 @@ function RouteComponent() {
               className="w-full justify-center"
               icon={<ArrowRight size={16} />}
             >
-              ENTER SYSTEM
+              进入系统
             </TechButton>
           ) : status === "ERROR" ? (
             <div className="flex gap-2 w-full">
@@ -166,19 +166,19 @@ function RouteComponent() {
                 variant="secondary"
                 className="flex-1 justify-center"
               >
-                RETURN
+                返回登录
               </TechButton>
               <TechButton
                 onClick={() => navigate({ to: "/login" })}
                 variant="danger"
                 className="flex-1 justify-center"
               >
-                RESEND SIGNAL
+                重新发送信号
               </TechButton>
             </div>
           ) : (
             <div className="text-[10px] text-gray-500 font-mono flex items-center gap-2">
-              <Wifi size={12} className="animate-pulse" /> ESTABLISHING LINK...
+              <Wifi size={12} className="animate-pulse" /> 正在建立链接...
             </div>
           )}
         </div>

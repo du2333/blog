@@ -155,7 +155,7 @@ export function SearchCommandCenter({
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="QUERY_DATABASE..."
+            placeholder="检索数据库..."
             className="flex-1 bg-transparent text-lg md:text-2xl font-bold font-sans uppercase text-white placeholder-gray-700 focus:outline-none min-w-0"
           />
           <button
@@ -174,17 +174,17 @@ export function SearchCommandCenter({
           {isSearching ? (
             <div className="h-40 flex flex-col items-center justify-center text-zzz-orange font-mono text-xs gap-2 animate-pulse">
               <Hash size={32} className="opacity-50" />
-              <span>SCANNING_DATABASE...</span>
+              <span>正在扫描数据库...</span>
             </div>
           ) : query.trim() === "" ? (
             <div className="h-40 flex flex-col items-center justify-center text-gray-600 font-mono text-xs gap-2">
               <Hash size={32} className="opacity-20" />
-              <span>AWAITING INPUT...</span>
+              <span>等待输入...</span>
             </div>
           ) : searchResults.length === 0 ? (
             <div className="h-40 flex flex-col items-center justify-center text-zzz-orange font-mono text-xs gap-2">
               <div className="border border-zzz-orange p-2 rounded-sm">
-                NO MATCHES FOUND
+                未找到匹配项
               </div>
             </div>
           ) : (
@@ -224,7 +224,7 @@ export function SearchCommandCenter({
                     {result.matches.contentSnippet && (
                       <div className="bg-black/50 border border-zzz-gray/30 p-2 rounded-sm mt-2">
                         <div className="flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase mb-1">
-                          <FileText size={10} /> Content Match
+                          <FileText size={10} /> 内容匹配
                         </div>
                         <div
                           className="text-[11px] font-mono text-gray-300 leading-relaxed italic whitespace-pre-wrap"
@@ -272,18 +272,18 @@ export function SearchCommandCenter({
           <div className="flex gap-4">
             <span className="hidden md:flex items-center gap-1">
               <span className="bg-gray-800 px-1 rounded text-white">↑↓</span>{" "}
-              NAVIGATE
+              导航
             </span>
             <span className="flex items-center gap-1">
               <span className="bg-gray-800 px-1 rounded text-white">ENTER</span>{" "}
-              SELECT
+              选择
             </span>
             <span className="flex items-center gap-1">
               <span className="bg-gray-800 px-1 rounded text-white">ESC</span>{" "}
-              CLOSE
+              关闭
             </span>
           </div>
-          <div>{searchResults.length} RESULT(S)</div>
+          <div>{searchResults.length} 结果</div>
         </div>
       </div>
     </div>

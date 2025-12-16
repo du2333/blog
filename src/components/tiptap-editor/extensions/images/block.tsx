@@ -60,7 +60,7 @@ export function ImageBlock({
           value={node.attrs.alt || ""}
           onChange={(e) => updateAttributes({ alt: e.target.value })}
           placeholder={
-            isUploading ? "Waiting for upload..." : "ENTER_IMAGE_DESCRIPTION..."
+            isUploading ? "等待上传..." : "输入图片描述..."
           }
           disabled={isUploading}
           className="bg-transparent border-b border-zzz-gray/30 text-zzz-lime text-xs font-mono uppercase focus:outline-none focus:border-zzz-lime w-48 md:w-64 placeholder-gray-700 text-right transition-colors disabled:opacity-50"

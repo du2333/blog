@@ -60,7 +60,7 @@ export function PostsToolbar({
         />
         <input
           type="text"
-          placeholder="SEARCH_LOGS (TITLE)..."
+          placeholder="检索日志 (标题)..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
           className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-2.5 focus:border-zzz-lime focus:outline-none transition-colors"
@@ -95,7 +95,7 @@ export function PostsToolbar({
                         `}
           >
             <span className="flex items-center gap-2">
-              <Tag size={14} /> {category === "ALL" ? "Category" : category}
+              <Tag size={14} /> {category === "ALL" ? "分类" : category}
             </span>
             <ChevronRight
               size={12}
@@ -145,7 +145,7 @@ export function PostsToolbar({
                         `}
           >
             <span className="flex items-center gap-2">
-              <Filter size={14} /> {status === "ALL" ? "Status" : status}
+              <Filter size={14} /> {status === "ALL" ? "状态" : status}
             </span>
             <ChevronRight
               size={12}
@@ -196,7 +196,7 @@ export function PostsToolbar({
           >
             <span className="flex items-center gap-2">
               <ArrowUpDown size={14} />
-              {sortDir === "DESC" ? "Newest" : "Oldest"}
+              {sortDir === "DESC" ? "日期 | 降序" : "日期 | 升序"}
             </span>
             <ChevronRight
               size={12}
@@ -208,8 +208,8 @@ export function PostsToolbar({
           {activeDropdown === "SORT" && (
             <div className="absolute top-full right-0 mt-1 w-40 bg-zzz-black border border-zzz-gray shadow-xl z-30 animate-in fade-in zoom-in-95 duration-150">
               {[
-                { label: "Newest First", dir: "DESC" as SortDirection },
-                { label: "Oldest First", dir: "ASC" as SortDirection },
+                { label: "最新发布", dir: "DESC" as SortDirection },
+                { label: "最早发布", dir: "ASC" as SortDirection },
               ].map((opt) => (
                 <button
                   key={opt.label}

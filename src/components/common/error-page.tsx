@@ -23,12 +23,11 @@ export function ErrorPage({ error }: { error: Error }) {
         </h2>
 
         <div className="text-xs font-mono text-zzz-orange bg-zzz-orange/10 px-3 py-1 mb-8 tracking-widest uppercase border border-zzz-orange/20">
-          Critical_Failure // Ether_Overload
+          严重故障 // 以太过载
         </div>
 
         <p className="text-gray-400 font-mono text-sm mb-8 leading-relaxed">
-          An unrecoverable error has occurred in the Proxy Network. The
-          application state has been compromised. Immediate reboot recommended.
+          代理人网络发生不可恢复的错误。应用程序状态已受损。建议立即重启。
         </p>
 
         {/* Stack Trace / Error Details */}
@@ -54,7 +53,7 @@ export function ErrorPage({ error }: { error: Error }) {
             variant="danger"
             icon={<RefreshCw size={16} />}
           >
-            REBOOT SYSTEM
+            重启系统
           </TechButton>
         </div>
       </div>

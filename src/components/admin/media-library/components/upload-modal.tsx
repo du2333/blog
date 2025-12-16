@@ -50,7 +50,7 @@ export function UploadModal({
         </button>
 
         <h2 className="text-2xl font-black font-sans uppercase text-white mb-2 flex items-center gap-2">
-          <Upload className="text-zzz-lime" /> Data Ingestion
+          <Upload className="text-zzz-lime" /> 数据录入
         </h2>
         <div className="h-px w-full bg-zzz-gray mb-8"></div>
 
@@ -82,20 +82,20 @@ export function UploadModal({
               className={isDragging ? "animate-bounce text-zzz-lime" : ""}
             />
             <span className="text-sm font-bold uppercase">
-              {isDragging ? "RELEASE TO UPLOAD" : "CLICK OR DRAG FILES"}
+              {isDragging ? "松开上传" : "点击或拖拽文件"}
             </span>
           </div>
           <div className="text-[10px] font-mono text-gray-600">
             {isDragging
-              ? "DETECTING DATA STREAM..."
-              : "SYSTEM READY FOR BATCH INPUT"}
+              ? "检测数据流..."
+              : "系统准备好批量输入"}
           </div>
         </div>
 
         <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 min-h-[200px] mb-6 p-1">
           {queue.length === 0 && (
             <div className="h-full flex items-center justify-center text-gray-600 font-mono text-xs">
-              WAITING_FOR_INPUT...
+              等待输入...
             </div>
           )}
           {queue.map((item) => (
@@ -153,11 +153,11 @@ export function UploadModal({
               className="w-full"
               icon={<CheckCircle2 size={16} />}
             >
-              BATCH COMPLETE - RETURN
+              批处理完成 - 返回
             </TechButton>
           ) : (
             <TechButton variant="secondary" onClick={onClose}>
-              CANCEL
+              取消
             </TechButton>
           )}
         </div>

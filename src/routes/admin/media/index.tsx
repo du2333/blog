@@ -80,7 +80,7 @@ function MediaLibrary() {
           icon={<Upload size={14} />}
           onClick={() => setIsUploadOpen(true)}
         >
-          Upload Asset
+          上传资产
         </TechButton>
       </div>
 

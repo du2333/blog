@@ -44,8 +44,7 @@ export function NotFound() {
       </div>
 
       <p className="max-w-md text-gray-400 font-mono mb-10 text-sm md:text-base leading-relaxed">
-        The requested data sector could not be located. It may have been
-        consumed by a Hollow or corrupted by high ether activity.
+        无法定位请求的数据扇区。它可能已被空洞吞噬或因高以太活性而损坏。
       </p>
 
       <TechButton
@@ -54,7 +53,7 @@ export function NotFound() {
         icon={<ArrowLeft size={16} />}
         className="mb-16 md:mb-10"
       >
-        RETURN TO NEW ERIDU
+        返回新艾利都
       </TechButton>
 
       {/* Footer code */}

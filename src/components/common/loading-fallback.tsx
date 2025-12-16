@@ -15,10 +15,10 @@ export function LoadingFallback() {
       </div>
 
       <div className="mt-8 font-mono font-bold tracking-widest text-sm animate-pulse text-white">
-        ESTABLISHING_CONNECTION...
+        正在建立连接...
       </div>
       <div className="mt-2 text-[10px] font-mono text-gray-500">
-        PROXY_NETWORK // ENCRYPTED
+        PROXY_NETWORK // 加密中
       </div>
 
       <style>{`
