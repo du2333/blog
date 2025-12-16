@@ -12,6 +12,7 @@ import {
   Mail,
   Shield,
   ShieldAlert,
+  UserCog,
   User as UserIcon,
   X,
 } from "lucide-react";
@@ -46,7 +47,15 @@ const passwordSchema = z
     path: ["confirmPassword"],
   });
 
+const profileSchema = z.object({
+  name: z
+    .string()
+    .min(2, "ALIAS_TOO_SHORT (MIN 2)")
+    .max(30, "ALIAS_TOO_LONG (MAX 30)"),
+});
+
 type PasswordSchema = z.infer<typeof passwordSchema>;
+type ProfileSchema = z.infer<typeof profileSchema>;
 
 export function UserProfileModal({
   isOpen,
@@ -57,12 +66,23 @@ export function UserProfileModal({
   const shouldRender = useDelayUnmount(isOpen, 200);
 
   const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors, isSubmitting },
+    register: registerPassword,
+    handleSubmit: handleSubmitPassword,
+    reset: resetPassword,
+    formState: { errors: passwordErrors, isSubmitting: isPasswordSubmitting },
   } = useForm<PasswordSchema>({
     resolver: standardSchemaResolver(passwordSchema),
+  });
+
+  const {
+    register: registerProfile,
+    handleSubmit: handleSubmitProfile,
+    formState: { errors: profileErrors, isSubmitting: isProfileSubmitting },
+  } = useForm<ProfileSchema>({
+    resolver: standardSchemaResolver(profileSchema),
+    defaultValues: {
+      name: user?.name || "",
+    },
   });
 
   const { data: hasPassword } = useQuery({
@@ -71,7 +91,7 @@ export function UserProfileModal({
     enabled: !!user,
   });
 
-  const onSubmit = async (data: PasswordSchema) => {
+  const onPasswordSubmit = async (data: PasswordSchema) => {
     const { error } = await authClient.changePassword({
       newPassword: data.newPassword,
       currentPassword: data.currentPassword,
@@ -86,7 +106,22 @@ export function UserProfileModal({
     toast.success("PROTOCOL OVERWRITTEN", {
       description: "New access key established.",
     });
-    reset();
+    resetPassword();
+  };
+
+  const onProfileSubmit = async (data: ProfileSchema) => {
+    const { error } = await authClient.updateUser({
+      name: data.name,
+    });
+    if (error) {
+      toast.error("UPDATE FAILED", {
+        description: error.message || "Could not update profile alias.",
+      });
+      return;
+    }
+    toast.success("ALIAS UPDATED", {
+      description: `Identity re-registered as: ${data.name}`,
+    });
   };
 
   if (!shouldRender || !user) return null;
@@ -172,6 +207,7 @@ export function UserProfileModal({
 
         {/* Right Column: Details & Settings */}
         <div className="flex-1 p-5 md:p-8 bg-black relative flex flex-col min-h-0 overflow-y-auto custom-scrollbar">
+          {/* Identity Data */}
           <div className="mb-8 shrink-0">
             <h3 className="text-sm font-bold font-mono text-zzz-gray uppercase tracking-widest mb-4 flex items-center gap-2">
               <Fingerprint size={16} /> Identity_Data
@@ -206,18 +242,72 @@ export function UserProfileModal({
             </div>
           </div>
 
+          {/* Profile Configuration */}
+          <div className="mb-8 shrink-0">
+            <h3 className="text-sm font-bold font-mono text-zzz-gray uppercase tracking-widest mb-4 flex items-center gap-2">
+              <UserCog size={16} /> Profile_Config
+            </h3>
+            <form
+              onSubmit={handleSubmitProfile(onProfileSubmit)}
+              className="flex gap-2 items-start"
+            >
+              <div className="flex-1 space-y-1">
+                <div className="relative group">
+                  <UserIcon
+                    className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
+                      profileErrors.name
+                        ? "text-zzz-orange"
+                        : "text-gray-600 group-focus-within:text-zzz-lime"
+                    }`}
+                    size={14}
+                  />
+                  <input
+                    type="text"
+                    {...registerProfile("name")}
+                    placeholder="Proxy Alias"
+                    className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
+                      profileErrors.name
+                        ? "border-zzz-orange"
+                        : "border-zzz-gray focus:border-zzz-lime"
+                    }`}
+                  />
+                </div>
+                {profileErrors.name && (
+                  <div className="text-[9px] text-zzz-orange font-mono uppercase pl-1">
+                    {profileErrors.name.message}
+                  </div>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={isProfileSubmitting}
+                className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 cursor-pointer"
+              >
+                {isProfileSubmitting ? (
+                  <Loader2 size={16} className="animate-spin" />
+                ) : (
+                  <Check size={16} />
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Security Settings */}
           <div className="mb-8 shrink-0">
             <h3 className="text-sm font-bold font-mono text-zzz-gray uppercase tracking-widest mb-4 flex items-center gap-2">
               <Shield size={16} /> Security_Protocol
             </h3>
 
             {hasPassword ? (
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+              <form
+                onSubmit={handleSubmitPassword(onPasswordSubmit)}
+                className="space-y-4"
+              >
                 <div className="space-y-1">
                   <div className="relative group">
                     <Lock
                       className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                        errors.currentPassword
+                        passwordErrors.currentPassword
                           ? "text-zzz-orange"
                           : "text-gray-600 group-focus-within:text-zzz-lime"
                       }`}
@@ -225,18 +315,18 @@ export function UserProfileModal({
                     />
                     <input
                       type="password"
-                      {...register("currentPassword")}
+                      {...registerPassword("currentPassword")}
                       placeholder="Current Access Key"
                       className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
-                        errors.currentPassword
+                        passwordErrors.currentPassword
                           ? "border-zzz-orange"
                           : "border-zzz-gray focus:border-zzz-lime"
                       }`}
                     />
                   </div>
-                  {errors.currentPassword && (
+                  {passwordErrors.currentPassword && (
                     <div className="text-[9px] text-zzz-orange font-mono uppercase pl-1">
-                      {errors.currentPassword.message}
+                      {passwordErrors.currentPassword.message}
                     </div>
                   )}
                 </div>
@@ -245,7 +335,7 @@ export function UserProfileModal({
                   <div className="relative group">
                     <Key
                       className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                        errors.newPassword
+                        passwordErrors.newPassword
                           ? "text-zzz-orange"
                           : "text-gray-600 group-focus-within:text-zzz-lime"
                       }`}
@@ -253,18 +343,18 @@ export function UserProfileModal({
                     />
                     <input
                       type="password"
-                      {...register("newPassword")}
+                      {...registerPassword("newPassword")}
                       placeholder="New Access Key"
                       className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
-                        errors.newPassword
+                        passwordErrors.newPassword
                           ? "border-zzz-orange"
                           : "border-zzz-gray focus:border-zzz-lime"
                       }`}
                     />
                   </div>
-                  {errors.newPassword && (
+                  {passwordErrors.newPassword && (
                     <div className="text-[9px] text-zzz-orange font-mono uppercase pl-1">
-                      {errors.newPassword.message}
+                      {passwordErrors.newPassword.message}
                     </div>
                   )}
                 </div>
@@ -274,7 +364,7 @@ export function UserProfileModal({
                     <div className="relative group">
                       <Key
                         className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                          errors.confirmPassword
+                          passwordErrors.confirmPassword
                             ? "text-zzz-orange"
                             : "text-gray-600 group-focus-within:text-zzz-lime"
                         }`}
@@ -282,27 +372,27 @@ export function UserProfileModal({
                       />
                       <input
                         type="password"
-                        {...register("confirmPassword")}
+                        {...registerPassword("confirmPassword")}
                         placeholder="Confirm Key"
                         className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-2 focus:outline-none transition-colors ${
-                          errors.confirmPassword
+                          passwordErrors.confirmPassword
                             ? "border-zzz-orange"
                             : "border-zzz-gray focus:border-zzz-lime"
                         }`}
                       />
                     </div>
-                    {errors.confirmPassword && (
+                    {passwordErrors.confirmPassword && (
                       <div className="text-[9px] text-zzz-orange font-mono uppercase pl-1">
-                        {errors.confirmPassword.message}
+                        {passwordErrors.confirmPassword.message}
                       </div>
                     )}
                   </div>
                   <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
+                    disabled={isPasswordSubmitting}
+                    className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 cursor-pointer"
                   >
-                    {isSubmitting ? (
+                    {isPasswordSubmitting ? (
                       <Loader2 size={16} className="animate-spin" />
                     ) : (
                       <Check size={16} />
