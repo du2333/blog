@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 
 interface TechButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -35,7 +36,7 @@ const TechButton: React.FC<TechButtonProps> = ({
 
   return (
     <button
-      className={`${baseStyles} ${sizeStyles[size]} ${variants[variant]} ${className}`}
+      className={cn(baseStyles, sizeStyles[size], variants[variant], className)}
       {...props}
     >
       <div className="flex items-center justify-center gap-2 relative z-10">

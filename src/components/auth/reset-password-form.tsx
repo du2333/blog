@@ -182,7 +182,7 @@ export function ResetPasswordForm({
         type="submit"
         disabled={isSubmitting}
         variant="secondary"
-        className="w-full h-12 text-sm justify-center border-zzz-cyan text-zzz-cyan hover:bg-zzz-cyan hover:text-black hover:border-zzz-cyan"
+        className="w-full h-12 text-sm justify-center border-zzz-cyan text-zzz-cyan hover:bg-zzz-cyan hover:text-black hover:border-zzz-cyan disabled:hover:bg-transparent disabled:hover:text-zzz-cyan"
         icon={
           isSubmitting ? (
             <Loader2 className="animate-spin" size={18} />
