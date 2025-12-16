@@ -95,6 +95,11 @@ mark {
     overflow-x: hidden;
   }
 
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
   /* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
   h1,
   h2,
