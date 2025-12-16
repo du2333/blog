@@ -97,7 +97,7 @@ export function Navbar({
             {/* Desktop Search Trigger */}
             <button
               onClick={onSearchClick}
-              className="hidden md:flex group items-center gap-3 px-4 h-9 bg-black border border-zzz-gray hover:border-zzz-lime transition-all duration-300 clip-corner-tr active:scale-95 cursor-pointer"
+              className="hidden md:flex group items-center gap-3 px-4 h-9 bg-black border border-zzz-gray hover:border-zzz-lime transition-all duration-300 clip-corner-tr active:scale-95"
               title="Search Database (Ctrl+K)"
             >
               <Search
@@ -123,7 +123,7 @@ export function Navbar({
                   {user.role === "admin" && (
                     <Link to="/admin">
                       <button
-                        className="flex items-center gap-2 px-4 h-10 border border-zzz-gray hover:border-zzz-orange hover:text-zzz-orange transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-bl group cursor-pointer"
+                        className="flex items-center gap-2 px-4 h-10 border border-zzz-gray hover:border-zzz-orange hover:text-zzz-orange transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-bl group"
                         title="HDD Command Center"
                       >
                         <LayoutDashboard
@@ -138,7 +138,7 @@ export function Navbar({
                   {/* User Avatar: Opens Profile Modal */}
                   <button
                     onClick={onOpenProfile}
-                    className="flex items-center gap-3 group pl-2 text-left cursor-pointer"
+                    className="flex items-center gap-3 group pl-2 text-left"
                     title="Open Profile Card"
                   >
                     <div className="hidden lg:block">
@@ -175,7 +175,7 @@ export function Navbar({
                 </>
               ) : (
                 <Link to="/login" search={{ redirectTo: location.pathname }}>
-                  <button className="flex items-center gap-2 px-4 h-9 border border-zzz-gray hover:bg-zzz-lime hover:text-black hover:border-zzz-lime transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-br group cursor-pointer">
+                  <button className="flex items-center gap-2 px-4 h-9 border border-zzz-gray hover:bg-zzz-lime hover:text-black hover:border-zzz-lime transition-all text-[10px] font-bold font-mono uppercase tracking-widest clip-corner-br group">
                     <LogIn
                       size={14}
                       className="group-hover:translate-x-0.5 transition-transform"

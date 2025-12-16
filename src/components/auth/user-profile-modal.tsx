@@ -281,7 +281,7 @@ export function UserProfileModal({
               <button
                 type="submit"
                 disabled={isProfileSubmitting}
-                className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 cursor-pointer"
+                className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
               >
                 {isProfileSubmitting ? (
                   <Loader2 size={16} className="animate-spin" />
@@ -390,7 +390,7 @@ export function UserProfileModal({
                   <button
                     type="submit"
                     disabled={isPasswordSubmitting}
-                    className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0 cursor-pointer"
+                    className="h-[34px] px-4 bg-zzz-dark border border-zzz-gray text-white hover:border-zzz-lime hover:text-zzz-lime transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center shrink-0"
                   >
                     {isPasswordSubmitting ? (
                       <Loader2 size={16} className="animate-spin" />

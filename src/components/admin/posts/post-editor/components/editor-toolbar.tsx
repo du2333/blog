@@ -43,7 +43,7 @@ export function EditorToolbar({
       <div className="flex items-center gap-2 md:gap-4">
         <button
           onClick={onBack}
-          className="text-gray-500 hover:text-white transition-colors flex items-center gap-2 cursor-pointer p-1"
+          className="text-gray-500 hover:text-white transition-colors flex items-center gap-2 p-1"
         >
           <ArrowLeft size={18} />
           <span className="font-mono text-xs hidden md:inline">

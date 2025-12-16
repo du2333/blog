@@ -83,7 +83,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
           onClick={() =>
             navigate({ to: "/post/$slug", params: { slug: post.slug } })
           }
-          className={`h-9 w-9 cursor-pointer flex items-center justify-center bg-black border border-zzz-gray transition-colors ${
+          className={`h-9 w-9 flex items-center justify-center bg-black border border-zzz-gray transition-colors ${
             !isPostPubliclyViewable(post)
               ? "text-gray-600 cursor-not-allowed border-gray-800"
               : "text-zzz-cyan hover:bg-zzz-cyan hover:text-black"
@@ -99,13 +99,13 @@ export function PostRow({ post, onDelete }: PostRowProps) {
               params: { id: String(post.id) },
             })
           }
-          className="p-2 bg-black border border-zzz-gray text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors cursor-pointer"
+          className="p-2 bg-black border border-zzz-gray text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors"
           title="Edit"
         >
           <Edit3 size={14} />
         </button>
         <button
-          className="p-2 bg-black border border-zzz-gray text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors cursor-pointer"
+          className="p-2 bg-black border border-zzz-gray text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors"
           title="Delete"
           onClick={() => onDelete(post)}
         >

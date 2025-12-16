@@ -149,7 +149,7 @@ function StatusSelector({
           <button
             key={s}
             onClick={() => onChange(s)}
-            className={`text-[10px] py-2 font-bold border uppercase cursor-pointer ${
+            className={`text-[10px] py-2 font-bold border uppercase ${
               value === s
                 ? "bg-zzz-lime text-black border-zzz-lime"
                 : "border-zzz-gray text-gray-400 hover:border-white"

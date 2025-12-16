@@ -26,7 +26,7 @@ export function PostSidebar({
                 key={cat}
                 onClick={() => onSelectCategory(cat)}
                 className={`
-                            group w-full flex items-center justify-between py-3 pr-4 transition-all duration-300 border-b border-dashed border-zzz-gray/20 hover:pl-4 cursor-pointer
+                            group w-full flex items-center justify-between py-3 pr-4 transition-all duration-300 border-b border-dashed border-zzz-gray/20 hover:pl-4
                             ${isActive ? "pl-4" : ""}
                         `}
               >

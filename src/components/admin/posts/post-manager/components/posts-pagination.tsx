@@ -71,7 +71,7 @@ export function PostsPagination({
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors cursor-pointer"
+          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
         >
           <ChevronLeft size={16} />
         </button>
@@ -86,7 +86,7 @@ export function PostsPagination({
             ) : (
               <button
                 onClick={() => onPageChange(pageNumber)}
-                className={`h-9 w-9 cursor-pointer flex items-center justify-center font-bold font-mono text-xs border transition-colors ${
+                className={`h-9 w-9 flex items-center justify-center font-bold font-mono text-xs border transition-colors ${
                   currentPage === pageNumber
                     ? "bg-zzz-lime text-black border-zzz-lime"
                     : "bg-black text-gray-400 border-zzz-gray hover:text-white hover:border-white"
@@ -102,7 +102,7 @@ export function PostsPagination({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors cursor-pointer"
+          className="h-9 w-9 flex items-center justify-center border border-zzz-gray text-gray-600 disabled:opacity-30 disabled:cursor-not-allowed hover:border-white hover:text-white transition-colors"
         >
           <ChevronRight size={16} />
         </button>

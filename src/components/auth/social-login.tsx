@@ -33,7 +33,7 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
         type="button"
         onClick={handleGithubLogin}
         disabled={isLoading}
-        className="group relative w-full h-12 bg-black border border-zzz-gray hover:border-white transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden clip-corner-bl disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+        className="group relative w-full h-12 bg-black border border-zzz-gray hover:border-white transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden clip-corner-bl disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {/* Hover Fill Effect */}
         <div className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0"></div>

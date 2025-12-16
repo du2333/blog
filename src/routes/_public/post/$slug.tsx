@@ -204,7 +204,7 @@ function RouteComponent() {
       >
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="group relative h-12 w-12 bg-zzz-dark border border-zzz-lime text-zzz-lime flex items-center justify-center hover:bg-zzz-lime hover:text-black transition-all clip-corner-tr shadow-[0_0_20px_rgba(204,255,0,0.2)] overflow-hidden cursor-pointer"
+          className="group relative h-12 w-12 bg-zzz-dark border border-zzz-lime text-zzz-lime flex items-center justify-center hover:bg-zzz-lime hover:text-black transition-all clip-corner-tr shadow-[0_0_20px_rgba(204,255,0,0.2)] overflow-hidden"
         >
           <ArrowUp size={20} className="relative z-10" />
           <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>

@@ -175,7 +175,7 @@ export function SideBar({
             </div>
             <button
               onClick={handleSignOutClick}
-              className="text-gray-500 hover:text-white transition-colors cursor-pointer"
+              className="text-gray-500 hover:text-white transition-colors"
               title="Logout"
             >
               <LogOut size={14} />

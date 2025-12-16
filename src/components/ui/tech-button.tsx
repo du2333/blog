@@ -17,7 +17,7 @@ const TechButton: React.FC<TechButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "relative font-sans uppercase font-bold tracking-wider transition-all duration-200 overflow-hidden group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer";
+    "relative font-sans uppercase font-bold tracking-wider transition-all duration-200 overflow-hidden group active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed";
 
   const sizeStyles = {
     sm: "px-3 py-1 text-[10px]",
