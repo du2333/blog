@@ -7,7 +7,6 @@ import { serverEnv } from "@/lib/env/server.env";
 
 export function createAuth(db: DB, env: Env) {
   const {
-    REQUIRE_EMAIL_VERIFICATION,
     BETTER_AUTH_SECRET,
     BETTER_AUTH_URL,
     ADMIN_EMAIL,
@@ -25,7 +24,7 @@ export function createAuth(db: DB, env: Env) {
     },
     emailAndPassword: {
       enabled: true,
-      requireEmailVerification: REQUIRE_EMAIL_VERIFICATION,
+      requireEmailVerification: true, // TODO: Check if email provider and sender configuration environment variables are set
       sendResetPassword({ user, url, token }) {
         // TODO: Send reset password email, use waitUntil to send email in background
         console.log(user, url, token);
