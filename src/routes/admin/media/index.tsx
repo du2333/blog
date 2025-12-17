@@ -145,8 +145,8 @@ function MediaLibrary() {
         onClose={cancelDelete}
         onConfirm={confirmDelete}
         title="PURGE ASSETS"
-        message={`Are you sure you want to permanently delete ${deleteTarget?.length} items? This action cannot be reversed.`}
-        confirmLabel="DELETE FOREVER"
+        message={`你确定要永久删除 ${deleteTarget?.length} 个资产? 此操作无法撤销。`}
+        confirmLabel="永久删除"
         isDanger={true}
         isLoading={isDeleting}
       />

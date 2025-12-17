@@ -214,8 +214,8 @@ export function PostManager({
         onClose={() => !deleteMutation.isPending && setPostToDelete(null)}
         onConfirm={confirmDelete}
         title="PURGE DATA LOG"
-        message={`Are you sure you want to permanently delete the entry "${postToDelete?.title}"? This action cannot be undone.`}
-        confirmLabel="DELETE FOREVER"
+        message={`你确定要永久删除条目 "${postToDelete?.title}"? 此操作无法撤销。`}
+        confirmLabel="永久删除"
         isDanger={true}
         isLoading={deleteMutation.isPending}
       />
