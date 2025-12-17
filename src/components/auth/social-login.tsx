@@ -1,6 +1,7 @@
 import { authClient } from "@/lib/auth/auth.client";
 import { ArrowRight, Github, Loader2 } from "lucide-react";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -10,13 +11,23 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
 
     setIsLoading(true);
 
-    await authClient.signIn.social({
+    const { error } = await authClient.signIn.social({
       provider: "github",
       errorCallbackURL: `${window.location.origin}/login`,
       callbackURL: redirectTo
         ? `${window.location.origin}${redirectTo}`
         : `${window.location.origin}/admin`,
     });
+
+    if (error) {
+      toast.error("ACCESS_DENIED", {
+        description: error.message || "访问被拒绝",
+      });
+      setIsLoading(false);
+      return;
+    }
+
+    setIsLoading(false);
   };
 
   return (

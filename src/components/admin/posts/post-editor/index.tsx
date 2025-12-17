@@ -87,7 +87,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               onChange={(e) => setPost({ ...post, title: e.target.value })}
               minRows={1}
               placeholder="UNTITLED_LOG..."
-              className="w-full bg-transparent text-4xl md:text-6xl font-black font-sans uppercase text-white placeholder-gray-800 focus:outline-none border-l-4 border-transparent focus:border-zzz-lime pl-4 py-1 transition-all overflow-hidden leading-none"
+              className="w-full bg-transparent text-4xl md:text-6xl font-black font-sans uppercase text-white placeholder-gray-800 focus:outline-none border-l-4 border-transparent focus:border-zzz-lime pl-4 py-1 transition-all overflow-hidden leading-none resize-none"
             />
             <div className="absolute -left-6 top-2 bottom-2 w-1 bg-zzz-gray/20 group-hover:bg-zzz-gray/50 transition-colors pointer-events-none" />
           </div>

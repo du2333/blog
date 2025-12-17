@@ -9,7 +9,7 @@
     "serve": "vite preview",
     "test": "vitest run",
     "cf-typegen": "wrangler types --env-interface Env",
-    "db:studio": "drizzle-kit studio --port 5555",
+    "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",
     "auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
   },
