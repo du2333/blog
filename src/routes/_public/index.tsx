@@ -1,26 +1,16 @@
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { FeaturedTransmission } from "@/components/home/featured-transmission";
 import TechButton from "@/components/ui/tech-button";
-import { getPostsCursorFn } from "@/features/posts/api/posts.public.api";
+import { featuredPostsQuery } from "@/features/posts/posts.query";
 import { HERO_ASSETS } from "@/lib/config/assets";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { ArrowRight, Disc } from "lucide-react";
-
-const postsQuery = queryOptions({
-  queryKey: ["posts", "home"],
-  queryFn: async () => {
-    const result = await getPostsCursorFn({
-      data: { limit: 4 },
-    });
-    return result.items;
-  },
-});
 
 export const Route = createFileRoute("/_public/")({
   component: App,
   loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(postsQuery);
+    await context.queryClient.ensureQueryData(featuredPostsQuery);
   },
   head: () => ({
     links: [...HERO_ASSETS],
@@ -30,7 +20,7 @@ export const Route = createFileRoute("/_public/")({
 
 function App() {
   const router = useRouter();
-  const { data: posts } = useSuspenseQuery(postsQuery);
+  const { data: posts } = useSuspenseQuery(featuredPostsQuery);
 
   return (
     <div className="flex flex-col gap-16 animate-in fade-in slide-in-from-bottom-4 duration-700 w-full max-w-[1600px] mx-auto fill-mode-forwards">

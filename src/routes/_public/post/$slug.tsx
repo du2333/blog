@@ -2,10 +2,10 @@ import { ContentRenderer } from "@/components/article/content-renderer";
 import TableOfContents from "@/components/article/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import TechButton from "@/components/ui/tech-button";
-import { findPostBySlugFn } from "@/features/posts/api/posts.public.api";
+import { postBySlugQuery } from "@/features/posts/posts.query";
 import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
   createFileRoute,
@@ -22,18 +22,11 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-function postQuery(slug: string) {
-  return queryOptions({
-    queryKey: ["post", "public", slug],
-    queryFn: () => findPostBySlugFn({ data: { slug } }),
-  });
-}
-
 export const Route = createFileRoute("/_public/post/$slug")({
   component: RouteComponent,
   loader: async ({ context, params }) => {
     const post = await context.queryClient.ensureQueryData(
-      postQuery(params.slug)
+      postBySlugQuery(params.slug)
     );
     if (!post) {
       throw notFound();
@@ -43,7 +36,9 @@ export const Route = createFileRoute("/_public/post/$slug")({
 });
 
 function RouteComponent() {
-  const { data: post } = useSuspenseQuery(postQuery(Route.useParams().slug));
+  const { data: post } = useSuspenseQuery(
+    postBySlugQuery(Route.useParams().slug)
+  );
   const router = useRouter();
   const [showBackToTop, setShowBackToTop] = useState(false);
 

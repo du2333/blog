@@ -1,25 +1,13 @@
-import { LoadingFallback } from "@/components/common/loading-fallback";
 import {
   PostEditor,
   type PostEditorData,
 } from "@/components/admin/posts/post-editor";
-import {
-  findPostByIdFn,
-  updatePostFn,
-} from "@/features/posts/api/posts.admin.api";
-import {
-  queryOptions,
-  useQueryClient,
-  useQuery,
-} from "@tanstack/react-query";
-import { createFileRoute } from "@tanstack/react-router";
 import { ErrorPage } from "@/components/common/error-page";
-
-const postQuery = (id: number) =>
-  queryOptions({
-    queryKey: ["post", id],
-    queryFn: () => findPostByIdFn({ data: { id } }),
-  });
+import { LoadingFallback } from "@/components/common/loading-fallback";
+import { updatePostFn } from "@/features/posts/api/posts.admin.api";
+import { postByIdQuery } from "@/features/posts/posts.query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/admin/posts/edit/$id")({
   ssr: false,
@@ -30,7 +18,7 @@ function EditPost() {
   const { id } = Route.useParams();
   const postId = Number(id);
   const queryClient = useQueryClient();
-  const { data: post, isPending, error } = useQuery(postQuery(postId));
+  const { data: post, isPending, error } = useQuery(postByIdQuery(postId));
 
   if (error) {
     return <ErrorPage error={error} />;

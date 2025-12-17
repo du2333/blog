@@ -3,12 +3,9 @@ import { PostFeed } from "@/components/database-feed/post-feed";
 import { PostLoader } from "@/components/database-feed/post-loader";
 import { PostMobileFilter } from "@/components/database-feed/post-mobile-filter";
 import { PostSidebar } from "@/components/database-feed/post-sidebar";
-import { getPostsCursorFn } from "@/features/posts/api/posts.public.api";
+import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
 import { PostCategory } from "@/lib/db/schema";
-import {
-  infiniteQueryOptions,
-  useSuspenseInfiniteQuery,
-} from "@tanstack/react-query";
+import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Database } from "lucide-react";
 import { useCallback, useMemo } from "react";
@@ -17,20 +14,6 @@ import { z } from "zod";
 const searchSchema = z.object({
   category: z.custom<PostCategory>().optional().catch(undefined),
 });
-
-const postsInfiniteQueryOptions = (category?: PostCategory) =>
-  infiniteQueryOptions({
-    queryKey: ["posts", "public", "cursor", category],
-    queryFn: ({ pageParam }) =>
-      getPostsCursorFn({
-        data: {
-          cursor: pageParam,
-          category: category,
-        },
-      }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    initialPageParam: undefined as number | undefined,
-  });
 
 export const Route = createFileRoute("/_public/database/")({
   component: RouteComponent,

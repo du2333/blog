@@ -1,8 +1,8 @@
 import { Logo } from "@/components/common/logo";
 import {
-  getSessionFn,
-  getIsEmailVerficationRequiredFn,
-} from "@/features/auth/auth.api";
+  emailVerficationRequiredQuery,
+  sessionQuery,
+} from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
 import {
   createFileRoute,
@@ -13,9 +13,10 @@ import {
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_auth")({
-  beforeLoad: async ({ location }) => {
-    const session = await getSessionFn();
-    const isEmailVerficationRequired = await getIsEmailVerficationRequiredFn();
+  beforeLoad: async ({ context, location }) => {
+    const session = await context.queryClient.ensureQueryData(sessionQuery);
+    const isEmailVerficationRequired =
+      await context.queryClient.ensureQueryData(emailVerficationRequiredQuery);
 
     if (session && !location.pathname.includes("verify-email")) {
       throw redirect({ to: "/" });
