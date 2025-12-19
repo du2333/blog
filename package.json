@@ -14,6 +14,7 @@
     "auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.49",
     "@hookform/resolvers": "^5.2.2",
     "@orama/orama": "^3.1.16",
     "@tailwindcss/vite": "^4.0.6",
@@ -36,6 +37,7 @@
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",
     "@tiptap/static-renderer": "^3.13.0",
+    "ai": "^5.0.115",
     "better-auth": "^1.4.6",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

@@ -1,4 +1,4 @@
-import { generateSummaryByPostId } from "@/lib/ai/summarizer";
+import { generateSummaryByPostId } from "@/features/posts/services/posts-processing.service";
 import { createDb } from "@/lib/db";
 import { addOrUpdateSearchDoc } from "@/lib/search/ops";
 import {
@@ -13,10 +13,8 @@ type Params = {
 
 export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
-    const db = createDb(this.env);
-
     const post = await step.do(
-      "generate summary",
+      `generate summary for post ${event.payload.postId}`,
       {
         retries: {
           limit: 3,
@@ -25,7 +23,11 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
         },
       },
       async () => {
-        return await generateSummaryByPostId(db, event.payload.postId);
+        const db = createDb(this.env);
+        return await generateSummaryByPostId({
+          db,
+          postId: event.payload.postId,
+        });
       }
     );
 

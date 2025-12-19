@@ -9,16 +9,18 @@ import {
   slugExists,
   updatePost,
 } from "@/features/posts/data/posts.data";
+import { summarizeText } from "@/lib/ai/summarizer";
 import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { purgePostCDNCache } from "@/lib/cache/revalidate";
 import {
   POST_STATUSES,
   PostCategory,
+  PostSelectSchema,
   PostStatus,
   PostUpdateSchema,
 } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
-import { slugify } from "@/lib/editor/utils";
+import { convertToPlainText, slugify } from "@/lib/editor/utils";
 import { createAdminFn } from "@/lib/middlewares";
 import { deleteSearchDoc } from "@/lib/search/ops";
 import { z } from "zod";
@@ -179,6 +181,17 @@ export const generateSlugFn = createAdminFn()
     // Fallback: use timestamp
     const fallbackSlug = `${baseSlug}-${Date.now()}`;
     return { slug: fallbackSlug };
+  });
+
+export const previewSummaryFn = createAdminFn({
+  method: "POST",
+})
+  .inputValidator(PostSelectSchema.pick({ contentJson: true }))
+  .handler(async ({ data }) => {
+    const plainText = convertToPlainText(data.contentJson);
+    const { summary } = await summarizeText({ text: plainText });
+
+    return { summary };
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()

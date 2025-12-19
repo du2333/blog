@@ -1,5 +1,7 @@
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import {
   generateSlugFn,
+  previewSummaryFn,
   startPostProcessWorkflowFn,
 } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -9,7 +11,6 @@ import type { JSONContent } from "@tiptap/react";
 import { Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import type { PostEditorData } from "../types";
 
 interface UsePostActionsOptions {
   postId: number;
@@ -94,6 +95,23 @@ export function usePostActions({
 
   const processDataMutation = useMutation({
     mutationFn: startPostProcessWorkflowFn,
+  });
+
+  const previewSummaryMutation = useMutation({
+    mutationFn: () =>
+      previewSummaryFn({
+        data: {
+          contentJson: post.contentJson,
+        },
+      }),
+    onSuccess: (result) => {
+      setPost((prev) => ({ ...prev, summary: result.summary }));
+    },
+    onError: (error) => {
+      toast.error("摘要生成失败", {
+        description: error.message,
+      });
+    },
   });
 
   // Auto-generate slug on title change (debounced)
@@ -219,16 +237,11 @@ export function usePostActions({
       return;
     }
     setIsGeneratingSummary(true);
-    // TODO: Replace with actual AI summary generation
-    setTimeout(() => {
-      const mockSummary =
-        "AI_ANALYSIS_COMPLETE: Content analysis pending implementation. Summary will be auto-generated from post content.";
-      setPost((prev) => ({ ...prev, summary: mockSummary }));
-      setIsGeneratingSummary(false);
-      toast.info("SUMMARY GENERATED", {
-        description: "AI summary generation is pending implementation.",
-      });
-    }, 1500);
+    previewSummaryMutation.mutate(undefined, {
+      onSettled: () => {
+        setIsGeneratingSummary(false);
+      },
+    });
   };
 
   return {

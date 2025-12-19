@@ -43,5 +43,5 @@
 			"binding": "POST_PROCESS_WORKFLOW",
 			"class_name": "PostProcessWorkflow",
 		}
-	]
+	],
 }
