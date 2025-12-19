@@ -7,7 +7,8 @@ import { serverEnv } from "@/lib/env/server.env";
  * @returns Promise that resolves when purge is complete
  */
 export async function purgeCDNCache(env: Env, paths: string[]) {
-  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN } = serverEnv(env);
+  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN } =
+    serverEnv(env);
 
   // Build full URLs with proper encoding
   const urls = paths.map((path) => {
@@ -43,6 +44,12 @@ export async function purgeCDNCache(env: Env, paths: string[]) {
  * @param slug - Post slug
  */
 export async function purgePostCDNCache(env: Env, slug: string) {
+  const { ENVIRONMENT } = serverEnv(env);
+  if (ENVIRONMENT === "dev") {
+    console.log("Skipping CDN cache purge in development environment");
+    return;
+  }
+
   return purgeCDNCache(env, [
     `/post/${slug}`, // 文章详情页
     `/database`, // 数据库页

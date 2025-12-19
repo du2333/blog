@@ -15,6 +15,7 @@ const serverEnvSchema = z.object({
       "Must be a valid domain (e.g., www.example.com)"
     ),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
+  ENVIRONMENT: z.enum(["dev", "prod"]).optional(),
 });
 
 export const serverEnv = (env: Env) => {
