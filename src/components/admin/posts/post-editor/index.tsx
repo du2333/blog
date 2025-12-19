@@ -1,8 +1,9 @@
 import { Editor } from "@/components/tiptap-editor";
-import { useRouter } from "@tanstack/react-router";
+import { useRouter, useBlocker } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import ConfirmationModal from "@/components/ui/confirmation-modal";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
 import { useAutoSave, usePostActions } from "./hooks";
@@ -34,6 +35,11 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     onSave,
   });
 
+  const { proceed, reset, status } = useBlocker({
+    shouldBlockFn: () => saveStatus === "SAVING",
+    withResolver: true,
+  });
+
   // Post actions hook (slug, read time, summary)
   const {
     isGeneratingSlug,
@@ -63,6 +69,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] relative overflow-hidden bg-black">
+      <ConfirmationModal
+        isOpen={status === "blocked"}
+        onClose={() => reset?.()}
+        onConfirm={() => proceed?.()}
+        title="未保存的更改"
+        message="你确定要离开吗？你将丢失所有未保存的更改。"
+      />
+
       {/* Top Control Bar */}
       <EditorToolbar
         postId={initialData.id}

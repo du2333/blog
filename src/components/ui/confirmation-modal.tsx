@@ -19,7 +19,7 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onConfirm,
   title,
   message,
-  confirmLabel = "CONFIRM",
+  confirmLabel = "确定",
   isDanger = false,
   isLoading = false,
 }) => {
