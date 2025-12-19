@@ -1,19 +1,20 @@
-import { useState } from "react";
-import { useNavigate, Link } from "@tanstack/react-router";
-import { authClient } from "@/lib/auth/auth.client";
 import TechButton from "@/components/ui/tech-button";
+import { usePreviousLocation } from "@/hooks/use-previous-location";
+import { authClient } from "@/lib/auth/auth.client";
+import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { Link, useNavigate } from "@tanstack/react-router";
 import {
-  Mail,
-  Lock,
-  ChevronRight,
   AlertCircle,
+  ChevronRight,
   Loader2,
+  Lock,
+  Mail,
   ShieldCheck,
   Zap,
 } from "lucide-react";
-import { toast } from "sonner";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
+import { toast } from "sonner";
 import { z } from "zod";
 
 const loginSchema = z.object({
@@ -30,6 +31,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   const [isUnverifiedEmail, setIsUnverifiedEmail] = useState(false);
 
   const navigate = useNavigate();
+  const previousLocation = usePreviousLocation();
 
   const {
     register,
@@ -74,7 +76,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     setTimeout(() => {
       setLoginStep("SUCCESS");
       setTimeout(() => {
-        navigate({ to: redirectTo ? redirectTo : "/admin" });
+        navigate({ to: redirectTo ?? previousLocation });
         toast.success("访问已授予", {
           description: "欢迎回来，绳匠！",
         });

@@ -1,3 +1,4 @@
+import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 import { ArrowRight, Github, Loader2 } from "lucide-react";
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { toast } from "sonner";
 
 export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
   const [isLoading, setIsLoading] = useState(false);
+  const previousLocation = usePreviousLocation();
 
   const handleGithubLogin = async () => {
     if (isLoading) return;
@@ -14,9 +16,7 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
     const { error } = await authClient.signIn.social({
       provider: "github",
       errorCallbackURL: `${window.location.origin}/login`,
-      callbackURL: redirectTo
-        ? `${window.location.origin}${redirectTo}`
-        : `${window.location.origin}/admin`,
+      callbackURL: `${window.location.origin}${redirectTo ?? previousLocation}`,
     });
 
     if (error) {
