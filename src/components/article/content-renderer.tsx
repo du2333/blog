@@ -1,5 +1,6 @@
 import type { JSONContent } from "@tiptap/react";
 import { renderReact } from "@/components/article/render";
+import { useMemo } from "react";
 
 interface ContentRendererProps {
   content: JSONContent | null;
@@ -11,11 +12,14 @@ interface ContentRendererProps {
  * 服务器端渲染 React 组件，客户端 hydration 后自动激活交互功能
  */
 export function ContentRenderer({ content, className }: ContentRendererProps) {
+  const renderedContent = useMemo(() => {
+    if (!content) return null;
+    return renderReact(content);
+  }, [content]);
+
   if (!content) {
     return null;
   }
-
-  const renderedContent = renderReact(content);
 
   return <div className={className}>{renderedContent}</div>;
 }

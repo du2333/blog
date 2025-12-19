@@ -1,18 +1,27 @@
 import { Check, Copy } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import { codeToHtml } from "shiki";
+
+// 全局高亮缓存，防止组件卸载后重新挂载时重复计算
+const highlightCache = new Map<string, string>();
 
 interface CodeBlockProps {
   code: string;
   language: string | null;
 }
 
-export function CodeBlock({ code, language }: CodeBlockProps) {
-  const [html, setHtml] = useState<string>("");
+export const CodeBlock = memo(function CodeBlock({
+  code,
+  language,
+}: CodeBlockProps) {
+  const cacheKey = `${language}-${code}`;
+  const [html, setHtml] = useState<string>(highlightCache.get(cacheKey) || "");
   const [copied, setCopied] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(!!highlightCache.get(cacheKey));
 
   useEffect(() => {
+    if (isLoaded && html) return; // 如果已经有缓存，直接跳过
+
     let mounted = true;
 
     async function highlight() {
@@ -23,6 +32,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         });
 
         if (mounted) {
+          highlightCache.set(cacheKey, highlighted);
           setHtml(highlighted);
           setIsLoaded(true);
         }
@@ -30,9 +40,8 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
         console.error("Shiki failed to load:", e);
         // Fallback to plain text
         if (mounted) {
-          setHtml(
-            `<pre class="text-gray-300 font-mono text-sm whitespace-pre-wrap">${code}</pre>`
-          );
+          const fallback = `<pre class="text-gray-300 font-mono text-sm whitespace-pre-wrap">${code}</pre>`;
+          setHtml(fallback);
           setIsLoaded(true);
         }
       }
@@ -43,7 +52,7 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
     return () => {
       mounted = false;
     };
-  }, [code, language]);
+  }, [code, language, isLoaded, html, cacheKey]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code);
@@ -110,4 +119,4 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
       <div className="h-1 w-full bg-zzz-lime scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
     </div>
   );
-}
+});
