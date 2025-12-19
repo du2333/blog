@@ -35,7 +35,7 @@ export default function TableOfContents({
   return (
     <nav
       ref={navRef}
-      className="sticky top-32 self-start hidden lg:block w-72 p-4 animate-in fade-in slide-in-from-right-8 duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto custom-scrollbar pr-2 fill-mode-backwards"
+      className="sticky top-32 self-start hidden lg:block w-[250px] p-4 animate-in fade-in slide-in-from-right-4 duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar pr-6 fill-mode-backwards"
     >
       {/* Header */}
       <div className="flex items-center gap-2 mb-6 text-zzz-lime font-mono text-xs font-bold uppercase tracking-widest border-b border-zzz-gray pb-2 sticky top-0 bg-zzz-black/95 backdrop-blur z-20">
@@ -60,13 +60,13 @@ export default function TableOfContents({
                   e.preventDefault();
                   const element = document.getElementById(node.id);
                   if (element) {
-                    // 平滑滚动到目标位置
-                    element.scrollIntoView({ behavior: "smooth" });
-
-                    // 更新 URL hash（不触发页面跳转）
+                    element.scrollIntoView({
+                      behavior: "smooth",
+                    });
                     navigate({
                       hash: node.id,
-                      replace: true, // 使用 replace 避免在历史记录中添加过多条目
+                      replace: true,
+                      hashScrollIntoView: false,
                     });
                   }
                 }}
@@ -79,14 +79,14 @@ export default function TableOfContents({
                                 : "text-gray-500 hover:text-white"
                             }
                             ${
-                              node.level === 1
+                              node.level === 2
                                 ? "uppercase tracking-wider mt-4 mb-2 font-bold text-zzz-white"
                                 : ""
                             }
                         `}
               >
                 {/* H1 Decorator */}
-                {node.level === 1 && (
+                {node.level === 2 && (
                   <span className="absolute left-0 text-zzz-gray/50 font-bold">
                     #
                   </span>

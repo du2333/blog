@@ -1,5 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
-import { slugify } from "./utils";
+import { slugify } from "@/lib/editor/utils";
 
 export interface TableOfContentsItem {
   id: string;
@@ -30,13 +30,9 @@ export function generateTableOfContents(
 }
 
 function getNodeText(node: JSONContent): string {
-  let text = "";
+  if (node.text) return node.text;
   if (node.content) {
-    node.content.forEach((child) => {
-      if (child.type === "text") {
-        text += child.text || "";
-      }
-    });
+    return node.content.map(getNodeText).join("");
   }
-  return text;
+  return "";
 }
