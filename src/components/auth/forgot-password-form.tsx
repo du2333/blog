@@ -34,15 +34,13 @@ export function ForgotPasswordForm() {
     });
 
     if (error) {
-      toast.error("TRANSMISSION FAILED", {
-        description: "无法发送恢复信号。",
-      });
+      toast.error("发送恢复信号失败");
       return;
     }
 
     setSentEmail(data.email);
     setIsSent(true);
-    toast.success("RECOVERY BEACON ACTIVE", {
+    toast.success("恢复信号已激活", {
       description: "请检查您的通讯频道以获取重置密钥。",
     });
   };

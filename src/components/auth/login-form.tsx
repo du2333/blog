@@ -64,8 +64,8 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
           message: "ACCESS_DENIED: 无效的凭据",
         });
       }
-      toast.error("ACCESS_DENIED", {
-        description: error.message || "访问被拒绝",
+      toast.error("访问被拒绝", {
+        description: error.message,
       });
       return;
     }
@@ -75,7 +75,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       setLoginStep("SUCCESS");
       setTimeout(() => {
         navigate({ to: redirectTo ? redirectTo : "/admin" });
-        toast.success("ACCESS_GRANTED", {
+        toast.success("访问已授予", {
           description: "欢迎回来，绳匠！",
         });
       }, 800);

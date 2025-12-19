@@ -33,7 +33,7 @@ async function handleImageUpload(file: File): Promise<string> {
   const formData = new FormData();
   formData.append("image", file);
   const result = await uploadImageFn({ data: formData });
-  toast.success("IMAGE UPLOADED", {
+  toast.success("图片上传成功", {
     description: `${file.name} 已归档保存`,
   });
   return result.url;
@@ -121,7 +121,7 @@ export const extensions = [
   ImageUpload.configure({
     onUpload: handleImageUpload,
     onError: (error) => {
-      toast.error("IMAGE UPLOAD FAILED", {
+      toast.error("图片上传失败", {
         description: error.message,
       });
     },

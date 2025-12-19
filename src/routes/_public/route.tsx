@@ -31,12 +31,12 @@ function PublicLayout() {
   const logout = async () => {
     const { error } = await authClient.signOut();
     if (error) {
-      toast.error("LOGOUT FAILED", {
-        description: "会话终止失败，请稍后重试。",
+      toast.error("会话终止失败, 请稍后重试。", {
+        description: error.message,
       });
       return;
     }
-    toast.success("SESSION TERMINATED", {
+    toast.success("会话已终止", {
       description: "你已安全退出当前会话。",
     });
     router.invalidate();

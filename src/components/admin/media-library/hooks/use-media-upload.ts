@@ -88,7 +88,7 @@ export const useMediaUpload = () => {
             )
           );
 
-          toast.success(`UPLOAD COMPLETE: ${item.name}`);
+          toast.success(`上传完成: ${item.name}`);
           queryClient.invalidateQueries({ queryKey: ["media"] });
         } else {
         }
@@ -108,7 +108,7 @@ export const useMediaUpload = () => {
                 : q
             )
           );
-          toast.error(`UPLOAD FAILED: ${item.name}`);
+          toast.error(`上传失败: ${item.name}`);
         }
       } finally {
         // 关键修复：使用 finally 确保锁一定会被释放

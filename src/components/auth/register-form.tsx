@@ -53,7 +53,7 @@ export function RegisterForm() {
     });
 
     if (error) {
-      toast.error("REGISTRATION FAILED", {
+      toast.error("注册失败", {
         description: error.message || "信号被防火墙阻塞。",
       });
       return;
@@ -61,11 +61,11 @@ export function RegisterForm() {
 
     if (isEmailVerficationRequired) {
       setIsSuccess(true);
-      toast.success("PROXY ID CREATED", {
+      toast.success("代理人ID已创建", {
         description: "验证信号已发送。请检查您的收件箱。",
       });
     } else {
-      toast.success("ACCESS GRANTED", {
+      toast.success("访问已授予", {
         description: "欢迎来到绳网。",
       });
       navigate({ to: "/admin" });

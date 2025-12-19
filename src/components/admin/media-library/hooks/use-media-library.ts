@@ -111,7 +111,7 @@ export const useMediaLibrary = () => {
         return next;
       });
       setDeleteTarget(null);
-      toast.success("ASSETS PURGED", {
+      toast.success("资源已永久删除", {
         description: `${deletedKeys.length} 个项目已从存储中永久删除。`,
       });
     },
@@ -127,7 +127,7 @@ export const useMediaLibrary = () => {
     mutationFn: updateMediaNameFn,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["media"] });
-      toast.success("ASSET UPDATED", {
+      toast.success("资源元数据已更新", {
         description: `元数据更改已保存。`,
       });
     },
@@ -182,7 +182,7 @@ export const useMediaLibrary = () => {
     }
 
     if (blockedKeys.length > 0) {
-      toast.warning("PROTECTED ASSETS DETECTED", {
+      toast.warning("检测到受保护的资源", {
         description: `${blockedKeys.length} 个项目当前正在被日志使用，无法删除。`,
       });
     }

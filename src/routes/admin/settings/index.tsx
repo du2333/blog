@@ -24,12 +24,12 @@ function RouteComponent() {
     setIsIndexing(true);
 
     toast.promise(buildSearchIndexFn, {
-      loading: "SCANNING_SECTOR_DATA...",
+      loading: "扫描数据...",
       success: ({ duration, indexed }) => {
         setIsIndexing(false);
-        return `SEARCH INDEX RECONSTRUCTED IN ${duration}ms FOR ${indexed} ENTRIES`;
+        return `搜索索引重建完成, 耗时 ${duration}ms, 索引 ${indexed} 条数据`;
       },
-      error: "INDEXING_FAILED",
+      error: "索引重建失败",
     });
   };
 

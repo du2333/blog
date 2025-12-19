@@ -20,8 +20,8 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
     });
 
     if (error) {
-      toast.error("ACCESS_DENIED", {
-        description: error.message || "访问被拒绝",
+      toast.error("访问被拒绝", {
+        description: error.message,
       });
       setIsLoading(false);
       return;

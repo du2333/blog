@@ -101,12 +101,12 @@ export function UserProfileModal({
       revokeOtherSessions: true,
     });
     if (error) {
-      toast.error("PROTOCOL OVERWRITING FAILED", {
+      toast.error("协议覆盖失败", {
         description: error.message,
       });
       return;
     }
-    toast.success("PROTOCOL OVERWRITTEN", {
+    toast.success("协议已覆盖", {
       description: "新访问密钥已建立。",
     });
     resetPassword();
@@ -118,12 +118,12 @@ export function UserProfileModal({
       image: data.image,
     });
     if (error) {
-      toast.error("UPDATE FAILED", {
-        description: error.message || "无法更新代理人别名。",
+      toast.error("更新失败, 无法更新代理人别名。", {
+        description: error.message,
       });
       return;
     }
-    toast.success("ALIAS UPDATED", {
+    toast.success("代理人别名已更新", {
       description: `身份已重新注册为: ${data.name}`,
     });
   };

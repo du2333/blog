@@ -171,7 +171,7 @@ export function usePostActions({
     const silent = options?.silent ?? false;
     if (!post.contentJson) {
       if (!silent) {
-        toast.error("NO CONTENT", {
+        toast.error("没有内容", {
           description: "需要先写一些内容才能计算阅读时间。",
         });
       }
@@ -231,7 +231,7 @@ export function usePostActions({
 
   const handleGenerateSummary = () => {
     if (!post.contentJson) {
-      toast.error("NO CONTENT", {
+      toast.error("没有内容", {
         description: "需要先写一些内容才能生成摘要。",
       });
       return;

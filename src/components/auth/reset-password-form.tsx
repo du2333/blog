@@ -37,7 +37,7 @@ export function ResetPasswordForm({
 
   const onSubmit = async (data: ResetPasswordSchema) => {
     if (!token) {
-      toast.error("INVALID TOKEN", { description: "缺少安全令牌。" });
+      toast.error("缺少安全令牌");
       return;
     }
 
@@ -47,14 +47,14 @@ export function ResetPasswordForm({
     });
 
     if (error) {
-      toast.error("RESET FAILED", {
+      toast.error("重置失败", {
         description: "令牌可能已过期。",
       });
       return;
     }
 
-    toast.success("PROTOCOL OVERWRITTEN", {
-      description: "新访问密钥已建立。重定向至登录...",
+    toast.success("新访问密钥已建立", {
+      description: "重定向至登录...",
     });
     navigate({ to: "/login" });
   };
