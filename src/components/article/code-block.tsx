@@ -82,15 +82,27 @@ export function CodeBlock({ code, language }: CodeBlockProps) {
 
       {/* Code Area */}
       <div className="relative p-0 overflow-x-auto custom-scrollbar bg-[#1a1b1e]">
-        {!isLoaded ? (
-          <div className="p-6 text-gray-500 font-mono text-sm animate-pulse">
-            INITIALIZING_HIGHLIGHTER...
+        <div
+          className={`p-6 text-sm font-mono leading-relaxed [&>pre]:bg-transparent! ${
+            !isLoaded ? "opacity-40" : ""
+          }`}
+        >
+          {isLoaded ? (
+            <div dangerouslySetInnerHTML={{ __html: html }} />
+          ) : (
+            <pre className="m-0 p-0 bg-transparent whitespace-pre">
+              <code>{code.trim()}</code>
+            </pre>
+          )}
+        </div>
+
+        {!isLoaded && (
+          <div className="absolute top-3 right-3 flex items-center gap-2 px-2 py-1 bg-zzz-dark/80 border border-zzz-gray rounded-sm z-10">
+            <div className="w-1.5 h-1.5 bg-zzz-lime rounded-full animate-pulse"></div>
+            <span className="text-[10px] font-mono text-zzz-gray uppercase tracking-widest">
+              Highlighting...
+            </span>
           </div>
-        ) : (
-          <div
-            className="p-6 text-sm font-mono leading-relaxed [&>pre]:bg-transparent!"
-            dangerouslySetInnerHTML={{ __html: html }}
-          />
         )}
       </div>
 
