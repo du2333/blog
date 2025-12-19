@@ -1,5 +1,5 @@
 import { Logo } from "@/components/common/logo";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import {
   LayoutDashboard,
   LayoutGrid,
@@ -32,8 +32,6 @@ export function Navbar({
   navOptions,
   onOpenProfile,
 }: NavbarProps) {
-  const location = useLocation();
-
   return (
     <>
       <header className="sticky top-0 z-40 bg-zzz-black/90 backdrop-blur-md border-b border-zzz-gray h-20">
