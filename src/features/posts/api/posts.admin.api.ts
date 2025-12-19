@@ -198,11 +198,10 @@ export const startPostProcessWorkflowFn = createAdminFn()
   .inputValidator(
     z.object({
       id: z.number(),
-      slug: z.string(),
       status: z.enum(POST_STATUSES),
     })
   )
-  .handler(async ({ data: { id, slug, status }, context }) => {
+  .handler(async ({ data: { id, status }, context }) => {
     if (status !== "published") return;
 
     // 生成摘要， 更新搜索索引
@@ -211,12 +210,4 @@ export const startPostProcessWorkflowFn = createAdminFn()
         postId: id,
       },
     });
-
-    // 删除 KV 缓存、更新缓存版本、清除 CDN 缓存
-    const tasks = [];
-    tasks.push(deleteCachedData(context, ["post", slug]));
-    tasks.push(purgePostCDNCache(context.env, slug));
-    tasks.push(bumpCacheVersion(context, "posts:list"));
-
-    context.executionCtx.waitUntil(Promise.all(tasks));
   });

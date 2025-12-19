@@ -49,7 +49,7 @@ export function usePostActions({
 
     setTimeout(() => {
       processDataMutation.mutate({
-        data: { id: postId, slug: post.slug, status: post.status },
+        data: { id: postId, status: post.status },
       });
 
       // Feedback: Notify user task is running

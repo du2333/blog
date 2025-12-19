@@ -1,4 +1,6 @@
 import { generateSummaryByPostId } from "@/features/posts/services/posts-processing.service";
+import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
+import { purgePostCDNCache } from "@/lib/cache/revalidate";
 import { createDb } from "@/lib/db";
 import { addOrUpdateSearchDoc } from "@/lib/search/ops";
 import {
@@ -33,6 +35,15 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     await step.do("update search index", async () => {
       return await addOrUpdateSearchDoc(this.env, post);
+    });
+
+    await step.do("Invalidate caches", async () => {
+      const tasks = [
+        deleteCachedData({ env: this.env }, ["post", post.slug]),
+        purgePostCDNCache(this.env, post.slug),
+        bumpCacheVersion({ env: this.env }, "posts:list"),
+      ];
+      await Promise.all(tasks);
     });
   }
 }
