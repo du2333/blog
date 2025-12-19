@@ -7,8 +7,8 @@ import {
   ListOrdered,
   Quote,
   Code,
-  Heading1,
   Heading2,
+  Heading3,
   Image as ImageIcon,
   Undo,
   Redo,
@@ -65,8 +65,8 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 }) => {
   const {
     isBold,
-    isHeading1,
     isHeading2,
+    isHeading3,
     isItalic,
     isUnderline,
     isStrike,
@@ -79,8 +79,8 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     editor,
     selector: (ctx) => ({
       isBold: ctx.editor.isActive("bold"),
-      isHeading1: ctx.editor.isActive("heading", { level: 1 }),
       isHeading2: ctx.editor.isActive("heading", { level: 2 }),
+      isHeading3: ctx.editor.isActive("heading", { level: 3 }),
       isItalic: ctx.editor.isActive("italic"),
       isUnderline: ctx.editor.isActive("underline"),
       isStrike: ctx.editor.isActive("strike"),
@@ -101,14 +101,14 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
       {/* Headings */}
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-        isActive={isHeading1}
-        icon={Heading1}
-      />
-      <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         isActive={isHeading2}
         icon={Heading2}
+      />
+      <ToolbarButton
+        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        isActive={isHeading3}
+        icon={Heading3}
       />
 
       <div className="h-4 w-px bg-zzz-gray mx-1"></div>
