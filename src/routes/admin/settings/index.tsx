@@ -118,15 +118,14 @@ function RouteComponent() {
                   <Search size={20} />
                 </div>
                 <h3 className="font-bold text-white uppercase tracking-wider">
-                  Search Index
+                  搜索索引
                 </h3>
               </div>
               <p className="text-xs font-mono text-gray-500 leading-relaxed max-w-lg">
-                Re-scan all database entries (posts & media) to rebuild the
-                search index map.
+                重新扫描所有数据库条目（日志和媒体）以重建搜索索引映射。
                 <span className="text-zzz-orange block mt-1">
                   <AlertTriangle size={10} className="inline mr-1" />
-                  ONLY USE DURING DEVELOPMENT OR AFTER BULK IMPORTS.
+                  仅在开发期间或导入大量数据后使用。
                 </span>
               </p>
             </div>
@@ -145,7 +144,7 @@ function RouteComponent() {
                   )
                 }
               >
-                {isIndexing ? "BUILDING..." : "REBUILD INDEX"}
+                {isIndexing ? "构建中..." : "重建索引"}
               </TechButton>
             </div>
 
@@ -161,11 +160,11 @@ function RouteComponent() {
                   <RefreshCw size={20} />
                 </div>
                 <h3 className="font-bold text-white uppercase tracking-wider">
-                  System Cache
+                  系统缓存清理
                 </h3>
               </div>
               <p className="text-xs font-mono text-gray-500">
-                Purge local storage and session data. Will force a re-login.
+                清除本地存储和会话数据。强制断开所有已建立的代理人连接。
               </p>
             </div>
             <div>
@@ -173,7 +172,7 @@ function RouteComponent() {
                 disabled
                 className="px-6 py-2 border border-zzz-gray text-gray-600 font-mono text-xs font-bold uppercase cursor-not-allowed"
               >
-                PURGE_CACHE
+                清理缓存
               </button>
             </div>
           </div>

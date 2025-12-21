@@ -125,7 +125,7 @@ export function FeaturedTransmission({
               key={post.id}
               to={"/post/$slug"}
               params={{ slug: post.slug }}
-              className="group flex-1 bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
+              className="group bg-black border border-zzz-gray hover:border-zzz-cyan p-5 cursor-pointer transition-all hover:bg-zzz-gray/10 relative overflow-hidden flex flex-col justify-center"
             >
               <div className="flex justify-between items-start mb-2">
                 <div className="font-mono text-[10px] text-gray-500 group-hover:text-zzz-cyan transition-colors">
