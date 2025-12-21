@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { X, ZoomIn, Download } from "lucide-react";
-import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 
 interface ZoomableImageProps
   extends Omit<React.ImgHTMLAttributes<HTMLImageElement>, "src"> {
@@ -18,13 +17,9 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isClosing, setIsClosing] = useState(false);
-  const shouldRender = useDelayUnmount(isOpen, 1000);
 
   const handleClose = () => {
-    setIsClosing(true);
     setIsOpen(false);
-    setTimeout(() => setIsClosing(false), 1000);
   };
 
   // Lock body scroll when open
@@ -88,79 +83,76 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
         )}
       </div>
 
-      {/* Lightbox Portal */}
-      {shouldRender &&
-        createPortal(
+      {/* Lightbox Portal - Always mounted but controlled via visibility/opacity */}
+      {createPortal(
+        <div
+          className={`fixed inset-0 z-[200] flex items-center justify-center transition-all duration-500 ease-in-out ${
+            isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          }`}
+        >
+          {/* Backdrop */}
           <div
-            className={`fixed inset-0 z-[200] flex items-center justify-center ${
-              isOpen ? "pointer-events-auto" : "pointer-events-none"
+            className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+            onClick={handleClose}
+          />
+
+          {/* Controls */}
+          <div
+            className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-500 ease-in-out ${
+              isOpen
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-4"
             }`}
           >
-            {/* Backdrop */}
-            <div
-              className={`absolute inset-0 bg-white dark:bg-[#050505] transition-opacity duration-1000 ease-in-out ${
-                isOpen ? "opacity-98" : "opacity-0"
-              }`}
-              onClick={handleClose}
-            />
-
-            {/* Controls */}
-            <div
-              className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-1000 ease-in-out ${
-                isOpen
-                  ? "opacity-100 translate-y-0"
-                  : "opacity-0 -translate-y-10"
-              }`}
-            >
-              <div className="flex flex-col">
-                <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
-                  Image Metadata // {alt || "Untitled Record"}
-                </span>
-              </div>
-              <div className="flex gap-6">
-                <a href={originalSrc} download target="_blank" rel="noreferrer">
-                  <button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300">
-                    <Download size={18} />
-                  </button>
-                </a>
-                <button
-                  onClick={handleClose}
-                  className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300"
-                >
-                  <X size={22} />
-                </button>
-              </div>
-            </div>
-
-            {/* Image */}
-            <div
-              className={`relative z-[205] p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out ${
-                isOpen ? "scale-100 opacity-100" : "scale-[1.02] opacity-0"
-              }`}
-            >
-              <img
-                src={src}
-                alt={alt}
-                loading="eager"
-                className="max-w-full max-h-full object-contain shadow-2xl dark:shadow-none"
-              />
-            </div>
-
-            {/* Footer Decoration */}
-            <div
-              className={`absolute bottom-12 left-0 right-0 text-center pointer-events-none transition-opacity duration-1000 delay-300 ${
-                isOpen ? "opacity-100" : "opacity-0"
-              }`}
-            >
-              <span className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.8em]">
-                Esc or Click to Return
+            <div className="flex flex-col">
+              <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+                Image Metadata // {alt || "Untitled Record"}
               </span>
             </div>
-          </div>,
-          document.body
-        )}
+            <div className="flex gap-6">
+              <a href={originalSrc} download target="_blank" rel="noreferrer">
+                <button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300">
+                  <Download size={18} />
+                </button>
+              </a>
+              <button
+                onClick={handleClose}
+                className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300"
+              >
+                <X size={22} />
+              </button>
+            </div>
+          </div>
+
+          {/* Image */}
+          <div
+            className={`relative z-[205] p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-500 ease-in-out ${
+              isOpen ? "scale-100 opacity-100" : "scale-[1.01] opacity-0"
+            }`}
+          >
+            <img
+              src={src}
+              alt={alt}
+              loading="eager"
+              className="max-w-full max-h-full object-contain shadow-2xl dark:shadow-none"
+            />
+          </div>
+
+          {/* Footer Decoration */}
+          <div
+            className={`absolute bottom-12 left-0 right-0 text-center pointer-events-none transition-opacity duration-500 delay-200 ${
+              isOpen ? "opacity-100" : "opacity-0"
+            }`}
+          >
+            <span className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.8em]">
+              Esc or Click to Return
+            </span>
+          </div>
+        </div>,
+        document.body
+      )}
     </>
   );
-};   
+};
 
 export default ZoomableImage;

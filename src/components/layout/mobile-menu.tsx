@@ -1,6 +1,5 @@
-import TechButton from "@/components/ui/tech-button";
 import { Link } from "@tanstack/react-router";
-import { Disc, LogIn, LogOut, UserCog, UserIcon, X } from "lucide-react";
+import { LogOut, UserIcon, X } from "lucide-react";
 
 interface MobileMenuProps {
   navOptions: {
@@ -30,159 +29,130 @@ export function MobileMenu({
 }: MobileMenuProps) {
   return (
     <div
-      className={`fixed inset-0 z-50 transition-all duration-500 ${
-        isOpen
-          ? "opacity-100 pointer-events-auto"
-          : "opacity-0 pointer-events-none delay-200"
+      className={`fixed inset-0 z-[100] transition-all duration-500 ease-in-out ${
+        isOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
       }`}
     >
+      {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/90 backdrop-blur-md transition-opacity duration-500"
+        className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
         onClick={onClose}
       />
-      <div
-        className={`
-              absolute right-0 top-0 bottom-0 w-full sm:w-[400px] bg-zzz-dark border-l-2 border-zzz-lime 
-              flex flex-col shadow-[-20px_0_50px_rgba(204,255,0,0.1)]
-              transition-transform duration-500 cubic-bezier(0.19, 1, 0.22, 1)
-              ${isOpen ? "translate-x-0" : "translate-x-full"}
-          `}
-      >
-        <div className="flex items-center justify-between p-6 border-b border-zzz-gray bg-zzz-black relative overflow-hidden shrink-0 h-20">
-          <div
-            className={`absolute inset-0 bg-zzz-lime transition-transform duration-700 ease-out ${
-              isOpen
-                ? "translate-x-full opacity-0 delay-100"
-                : "-translate-x-full opacity-50"
-            }`}
-          ></div>
-          <span className="font-mono text-zzz-lime text-xs tracking-[0.2em] uppercase relative z-10 flex items-center gap-2">
-            <div
-              className={`w-2 h-2 bg-zzz-lime rounded-full ${
-                isOpen ? "animate-pulse" : ""
-              }`}
-            ></div>
-            System_Nav
-          </span>
+
+      {/* Content Container */}
+      <div className={`relative h-full w-full flex flex-col p-8 md:p-20 transition-all duration-500 delay-75 ${
+        isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+      }`}>
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div className="flex flex-col">
+            <span className="font-serif italic text-2xl tracking-tight text-zinc-900 dark:text-zinc-100">
+              导航
+            </span>
+            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 mt-1">
+              Directory
+            </span>
+          </div>
           <button
             onClick={onClose}
-            className="text-white hover:text-black p-2 relative z-10 group overflow-hidden border border-transparent hover:border-zzz-lime transition-all"
+            className="p-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
           >
-            <div className="absolute inset-0 bg-zzz-lime translate-y-full group-hover:translate-y-0 transition-transform duration-200"></div>
-            <X size={24} className="relative z-10" />
+            <X size={28} strokeWidth={1} />
           </button>
         </div>
-        <div className="flex-1 flex flex-col justify-center px-10 gap-10 bg-[radial-gradient(circle_at_top_right,#1a1a1a_0%,transparent_40%)] overflow-y-auto relative z-10">
+
+        {/* Links */}
+        <nav className="flex-1 flex flex-col justify-center space-y-8 md:space-y-12">
           {navOptions.map((item, idx) => (
             <Link
               key={item.id}
               to={item.to}
               onClick={onClose}
-              className={`
-                              text-4xl font-black font-sans uppercase text-white text-left flex items-center gap-6 group transition-all duration-300
-                              ${
-                                isOpen
-                                  ? "translate-x-0 opacity-100"
-                                  : "translate-x-10 opacity-0"
-                              }
-                          `}
-              style={{ transitionDelay: `${150 + idx * 100}ms` }}
+              className={`group flex items-baseline gap-6 transition-all duration-500 ${
+                isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              }`}
+              style={{ transitionDelay: isOpen ? `${100 + idx * 75}ms` : "0ms" }}
             >
-              <span
-                className={`w-1 h-1 bg-${item.color} group-hover:h-8 group-hover:w-2 transition-all duration-300`}
-              ></span>
-              <span
-                className={`group-hover:text-${item.color} transition-colors`}
-              >
+              <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
+                0{idx + 1}
+              </span>
+              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:italic group-hover:translate-x-4 transition-all duration-700">
                 {item.label}
               </span>
             </Link>
           ))}
 
-          {/* Mobile specific admin link if logged in AND ADMIN */}
-          {user && user.role === "admin" && (
+          {user?.role === "admin" && (
             <Link
               to="/admin"
               onClick={onClose}
-              className={`
-                              text-4xl font-black font-sans uppercase text-white text-left flex items-center gap-6 group transition-all duration-300
-                              ${
-                                isOpen
-                                  ? "translate-x-0 opacity-100"
-                                  : "translate-x-10 opacity-0"
-                              }
-                          `}
-              style={{ transitionDelay: "350ms" }}
+              className={`group flex items-baseline gap-6 transition-all duration-1000 ${
+                isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              }`}
+              style={{ transitionDelay: isOpen ? `${200 + navOptions.length * 100}ms` : "0ms" }}
             >
-              <span className="w-1 h-1 bg-zzz-cyan group-hover:h-8 group-hover:w-2 transition-all duration-300"></span>
-              <span className="group-hover:text-zzz-cyan transition-colors">
-                HDD_SYSTEM
+              <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
+                0{navOptions.length + 1}
+              </span>
+              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:italic group-hover:translate-x-4 transition-all duration-700">
+                控制台
               </span>
             </Link>
           )}
-        </div>
+        </nav>
 
-        <div className="absolute bottom-32 -left-16 text-zzz-gray/5 pointer-events-none z-0">
-          <Disc size={300} className="animate-[spin_10s_linear_infinite]" />
-        </div>
-
-        <div className="p-8 border-t border-zzz-gray bg-zzz-black relative shrink-0 z-20">
-          <div className="absolute top-0 left-0 w-full h-1 bg-stripe-pattern opacity-20"></div>
+        {/* Footer: User Info */}
+        <div className={`transition-all duration-500 ${
+          isOpen ? "opacity-100 translate-y-0 delay-500" : "opacity-0 translate-y-4"
+        }`}>
           {user ? (
-            <div className="space-y-4">
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-zinc-100 dark:border-zinc-900">
               <button
                 onClick={() => {
                   onOpenProfile();
                   onClose();
                 }}
-                className="w-full flex items-center gap-3 bg-zzz-dark/50 p-2 border border-transparent hover:border-zzz-lime transition-all group text-left"
+                className="flex items-center gap-6 group"
               >
-                {/* Avatar */}
-                <div className="w-10 h-10 border border-zzz-lime p-0.5 bg-zzz-dark shrink-0 clip-corner-tl flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900 p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
                   {user.image ? (
                     <img
                       src={user.image}
                       alt={user.name}
-                      className="w-full h-full object-cover bg-black"
+                      className="w-full h-full rounded-full object-cover"
                     />
                   ) : (
-                    <UserIcon size={20} className="text-gray-500" />
+                    <div className="w-full h-full rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-300">
+                      <UserIcon size={24} strokeWidth={1} />
+                    </div>
                   )}
                 </div>
-                <div className="flex-1 min-w-0">
-                  <div className="text-xs font-mono text-gray-500 truncate">
-                    PROXY_ID: {user.name}
-                  </div>
-                  <div className="text-[10px] font-mono text-zzz-lime flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-zzz-lime rounded-full animate-pulse"></div>
-                    ONLINE {user.role === "admin" && " [ADMIN]"}
-                  </div>
+                <div className="text-left">
+                  <div className="text-2xl font-serif font-medium">{user.name}</div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] opacity-40">管理个人资料</div>
                 </div>
-                <UserCog
-                  size={16}
-                  className="text-gray-600 group-hover:text-zzz-lime transition-colors"
-                />
               </button>
-              <TechButton
-                className="w-full justify-center"
+
+              <button
                 onClick={() => {
                   logout();
                   onClose();
                 }}
-                icon={<LogOut size={16} />}
+                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-zinc-400 hover:text-red-500 transition-colors py-4"
               >
-                TERMINATE_SESSION
-              </TechButton>
+                <LogOut size={14} />
+                <span>终止当前会话</span>
+              </button>
             </div>
           ) : (
-            <Link to="/login" onClick={onClose}>
-              <TechButton
-                className="w-full justify-center"
-                variant="primary"
-                icon={<LogIn size={16} />}
-              >
-                ESTABLISH_CONNECTION
-              </TechButton>
+            <Link
+              to="/login"
+              onClick={onClose}
+              className="inline-block pt-12 border-t border-zinc-100 dark:border-zinc-900 w-full"
+            >
+              <span className="text-4xl md:text-6xl font-serif font-medium tracking-tight hover:italic transition-all">
+                建立连接 / Login
+              </span>
             </Link>
           )}
         </div>

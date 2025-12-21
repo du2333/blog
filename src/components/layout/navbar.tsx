@@ -50,40 +50,40 @@ export function Navbar({
           </Link>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-8 md:gap-12">
+          <div className="flex items-center gap-6 md:gap-10">
             <nav className="hidden md:flex items-center gap-10 font-sans text-[11px] font-medium tracking-[0.2em] uppercase">
               {navOptions.map((option) => (
                 <Link
                   key={option.id}
                   to={option.to}
-                  className="transition-colors text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 relative group"
+                  className="transition-all duration-500 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 relative group py-2"
                   activeProps={{
                     className: "text-zinc-900 dark:text-zinc-100",
                   }}
                 >
                   {option.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-px bg-current transition-all duration-500 group-hover:w-full"></span>
+                  <span className="absolute bottom-0 left-0 w-0 h-px bg-current transition-all duration-500 group-hover:w-full"></span>
                 </Link>
               ))}
             </nav>
 
-            <div className="flex items-center gap-4 md:gap-6">
+            <div className="flex items-center gap-3 md:gap-4">
               {/* Theme Toggle */}
               <button
                 onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
-                className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-600 dark:text-zinc-400"
+                className="p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-all duration-500 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                 title="切换主题"
               >
-                {appTheme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
+                {appTheme === "dark" ? <Sun size={18} strokeWidth={1.5} /> : <Moon size={18} strokeWidth={1.5} />}
               </button>
 
               {/* Search */}
               <button
                 onClick={onSearchClick}
-                className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                className="p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-all duration-500 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                 title="Search (⌘K)"
               >
-                <Search size={18} />
+                <Search size={18} strokeWidth={1.5} />
               </button>
 
               {/* Profile/Login */}
@@ -93,17 +93,17 @@ export function Navbar({
                     {user.role === "admin" && (
                       <Link
                         to="/admin"
-                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-600 dark:text-zinc-400"
+                        className="p-2.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-all duration-500 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
                         title="进入后台"
                       >
-                        <LayoutDashboard size={18} />
+                        <LayoutDashboard size={18} strokeWidth={1.5} />
                       </Link>
                     )}
                     <button
                       onClick={onOpenProfile}
-                      className="flex items-center gap-3 group"
+                      className="group flex items-center p-0.5 rounded-full border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all duration-500"
                     >
-                      <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/5 transition-transform group-hover:scale-105">
+                      <div className="w-8 h-8 rounded-full overflow-hidden grayscale-[0.5] group-hover:grayscale-0 transition-all duration-500">
                         {user.image ? (
                           <img
                             src={user.image}
@@ -111,14 +111,16 @@ export function Navbar({
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <UserIcon size={18} className="opacity-50" />
+                          <div className="w-full h-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center">
+                            <UserIcon size={16} className="text-zinc-400" strokeWidth={1.5} />
+                          </div>
                         )}
                       </div>
                     </button>
                   </>
                 ) : (
                   <Link to="/login">
-                    <button className="text-[10px] font-medium uppercase tracking-widest px-6 py-2 border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-500">
+                    <button className="text-[10px] font-medium uppercase tracking-[0.2em] px-6 py-2 border border-zinc-200 dark:border-zinc-800 hover:bg-black dark:hover:bg-white hover:text-white dark:hover:text-black transition-all duration-500">
                       登录
                     </button>
                   </Link>
@@ -127,11 +129,11 @@ export function Navbar({
 
               {/* Mobile Menu */}
               <button
-                className="md:hidden p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors"
+                className="md:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-all duration-500"
                 onClick={onMenuClick}
               >
-                <div className="w-5 h-px bg-current mb-1.5"></div>
-                <div className="w-5 h-px bg-current"></div>
+                <div className="w-5 h-px bg-zinc-900 dark:bg-zinc-100"></div>
+                <div className="w-5 h-px bg-zinc-900 dark:bg-zinc-100"></div>
               </button>
             </div>
           </div>

@@ -4,7 +4,6 @@ import { searchDocsFn } from "@/features/search/search.api";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Search, CornerDownLeft } from "lucide-react";
-import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 
 interface SearchCommandCenterProps {
   isOpen: boolean;
@@ -15,7 +14,6 @@ export function SearchCommandCenter({
   isOpen,
   onClose,
 }: SearchCommandCenterProps) {
-  const shouldRender = useDelayUnmount(isOpen, 500);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -37,17 +35,12 @@ export function SearchCommandCenter({
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
+      setQuery("");
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
-
-  useEffect(() => {
-    if (!shouldRender) {
-      setQuery("");
-    }
-  }, [shouldRender]);
 
   const handleSelect = (slug: string) => {
     navigate({ to: "/post/$slug", params: { slug } });
@@ -95,19 +88,17 @@ export function SearchCommandCenter({
     setSelectedIndex(0);
   }, [query]);
 
-  if (!shouldRender) return null;
-
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-start justify-center pt-[15vh] px-4 md:px-6 ${
-        isOpen ? "pointer-events-auto" : "pointer-events-none"
+      className={`fixed inset-0 z-100 flex items-start justify-center pt-[15vh] px-4 md:px-6 transition-all duration-500 ease-in-out ${
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
     >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-white/90 dark:bg-[#050505]/95 backdrop-blur-xl transition-opacity duration-700 ease-in-out ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
+        className="absolute inset-0 bg-white/90 dark:bg-[#050505]/95 backdrop-blur-xl"
         onClick={onClose}
       />
 
@@ -115,11 +106,11 @@ export function SearchCommandCenter({
       <div
         className={`
         relative w-full max-w-3xl flex flex-col max-h-[70vh]
-        transition-all duration-700 ease-in-out transform
+        transition-all duration-500 ease-in-out transform
         ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-98 -translate-y-8"
+            : "opacity-0 scale-99 -translate-y-4"
         }
       `}
       >

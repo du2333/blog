@@ -1,4 +1,3 @@
-import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import {
@@ -54,8 +53,6 @@ export function UserProfileModal({
   user,
   logout,
 }: UserProfileModalProps) {
-  const shouldRender = useDelayUnmount(isOpen, 1000);
-
   const {
     register: registerPassword,
     handleSubmit: handleSubmitPassword,
@@ -117,19 +114,19 @@ export function UserProfileModal({
     });
   };
 
-  if (!shouldRender || !user) return null;
+  if (!user) return null;
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 ${
-        isOpen ? "pointer-events-auto" : "pointer-events-none"
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       }`}
     >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl transition-opacity duration-1000 ease-in-out ${
-          isOpen ? "opacity-100" : "opacity-0"
-        }`}
+        className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
         onClick={onClose}
       />
 
@@ -138,11 +135,11 @@ export function UserProfileModal({
         className={`
             relative w-full max-w-5xl bg-white dark:bg-[#050505] shadow-2xl dark:shadow-none border border-zinc-100 dark:border-zinc-900
             flex flex-col md:flex-row overflow-hidden rounded-sm
-            max-h-[90vh] transition-all duration-1000 ease-in-out transform
+            max-h-[90vh] transition-all duration-500 ease-in-out transform
             ${
               isOpen
-                ? "opacity-100 translate-y-0 scale-100"
-                : "opacity-0 translate-y-12 scale-[0.98]"
+                ? "translate-y-0 scale-100 opacity-100"
+                : "translate-y-8 scale-[0.99] opacity-0"
             }
         `}
       >
