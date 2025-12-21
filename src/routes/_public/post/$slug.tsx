@@ -48,42 +48,42 @@ function RouteComponent() {
   if (!post) throw notFound();
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-10">
+    <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
       {/* Back Link */}
-      <nav className="py-12 animate-in fade-in duration-700 max-w-3xl">
+      <nav className="py-12 animate-in fade-in duration-700 max-w-4xl">
         <button
           onClick={() => router.history.back()}
-          className="group flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-zinc-500 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors"
+          className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
         >
           <ArrowLeft
-            size={12}
+            size={14}
             className="group-hover:-translate-x-1 transition-transform"
           />
-          <span>返回目录</span>
+          <span>返回列表</span>
         </button>
       </nav>
 
-      <article className="space-y-20">
+      <article className="space-y-16">
         {/* Header Section */}
-        <header className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-out fill-mode-forwards max-w-3xl">
+        <header className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards max-w-4xl">
           <div className="space-y-6">
-            <div className="flex items-center gap-4 text-[10px] font-mono tracking-[0.3em] uppercase text-zinc-500 dark:text-zinc-500">
-              <span className="px-2 py-0.5 border border-current rounded-sm">
+            <div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-500">
+              <span className="px-2 py-0.5 border border-zinc-200 dark:border-zinc-800 rounded-sm">
                 {post.category}
               </span>
               <span className="flex items-center gap-1.5">
-                <Calendar size={12} />
+                <Calendar size={12} strokeWidth={1.5} />
                 <ClientOnly fallback={<span>-</span>}>
                   {formatDate(post.publishedAt)}
                 </ClientOnly>
               </span>
               <span className="flex items-center gap-1.5">
-                <Clock size={12} />
+                <Clock size={12} strokeWidth={1.5} />
                 {post.readTimeInMinutes} min
               </span>
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tight text-zinc-950 dark:text-zinc-50">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight text-zinc-950 dark:text-zinc-50">
               {post.title}
             </h1>
           </div>
@@ -95,12 +95,12 @@ function RouteComponent() {
 
         {/* Content Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-20 items-start">
-          <main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-forwards text-zinc-700 dark:text-zinc-300">
+          <main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-forwards text-zinc-800 dark:text-zinc-200 leading-relaxed">
             <ContentRenderer content={post.contentJson} />
 
             <footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-end items-center">
-              <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors">
-                <Share2 size={14} />
+              <button className="group flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors">
+                <Share2 size={14} strokeWidth={1.5} />
                 <span>分享文章</span>
               </button>
             </footer>

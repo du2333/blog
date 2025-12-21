@@ -43,29 +43,31 @@ export function Navbar({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 h-24 flex items-center transition-[height,background-color,border-color] duration-700 ${
+        className={`fixed top-0 left-0 right-0 z-40 h-28 flex items-center transition-all duration-700 ${
           isScrolled
-            ? "bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-900 h-20"
-            : "bg-transparent border-b border-transparent h-24"
+            ? "bg-white/90 dark:bg-[#050505]/90 backdrop-blur-2xl border-b border-zinc-100/60 dark:border-white/5 h-20 shadow-sm"
+            : "bg-transparent border-b border-transparent h-28"
         }`}
       >
-        <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 flex items-center justify-between">
           {/* Left: Brand */}
-          <Link to="/" className="group select-none">
-            <div className="w-8 h-8 text-zinc-900 dark:text-zinc-100">
-              <div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
-                <div className="w-full h-full bg-current rounded-full"></div>
-              </div>
+          <Link to="/" className="group select-none flex items-center gap-4">
+            <div className="w-9 h-9 text-zinc-950 dark:text-zinc-50 relative">
+              <div className="absolute inset-0 border-[2px] border-current rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+              <div className="absolute inset-[30%] bg-current rounded-full group-hover:scale-75 transition-transform duration-700"></div>
             </div>
+            <span className="hidden md:block text-[11px] font-bold uppercase tracking-[0.6em] text-zinc-950 dark:text-zinc-50">
+              Chronicle
+            </span>
           </Link>
 
           {/* Center: Main Nav (Absolute center for true minimalist feel) */}
-          <nav className="hidden lg:flex items-center gap-12">
+          <nav className="hidden lg:flex items-center gap-16">
             {navOptions.map((option) => (
               <Link
                 key={option.id}
                 to={option.to}
-                className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100 transition-all py-2 font-medium relative group"
+                className="text-[10px] uppercase tracking-[0.5em] text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100 transition-all py-2 font-bold relative group"
                 activeProps={{
                   className: "!text-zinc-950 dark:!text-zinc-50",
                 }}
@@ -74,8 +76,10 @@ export function Navbar({
                   <>
                     {option.label}
                     <span
-                      className={`absolute -bottom-1 left-0 h-px bg-current transition-all duration-500 ${
-                        isActive ? "w-full" : "w-0 group-hover:w-1/2"
+                      className={`absolute -bottom-1 left-0 h-[2px] bg-current transition-all duration-700 ease-out ${
+                        isActive
+                          ? "w-full"
+                          : "w-0 group-hover:w-full opacity-0 group-hover:opacity-20"
                       }`}
                     />
                   </>
@@ -173,7 +177,7 @@ export function Navbar({
         </div>
       </header>
       {/* Spacer to push content down since header is fixed */}
-      <div className="h-24"></div>
+      <div className="h-28"></div>
     </>
   );
 }

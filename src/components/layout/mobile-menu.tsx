@@ -46,15 +46,15 @@ export function MobileMenu({
         {/* Header */}
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="font-serif italic text-2xl tracking-tight text-zinc-900 dark:text-zinc-100">
-              导航
+            <span className="font-serif italic text-2xl tracking-tight text-zinc-950 dark:text-zinc-50">
+              菜单
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-4 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            className="w-12 h-12 flex items-center justify-center rounded-full border border-zinc-100 dark:border-zinc-900 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-white/5 transition-all"
           >
-            <X size={28} strokeWidth={1} />
+            <X size={24} strokeWidth={1.5} />
           </button>
         </div>
 
@@ -145,8 +145,8 @@ export function MobileMenu({
                   )}
                 </div>
                 <div className="text-left">
-                  <div className="text-2xl font-serif font-medium">{user.name}</div>
-                  <div className="text-[10px] uppercase tracking-[0.3em] opacity-40">管理个人资料</div>
+                  <div className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">{user.name}</div>
+                  <div className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">个人资料</div>
                 </div>
               </button>
 
@@ -155,10 +155,10 @@ export function MobileMenu({
                   logout();
                   onClose();
                 }}
-                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-zinc-400 hover:text-red-500 transition-colors py-4"
+                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-400 hover:text-red-500 transition-colors py-4"
               >
                 <LogOut size={14} />
-                <span>终止当前会话</span>
+                <span>退出登录</span>
               </button>
             </div>
           ) : (
