@@ -1,13 +1,13 @@
 import { AiProviderSection } from "@/components/admin/settings/ai-provider-section";
 import { EmailServiceSection } from "@/components/admin/settings/email-service-section";
 import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";
-import { createFileRoute } from "@tanstack/react-router";
-import { Check, Info } from "lucide-react";
-import { toast } from "sonner";
 import { useSystemSetting } from "@/components/admin/settings/use-system-setting";
-import { SystemConfig, DEFAULT_CONFIG } from "@/features/config/config.schema";
-import { useState, useEffect } from "react";
 import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
+import { DEFAULT_CONFIG, SystemConfig } from "@/features/config/config.schema";
+import { createFileRoute } from "@tanstack/react-router";
+import { Check, Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings/")({
   component: RouteComponent,
@@ -35,13 +35,18 @@ function RouteComponent() {
     "ai" | "email" | "maintenance"
   >("ai");
 
-  const handleSaveConfig = () => {
-    const promise = saveSettings({ data: config });
-    toast.promise(promise, {
-      loading: "正在保存系统配置...",
-      success: "系统配置已生效",
-      error: "保存失败，请重试",
-    });
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSaveConfig = async () => {
+    setIsSaving(true);
+    try {
+      await saveSettings({ data: config });
+      toast.success("系统配置已生效");
+    } catch (error) {
+      toast.error("保存失败，请重试");
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const navGroups = [
@@ -123,10 +128,19 @@ function RouteComponent() {
         <div className="pt-8">
           <button
             onClick={handleSaveConfig}
-            className="flex items-center justify-center gap-3 w-full py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[10px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-black/10 rounded-sm"
+            disabled={isSaving}
+            className={`flex items-center justify-center gap-3 w-full py-4 transition-all shadow-xl shadow-black/10 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold ${
+              isSaving
+                ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 cursor-wait"
+                : "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:scale-[1.02] active:scale-[0.98]"
+            }`}
           >
-            <Check size={14} />
-            保存当前更改
+            {isSaving ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : (
+              <Check size={14} />
+            )}
+            {isSaving ? "正在保存..." : "保存当前更改"}
           </button>
         </div>
       </aside>
@@ -169,10 +183,19 @@ function RouteComponent() {
       <div className="lg:hidden fixed bottom-10 right-10 z-40">
         <button
           onClick={handleSaveConfig}
-          className="flex items-center gap-3 px-10 py-5 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[10px] uppercase tracking-[0.2em] font-bold rounded-full shadow-2xl transition-all active:scale-95"
+          disabled={isSaving}
+          className={`flex items-center gap-3 px-10 py-5 rounded-full shadow-2xl transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] font-bold ${
+            isSaving
+              ? "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 cursor-wait"
+              : "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+          }`}
         >
-          <Check size={14} />
-          保存
+          {isSaving ? (
+            <Loader2 size={14} className="animate-spin" />
+          ) : (
+            <Check size={14} />
+          )}
+          {isSaving ? "正在保存" : "保存"}
         </button>
       </div>
     </div>
