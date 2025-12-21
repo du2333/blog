@@ -1,47 +1,41 @@
 export function SectionSkeleton() {
   return (
-    <div className="bg-white dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 p-8 space-y-10 rounded-sm animate-pulse">
+    <div className="bg-white dark:bg-[#0c0c0c] p-10 sm:p-14 space-y-16 animate-pulse rounded-sm border border-zinc-100 dark:border-white/5">
       {/* Header Skeleton */}
-      <div className="flex items-center justify-between pb-6 border-b border-zinc-100 dark:border-white/5">
+      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
         <div className="flex items-center gap-4">
-          <div className="w-10 h-10 rounded-full bg-zinc-100 dark:bg-white/5"></div>
+          <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900"></div>
           <div className="space-y-2">
-            <div className="h-4 w-24 bg-zinc-100 dark:bg-white/5 rounded"></div>
-            <div className="h-2 w-16 bg-zinc-100 dark:bg-white/5 rounded opacity-50"></div>
+            <div className="h-6 w-32 bg-zinc-100 dark:bg-zinc-900 rounded"></div>
+            <div className="h-3 w-48 bg-zinc-100 dark:bg-zinc-900 rounded opacity-50"></div>
           </div>
         </div>
-        <div className="h-2 w-20 bg-zinc-100 dark:bg-white/5 rounded opacity-30"></div>
       </div>
 
-      {/* Selector Skeleton */}
-      <div className="space-y-4">
-        <div className="h-2 w-24 bg-zinc-100 dark:bg-white/5 rounded"></div>
-        <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-50 dark:bg-white/[0.03] rounded-sm">
-          <div className="h-8 bg-white dark:bg-zinc-800 rounded-sm"></div>
-          <div className="h-8 bg-transparent"></div>
-        </div>
-      </div>
-
-      {/* Input Fields Skeleton */}
-      <div className="space-y-8">
-        <div className="space-y-4">
-          <div className="h-2 w-32 bg-zinc-100 dark:bg-white/5 rounded"></div>
-          <div className="h-14 bg-zinc-50 dark:bg-white/[0.03] w-full rounded-sm"></div>
-        </div>
-
-        <div className="flex gap-4">
-          <div className="flex-1 space-y-4">
-            <div className="h-2 w-24 bg-zinc-100 dark:bg-white/5 rounded"></div>
-            <div className="h-14 bg-zinc-50 dark:bg-white/[0.03] w-full rounded-sm"></div>
+      <div className="grid grid-cols-1 gap-12 max-w-2xl">
+        {/* Selector Skeleton */}
+        <div className="space-y-6">
+          <div className="h-2 w-24 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
+          <div className="flex gap-3">
+            <div className="h-14 w-32 bg-zinc-100 dark:bg-zinc-900 rounded-sm"></div>
+            <div className="h-14 w-32 bg-zinc-100 dark:bg-zinc-900 rounded-sm opacity-50"></div>
           </div>
-          <div className="w-32 h-14 bg-zinc-100 dark:bg-white/5 mt-auto rounded-sm"></div>
         </div>
-      </div>
 
-      {/* Bottom info */}
-      <div className="pt-4 space-y-2">
-        <div className="h-2 w-20 bg-zinc-100 dark:bg-white/5 rounded opacity-30"></div>
-        <div className="h-20 bg-zinc-50 dark:bg-white/[0.02] rounded-sm"></div>
+        {/* Input Skeleton */}
+        <div className="space-y-6">
+          <div className="h-2 w-32 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
+          <div className="h-16 w-full border-b border-zinc-100 dark:border-zinc-900"></div>
+        </div>
+
+        {/* Bottom Area Skeleton */}
+        <div className="flex flex-col md:flex-row gap-10 md:items-end">
+          <div className="flex-1 space-y-6">
+            <div className="h-2 w-24 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
+            <div className="h-16 w-full border-b border-zinc-100 dark:border-zinc-900"></div>
+          </div>
+          <div className="h-[60px] w-48 bg-zinc-100 dark:bg-zinc-900 rounded-sm"></div>
+        </div>
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ import {
   useMediaUpload,
 } from "@/components/admin/media-library/hooks";
 import { MediaAsset } from "@/components/admin/media-library/types";
-import { LoadingFallback } from "@/components/common/loading-fallback";
+import { MediaLibrarySkeleton } from "@/components/skeletons/media-skeleton";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { formatBytes } from "@/lib/utils";
 import { createFileRoute } from "@tanstack/react-router";
@@ -112,7 +112,7 @@ function MediaLibrary() {
 
       {/* Media Grid */}
       {isPending ? (
-        <LoadingFallback />
+        <MediaLibrarySkeleton />
       ) : (
         <MediaGrid
           media={mediaItems}
