@@ -1,13 +1,9 @@
 import { LoadingFallback } from "@/components/common/loading-fallback";
-import { PostFeed } from "@/components/database-feed/post-feed";
-import { PostLoader } from "@/components/database-feed/post-loader";
-import { PostMobileFilter } from "@/components/database-feed/post-mobile-filter";
-import { PostSidebar } from "@/components/database-feed/post-sidebar";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
 import { PostCategory } from "@/lib/db/schema";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { Database } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowRight, Clock, RefreshCw } from "lucide-react";
 import { useCallback, useMemo } from "react";
 import { z } from "zod";
 
@@ -31,10 +27,8 @@ function RouteComponent() {
   const { category } = Route.useSearch();
   const navigate = useNavigate();
 
-  // Active category for UI (convert undefined to "ALL")
   const activeCategory = category ?? "ALL";
 
-  // Handle category change
   const handleCategoryChange = useCallback(
     (cat: string) => {
       navigate({
@@ -46,90 +40,127 @@ function RouteComponent() {
     [navigate]
   );
 
-  // Infinite query for posts (SSR prefetched in loader)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
 
-  // Flatten all pages into a single array
   const posts = useMemo(() => {
     return data?.pages.flatMap((page) => page.items) ?? [];
   }, [data]);
 
-  // Load more handler
   const loadMore = useCallback(() => {
     if (!isFetchingNextPage && hasNextPage) {
       fetchNextPage();
     }
   }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
 
+  const categories: { label: string; value: string }[] = [
+    { label: "全部内容", value: "ALL" },
+    { label: "开发日志", value: "DEV" },
+    { label: "设计思考", value: "DESIGN" },
+    { label: "生活碎念", value: "LIFE" },
+    { label: "技术探索", value: "TECH" },
+  ];
+
   return (
-    <div className="w-full max-w-[1800px] mx-auto min-h-screen animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-forwards">
+    <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-10">
       {/* Header Section */}
-      <div className="mb-8 md:mb-12 border-b border-zzz-gray pb-6 flex flex-col items-start md:flex-row md:items-end justify-between gap-6">
-        <div>
-          {/* 
-              Fix: Removed outer pr-14. 
-              Added 'pr-4' specifically to the inner span with 'bg-clip-text'. 
-              This extends the background gradient box to cover the italic slant of the last letter 'e'.
-           */}
-          <h1 className="text-5xl md:text-7xl font-black font-sans uppercase text-white italic tracking-tighter flex items-center gap-4">
-            <Database
-              size={48}
-              className="text-zzz-lime hidden md:block shrink-0"
-            />
-            <span>
-              Data
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-zzz-lime to-zzz-cyan pr-4">
-                base
-              </span>
+      <header className="py-20 md:py-32 space-y-12">
+        <div className="space-y-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 fill-mode-forwards">
+          <div className="flex items-center gap-3">
+            <span className="h-px w-12 bg-black dark:bg-white/40"></span>
+            <span className="text-[10px] uppercase tracking-[0.3em] font-mono opacity-40">
+              Collection of Records
             </span>
+          </div>
+          <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight">
+            档案馆
           </h1>
-          <p className="font-mono text-xs md:text-sm text-gray-500 mt-2 pl-2 border-l-2 border-zzz-lime">
-            正在接入档案区段 01 // PROXY LOGS
+          <p className="max-w-xl text-lg md:text-xl font-light leading-relaxed opacity-60">
+            按时间顺序排列的所有传输记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
           </p>
         </div>
 
-        {/* Stats / Deco - Force left alignment on all breakpoints for consistency */}
-        <div className="flex gap-8 font-mono text-[10px] text-gray-600 uppercase tracking-widest text-left w-full md:w-auto">
-          <div>
-            <div className="text-zzz-lime font-bold text-xl">
-              {posts.length}
+        {/* Categories Filter */}
+        <nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-black/5 dark:border-white/5 pb-8 animate-in fade-in duration-1000 delay-300 fill-mode-forwards">
+          {categories.map((cat) => (
+            <button
+              key={cat.value}
+              onClick={() => handleCategoryChange(cat.value)}
+              className={`text-[11px] uppercase tracking-[0.2em] transition-all duration-500 relative group ${
+                activeCategory === cat.value
+                  ? "text-zinc-900 dark:text-zinc-100 font-bold"
+                  : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+              }`}
+            >
+              {cat.label}
+              <span
+                className={`absolute -bottom-2 left-0 h-px bg-current transition-all duration-500 ${
+                  activeCategory === cat.value
+                    ? "w-full"
+                    : "w-0 group-hover:w-full"
+                }`}
+              ></span>
+            </button>
+          ))}
+        </nav>
+      </header>
+
+      {/* Posts List */}
+      <div className="flex flex-col gap-0 border-t border-black/5 dark:border-white/10">
+        {posts.map((post, index) => (
+          <Link
+            key={post.id}
+            to="/post/$slug"
+            params={{ slug: post.slug }}
+            className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-black/5 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors duration-500 px-4 -mx-4"
+          >
+            <div className="md:col-span-1 text-[10px] font-mono opacity-30 mt-2">
+              {(index + 1).toString().padStart(2, "0")}
             </div>
-            <div>条记录已加载</div>
-          </div>
-          <div>
-            <div className="text-white font-bold text-xl">100%</div>
-            <div>数据完整性</div>
-          </div>
-        </div>
+
+            <div className="md:col-span-7 space-y-4">
+              <h3 className="text-3xl md:text-5xl font-serif leading-tight group-hover:translate-x-2 transition-transform duration-700">
+                {post.title}
+              </h3>
+              <p className="text-sm md:text-base opacity-50 max-w-2xl font-light leading-relaxed line-clamp-2">
+                {post.summary}
+              </p>
+            </div>
+
+            <div className="md:col-span-4 flex flex-col md:items-end justify-between py-2">
+              <div className="flex items-center gap-4 text-[10px] font-mono tracking-widest uppercase opacity-40">
+                <span>{post.category}</span>
+                <span className="w-1 h-1 rounded-full bg-current"></span>
+                <span className="flex items-center gap-1">
+                  <Clock size={10} /> {post.readTimeInMinutes} min
+                </span>
+              </div>
+              <div className="hidden md:flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+                阅读全文 <ArrowRight size={12} />
+              </div>
+            </div>
+          </Link>
+        ))}
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-8 relative items-start">
-        {/* Desktop Sidebar (Sticky) */}
-        <PostSidebar
-          activeCategory={activeCategory}
-          onSelectCategory={handleCategoryChange}
-        />
-
-        {/* Main Feed Area */}
-        <div className="flex-1 min-w-0 w-full">
-          {/* Mobile Filter (Sticky) */}
-          <PostMobileFilter
-            activeCategory={activeCategory}
-            onSelectCategory={handleCategoryChange}
-          />
-
-          {/* Content Feed */}
-          <PostFeed posts={posts} />
-
-          {/* Infinite Scroll Loader */}
-          <PostLoader
-            onLoadMore={loadMore}
-            isLoading={isFetchingNextPage}
-            hasMore={hasNextPage ?? false}
-          />
+      {/* Load More Area */}
+      {hasNextPage && (
+        <div className="mt-20 flex justify-center">
+          <button
+            onClick={loadMore}
+            disabled={isFetchingNextPage}
+            className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-all duration-500 disabled:opacity-20"
+          >
+            {isFetchingNextPage ? "数据加载中..." : "加载更多记录"}
+            <div className="w-10 h-10 rounded-full border border-current flex items-center justify-center group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-all duration-500">
+              <RefreshCw
+                size={14}
+                className={isFetchingNextPage ? "animate-spin" : ""}
+              />
+            </div>
+          </button>
         </div>
-      </div>
+      )}
     </div>
   );
 }

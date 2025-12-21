@@ -44,17 +44,15 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   <button
     onClick={onClick}
     className={clsx(
-      "p-1.5 rounded-sm border transition-all duration-200 flex items-center justify-center gap-2 group relative",
+      "p-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 group relative",
       isActive
-        ? "bg-zzz-lime text-black border-zzz-lime shadow-[0_0_10px_#ccff00]"
-        : variant === "ghost"
-        ? "bg-transparent text-white hover:bg-zzz-gray"
-        : "bg-black text-gray-400 border-gray-800 hover:border-zzz-lime hover:text-zzz-lime"
+        ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm"
+        : "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100"
     )}
     title={label}
     type="button"
   >
-    <Icon size={variant === "ghost" ? 14 : 16} />
+    <Icon size={16} />
   </button>
 );
 
@@ -94,85 +92,93 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
   if (!editor) return null;
 
   return (
-    <div className="sticky top-0 z-30 mb-8 py-2 bg-black/80 backdrop-blur-sm border-b border-zzz-gray/50 flex flex-wrap items-center gap-1 transition-opacity opacity-50 hover:opacity-100 focus-within:opacity-100">
-      <div className="mr-2 px-2 py-1 bg-zzz-gray/10 rounded text-[10px] font-mono font-bold text-zzz-lime flex items-center gap-1">
-        <Terminal size={10} />
-      </div>
-
+    <div className="sticky top-0 z-30 mb-12 py-3 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-900 flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">
       {/* Headings */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
         isActive={isHeading2}
         icon={Heading2}
+        label="大标题"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
         isActive={isHeading3}
         icon={Heading3}
+        label="小标题"
       />
 
-      <div className="h-4 w-px bg-zzz-gray mx-1"></div>
+      <div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
 
       {/* Formatting */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBold().run()}
         isActive={isBold}
         icon={Bold}
+        label="粗体"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleItalic().run()}
         isActive={isItalic}
         icon={Italic}
+        label="斜体"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleUnderline().run()}
         isActive={isUnderline}
         icon={UnderlineIcon}
+        label="下划线"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleStrike().run()}
         isActive={isStrike}
         icon={Strikethrough}
+        label="删除线"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleCode().run()}
         isActive={isCode}
         icon={Code}
+        label="行内代码"
       />
 
-      <div className="h-4 w-px bg-zzz-gray mx-1"></div>
+      <div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
 
       {/* Lists & Blocks */}
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBulletList().run()}
         isActive={isBulletList}
         icon={List}
+        label="无序列表"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         isActive={isOrderedList}
         icon={ListOrdered}
+        label="有序列表"
       />
       <ToolbarButton
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
         isActive={isBlockquote}
         icon={Quote}
+        label="引用"
       />
 
-      <div className="h-4 w-px bg-zzz-gray mx-1"></div>
+      <div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
 
       {/* Inserts */}
-      <ToolbarButton onClick={onLinkClick} isActive={isLink} icon={LinkIcon} />
-      <ToolbarButton onClick={onImageClick} isActive={false} icon={ImageIcon} />
+      <ToolbarButton onClick={onLinkClick} isActive={isLink} icon={LinkIcon} label="插入链接" />
+      <ToolbarButton onClick={onImageClick} isActive={false} icon={ImageIcon} label="插入图片" />
 
-      <div className="ml-auto flex gap-1">
+      <div className="ml-auto flex gap-1.5">
         <ToolbarButton
           onClick={() => editor.chain().focus().undo().run()}
           icon={Undo}
+          label="撤销"
         />
         <ToolbarButton
           onClick={() => editor.chain().focus().redo().run()}
           icon={Redo}
+          label="重做"
         />
       </div>
     </div>

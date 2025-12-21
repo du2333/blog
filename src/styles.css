@@ -20,7 +20,7 @@ code {
 }
 
 mark {
-  @apply bg-zzz-orange/20 text-zzz-orange font-bold px-0.5 rounded-sm border-b border-zzz-orange;
+  @apply bg-zinc-100 dark:bg-zinc-800 text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-zinc-300 dark:border-zinc-700;
 }
 
 @theme {
@@ -167,6 +167,12 @@ pre.shiki {
   background-color: transparent !important;
   margin: 0;
   padding: 0;
+}
+
+/* Tiptap Placeholder */
+.tiptap p.is-editor-empty:first-child::before {
+  @apply text-zinc-300 dark:text-zinc-700 font-serif italic float-left h-0 pointer-events-none;
+  content: attr(data-placeholder);
 }
 
 @keyframes scan {

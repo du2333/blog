@@ -18,7 +18,14 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const shouldRender = useDelayUnmount(isOpen, 200);
+  const [isClosing, setIsClosing] = useState(false);
+  const shouldRender = useDelayUnmount(isOpen, 1000);
+
+  const handleClose = () => {
+    setIsClosing(true);
+    setIsOpen(false);
+    setTimeout(() => setIsClosing(false), 1000);
+  };
 
   // Lock body scroll when open
   useEffect(() => {
@@ -31,6 +38,14 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
       document.body.style.overflow = "";
     };
   }, [isOpen]);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, []);
 
   if (!src) return null;
 
@@ -65,9 +80,9 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 
         {/* Hover Hint Overlay */}
         {showHint && (
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-            <div className="bg-black/80 backdrop-blur-sm p-3 rounded-full border border-zzz-lime shadow-[0_0_15px_rgba(204,255,0,0.3)] transform scale-90 group-hover:scale-100 transition-transform">
-              <ZoomIn className="text-zzz-lime" size={24} />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+            <div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm p-4 rounded-full border border-zinc-200 dark:border-zinc-800 transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-xl">
+              <ZoomIn className="text-zinc-900 dark:text-zinc-100" size={20} />
             </div>
           </div>
         )}
@@ -77,68 +92,68 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
       {shouldRender &&
         createPortal(
           <div
-            className={`fixed inset-0 z-200 flex items-center justify-center ${
+            className={`fixed inset-0 z-[200] flex items-center justify-center ${
               isOpen ? "pointer-events-auto" : "pointer-events-none"
             }`}
           >
             {/* Backdrop */}
             <div
-              className={`absolute inset-0 bg-black/95 backdrop-blur-md transition-opacity duration-300 ${
-                isOpen ? "opacity-100" : "opacity-0"
+              className={`absolute inset-0 bg-white dark:bg-[#050505] transition-opacity duration-1000 ease-in-out ${
+                isOpen ? "opacity-98" : "opacity-0"
               }`}
-              onClick={() => setIsOpen(false)}
+              onClick={handleClose}
             />
 
             {/* Controls */}
             <div
-              className={`absolute top-0 left-0 right-0 p-6 flex justify-between items-start z-210 transition-all duration-300 ${
+              className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-1000 ease-in-out ${
                 isOpen
                   ? "opacity-100 translate-y-0"
-                  : "opacity-0 -translate-y-4"
+                  : "opacity-0 -translate-y-10"
               }`}
             >
               <div className="flex flex-col">
-                <span className="text-zzz-lime font-mono text-xs font-bold uppercase tracking-widest bg-black/50 px-2 py-1 border border-zzz-lime/30 rounded-sm">
-                  IMG_VIEWER // {alt || "UNTITLED"}
+                <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+                  Image Metadata // {alt || "Untitled Record"}
                 </span>
               </div>
-              <div className="flex gap-4">
+              <div className="flex gap-6">
                 <a href={originalSrc} download target="_blank" rel="noreferrer">
-                  <button className="p-2 text-gray-400 hover:text-zzz-cyan transition-colors bg-black/50 rounded-full border border-transparent hover:border-zzz-cyan/50">
-                    <Download size={20} />
+                  <button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300">
+                    <Download size={18} />
                   </button>
                 </a>
                 <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 text-gray-400 hover:text-white transition-colors bg-black/50 rounded-full border border-transparent hover:border-white"
+                  onClick={handleClose}
+                  className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300"
                 >
-                  <X size={24} />
+                  <X size={22} />
                 </button>
               </div>
             </div>
 
             {/* Image */}
             <div
-              className={`relative z-205 p-4 md:p-10 w-full h-full flex items-center justify-center transition-all duration-300 ${
-                isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
+              className={`relative z-[205] p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-1000 ease-in-out ${
+                isOpen ? "scale-100 opacity-100" : "scale-[1.02] opacity-0"
               }`}
             >
               <img
                 src={src}
                 alt={alt}
                 loading="eager"
-                className="max-w-full max-h-full object-contain shadow-2xl drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-zzz-gray/20 bg-black"
+                className="max-w-full max-h-full object-contain shadow-2xl dark:shadow-none"
               />
             </div>
 
             {/* Footer Decoration */}
             <div
-              className={`absolute bottom-8 left-0 right-0 text-center pointer-events-none transition-opacity duration-500 delay-100 ${
+              className={`absolute bottom-12 left-0 right-0 text-center pointer-events-none transition-opacity duration-1000 delay-300 ${
                 isOpen ? "opacity-100" : "opacity-0"
               }`}
             >
-              <span className="text-[10px] font-mono text-zzz-gray uppercase tracking-[0.5em]">
-                点击外部关闭
+              <span className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.8em]">
+                Esc or Click to Return
               </span>
             </div>
           </div>,
@@ -146,6 +161,6 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
         )}
     </>
   );
-};
+};   
 
 export default ZoomableImage;

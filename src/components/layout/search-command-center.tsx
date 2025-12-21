@@ -3,14 +3,7 @@ import { useDebounce } from "@/hooks/use-debounce";
 import { searchDocsFn } from "@/features/search/search.api";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Search,
-  X,
-  Hash,
-  FileText,
-  CornerDownLeft,
-  Loader2,
-} from "lucide-react";
+import { Search, CornerDownLeft } from "lucide-react";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 
 interface SearchCommandCenterProps {
@@ -22,7 +15,7 @@ export function SearchCommandCenter({
   isOpen,
   onClose,
 }: SearchCommandCenterProps) {
-  const shouldRender = useDelayUnmount(isOpen, 300);
+  const shouldRender = useDelayUnmount(isOpen, 500);
   const [query, setQuery] = useState("");
   const [selectedIndex, setSelectedIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -38,21 +31,18 @@ export function SearchCommandCenter({
 
   const searchResults = useMemo(() => results ?? [], [results]);
 
-  // Focus input on open and handle body scroll locking
   useEffect(() => {
     if (isOpen) {
-      setTimeout(() => inputRef.current?.focus(), 50);
+      setTimeout(() => inputRef.current?.focus(), 100);
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "";
-      setQuery(""); // Optional: clear query on close
     }
     return () => {
       document.body.style.overflow = "";
     };
   }, [isOpen]);
 
-  // Clear state only after the component has finished animating out
   useEffect(() => {
     if (!shouldRender) {
       setQuery("");
@@ -64,7 +54,6 @@ export function SearchCommandCenter({
     onClose();
   };
 
-  // Handle Keyboard Navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (!isOpen) return;
@@ -91,9 +80,8 @@ export function SearchCommandCenter({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, selectedIndex, searchResults]); // keep in sync with results
+  }, [isOpen, selectedIndex, searchResults]);
 
-  // Scroll active item into view
   useEffect(() => {
     if (listRef.current && searchResults.length > 0) {
       const activeItem = listRef.current.children[selectedIndex] as HTMLElement;
@@ -103,7 +91,6 @@ export function SearchCommandCenter({
     }
   }, [selectedIndex, searchResults]);
 
-  // Reset selected index when query changes
   useEffect(() => {
     setSelectedIndex(0);
   }, [query]);
@@ -112,13 +99,13 @@ export function SearchCommandCenter({
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-start justify-center pt-[10vh] px-2 md:px-4 ${
+      className={`fixed inset-0 z-100 flex items-start justify-center pt-[15vh] px-4 md:px-6 ${
         isOpen ? "pointer-events-auto" : "pointer-events-none"
       }`}
     >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`absolute inset-0 bg-white/90 dark:bg-[#050505]/95 backdrop-blur-xl transition-opacity duration-700 ease-in-out ${
           isOpen ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
@@ -127,65 +114,57 @@ export function SearchCommandCenter({
       {/* Main Container */}
       <div
         className={`
-        relative w-full max-w-2xl bg-zzz-black border-2 border-zzz-lime shadow-[0_0_50px_rgba(204,255,0,0.15)] 
-        flex flex-col max-h-[80vh] md:max-h-[70vh] clip-corner-tr
-        transition-all duration-300 ease-out transform
+        relative w-full max-w-3xl flex flex-col max-h-[70vh]
+        transition-all duration-700 ease-in-out transform
         ${
           isOpen
             ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-95 -translate-y-4"
+            : "opacity-0 scale-98 -translate-y-8"
         }
       `}
       >
         {/* Header / Input */}
-        <div className="p-4 md:p-6 border-b border-zzz-gray bg-zzz-dark/50 flex items-center gap-4 shrink-0">
-          {isSearching ? (
-            <Loader2
-              className="text-zzz-orange animate-spin shrink-0"
-              size={24}
-            />
-          ) : (
-            <Search
-              className="text-zzz-lime animate-pulse shrink-0"
-              size={24}
-            />
-          )}
+        <div className="relative flex items-center gap-6 pb-8 border-b border-zinc-100 dark:border-zinc-900">
+          <Search
+            className={`transition-colors duration-500 ${
+              isSearching
+                ? "text-zinc-400 animate-pulse"
+                : "text-zinc-300 dark:text-zinc-700"
+            }`}
+            size={28}
+            strokeWidth={1.5}
+          />
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="检索数据库..."
-            className="flex-1 bg-transparent text-lg md:text-2xl font-bold font-sans uppercase text-white placeholder-gray-700 focus:outline-none min-w-0"
+            placeholder="搜索文章或想法..."
+            className="flex-1 bg-transparent text-3xl md:text-5xl font-serif italic text-zinc-900 dark:text-zinc-100 placeholder-zinc-200 dark:placeholder-zinc-800 focus:outline-none min-w-0"
           />
-          <button
-            onClick={onClose}
-            className="text-gray-500 hover:text-white transition-colors shrink-0"
-          >
-            <X size={24} />
-          </button>
+          {isSearching && (
+            <div className="absolute -bottom-px left-0 w-full h-px overflow-hidden">
+              <div className="w-full h-full bg-zinc-900 dark:bg-zinc-100 animate-[scan_2s_infinite]"></div>
+            </div>
+          )}
         </div>
 
         {/* Results List */}
         <div
           ref={listRef}
-          className="flex-1 overflow-y-auto custom-scrollbar p-2 scroll-smooth"
+          className="flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 space-y-2 scroll-smooth"
         >
-          {isSearching ? (
-            <div className="h-40 flex flex-col items-center justify-center text-zzz-orange font-mono text-xs gap-2 animate-pulse">
-              <Hash size={32} className="opacity-50" />
-              <span>正在扫描数据库...</span>
+          {query.trim() === "" ? (
+            <div className="h-64 flex flex-col items-center justify-center space-y-4">
+              <span className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
+                Waiting for input
+              </span>
             </div>
-          ) : query.trim() === "" ? (
-            <div className="h-40 flex flex-col items-center justify-center text-gray-600 font-mono text-xs gap-2">
-              <Hash size={32} className="opacity-20" />
-              <span>等待输入...</span>
-            </div>
-          ) : searchResults.length === 0 ? (
-            <div className="h-40 flex flex-col items-center justify-center text-zzz-orange font-mono text-xs gap-2">
-              <div className="border border-zzz-orange p-2 rounded-sm">
-                未找到匹配项
-              </div>
+          ) : !isSearching && searchResults.length === 0 ? (
+            <div className="h-64 flex flex-col items-center justify-center">
+              <span className="text-lg font-light text-zinc-400 italic">
+                未找到相关结果
+              </span>
             </div>
           ) : (
             searchResults.map((result, index) => (
@@ -194,96 +173,64 @@ export function SearchCommandCenter({
                 onClick={() => handleSelect(result.post.slug)}
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={`
-                  group p-4 mb-1 cursor-pointer transition-all border-l-4 relative overflow-hidden wrap-break-word
+                  group p-6 transition-all duration-500 rounded-sm relative
                   ${
                     index === selectedIndex
-                      ? "bg-zzz-gray/30 border-zzz-lime"
-                      : "border-transparent hover:bg-white/5 hover:border-gray-600"
+                      ? "bg-zinc-50 dark:bg-zinc-900/50"
+                      : "hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30"
                   }
                 `}
               >
-                <div className="flex justify-between items-start relative z-10 gap-2">
-                  <div className="flex-1 min-w-0">
-                    {/* Title Match */}
+                <div className="flex justify-between items-start gap-8">
+                  <div className="flex-1 min-w-0 space-y-2">
+                    <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest opacity-40">
+                      <span>{result.post.category}</span>
+                      {index === selectedIndex && (
+                        <span className="animate-in fade-in slide-in-from-left-2 duration-500 text-zinc-900 dark:text-zinc-100">
+                          Selected
+                        </span>
+                      )}
+                    </div>
+
                     <h4
-                      className="text-lg font-bold font-sans uppercase text-white mb-1 leading-tight whitespace-normal"
+                      className="text-xl md:text-2xl font-serif text-zinc-900 dark:text-zinc-100 leading-tight"
                       dangerouslySetInnerHTML={{
                         __html: result.matches.title || result.post.title,
                       }}
                     />
 
-                    {/* Summary Match */}
                     <div
-                      className="text-xs font-mono text-gray-400 mb-2 line-clamp-2"
+                      className="text-sm font-light text-zinc-500 dark:text-zinc-400 line-clamp-1 italic"
                       dangerouslySetInnerHTML={{
                         __html: result.matches.summary || result.post.summary,
                       }}
                     />
-
-                    {/* Content Snippet Match */}
-                    {result.matches.contentSnippet && (
-                      <div className="bg-black/50 border border-zzz-gray/30 p-2 rounded-sm mt-2">
-                        <div className="flex items-center gap-2 text-[10px] font-bold text-gray-500 uppercase mb-1">
-                          <FileText size={10} /> 内容匹配
-                        </div>
-                        <div
-                          className="text-[11px] font-mono text-gray-300 leading-relaxed italic whitespace-pre-wrap"
-                          dangerouslySetInnerHTML={{
-                            __html: result.matches.contentSnippet,
-                          }}
-                        />
-                      </div>
-                    )}
                   </div>
 
-                  {/* Meta/Action */}
-                  <div className="flex flex-col items-end gap-2 shrink-0">
-                    <span
-                      className={`text-[9px] px-1.5 py-0.5 border font-bold ${
-                        index === selectedIndex
-                          ? "text-zzz-lime border-zzz-lime"
-                          : "text-gray-600 border-gray-700"
-                      }`}
-                    >
-                      {result.post.category}
-                    </span>
-                    {index === selectedIndex && (
-                      <CornerDownLeft
-                        size={16}
-                        className="text-zzz-lime mt-2 hidden md:block"
-                      />
-                    )}
+                  <div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    <CornerDownLeft size={16} className="text-zinc-400" />
                   </div>
                 </div>
-
-                {/* Decoration */}
-                <div
-                  className={`absolute inset-0 bg-stripe-pattern opacity-[0.03] pointer-events-none ${
-                    index === selectedIndex ? "block" : "hidden"
-                  }`}
-                ></div>
               </div>
             ))
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-3 bg-zzz-black border-t border-zzz-gray flex justify-between items-center text-[10px] font-mono text-gray-500 uppercase tracking-wider shrink-0">
-          <div className="flex gap-4">
-            <span className="hidden md:flex items-center gap-1">
-              <span className="bg-gray-800 px-1 rounded text-white">↑↓</span>{" "}
-              导航
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="bg-gray-800 px-1 rounded text-white">ENTER</span>{" "}
+        <div className="pt-8 border-t border-zinc-100 dark:border-zinc-900 flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] opacity-30">
+          <div className="flex gap-8">
+            <div className="flex items-center gap-2">
+              <kbd className="px-1 border border-current rounded">↑↓</kbd> 导航
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-1 border border-current rounded">Enter</kbd>{" "}
               选择
-            </span>
-            <span className="flex items-center gap-1">
-              <span className="bg-gray-800 px-1 rounded text-white">ESC</span>{" "}
-              关闭
-            </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-1 border border-current rounded">Esc</kbd> 关闭
+            </div>
           </div>
-          <div>{searchResults.length} 结果</div>
+          <div>{searchResults.length} Results</div>
         </div>
       </div>
     </div>

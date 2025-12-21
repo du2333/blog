@@ -21,23 +21,22 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
   const language = node.attrs.language || "text";
 
   return (
-    <NodeViewWrapper className="my-8 relative group">
-      <div className="border-2 border-zzz-gray bg-zzz-black overflow-hidden">
-        {/* Header Bar */}
-        <div className="flex items-center justify-between px-4 py-2 bg-zzz-dark border-b border-zzz-gray select-none">
-          <div className="flex items-center gap-2">
-            <div className="w-3 h-3 rounded-full bg-zzz-gray group-hover:bg-zzz-lime transition-colors"></div>
+    <NodeViewWrapper className="my-16 relative group">
+      <div className="rounded-sm overflow-hidden bg-zinc-50/50 dark:bg-zinc-900/20 transition-all duration-700 border border-zinc-100 dark:border-zinc-900 group-hover:border-zinc-200 dark:group-hover:border-zinc-800">
+        {/* Simple Header */}
+        <div className="flex items-center justify-between px-6 py-3 select-none">
+          <div className="flex items-center gap-3">
             <select
               value={language}
               onChange={handleLanguageChange}
               contentEditable={false}
-              className="text-zzz-lime bg-transparent font-mono text-xs font-bold uppercase tracking-wider border-none outline-none cursor-pointer hover:text-white transition-colors"
+              className="appearance-none bg-transparent font-mono text-[10px] font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em] border-none outline-none cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
               {LANGUAGES.map((lang) => (
                 <option
                   key={lang.value}
                   value={lang.value}
-                  className="bg-zzz-dark text-zzz-lime"
+                  className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
                 >
                   {lang.label}
                 </option>
@@ -48,31 +47,23 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
           <button
             onClick={handleCopy}
             contentEditable={false}
-            className="flex items-center gap-2 text-xs font-mono font-bold text-gray-500 hover:text-white transition-colors"
+            className="flex items-center gap-2 text-[10px] font-mono font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300"
           >
             {copied ? (
-              <>
-                <span className="text-zzz-lime">COPIED</span>
-                <Check size={14} className="text-zzz-lime" />
-              </>
+              <span className="animate-in fade-in slide-in-from-right-2 text-zinc-900 dark:text-zinc-100">已复制</span>
             ) : (
-              <>
-                <span>COPY_DATA</span>
-                <Copy size={14} />
-              </>
+              <span className="opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">Copy</span>
             )}
+            {copied ? <Check size={12} className="text-zinc-900 dark:text-zinc-100" /> : <Copy size={12} />}
           </button>
         </div>
 
         {/* Code Area */}
         <NodeViewContent
           as="div"
-          className="relative p-6 overflow-x-auto custom-scrollbar bg-[#1a1b1e] text-sm font-mono leading-relaxed text-gray-300 outline-none"
+          className="relative p-8 pt-4 overflow-x-auto custom-scrollbar text-sm md:text-base font-mono leading-relaxed outline-none"
           spellCheck={false}
         />
-
-        {/* Decorative Bottom Line */}
-        <div className="h-1 w-full bg-zzz-lime scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
       </div>
     </NodeViewWrapper>
   );

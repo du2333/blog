@@ -7,31 +7,23 @@ export const BlockQuoteExtension = Blockquote.extend({
       "blockquote",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
         class:
-          "my-8 relative pl-8 border-l-4 border-zzz-lime bg-linear-to-r from-zzz-dark to-transparent py-4 pr-4",
+          "my-12 relative pl-10 border-l border-zinc-200 dark:border-zinc-800 py-4",
       }),
 
       [
         "div",
         {
           class:
-            "absolute -left-[11px] -top-2 w-6 h-6 bg-zzz-black border-2 border-zzz-lime rounded-full flex items-center justify-center",
+            "italic text-zinc-600 dark:text-zinc-400 font-serif text-xl md:text-3xl leading-relaxed tracking-tight",
         },
-        [
-          "span",
-          {
-            class: "text-zzz-lime text-lg font-serif font-bold leading-none",
-          },
-          '"',
-        ],
+        0,
       ],
-
+      
       [
         "div",
         {
-          class:
-            "italic text-gray-300 font-serif text-lg md:text-xl leading-relaxed",
+          class: "absolute -left-[1.5px] top-4 w-[3px] h-12 bg-zinc-900 dark:bg-zinc-100",
         },
-        0,
       ],
     ];
   },

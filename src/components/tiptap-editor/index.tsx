@@ -66,43 +66,27 @@ export const extensions = [
     code: {
       HTMLAttributes: {
         class:
-          "bg-zzz-gray text-zzz-lime px-1.5 py-0.5 rounded-sm font-mono text-sm border border-zzz-gray/50",
+          "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-1.5 py-0.5 rounded font-mono text-sm",
         spellCheck: false,
       },
     },
     underline: {
       HTMLAttributes: {
-        class: "text-white decoration-zzz-lime decoration-2 underline-offset-4",
+        class:
+          "decoration-zinc-400 dark:decoration-zinc-500 underline-offset-4",
       },
     },
     strike: {
       HTMLAttributes: {
-        class:
-          "text-gray-500 decoration-zzz-orange decoration-2 line-through opacity-70",
+        class: "text-zinc-400 dark:text-zinc-500 line-through opacity-60",
       },
     },
     link: {
       autolink: true,
       openOnClick: false,
       HTMLAttributes: {
-        class: `
-        text-zzz-cyan font-bold underline decoration-transparent 
-        hover:underline hover:cursor-pointer hover:decoration-zzz-cyan underline-offset-4 transition-all
-        
-        /* 2. 为图标预留空间并设置对齐 */
-        inline-flex items-center gap-0.5
-        
-        /* 3. 使用伪元素 ::after 渲染图标 */
-        after:content-[''] 
-        after:w-3 after:h-3 after:mb-0.5
-        after:bg-current /* 让图标颜色跟随文字颜色 (zzz-cyan) */
-        
-        /* 4. 关键：使用 mask-image 加载 SVG */
-        after:[mask-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxwYXRoIGQ9Ik0xOCAxM3Y2YTIgMiAwIDAgMS0yIDJINWEyIDIgMCAwIDEtMi0yVjhhMiAyIDAgMCAxIDItMmg2Ii8+PHBvbHlsaW5lIHBvaW50cz0iMTUgMyAyMSAzIDIxIDkiLz48bGluZSB4MT0iMTAiIHkxPSIxNCIgeDI9IjIxIiB5Mj0iMyIvPjwvc3ZnPg==')]
-        after:[mask-size:contain]
-        after:[mask-repeat:no-repeat]
-        after:[mask-position:center]
-      `,
+        class:
+          "text-zinc-900 dark:!text-zinc-100 font-medium underline underline-offset-4 decoration-zinc-300 dark:decoration-zinc-700 hover:decoration-current transition-all duration-300 cursor-pointer",
         target: "_blank",
       },
     },
@@ -115,7 +99,7 @@ export const extensions = [
   }),
   BlockQuoteExtension,
   CodeBlockExtension.configure({
-    defaultTheme: "andromeeda",
+    defaultTheme: "vitesse-dark", // 编辑器内部由于环境限制暂设一个，渲染端已实现双主题
   }),
   ImageExtension,
   ImageUpload.configure({
@@ -132,7 +116,8 @@ export const extensions = [
     onPaste: handleFilePaste,
   }),
   Placeholder.configure({
-    placeholder: "初始化日志条目... (开始输入)",
+    placeholder: "开始记录...",
+    emptyEditorClass: "is-editor-empty",
   }),
 ];
 
@@ -154,7 +139,7 @@ export function Editor({ content, onChange }: EditorProps) {
     editorProps: {
       attributes: {
         class:
-          "prose prose-invert max-w-none focus:outline-none text-lg text-gray-300 font-body leading-relaxed min-h-[500px]",
+          "prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg text-zinc-700 dark:text-zinc-300 font-body leading-relaxed min-h-[500px] selection:bg-zinc-100 dark:selection:bg-zinc-800",
       },
     },
   });

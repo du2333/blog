@@ -1,13 +1,6 @@
 import { Logo } from "@/components/common/logo";
 import { Link } from "@tanstack/react-router";
-import {
-  LayoutDashboard,
-  LogIn,
-  Moon,
-  Search,
-  Sun,
-  UserIcon,
-} from "lucide-react";
+import { LayoutDashboard, Moon, Search, Sun, UserIcon } from "lucide-react";
 import { useTheme } from "@/components/common/theme-provider";
 
 interface NavbarProps {
@@ -94,24 +87,35 @@ export function Navbar({
               </button>
 
               {/* Profile/Login */}
-              <div className="hidden md:block">
+              <div className="hidden md:flex items-center gap-4">
                 {user ? (
-                  <button
-                    onClick={onOpenProfile}
-                    className="flex items-center gap-3 group"
-                  >
-                    <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/5 transition-transform group-hover:scale-105">
-                      {user.image ? (
-                        <img
-                          src={user.image}
-                          alt={user.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <UserIcon size={18} className="opacity-50" />
-                      )}
-                    </div>
-                  </button>
+                  <>
+                    {user.role === "admin" && (
+                      <Link
+                        to="/admin"
+                        className="p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 rounded-full transition-colors text-zinc-600 dark:text-zinc-400"
+                        title="进入后台"
+                      >
+                        <LayoutDashboard size={18} />
+                      </Link>
+                    )}
+                    <button
+                      onClick={onOpenProfile}
+                      className="flex items-center gap-3 group"
+                    >
+                      <div className="w-9 h-9 rounded-full bg-zinc-100 dark:bg-zinc-800 flex items-center justify-center overflow-hidden border border-black/5 dark:border-white/5 transition-transform group-hover:scale-105">
+                        {user.image ? (
+                          <img
+                            src={user.image}
+                            alt={user.name}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          <UserIcon size={18} className="opacity-50" />
+                        )}
+                      </div>
+                    </button>
+                  </>
                 ) : (
                   <Link to="/login">
                     <button className="text-[10px] font-medium uppercase tracking-widest px-6 py-2 border border-black dark:border-white hover:bg-black hover:text-white dark:hover:bg-white dark:hover:text-black transition-all duration-500">

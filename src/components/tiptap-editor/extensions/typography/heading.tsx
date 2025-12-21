@@ -9,29 +9,11 @@ export const HeadingExtension = Heading.extend({
     const id = slugify(textContent);
 
     const styles: Record<number, string> = {
-      1: "text-4xl md:text-5xl font-black text-white uppercase mb-8 mt-12 font-sans tracking-tight border-l-8 border-zzz-lime pl-4",
-      2: "text-3xl md:text-4xl font-bold text-zzz-white uppercase mb-6 mt-12 font-sans border-b-2 border-zzz-gray pb-2 flex items-center gap-2",
-      3: "text-2xl font-bold text-zzz-lime uppercase mb-4 mt-8 font-sans tracking-wide",
-      4: "text-xl font-bold text-zzz-cyan uppercase mb-3 mt-6 font-mono",
+      1: "text-4xl md:text-6xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-10 mt-16 leading-[1.1] tracking-tight",
+      2: "text-3xl md:text-5xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-8 mt-14 leading-[1.1] tracking-tight",
+      3: "text-2xl md:text-3xl font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-6 mt-12",
+      4: "text-xl font-sans font-bold text-zinc-800 dark:text-zinc-200 mb-4 mt-8 uppercase tracking-widest",
     };
-
-    if (level === 2) {
-      return [
-        "h2",
-        mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-          class: styles[level],
-          id,
-        }),
-        [
-          "span",
-          {
-            class: "text-zzz-lime text-xl mr-2 select-none",
-          },
-          "##",
-        ],
-        ["span", {}, 0],
-      ];
-    }
 
     return [
       `h${level}`,

@@ -2,22 +2,21 @@ import ZoomableImage from "./zoomable-image";
 
 export function ImageDisplay({ src, alt }: { src: string; alt: string }) {
   return (
-    <div className="my-10 group relative">
-      <div className="relative border-2 border-zzz-gray bg-black p-2 overflow-hidden hover:border-zzz-lime transition-colors duration-300 clip-corner-tr">
+    <div className="my-16 group relative space-y-4">
+      <div className="relative bg-zinc-50/50 dark:bg-zinc-900/20 rounded-sm overflow-hidden transition-all duration-700 border border-zinc-100 dark:border-zinc-900 group-hover:border-zinc-200 dark:group-hover:border-zinc-800 p-2">
         <ZoomableImage
           src={src}
           alt={alt}
-          className="w-full h-auto object-cover max-h-[600px] grayscale-20 group-hover:grayscale-0 transition-all duration-500"
+          className="w-full h-auto object-cover max-h-[800px] transition-all duration-1000 scale-[1.02] group-hover:scale-100"
           showHint={true}
         />
-
-        {/* Scanline overlay */}
-        <div className="absolute inset-0 bg-stripe-pattern opacity-10 pointer-events-none"></div>
       </div>
       {alt && (
-        <div className="mt-2 flex items-center gap-2 font-mono text-xs text-gray-500">
-          <div className="h-px bg-zzz-gray flex-1"></div>
-          <span className="uppercase tracking-widest">FIG. {alt}</span>
+        <div className="flex items-center gap-4 px-2">
+          <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+            {alt}
+          </span>
+          <div className="h-px bg-zinc-100 dark:bg-zinc-800 flex-1"></div>
         </div>
       )}
     </div>
