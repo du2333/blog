@@ -52,7 +52,7 @@ jobs:
             "GITHUB_CLIENT_SECRET": "$GITHUB_CLIENT_SECRET",
             "CLOUDFLARE_ZONE_ID": "$CLOUDFLARE_ZONE_ID",
             "CLOUDFLARE_PURGE_API_TOKEN": "$CLOUDFLARE_PURGE_API_TOKEN",
-            "DOMAIN": "$DOMAIN",
+            "DOMAIN": "$DOMAIN"
           }
           EOF
 
