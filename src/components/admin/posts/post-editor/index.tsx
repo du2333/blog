@@ -23,7 +23,7 @@ import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton"
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import DatePicker from "@/components/ui/date-picker";
 import DropdownMenu from "@/components/ui/dropdown-menu";
-import { POST_STATUSES, type PostCategory } from "@/lib/db/schema";
+import { POST_CATEGORIES, POST_STATUSES, type PostCategory } from "@/lib/db/schema";
 
 import { useAutoSave, usePostActions } from "./hooks";
 import { type PostEditorData, type PostEditorProps } from "./types";
@@ -101,7 +101,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             <ChevronLeft size={18} />
           </div>
           <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
-            Back
+            返回
           </span>
         </button>
 
@@ -116,7 +116,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               size={14}
               className="group-hover:scale-110 transition-transform"
             />
-            <span>Preview</span>
+            <span>预览</span>
           </button>
 
           <button
@@ -140,10 +140,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             )}
             <span>
               {processState === "PROCESSING"
-                ? "Deploying"
+                ? "发布中"
                 : processState === "SUCCESS"
-                ? "Done"
-                : "Deploy"}
+                ? "已发布"
+                : "发布"}
             </span>
           </button>
         </div>
@@ -160,7 +160,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                 setPost((prev) => ({ ...prev, title: e.target.value }))
               }
               minRows={1}
-              placeholder="Post Title..."
+              placeholder="文章标题..."
               className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
             />
           </div>
@@ -172,7 +172,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400">
                 <Globe size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Status
+                  状态
                 </span>
               </div>
               <div className="flex-1 flex gap-2">
@@ -190,10 +190,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                     `}
                   >
                     {s === "published"
-                      ? "Public"
+                      ? "公开"
                       : s === "draft"
-                      ? "Draft"
-                      : "Scheduled"}
+                      ? "草稿"
+                      : "归档"}
                   </button>
                 ))}
               </div>
@@ -204,7 +204,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400">
                 <LinkIcon size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Slug
+                  永久链接
                 </span>
               </div>
               <div className="flex-1 flex items-center gap-2">
@@ -212,14 +212,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   type="text"
                   value={post.slug || ""}
                   onChange={(e) => handlePostChange({ slug: e.target.value })}
-                  placeholder="article-slug..."
+                  placeholder="文章链接..."
                   className="flex-1 bg-transparent text-xs font-mono text-zinc-600 dark:text-zinc-400 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
                 />
                 <button
                   onClick={handleGenerateSlug}
                   disabled={isGeneratingSlug}
                   className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
-                  title="Auto Generate"
+                  title="自动生成"
                 >
                   {isGeneratingSlug ? (
                     <Loader2 size={12} className="animate-spin" />
@@ -235,7 +235,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400">
                 <Tag size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Category
+                  类别
                 </span>
               </div>
               <div className="flex-1">
@@ -244,12 +244,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   onChange={(val) =>
                     handlePostChange({ category: val as PostCategory })
                   }
-                  options={[
-                    { label: "DEV", value: "DEV" },
-                    { label: "DESIGN", value: "DESIGN" },
-                    { label: "LIFE", value: "LIFE" },
-                    { label: "TECH", value: "TECH" },
-                  ]}
+                  options={POST_CATEGORIES.map((c) => ({
+                    label: c,
+                    value: c,
+                  }))}
                 />
               </div>
             </div>
@@ -259,7 +257,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400">
                 <Calendar size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Published
+                  发布时间
                 </span>
               </div>
               <div className="flex-1">
@@ -284,7 +282,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400">
                 <Clock size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Reading
+                  阅读时间
                 </span>
               </div>
               <div className="flex-1 flex items-center gap-2">
@@ -299,13 +297,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   className="w-12 bg-transparent text-xs text-zinc-600 dark:text-zinc-400 focus:outline-none"
                 />
                 <span className="text-[10px] text-zinc-300 uppercase tracking-widest font-bold">
-                  Mins
+                  分钟
                 </span>
                 <button
                   onClick={handleCalculateReadTime}
                   disabled={isCalculatingReadTime}
                   className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
-                  title="Auto Calculate"
+                  title="自动计算"
                 >
                   {isCalculatingReadTime ? (
                     <Loader2 size={12} className="animate-spin" />
@@ -321,7 +319,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <div className="w-32 flex items-center gap-2 text-zinc-400 pt-1">
                 <FileText size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  Summary
+                  摘要
                 </span>
               </div>
               <div className="flex-1 flex flex-col gap-2">
@@ -330,7 +328,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   onChange={(e) =>
                     handlePostChange({ summary: e.target.value })
                   }
-                  placeholder="Brief overview..."
+                  placeholder="简单介绍一下内容..."
                   className="w-full bg-transparent text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 focus:outline-none resize-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
                 />
                 <button
@@ -344,7 +342,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                     <Sparkles size={10} />
                   )}
                   <span>
-                    {isGeneratingSummary ? "Generating..." : "AI Summary"}
+                    {isGeneratingSummary ? "生成中..." : "AI 生成摘要"}
                   </span>
                 </button>
               </div>
@@ -368,13 +366,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             <span className="text-zinc-950 dark:text-zinc-50">
               {JSON.stringify(post.contentJson || "").length}
             </span>
-            <span className="opacity-40">CHARS</span>
+            <span className="opacity-40">字符</span>
           </div>
           <div className="flex items-center gap-1">
             <span className="text-zinc-950 dark:text-zinc-50">
               {Math.ceil(JSON.stringify(post.contentJson || "").length / 5)}
             </span>
-            <span className="opacity-40">WORDS</span>
+            <span className="opacity-40">单词</span>
           </div>
         </div>
 
@@ -382,17 +380,17 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
           {saveStatus === "ERROR" ? (
             <div className="flex items-center gap-2 text-red-500">
               <X size={14} />
-              <span>Error</span>
+              <span>错误</span>
             </div>
           ) : saveStatus === "SAVING" ? (
             <div className="flex items-center gap-2 text-zinc-400">
               <RefreshCw size={14} className="animate-spin" />
-              <span>Saving</span>
+              <span>正在保存</span>
             </div>
           ) : saveStatus === "PENDING" ? (
             <div className="flex items-center gap-2 text-amber-500">
               <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-              <span>Modified</span>
+              <span>已修改</span>
             </div>
           ) : (
             <div className="flex items-center gap-2 text-zinc-300 dark:text-zinc-700">
@@ -403,7 +401,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                       hour: "2-digit",
                       minute: "2-digit",
                     })
-                  : "Synced"}
+                  : "已同步"}
               </span>
             </div>
           )}

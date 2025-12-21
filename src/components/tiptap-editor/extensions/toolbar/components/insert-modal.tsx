@@ -175,7 +175,7 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
               ) : (
                 <ImageIcon size={14} />
               )}
-              <span>{activeType === "LINK" ? "Hyperlink" : "Media Asset"}</span>
+              <span>{activeType === "LINK" ? "超链接" : "媒体资产"}</span>
             </div>
             <h2 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
               {activeType === "LINK" ? "插入超链接" : "选择媒体资产"}
