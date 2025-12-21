@@ -42,11 +42,13 @@ export function Navbar({
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-40 h-24 flex items-center transition-all duration-700 ${
-        isScrolled 
-          ? "bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-900 h-20" 
-          : "bg-transparent border-b border-transparent h-24"
-      }`}>
+      <header
+        className={`fixed top-0 left-0 right-0 z-40 h-24 flex items-center transition-[height,background-color,border-color] duration-700 ${
+          isScrolled
+            ? "bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-900 h-20"
+            : "bg-transparent border-b border-transparent h-24"
+        }`}
+      >
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Left: Brand */}
           <Link to="/" className="group select-none">
@@ -81,7 +83,11 @@ export function Navbar({
                 className="w-10 h-10 flex items-center justify-center text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
                 title="Theme"
               >
-                {appTheme === "dark" ? <Sun size={16} strokeWidth={1.2} /> : <Moon size={16} strokeWidth={1.2} />}
+                {appTheme === "dark" ? (
+                  <Sun size={16} strokeWidth={1.2} />
+                ) : (
+                  <Moon size={16} strokeWidth={1.2} />
+                )}
               </button>
               <button
                 onClick={onSearchClick}
@@ -118,10 +124,18 @@ export function Navbar({
                         >
                           <div className="w-8 h-8 rounded-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
                             {user.image ? (
-                              <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                              <img
+                                src={user.image}
+                                alt={user.name}
+                                className="w-full h-full object-cover"
+                              />
                             ) : (
                               <div className="w-full h-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">
-                                <UserIcon size={14} className="text-zinc-300" strokeWidth={1} />
+                                <UserIcon
+                                  size={14}
+                                  className="text-zinc-300"
+                                  strokeWidth={1}
+                                />
                               </div>
                             )}
                           </div>
@@ -154,4 +168,3 @@ export function Navbar({
     </>
   );
 }
-

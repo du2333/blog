@@ -33,7 +33,7 @@ export const Route = createFileRoute("/_auth")({
 
 function RouteComponent() {
   return (
-    <div className="min-h-screen w-full bg-white dark:bg-[#050505] flex flex-col relative overflow-hidden transition-colors duration-500">
+    <div className="min-h-screen w-full bg-zinc-50 dark:bg-[#050505] flex flex-col relative overflow-hidden transition-colors duration-500">
       {/* --- Background Decorative Elements --- */}
       <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 dark:opacity-100">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>

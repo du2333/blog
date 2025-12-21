@@ -30,72 +30,15 @@ mark {
   --font-serif: "Playfair Display", "Noto Serif SC", serif;
   --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
-
-  /* ZZZ Style Colors */
-  --color-zzz-black: #0a0a0a;
-  --color-zzz-dark: #121212;
-  --color-zzz-gray: #252525;
-  --color-zzz-lime: #ccff00;
-  --color-zzz-orange: #ff6600;
-  --color-zzz-cyan: #00ccff;
-  --color-zzz-white: #f0f0f0;
-
-  /* ZZZ Style Font Families */
-  --font-sans: "Rajdhani", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "Roboto Mono", "Noto Sans SC", ui-monospace, monospace;
   --font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
-  /* ZZZ Style Background Patterns */
-  --background-image-dot-pattern: radial-gradient(#333 1px, transparent 1px);
-  --background-image-stripe-pattern: repeating-linear-gradient(
-    45deg,
-    #1a1a1a 0,
-    #1a1a1a 10px,
-    #121212 10px,
-    #121212 20px
-  );
-
-  /* ZZZ Style Animations */
-  --animate-pulse-fast: pulse 1s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-  --animate-glitch: glitch 1s linear infinite;
-
-  /* Keyframes for glitch animation */
-  @keyframes glitch {
-    2%,
-    64% {
-      transform: translate(2px, 0) skew(0deg);
-    }
-    4%,
-    60% {
-      transform: translate(-2px, 0) skew(0deg);
-    }
-    62% {
-      transform: translate(0, 0) skew(5deg);
-    }
-  }
-
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-    }
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
-  @keyframes scroll-up {
-    0% {
-      transform: translateY(0);
-    }
-    100% {
-      transform: translateY(-50%);
-    }
-  }
+  /* Keyframes */
 }
 
 @layer base {
   body {
-    @apply bg-white text-zinc-900 transition-colors duration-500 overflow-x-hidden;
+    @apply bg-zinc-50 text-zinc-900 overflow-x-hidden;
+    transition: background-color 0.5s ease-in-out;
   }
 
   .dark body {
@@ -114,6 +57,24 @@ mark {
   h4 {
     scroll-margin-top: 8rem;
   }
+
+  /* Minimalist Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-300 dark:bg-zinc-700;
+  }
 }
 
 /* Disable native browser UI on password inputs */
@@ -122,45 +83,6 @@ input::-ms-clear,
 input::-webkit-contacts-auto-fill-button,
 input::-webkit-credentials-auto-fill-button {
   display: none !important;
-}
-
-/* ZZZ Style Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: #111;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 0;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #ccff00;
-}
-
-/* ZZZ Style Clip-path Utilities */
-.clip-corner-tr {
-  clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%);
-}
-
-.clip-corner-bl {
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 20px 100%, 0 calc(100% - 20px));
-}
-
-.clip-both {
-  clip-path: polygon(
-    10px 0,
-    100% 0,
-    100% calc(100% - 10px),
-    calc(100% - 10px) 100%,
-    0 100%,
-    0 10px
-  );
 }
 
 pre.shiki {
@@ -173,6 +95,25 @@ pre.shiki {
 .tiptap p.is-editor-empty:first-child::before {
   @apply text-zinc-300 dark:text-zinc-700 font-serif italic float-left h-0 pointer-events-none;
   content: attr(data-placeholder);
+}
+
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-zinc-300 dark:bg-zinc-700;
+  }
 }
 
 @keyframes scan {
