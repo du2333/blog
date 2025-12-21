@@ -16,6 +16,7 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 const registerSchema = z
   .object({
@@ -36,6 +37,7 @@ export function RegisterForm() {
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = React.useState(false);
   const previousLocation = usePreviousLocation();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -59,6 +61,8 @@ export function RegisterForm() {
       });
       return;
     }
+
+    queryClient.removeQueries({ queryKey: ["session"] });
 
     if (isEmailVerficationRequired) {
       setIsSuccess(true);

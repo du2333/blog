@@ -1,5 +1,7 @@
+import { Logo } from "@/components/common/logo";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
 import {
   ArrowUpRight,
@@ -13,7 +15,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Logo } from "@/components/common/logo";
 
 export function SideBar({
   isMobileSidebarOpen,
@@ -23,6 +24,8 @@ export function SideBar({
   closeMobileSidebar: () => void;
 }) {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -42,6 +45,9 @@ export function SideBar({
       });
       return;
     }
+
+    queryClient.removeQueries({ queryKey: ["session"] });
+
     toast.success("会话已终止", {
       description: "你已注销。",
     });

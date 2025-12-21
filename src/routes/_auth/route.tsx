@@ -14,9 +14,10 @@ import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
-    const session = await context.queryClient.ensureQueryData(sessionQuery);
-    const isEmailVerficationRequired =
-      await context.queryClient.ensureQueryData(emailVerficationRequiredQuery);
+    const session = await context.queryClient.fetchQuery(sessionQuery);
+    const isEmailVerficationRequired = await context.queryClient.fetchQuery(
+      emailVerficationRequiredQuery
+    );
 
     if (session && !location.pathname.includes("verify-email")) {
       throw redirect({ to: "/" });

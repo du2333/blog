@@ -5,7 +5,8 @@ import { Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/components/layout/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
-import { createFileRoute, Outlet, useRouter } from "@tanstack/react-router";
+import { useQueryClient } from "@tanstack/react-query";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
@@ -27,7 +28,7 @@ function PublicLayout() {
   ];
 
   const { data: session } = authClient.useSession();
-  const router = useRouter();
+  const queryClient = useQueryClient();
   const logout = async () => {
     const { error } = await authClient.signOut();
     if (error) {
@@ -36,10 +37,12 @@ function PublicLayout() {
       });
       return;
     }
+
+    queryClient.removeQueries({ queryKey: ["session"] });
+
     toast.success("会话已终止", {
       description: "你已安全退出当前会话。",
     });
-    router.invalidate();
   };
   // Global shortcut: Cmd/Ctrl + K to toggle search
   useEffect(() => {

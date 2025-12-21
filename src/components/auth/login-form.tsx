@@ -16,6 +16,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
   email: z.email("无效的频道格式"),
@@ -33,6 +34,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
   const navigate = useNavigate();
   const previousLocation = usePreviousLocation();
+  const queryClient = useQueryClient();
 
   const {
     register,
@@ -72,6 +74,8 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
       });
       return;
     }
+
+    queryClient.removeQueries({ queryKey: ["session"] });
 
     setLoginStep("SYNCING");
     setTimeout(() => {

@@ -6,6 +6,7 @@ import { CheckCircle2, Loader2, Lock, Shield, Terminal } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { useQueryClient } from "@tanstack/react-query";
 
 const resetPasswordSchema = z
   .object({
@@ -34,7 +35,8 @@ export function ResetPasswordForm({
   } = useForm<ResetPasswordSchema>({
     resolver: standardSchemaResolver(resetPasswordSchema),
   });
-
+  const queryClient = useQueryClient();
+  
   const onSubmit = async (data: ResetPasswordSchema) => {
     if (!token) {
       toast.error("缺少安全令牌");
@@ -52,6 +54,8 @@ export function ResetPasswordForm({
       });
       return;
     }
+
+    queryClient.removeQueries({ queryKey: ["session"] });
 
     toast.success("新访问密钥已建立", {
       description: "重定向至登录...",
