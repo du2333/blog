@@ -1,4 +1,5 @@
 import { Logo } from "@/components/common/logo";
+import { useTheme } from "@/components/common/theme-provider";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
 import { useQueryClient } from "@tanstack/react-query";
@@ -8,7 +9,9 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   LogOut,
+  Moon,
   Settings,
+  Sun,
   User,
   X,
 } from "lucide-react";
@@ -25,6 +28,7 @@ export function SideBar({
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
+  const { appTheme, setTheme } = useTheme();
   const user = session?.user;
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -152,7 +156,17 @@ export function SideBar({
         </nav>
 
         {/* User Profile / Logout */}
-        <div className="p-4 md:p-2 lg:p-6 border-t border-zinc-100 dark:border-white/5 shrink-0">
+        <div className="p-4 md:p-2 lg:p-6 border-t border-zinc-100 dark:border-white/5 shrink-0 space-y-4">
+          <div className="flex items-center justify-between md:flex-col lg:flex-row gap-2 px-1">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-zinc-300 dark:text-zinc-700 font-bold md:hidden lg:block">主题模式</span>
+            <button
+              onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
+              className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-zinc-50 dark:bg-white/5 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
+            >
+              {appTheme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
+            </button>
+          </div>
+
           <div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
               <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900 shrink-0">

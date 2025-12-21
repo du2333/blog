@@ -50,6 +50,11 @@ mark {
     @apply bg-[#050505] text-zinc-100 selection:bg-white selection:text-black;
   }
 
+  /* Admin Content Area Specifics */
+  .admin-content {
+    @apply bg-white dark:bg-[#050505] text-zinc-900 dark:text-zinc-50;
+  }
+
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
