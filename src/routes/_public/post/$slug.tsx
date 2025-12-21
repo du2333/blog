@@ -1,9 +1,7 @@
 import { ContentRenderer } from "@/components/article/content-renderer";
 import TableOfContents from "@/components/article/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
-import TechButton from "@/components/ui/tech-button";
 import { postBySlugQuery } from "@/features/posts/posts.query";
-import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
@@ -17,7 +15,6 @@ import {
   ArrowUp,
   Calendar,
   Clock,
-  RefreshCw,
   Share2,
 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -42,156 +39,87 @@ function RouteComponent() {
   const router = useRouter();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
-  // Handle initial scroll position
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash) {
-      // Decode URL-encoded hash and remove the leading #
-      const id = decodeURIComponent(hash.slice(1));
-      const element = document.getElementById(id);
-      if (element) {
-        // Small delay to ensure content is rendered
-        setTimeout(() => {
-          element.scrollIntoView({ behavior: "smooth" });
-        }, 100);
-      }
-    } else {
-      // No hash, scroll to top
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
-  // Show/hide back to top button based on scroll position
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 400) {
-        setShowBackToTop(true);
-      } else {
-        setShowBackToTop(false);
-      }
+      setShowBackToTop(window.scrollY > 400);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // post is guaranteed to exist (loader throws notFound if not)
   if (!post) throw notFound();
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-20 px-4 md:px-8 relative">
-      {/* Top Control Bar */}
-      <div className="mb-8 flex justify-between items-end animate-in fade-in slide-in-from-top-4 duration-500">
-        <TechButton
+    <div className="w-full max-w-4xl mx-auto pb-32 px-6 md:px-10">
+      {/* Back Link */}
+      <nav className="py-12 animate-in fade-in duration-700">
+        <button
           onClick={() => router.history.back()}
-          variant="secondary"
-          icon={<ArrowLeft size={16} />}
+          className="group flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
         >
-          返回
-        </TechButton>
-        <div className="hidden md:flex flex-col items-end font-mono text-xs text-zzz-gray">
-          <span>
-            READING_MODE: <span className="text-zzz-lime">ENHANCED</span>
-          </span>
-        </div>
-      </div>
+          <ArrowLeft size={12} className="group-hover:-translate-x-1 transition-transform" />
+          <span>返回目录</span>
+        </button>
+      </nav>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_250px] gap-8 items-start">
-        {/* Main Article Card */}
-        <article className="relative bg-zzz-black border border-zzz-gray shadow-[0_0_50px_rgba(0,0,0,0.5)] animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-backwards">
-          {/* Decorative Top Bar */}
-          <div className="w-full h-2 bg-stripe-pattern border-b border-zzz-gray"></div>
-
-          {/* Title Header Section */}
-          <div className="p-6 md:p-12 pb-8 border-b border-zzz-gray bg-zzz-dark relative overflow-hidden">
-            {/* Background Noise */}
-            <div className="absolute inset-0 opacity-10 pointer-events-none bg-dot-pattern"></div>
-            <div className="absolute -right-20 -top-20 w-64 h-64 bg-zzz-lime blur-[150px] opacity-10 pointer-events-none animate-pulse-fast"></div>
-
-            <div
-              className={`inline-flex items-center gap-2 mb-8 px-3 py-1 font-mono font-bold text-xs bg-black border ${
-                CATEGORY_COLORS[post.category]
-              } uppercase tracking-widest animate-in slide-in-from-left-4 duration-700 delay-100 fill-mode-backwards`}
-            >
-              <div
-                className={`w-2 h-2 rounded-sm ${
-                  post.category === "DEV" ? "bg-zzz-lime" : "bg-white"
-                }`}
-              ></div>
-              {post.category} // LOG_ENTRY
+      <article className="space-y-20">
+        {/* Header Section */}
+        <header className="space-y-12 animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-out fill-mode-forwards">
+          <div className="space-y-6">
+            <div className="flex items-center gap-4 text-[10px] font-mono tracking-[0.3em] uppercase opacity-40">
+              <span className="px-2 py-0.5 border border-current rounded-sm">{post.category}</span>
+              <span className="flex items-center gap-1.5">
+                <Calendar size={12} />
+                <ClientOnly fallback={<span>-</span>}>
+                  {formatDate(post.publishedAt)}
+                </ClientOnly>
+              </span>
+              <span className="flex items-center gap-1.5">
+                <Clock size={12} />
+                {post.readTimeInMinutes} MIN READ
+              </span>
             </div>
 
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-black font-sans text-white uppercase leading-tight md:leading-[0.9] mb-8 relative z-10 drop-shadow-xl tracking-tight wrap-break-word animate-in slide-in-from-bottom-4 duration-700 delay-200 fill-mode-backwards">
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[0.95] tracking-tight text-zinc-900 dark:text-zinc-100">
               {post.title}
             </h1>
-
-            <div className="flex flex-col md:flex-row gap-6 md:gap-12 text-sm font-mono text-gray-400 border-t border-zzz-gray/30 pt-6 animate-in fade-in duration-700 delay-300 fill-mode-backwards">
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-zzz-gray rounded-sm text-zzz-lime">
-                  <Calendar size={14} />
-                </div>
-                <span className="tracking-widest text-white">
-                  <ClientOnly fallback={<span>-</span>}>
-                    {formatDate(post.publishedAt)}
-                  </ClientOnly>
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-zzz-gray rounded-sm text-zzz-lime">
-                  <Clock size={14} />
-                </div>
-                <span className="tracking-widest text-white">
-                  {post.readTimeInMinutes} 分钟阅读
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-zzz-gray rounded-sm text-zzz-lime">
-                  <RefreshCw size={14} />
-                </div>
-                <span className="tracking-widest text-white">
-                  最后更新于:{" "}
-                  <ClientOnly fallback={<span>-</span>}>
-                    {formatDate(post.updatedAt)}
-                  </ClientOnly>
-                </span>
-              </div>
-            </div>
           </div>
 
-          {/* Content Body */}
-          <div className="p-6 md:p-12 bg-zzz-black relative">
-            {/* Sidebar decoration line */}
-            <div className="hidden md:block absolute left-4 top-12 bottom-12 w-px bg-zzz-gray"></div>
+          <p className="text-xl md:text-2xl font-light leading-relaxed text-zinc-500 dark:text-zinc-400 border-l border-zinc-200 dark:border-zinc-800 pl-8 italic">
+            {post.summary}
+          </p>
+        </header>
 
-            <div className="text-xl md:text-2xl font-bold text-zzz-lime mb-16 font-sans border-l-4 border-zzz-gray pl-6 italic max-w-3xl leading-snug animate-in slide-in-from-right-4 duration-700 delay-500 fill-mode-backwards">
-              {post.summary}
-            </div>
-
-            <div className="max-w-none md:pl-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 delay-300 fill-mode-backwards min-h-[500px]">
-              <ContentRenderer content={post.contentJson} />
-            </div>
-
-            <div className="mt-20 pt-8 border-t-2 border-zzz-gray border-dashed flex flex-col md:flex-row justify-between items-center gap-6 animate-in fade-in duration-700 delay-700">
-              <div className="font-mono text-xs text-gray-500 uppercase tracking-widest">
-                ID: {post.id} // END OF DATA STREAM // VERIFIED
+        {/* Content Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_200px] gap-16 items-start">
+          <main className="max-w-none prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-forwards">
+            <ContentRenderer content={post.contentJson} />
+            
+            <footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-between items-center">
+              <div className="text-[10px] font-mono uppercase tracking-widest opacity-30">
+                End of Transmission // {post.slug}
               </div>
-              <TechButton variant="secondary" icon={<Share2 size={16} />}>
-                分享日志
-              </TechButton>
-            </div>
-          </div>
+              <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">
+                <Share2 size={14} />
+                <span>分享文章</span>
+              </button>
+            </footer>
+          </main>
 
-          {/* Deco Corners */}
-          <div className="absolute top-0 right-0 w-8 h-8 border-t-4 border-r-4 border-zzz-lime clip-corner-bl"></div>
-          <div className="absolute bottom-0 left-0 w-8 h-8 border-b-4 border-l-4 border-zzz-lime clip-corner-tr"></div>
-        </article>
+          {/* Table of Contents Sidebar */}
+          <aside className="hidden lg:block sticky top-32 animate-in fade-in duration-1000 delay-500 fill-mode-forwards">
+            <TableOfContents headers={post.toc} />
+          </aside>
+        </div>
+      </article>
 
-        {/* Sticky Table of Contents Sidebar */}
-        <TableOfContents headers={post.toc} />
-      </div>
-
-      {/* Back To Top Button */}
+      {/* Back To Top */}
       <div
-        className={`fixed bottom-8 right-8 z-40 transition-all duration-500 ${
+        className={`fixed bottom-12 right-12 z-40 transition-all duration-700 ${
           showBackToTop
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10 pointer-events-none"
@@ -199,15 +127,9 @@ function RouteComponent() {
       >
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="group relative h-12 w-12 bg-zzz-dark border border-zzz-lime text-zzz-lime flex items-center justify-center hover:bg-zzz-lime hover:text-black transition-all clip-corner-tr shadow-[0_0_20px_rgba(204,255,0,0.2)] overflow-hidden"
+          className="w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all duration-500 group"
         >
-          <ArrowUp size={20} className="relative z-10" />
-          <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
-
-          {/* Hover Text Expansion */}
-          <span className="absolute right-14 bg-black text-zzz-lime text-[10px] font-mono font-bold px-2 py-1 opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 border border-zzz-gray uppercase tracking-widest whitespace-nowrap">
-            Return_Top
-          </span>
+          <ArrowUp size={20} className="group-hover:-translate-y-1 transition-transform" />
         </button>
       </div>
     </div>

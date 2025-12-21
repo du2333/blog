@@ -35,23 +35,17 @@ export default function TableOfContents({
   return (
     <nav
       ref={navRef}
-      className="sticky top-32 self-start hidden lg:block w-[250px] p-4 animate-in fade-in slide-in-from-right-4 duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar pr-6 fill-mode-backwards"
+      className="sticky top-32 self-start hidden lg:block w-[200px] animate-in fade-in duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar fill-mode-backwards"
     >
       {/* Header */}
-      <div className="flex items-center gap-2 mb-6 text-zzz-lime font-mono text-xs font-bold uppercase tracking-widest border-b border-zzz-gray pb-2 sticky top-0 bg-zzz-black/95 backdrop-blur z-20">
-        <AlignLeft size={14} />
-        <span>Navigation_Index</span>
+      <div className="flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.2em] font-bold opacity-30">
+        <AlignLeft size={12} />
+        <span>目录索引</span>
       </div>
 
       {/* Root List Container */}
       <div className="relative toc-root">
-        {/* Main Sliding Indicator (Global) */}
-        <div
-          className="absolute left-[15px] w-0.5 h-4 bg-zzz-lime transition-all duration-300 ease-out z-10 opacity-50"
-          style={{ top: indicatorTop + 4, opacity: activeId ? 1 : 0 }}
-        />
-
-        <ul className="space-y-1">
+        <ul className="space-y-4">
           {headers.map((node) => (
             <li key={node.id}>
               <a
@@ -70,41 +64,21 @@ export default function TableOfContents({
                     });
                   }
                 }}
-                style={{ paddingLeft: `${1.5 + (node.level - 1) * 0.8}rem` }}
                 className={`
-                            block text-xs font-mono transition-all duration-200 leading-tight py-1 relative
+                            block text-xs transition-all duration-300 leading-relaxed relative border-l-2
                             ${
                               activeId === node.id
-                                ? "text-zzz-lime font-bold"
-                                : "text-gray-500 hover:text-white"
-                            }
-                            ${
-                              node.level === 2
-                                ? "uppercase tracking-wider mt-4 mb-2 font-bold text-zzz-white"
-                                : ""
+                                ? "text-zinc-900 dark:text-zinc-100 border-zinc-900 dark:border-zinc-100 pl-4 font-medium"
+                                : "text-zinc-400 dark:text-zinc-500 border-transparent pl-4 hover:text-zinc-900 dark:hover:text-zinc-100"
                             }
                         `}
+                style={{ marginLeft: `${(node.level - 2) * 1}rem` }}
               >
-                {/* H1 Decorator */}
-                {node.level === 2 && (
-                  <span className="absolute left-0 text-zzz-gray/50 font-bold">
-                    #
-                  </span>
-                )}
-
                 {node.text}
               </a>
             </li>
           ))}
         </ul>
-      </div>
-
-      {/* Decorative Footer */}
-      <div className="mt-8 pt-4 border-t border-zzz-gray/30">
-        <div className="flex justify-between items-center text-[10px] font-mono text-gray-600">
-          <span>SECTOR_MAP // V.2</span>
-          <div className="w-1.5 h-1.5 bg-zzz-gray animate-pulse rounded-full"></div>
-        </div>
       </div>
     </nav>
   );

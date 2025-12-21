@@ -59,13 +59,13 @@ function PublicLayout() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-zzz-black text-zzz-white selection:bg-zzz-lime selection:text-black font-body relative">
-      {/* --- Background Effects --- */}
-      <div className="fixed inset-0 pointer-events-none z-0">
-        <div className="absolute inset-0 bg-stripe-pattern opacity-5"></div>
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,rgba(0,0,0,0.8)_100%)]"></div>
-        <div className="w-full h-1 bg-white/5 absolute top-0 animate-[scan_8s_linear_infinite]"></div>
+    <div className="min-h-screen selection:bg-black selection:text-white dark:selection:bg-white dark:selection:text-black font-body relative">
+      {/* --- Minimalist Background --- */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
+        {/* Subtle noise or grain could go here */}
       </div>
+
       <Navbar
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
@@ -92,7 +92,7 @@ function PublicLayout() {
         user={session?.user}
         logout={logout}
       />
-      <main className="flex flex-col min-h-screen container mx-auto px-4 py-8 md:py-12">
+      <main className="flex flex-col min-h-screen relative z-10">
         <Outlet />
       </main>
       <Footer />

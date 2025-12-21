@@ -26,6 +26,11 @@ mark {
 @theme {
   --tw-transition-duration: 0.3s;
 
+  /* Awwwards Style Font Families */
+  --font-serif: "Playfair Display", "Noto Serif SC", serif;
+  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
+
   /* ZZZ Style Colors */
   --color-zzz-black: #0a0a0a;
   --color-zzz-dark: #121212;
@@ -90,9 +95,11 @@ mark {
 
 @layer base {
   body {
-    background-color: #050505;
-    color: #f0f0f0;
-    overflow-x: hidden;
+    @apply bg-white text-zinc-900 transition-colors duration-500 overflow-x-hidden;
+  }
+
+  .dark body {
+    @apply bg-[#050505] text-zinc-100;
   }
 
   button:not(:disabled),
