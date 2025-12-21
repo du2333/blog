@@ -97,18 +97,18 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
           />
 
           {/* Controls */}
-          <div
-            className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-500 ease-in-out ${
-              isOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-4"
-            }`}
-          >
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
-                Image Metadata // {alt || "Untitled Record"}
-              </span>
-            </div>
+                     <div
+                       className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-500 ease-in-out ${
+                         isOpen
+                           ? "opacity-100 translate-y-0"
+                           : "opacity-0 -translate-y-4"
+                       }`}
+                     >
+                       <div className="flex flex-col">
+                         <span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+                           {alt || "Untitled"}
+                         </span>
+                       </div>
             <div className="flex gap-6">
               <a href={originalSrc} download target="_blank" rel="noreferrer">
                 <button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300">

@@ -1,15 +1,14 @@
-import TechButton from "@/components/ui/tech-button";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useNavigate } from "@tanstack/react-router";
-import { ArrowRight, Loader2, Mail, Radio } from "lucide-react";
+import { ArrowLeft, Check, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
 const forgotPasswordSchema = z.object({
-  email: z.email("INVALID_CHANNEL_FORMAT"),
+  email: z.string().email("无效的邮箱格式"),
 });
 
 type ForgotPasswordSchema = z.infer<typeof forgotPasswordSchema>;
@@ -34,109 +33,88 @@ export function ForgotPasswordForm() {
     });
 
     if (error) {
-      toast.error("发送恢复信号失败");
+      toast.error("重置邮件发送失败");
       return;
     }
 
     setSentEmail(data.email);
     setIsSent(true);
-    toast.success("恢复信号已激活", {
-      description: "请检查您的通讯频道以获取重置密钥。",
+    toast.success("重置邮件已发送", {
+      description: "请检查您的收件箱以获取重置链接。",
     });
   };
 
   if (isSent) {
     return (
-      <div className="text-center py-4 animate-in fade-in zoom-in-95">
-        <div className="w-16 h-16 bg-zzz-lime/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-zzz-lime animate-pulse">
-          <Radio size={32} className="text-zzz-lime" />
+      <div className="text-center space-y-10 animate-in fade-in zoom-in-95 duration-700">
+        <div className="space-y-4">
+          <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto border border-zinc-100 dark:border-zinc-800">
+            <Check size={24} className="text-zinc-900 dark:text-zinc-100" />
+          </div>
+          <h3 className="text-2xl font-serif font-medium tracking-tight">
+            查收您的邮件
+          </h3>
+          <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+            重置密码链接已发送至 <span className="text-zinc-900 dark:text-zinc-100 font-medium">{sentEmail}</span>。
+          </p>
         </div>
-        <h3 className="text-xl font-bold font-sans uppercase text-white mb-2">
-          Signal Sent
-        </h3>
-        <p className="text-xs font-mono text-gray-400 mb-8 leading-relaxed">
-          我们已向 <span className="text-zzz-cyan">{sentEmail}</span>{" "}
-          发送了恢复密钥。 请使用链接恢复您的 HDD 访问权限。
-        </p>
-        <TechButton
+        <button
           onClick={() => navigate({ to: "/login" })}
-          className="w-full justify-center"
+          className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
         >
           返回登录
-        </TechButton>
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="p-4 bg-zzz-orange/5 border border-zzz-orange/30 text-zzz-orange text-[10px] font-mono leading-relaxed">
-        注意：遗失的密钥无法从空洞中找回。重置链接将发送至您的注册频道
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <div className="space-y-2">
+        <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic border-l border-zinc-100 dark:border-zinc-900 pl-6">
+          请输入您的注册邮箱，我们将向您发送重置密码的链接。
+        </p>
       </div>
 
-      <div className="space-y-1 group">
-        <label
-          className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-            errors.email
-              ? "text-zzz-orange"
-              : "text-gray-500 group-focus-within:text-zzz-lime"
-          }`}
-        >
-          注册邮箱 (Registered Email)
-        </label>
-        <div className="relative">
-          <Mail
-            className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-              errors.email
-                ? "text-zzz-orange"
-                : "text-gray-600 group-focus-within:text-zzz-lime"
-            }`}
-            size={18}
-          />
+      <div className="space-y-6">
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            注册邮箱
+          </label>
           <input
             type="email"
             {...register("email")}
-            className={`w-full bg-black border text-white font-mono text-sm py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
-              errors.email
-                ? "border-zzz-orange focus:border-zzz-orange"
-                : "border-zzz-gray focus:border-zzz-lime"
-            }`}
-            placeholder="name@example.com"
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="example@mail.com"
           />
+          {errors.email && (
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+              {errors.email.message}
+            </span>
+          )}
         </div>
-        {errors.email && (
-          <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
-            {errors.email.message}
-          </div>
-        )}
       </div>
 
-      <TechButton
-        type="submit"
-        disabled={isSubmitting}
-        className="w-full h-12 text-sm justify-center"
-        icon={
-          isSubmitting ? (
-            <Loader2 className="animate-spin" size={18} />
+      <div className="space-y-6">
+        <button
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+        >
+          {isSubmitting ? (
+            <Loader2 className="animate-spin" size={16} />
           ) : (
-            <Radio size={18} />
-          )
-        }
-      >
-        {isSubmitting ? "TRANSMITTING..." : "SEND RECOVERY SIGNAL"}
-      </TechButton>
+            <span>发送重置链接</span>
+          )}
+        </button>
 
-      <div className="text-center">
         <button
           type="button"
           onClick={() => navigate({ to: "/login" })}
-          className="text-[10px] font-mono font-bold text-gray-500 hover:text-white uppercase tracking-widest flex items-center justify-center gap-2 mx-auto transition-colors group"
+          className="w-full flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
         >
-          <ArrowRight
-            size={12}
-            className="rotate-180 group-hover:-translate-x-1 transition-transform"
-          />{" "}
-          返回登录
+          <ArrowLeft size={12} strokeWidth={1.5} />
+          <span>返回登录</span>
         </button>
       </div>
     </form>

@@ -155,7 +155,7 @@ export function UserProfileModal({
         <div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/10">
           <div className="space-y-12">
             <div className="space-y-6">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden grayscale-[0.3] hover:grayscale-0 transition-all duration-1000 border border-zinc-100 dark:border-zinc-900 p-1 bg-white dark:bg-zinc-950">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 border border-zinc-100 dark:border-zinc-900 p-1 bg-white dark:bg-zinc-950">
                 {user.image ? (
                   <img
                     src={user.image}
@@ -173,7 +173,7 @@ export function UserProfileModal({
                   {user.name}
                 </h2>
                 <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-[0.4em]">
-                  {user.role === "admin" ? "系统管理员" : "注册用户"}
+                  {user.role === "admin" ? "管理员" : "用户"}
                 </div>
               </div>
             </div>
@@ -181,24 +181,16 @@ export function UserProfileModal({
             <div className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-900">
               <div className="space-y-1">
                 <span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
-                  当前状态
+                  状态
                 </span>
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-900 dark:bg-zinc-100 animate-pulse"></div>
-                  <span className="text-sm font-light">在线同步中</span>
+                  <span className="text-sm font-light">在线</span>
                 </div>
               </div>
               <div className="space-y-1">
                 <span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
-                  身份认证 ID
-                </span>
-                <div className="text-xs font-mono break-all opacity-60">
-                  {user.id}
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
-                  通讯地址
+                  邮箱
                 </span>
                 <div className="text-sm font-light opacity-60">
                   {user.email}
@@ -215,7 +207,7 @@ export function UserProfileModal({
               }}
               className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-zinc-400 hover:text-red-500 transition-colors"
             >
-              <span>终止会话 / Logout</span>
+              <span>退出登录</span>
               <LogOut
                 size={14}
                 className="group-hover:translate-x-1 transition-transform"
@@ -229,14 +221,8 @@ export function UserProfileModal({
           {/* Profile Configuration */}
           <section className="space-y-12">
             <header className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-zinc-900 dark:bg-zinc-100 opacity-20"></span>
-                <span className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-40">
-                  Profile Configuration
-                </span>
-              </div>
               <h3 className="text-3xl font-serif font-medium tracking-tight">
-                基础资料
+                资料设置
               </h3>
             </header>
 
@@ -246,7 +232,7 @@ export function UserProfileModal({
             >
               <div className="space-y-3">
                 <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                  代理人别名
+                  用户昵称
                 </label>
                 <div className="relative group">
                   <input
@@ -264,7 +250,7 @@ export function UserProfileModal({
 
               <div className="space-y-3">
                 <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                  头像资源地址 (URL)
+                  头像链接
                 </label>
                 <div className="flex gap-4 md:gap-8 items-end">
                   <input
@@ -296,14 +282,8 @@ export function UserProfileModal({
           {/* Security Protocol */}
           <section className="space-y-10 pb-12">
             <header className="space-y-4">
-              <div className="flex items-center gap-3">
-                <span className="h-px w-8 bg-zinc-900 dark:bg-zinc-100 opacity-20"></span>
-                <span className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-40">
-                  Security Protocol
-                </span>
-              </div>
               <h3 className="text-3xl font-serif font-medium tracking-tight">
-                安全协议
+                修改密码
               </h3>
             </header>
 
@@ -315,7 +295,7 @@ export function UserProfileModal({
                 <div className="space-y-10">
                   <div className="space-y-3">
                     <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                      当前访问密钥
+                      当前密码
                     </label>
                     <input
                       type="password"
@@ -332,7 +312,7 @@ export function UserProfileModal({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
                     <div className="space-y-3">
                       <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                        新访问密钥
+                        新密码
                       </label>
                       <input
                         type="password"
@@ -347,7 +327,7 @@ export function UserProfileModal({
                     </div>
                     <div className="space-y-3">
                       <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                        确认新密钥
+                        确认新密码
                       </label>
                       <div className="flex gap-4 items-end">
                         <input
@@ -381,12 +361,11 @@ export function UserProfileModal({
                 <div className="flex items-center gap-4 text-zinc-400">
                   <ShieldAlert size={24} strokeWidth={1.5} />
                   <span className="text-xs font-medium uppercase tracking-[0.2em]">
-                    外部身份验证托管
+                    外部账户
                   </span>
                 </div>
                 <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic">
-                  此账户通过第三方提供商（如
-                  GitHub）完成身份验证。出于安全考虑，密码管理需在相应的托管平台进行。
+                  此账户通过第三方提供商（如 Github）登录。
                 </p>
               </div>
             )}

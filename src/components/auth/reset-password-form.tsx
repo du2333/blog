@@ -1,8 +1,7 @@
-import TechButton from "@/components/ui/tech-button";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useNavigate } from "@tanstack/react-router";
-import { CheckCircle2, Loader2, Lock, Shield, Terminal } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -10,11 +9,11 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const resetPasswordSchema = z
   .object({
-    password: z.string().min(8, "KEY_TOO_WEAK (至少 8 位)"),
+    password: z.string().min(8, "密码至少 8 位"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "KEYS_DO_NOT_MATCH",
+    message: "密码输入不一致",
     path: ["confirmPassword"],
   });
 
@@ -50,153 +49,109 @@ export function ResetPasswordForm({
 
     if (error) {
       toast.error("重置失败", {
-        description: "令牌可能已过期。",
+        description: "令牌可能已过期，请重新请求。",
       });
       return;
     }
 
     queryClient.removeQueries({ queryKey: ["session"] });
 
-    toast.success("新访问密钥已建立", {
-      description: "重定向至登录...",
+    toast.success("密码已更新", {
+      description: "请使用新密码重新登录。",
     });
     navigate({ to: "/login" });
   };
 
   if (!token && !error) {
     return (
-      <div className="text-center p-4">
-        <div className="text-zzz-orange font-mono text-xs uppercase mb-4">
-          ERROR: 缺少授权令牌
-        </div>
-        <TechButton
+      <div className="text-center space-y-6">
+        <p className="text-sm font-light text-red-500 italic">
+          错误：缺少授权令牌
+        </p>
+        <button
           onClick={() => navigate({ to: "/login" })}
-          className="w-full justify-center"
+          className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
         >
           返回登录
-        </TechButton>
+        </button>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="text-center p-4">
-        <div className="text-zzz-orange font-mono text-xs uppercase mb-4">
-          ERROR: 无效链接 ({error})
-        </div>
-        <TechButton
+      <div className="text-center space-y-6">
+        <p className="text-sm font-light text-red-500 italic">
+          错误：无效的链接 ({error})
+        </p>
+        <button
           onClick={() => navigate({ to: "/forgot-password" })}
-          className="w-full justify-center"
+          className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
         >
-          请求新链接
-        </TechButton>
+          重新请求链接
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-      <div className="p-4 bg-zzz-cyan/5 border border-zzz-cyan/30 text-zzz-cyan text-[10px] font-mono leading-relaxed mb-6 relative overflow-hidden">
-        <div className="flex items-center gap-2 mb-1 font-bold">
-          <Terminal size={12} /> SYSTEM_NOTICE
-        </div>
-        AUTHORIZATION: 重置令牌已验证
-        <br />
-        STATUS: 等待新密钥输入
-        <div className="absolute top-0 right-0 w-8 h-8 bg-linear-to-bl from-zzz-cyan/20 to-transparent"></div>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
+      <div className="space-y-2">
+        <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic border-l border-zinc-100 dark:border-zinc-900 pl-6">
+          您的身份已验证。请在下方输入新密码以完成重置。
+        </p>
       </div>
 
-      <div className="space-y-4">
-        <div className="space-y-1 group">
-          <label
-            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-              errors.password
-                ? "text-zzz-orange"
-                : "text-gray-500 group-focus-within:text-white"
-            }`}
-          >
-            新访问密钥 (New Access Key)
+      <div className="space-y-6">
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            新密码
           </label>
-          <div className="relative">
-            <Lock
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.password
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-zzz-cyan"
-              }`}
-              size={16}
-            />
-            <input
-              type="password"
-              {...register("password")}
-              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 focus:bg-zzz-dark ${
-                errors.password
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-zzz-cyan"
-              }`}
-              placeholder="••••••••"
-            />
-          </div>
+          <input
+            type="password"
+            {...register("password")}
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="••••••••"
+          />
           {errors.password && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
               {errors.password.message}
-            </div>
+            </span>
           )}
         </div>
-        <div className="space-y-1 group">
-          <label
-            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-              errors.confirmPassword
-                ? "text-zzz-orange"
-                : "text-gray-500 group-focus-within:text-white"
-            }`}
-          >
-            确认密钥 (Confirm Key)
+
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            确认新密码
           </label>
-          <div className="relative">
-            <Shield
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.confirmPassword
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-zzz-cyan"
-              }`}
-              size={16}
-            />
-            <input
-              type="password"
-              {...register("confirmPassword")}
-              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 focus:bg-zzz-dark ${
-                errors.confirmPassword
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-zzz-cyan"
-              }`}
-              placeholder="••••••••"
-            />
-          </div>
+          <input
+            type="password"
+            {...register("confirmPassword")}
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="••••••••"
+          />
           {errors.confirmPassword && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
               {errors.confirmPassword.message}
-            </div>
+            </span>
           )}
         </div>
       </div>
 
-      <TechButton
+      <button
         type="submit"
         disabled={isSubmitting}
-        variant="secondary"
-        className="w-full h-12 text-sm justify-center border-zzz-cyan text-zzz-cyan hover:bg-zzz-cyan hover:text-black hover:border-zzz-cyan disabled:hover:bg-transparent disabled:hover:text-zzz-cyan"
-        icon={
-          isSubmitting ? (
-            <Loader2 className="animate-spin" size={18} />
-          ) : (
-            <CheckCircle2 size={18} />
-          )
-        }
+        className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
       >
-        {isSubmitting ? "REWRITING..." : "ESTABLISH NEW KEY"}
-      </TechButton>
+        {isSubmitting ? (
+          <Loader2 className="animate-spin" size={16} />
+        ) : (
+          <>
+            <span>更新密码</span>
+            <Check size={14} />
+          </>
+        )}
+      </button>
     </form>
   );
 }

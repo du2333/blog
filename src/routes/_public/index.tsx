@@ -30,9 +30,6 @@ function App() {
           <header className="space-y-4">
             <div className="flex items-center gap-3">
               <span className="h-px w-12 bg-black dark:bg-white/40"></span>
-              <span className="text-xs uppercase tracking-[0.3em] font-mono opacity-60">
-                新艾利都编年史
-              </span>
             </div>
             <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight">
               数字 <br />
@@ -49,7 +46,7 @@ function App() {
               to="/database"
               className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:gap-6 transition-all duration-500"
             >
-              <span>访问档案馆</span>
+              <span>浏览文章</span>
               <div className="w-12 h-12 rounded-full border border-zinc-100 dark:border-zinc-900 flex items-center justify-center group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-colors duration-500">
                 <ArrowRight size={18} />
               </div>
@@ -62,16 +59,13 @@ function App() {
       <section className="py-24 md:py-32">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-4">
-            <h2 className="text-4xl md:text-5xl font-serif">最新传输</h2>
-            <p className="opacity-50 font-mono text-sm tracking-widest uppercase italic">
-              // Incoming stream
-            </p>
+            <h2 className="text-4xl md:text-5xl font-serif">最新文章</h2>
           </div>
           <Link
             to="/database"
             className="text-sm border-b border-zinc-200 dark:border-zinc-800 pb-1 hover:border-zinc-900 dark:hover:border-zinc-100 transition-colors"
           >
-            浏览所有故事
+            浏览所有
           </Link>
         </div>
 

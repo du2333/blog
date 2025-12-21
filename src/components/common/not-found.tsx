@@ -1,5 +1,4 @@
-import { AlertOctagon, ArrowLeft, Radio } from "lucide-react";
-import TechButton from "@/components/ui/tech-button";
+import { ArrowLeft } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 
 export function NotFound() {
@@ -9,59 +8,38 @@ export function NotFound() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden p-6 text-center">
-      {/* Background Noise Effect */}
-      <div className="absolute inset-0 bg-stripe-pattern opacity-10 pointer-events-none"></div>
-
-      {/* Glitch Container */}
-      <div className="relative mb-8 animate-[pulse_3s_infinite]">
-        <div className="absolute inset-0 bg-zzz-orange blur-2xl opacity-20 animate-pulse"></div>
-        <AlertOctagon size={120} className="text-zzz-gray relative z-10" />
-        <Radio
-          size={60}
-          className="text-zzz-orange absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 animate-spin-reverse"
-        />
-      </div>
-
-      <h1 className="text-8xl md:text-9xl font-black font-sans text-transparent bg-clip-text bg-linear-to-b from-white to-gray-800 tracking-tighter mb-2 animate-glitch relative">
-        404
-        <span
-          className="absolute top-0 left-0 -ml-1 text-zzz-orange opacity-50 animate-glitch"
-          aria-hidden="true"
-        >
-          404
-        </span>
-        <span
-          className="absolute top-0 left-0 ml-1 text-zzz-cyan opacity-50 animate-glitch"
-          aria-hidden="true"
-        >
-          404
-        </span>
-      </h1>
-
-      <div className="bg-zzz-black border border-zzz-orange/50 px-4 py-1 text-zzz-orange font-mono text-sm font-bold tracking-[0.2em] mb-8 uppercase animate-pulse">
-        Signal_Lost // Coordinates_Unknown
-      </div>
-
-      <p className="max-w-md text-gray-400 font-mono mb-10 text-sm md:text-base leading-relaxed">
-        无法定位请求的数据扇区。它可能已被空洞吞噬或因高以太活性而损坏。
-      </p>
-
-      <TechButton
-        onClick={onReturn}
-        variant="primary"
-        icon={<ArrowLeft size={16} />}
-        className="mb-16 md:mb-10"
-      >
-        返回新艾利都
-      </TechButton>
-
-      {/* Footer code */}
-      <div className="absolute bottom-6 md:bottom-10 left-0 w-full text-center px-6">
-        <div className="text-[10px] font-mono text-zzz-gray uppercase tracking-widest">
-          Error_Code: hollow_void_null_ref
+    <div className="flex flex-col items-center justify-center min-h-screen w-full relative overflow-hidden p-6 text-center bg-white dark:bg-[#050505] transition-colors duration-500">
+      <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+        <div className="space-y-2">
+          <h1 className="text-[120px] md:text-[200px] font-serif font-medium leading-none tracking-tighter text-zinc-900 dark:text-zinc-100 opacity-10">
+            404
+          </h1>
+          <div className="space-y-4">
+            <h2 className="text-3xl md:text-5xl font-serif font-medium tracking-tight">
+              找不到该页面
+            </h2>
+            <p className="max-w-md mx-auto text-zinc-500 dark:text-zinc-400 font-light leading-relaxed">
+              您请求的内容可能已被移除或地址输入有误。
+            </p>
+          </div>
         </div>
+
+        <button
+          onClick={onReturn}
+          className="group inline-flex items-center gap-4 text-[11px] uppercase tracking-[0.4em] font-medium transition-all"
+        >
+          <div className="w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-all duration-500">
+            <ArrowLeft size={18} />
+          </div>
+          <span className="border-b border-transparent group-hover:border-current transition-all">返回主页</span>
+        </button>
       </div>
+
+      <footer className="absolute bottom-12 left-0 w-full text-center px-6">
+        <div className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.6em]">
+          End of Line // Error 404
+        </div>
+      </footer>
     </div>
   );
 }

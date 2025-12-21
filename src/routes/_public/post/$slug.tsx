@@ -80,7 +80,7 @@ function RouteComponent() {
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock size={12} />
-                {post.readTimeInMinutes} MIN READ
+                {post.readTimeInMinutes} min
               </span>
             </div>
 
@@ -99,10 +99,7 @@ function RouteComponent() {
           <main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-forwards">
             <ContentRenderer content={post.contentJson} />
             
-            <footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-between items-center">
-              <div className="text-[10px] font-mono uppercase tracking-widest opacity-30">
-                End of Transmission // {post.slug}
-              </div>
+            <footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-end items-center">
               <button className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-40 hover:opacity-100 transition-opacity">
                 <Share2 size={14} />
                 <span>分享文章</span>

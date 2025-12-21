@@ -81,15 +81,12 @@ function RouteComponent() {
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 fill-mode-forwards">
           <div className="flex items-center gap-3">
             <span className="h-px w-12 bg-black dark:bg-white/40"></span>
-            <span className="text-[10px] uppercase tracking-[0.3em] font-mono opacity-40">
-              Collection of Records
-            </span>
           </div>
           <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight">
-            档案馆
+            文章
           </h1>
           <p className="max-w-xl text-lg md:text-xl font-light leading-relaxed opacity-60">
-            按时间顺序排列的所有传输记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
+            按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
           </p>
         </div>
 
@@ -170,7 +167,7 @@ function RouteComponent() {
               <div className="absolute inset-0 w-12 h-12 rounded-full border-t border-zinc-900 dark:border-zinc-100 animate-[spin_1.5s_linear_infinite]"></div>
             </div>
             <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400">
-              Fetching Data...
+              Loading
             </span>
           </div>
         ) : hasNextPage ? (
@@ -178,9 +175,6 @@ function RouteComponent() {
         ) : posts.length > 0 ? (
           <div className="flex flex-col items-center gap-3 opacity-20">
             <div className="h-px w-32 bg-current"></div>
-            <span className="text-[9px] font-mono uppercase tracking-[0.5em]">
-              End of Archive
-            </span>
           </div>
         ) : null}
       </div>

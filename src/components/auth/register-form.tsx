@@ -1,16 +1,11 @@
-import TechButton from "@/components/ui/tech-button";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
-  ChevronRight,
+  ArrowRight,
+  Check,
   Loader2,
-  Lock,
-  Mail,
-  Shield,
-  Sparkles,
-  User,
 } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -20,13 +15,13 @@ import { useQueryClient } from "@tanstack/react-query";
 
 const registerSchema = z
   .object({
-    name: z.string().min(2, "ALIAS_TOO_SHORT (至少 2 位)"),
-    email: z.email("INVALID_CHANNEL_FORMAT"),
-    password: z.string().min(8, "KEY_TOO_WEAK (至少 8 位)"),
+    name: z.string().min(2, "代号至少 2 位"),
+    email: z.string().email("无效的邮箱格式"),
+    password: z.string().min(8, "密码至少 8 位"),
     confirmPassword: z.string(),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "KEYS_DO_NOT_MATCH",
+    message: "密码输入不一致",
     path: ["confirmPassword"],
   });
 
@@ -57,7 +52,7 @@ export function RegisterForm() {
 
     if (error) {
       toast.error("注册失败", {
-        description: error.message || "信号被防火墙阻塞。",
+        description: error.message || "服务器连接异常，请稍后重试。",
       });
       return;
     }
@@ -66,12 +61,12 @@ export function RegisterForm() {
 
     if (isEmailVerficationRequired) {
       setIsSuccess(true);
-      toast.success("代理人ID已创建", {
-        description: "验证信号已发送。请检查您的收件箱。",
+      toast.success("账号已创建", {
+        description: "验证邮件已发送，请检查您的收件箱。",
       });
     } else {
-      toast.success("访问已授予", {
-        description: "欢迎来到绳网。",
+      toast.success("注册成功", {
+        description: "账号已激活。",
       });
       navigate({ to: previousLocation ?? "/" });
     }
@@ -79,197 +74,118 @@ export function RegisterForm() {
 
   if (isSuccess) {
     return (
-      <div className="text-center py-8 animate-in fade-in zoom-in-95">
-        <div className="w-16 h-16 bg-zzz-lime/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-zzz-lime animate-pulse">
-          <Sparkles size={32} className="text-zzz-lime" />
+      <div className="text-center space-y-10 animate-in fade-in zoom-in-95 duration-700">
+        <div className="space-y-4">
+          <div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto border border-zinc-100 dark:border-zinc-800">
+            <Check size={24} className="text-zinc-900 dark:text-zinc-100" />
+          </div>
+          <h3 className="text-2xl font-serif font-medium tracking-tight">
+            验证您的邮箱
+          </h3>
+          <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+            一封验证邮件已发送至您的邮箱。请点击邮件中的链接以激活账户。
+          </p>
         </div>
-        <h3 className="text-xl font-bold font-sans uppercase text-white mb-2">
-          Verify Signal
-        </h3>
-        <p className="text-xs font-mono text-gray-400 mb-8 leading-relaxed px-4">
-          神经连接验证已发送至您的通讯频道。
-          <br />
-          <br />
-          请确认链接以激活您的 HDD 系统访问权限。
-        </p>
-        <TechButton
+        <button
           onClick={() => navigate({ to: "/login" })}
-          className="w-full justify-center"
+          className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
         >
           返回登录
-        </TechButton>
+        </button>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-      {/* Name */}
-      <div className="space-y-1 group">
-        <label
-          className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-            errors.name
-              ? "text-zzz-orange"
-              : "text-gray-500 group-focus-within:text-zzz-lime"
-          }`}
-        >
-          代理人代号 (Proxy Name)
-        </label>
-        <div className="relative">
-          <User
-            className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-              errors.name
-                ? "text-zzz-orange"
-                : "text-gray-600 group-focus-within:text-zzz-lime"
-            }`}
-            size={16}
-          />
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
+      <div className="space-y-6">
+        {/* Name */}
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            代理人代号
+          </label>
           <input
             type="text"
             {...register("name")}
-            className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
-              errors.name
-                ? "border-zzz-orange focus:border-zzz-orange"
-                : "border-zzz-gray focus:border-zzz-lime"
-            }`}
-            placeholder="输入代号..."
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="输入您的代号"
           />
+          {errors.name && (
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+              {errors.name.message}
+            </span>
+          )}
         </div>
-        {errors.name && (
-          <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
-            {errors.name.message}
-          </div>
-        )}
-      </div>
 
-      {/* Email */}
-      <div className="space-y-1 group">
-        <label
-          className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-            errors.email
-              ? "text-zzz-orange"
-              : "text-gray-500 group-focus-within:text-zzz-cyan"
-          }`}
-        >
-          通讯频道 (Email)
-        </label>
-        <div className="relative">
-          <Mail
-            className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-              errors.email
-                ? "text-zzz-orange"
-                : "text-gray-600 group-focus-within:text-zzz-cyan"
-            }`}
-            size={16}
-          />
+        {/* Email */}
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            邮箱地址
+          </label>
           <input
             type="email"
             {...register("email")}
-            className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
-              errors.email
-                ? "border-zzz-orange focus:border-zzz-orange"
-                : "border-zzz-gray focus:border-zzz-cyan"
-            }`}
-            placeholder="name@example.com"
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="example@mail.com"
           />
+          {errors.email && (
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+              {errors.email.message}
+            </span>
+          )}
         </div>
-        {errors.email && (
-          <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
-            {errors.email.message}
-          </div>
-        )}
-      </div>
 
-      {/* Passwords */}
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-1 group">
-          <label
-            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-              errors.password
-                ? "text-zzz-orange"
-                : "text-gray-500 group-focus-within:text-white"
-            }`}
-          >
-            访问密钥 (Password)
-          </label>
-          <div className="relative">
-            <Lock
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.password
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-white"
-              }`}
-              size={16}
-            />
+        {/* Passwords */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-2 group">
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+              密码
+            </label>
             <input
               type="password"
               {...register("password")}
-              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 ${
-                errors.password
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-white"
-              }`}
+              className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
               placeholder="••••••••"
             />
+            {errors.password && (
+              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+                {errors.password.message}
+              </span>
+            )}
           </div>
-          {errors.password && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
-              {errors.password.message}
-            </div>
-          )}
-        </div>
-        <div className="space-y-1 group">
-          <label
-            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-              errors.confirmPassword
-                ? "text-zzz-orange"
-                : "text-gray-500 group-focus-within:text-white"
-            }`}
-          >
-            确认密钥
-          </label>
-          <div className="relative">
-            <Shield
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.confirmPassword
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-white"
-              }`}
-              size={16}
-            />
+          <div className="space-y-2 group">
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+              确认密码
+            </label>
             <input
               type="password"
               {...register("confirmPassword")}
-              className={`w-full bg-black border text-white font-mono text-xs py-3 pl-10 pr-2 focus:outline-none transition-all placeholder-gray-800 ${
-                errors.confirmPassword
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-white"
-              }`}
+              className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
               placeholder="••••••••"
             />
+            {errors.confirmPassword && (
+              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+                {errors.confirmPassword.message}
+              </span>
+            )}
           </div>
-          {errors.confirmPassword && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1">
-              {errors.confirmPassword.message}
-            </div>
-          )}
         </div>
       </div>
 
-      <TechButton
+      <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-12 text-sm justify-center mt-4"
-        icon={
-          isSubmitting ? (
-            <Loader2 className="animate-spin" size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )
-        }
+        className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
       >
-        {isSubmitting ? "REGISTERING..." : "INITIATE REGISTRATION"}
-      </TechButton>
+        {isSubmitting ? (
+          <Loader2 className="animate-spin" size={16} />
+        ) : (
+          <>
+            <span>创建账户</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </>
+        )}
+      </button>
     </form>
   );
 }

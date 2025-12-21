@@ -33,56 +33,46 @@ export const Route = createFileRoute("/_auth")({
 
 function RouteComponent() {
   return (
-    <div className="min-h-screen w-full bg-[#050505] flex items-center justify-center p-4 relative overflow-hidden">
-      {/* --- Return Home Button --- */}
-      <Link
-        to="/"
-        className="absolute top-6 left-6 z-50 flex items-center gap-3 text-gray-500 hover:text-zzz-lime transition-colors group"
-      >
-        <div className="w-10 h-10 border border-zzz-gray group-hover:border-zzz-lime flex items-center justify-center bg-black transition-colors clip-corner-tl shadow-lg">
-          <ArrowLeft
-            size={18}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-        </div>
-        <div className=" flex-col items-start hidden sm:flex">
-          <span className="font-sans font-bold text-sm uppercase leading-none text-white group-hover:text-zzz-lime transition-colors">
-            终止连接
-          </span>
-          <span className="font-mono text-[9px] uppercase tracking-widest opacity-60">
-            Return_Signal
-          </span>
-        </div>
-      </Link>
+    <div className="min-h-screen w-full bg-white dark:bg-[#050505] flex flex-col relative overflow-hidden transition-colors duration-500">
+      {/* --- Background Decorative Elements --- */}
+      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 dark:opacity-100">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
+      </div>
 
-      {/* --- Background Effects --- */}
-      <div className="absolute inset-0 bg-stripe-pattern opacity-5 pointer-events-none"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_0%,#000000_90%)] pointer-events-none"></div>
+      {/* --- Header --- */}
+      <header className="relative z-50 h-24 flex items-center px-6 md:px-12">
+        <Link
+          to="/"
+          className="group flex items-center gap-3 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+        >
+          <ArrowLeft size={18} strokeWidth={1.5} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[10px] uppercase tracking-[0.4em]">返回主页</span>
+        </Link>
+      </header>
 
-      {/* Animated Background Rings (The 'Hollow' Entrance feel) */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] border border-zzz-gray/20 rounded-full animate-[spin_20s_linear_infinite] pointer-events-none"></div>
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] border border-zzz-gray/20 rounded-full animate-[spin_15s_linear_infinite_reverse] pointer-events-none"></div>
+      {/* --- Main Content --- */}
+      <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">
+        <div className="w-full max-w-sm space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          {/* Shared Logo */}
+          <div className="flex justify-center">
+            <Link to="/" className="group">
+              <div className="w-12 h-12 text-zinc-900 dark:text-zinc-100">
+                <div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
+                  <div className="w-full h-full bg-current rounded-full"></div>
+                </div>
+              </div>
+            </Link>
+          </div>
 
-      {/* --- Main Content Container --- */}
-      <div className="w-full max-w-md relative z-10 animate-in fade-in slide-in-from-bottom-8 duration-700">
-        {/* Common Header Logo (Shared across all auth pages) */}
-        <div className="text-center mb-6">
-          <div className="inline-block relative">
-            <div className="absolute inset-0 bg-zzz-lime blur-xl opacity-20 animate-pulse"></div>
-            <Logo className="w-16 h-16 text-zzz-lime mx-auto relative z-10" />
+          <div className="space-y-8">
+            <Outlet />
           </div>
         </div>
+      </main>
 
-        {/* Page Content Injection */}
-        <Outlet />
-
-        {/* Footer / Legal / Version */}
-        <div className="mt-8 text-center opacity-30">
-          <p className="text-[9px] font-mono text-gray-500 uppercase tracking-widest">
-            Proxy Network V.3.0 // New Eridu
-          </p>
-        </div>
-      </div>
+      {/* --- Footer --- */}
+      <footer className="h-24 flex items-center justify-center relative z-10 px-6">
+      </footer>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
-import { ArrowRight, Github, Loader2 } from "lucide-react";
+import { Github, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
@@ -20,7 +20,7 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
     });
 
     if (error) {
-      toast.error("访问被拒绝", {
+      toast.error("第三方登录失败", {
         description: error.message,
       });
       setIsLoading(false);
@@ -31,46 +31,36 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="relative flex items-center py-2">
-        <div className="grow border-t border-zzz-gray"></div>
-        <span className="shrink-0 mx-4 text-[10px] font-mono text-gray-500 uppercase tracking-widest">
-          Or Access Via
+    <div className="space-y-6">
+      <div className="relative flex items-center">
+        <div className="grow h-px bg-zinc-100 dark:bg-zinc-900"></div>
+        <span className="shrink-0 mx-4 text-[10px] uppercase tracking-[0.4em] text-zinc-300 dark:text-zinc-700">
+          或者通过
         </span>
-        <div className="grow border-t border-zzz-gray"></div>
+        <div className="grow h-px bg-zinc-100 dark:bg-zinc-900"></div>
       </div>
 
       <button
         type="button"
         onClick={handleGithubLogin}
         disabled={isLoading}
-        className="group relative w-full h-12 bg-black border border-zzz-gray hover:border-white transition-all duration-300 flex items-center justify-center gap-3 overflow-hidden clip-corner-bl disabled:opacity-50 disabled:cursor-not-allowed"
+        className="group w-full h-14 border border-zinc-200 dark:border-zinc-800 flex items-center justify-center gap-3 transition-all hover:bg-zinc-50 dark:hover:bg-zinc-900 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {/* Hover Fill Effect */}
-        <div className="absolute inset-0 bg-white transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300 ease-out z-0"></div>
-
         {isLoading ? (
           <Loader2
             size={18}
-            className="relative z-10 text-zzz-lime animate-spin"
+            className="text-zinc-400 animate-spin"
           />
         ) : (
           <Github
             size={18}
-            className="relative z-10 text-white group-hover:text-black transition-colors"
+            className="text-zinc-900 dark:text-zinc-100"
           />
         )}
 
-        <span className="relative z-10 font-mono text-xs font-bold uppercase tracking-wider text-white group-hover:text-black transition-colors">
-          {isLoading ? "HANDSHAKE..." : "Github 协议"}
+        <span className="text-[11px] uppercase tracking-[0.4em] font-medium text-zinc-900 dark:text-zinc-100">
+          {isLoading ? "正在连接..." : "Github 账号"}
         </span>
-
-        {!isLoading && (
-          <ArrowRight
-            size={14}
-            className="relative z-10 text-white group-hover:text-black opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-300"
-          />
-        )}
       </button>
     </div>
   );

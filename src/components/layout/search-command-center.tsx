@@ -146,11 +146,7 @@ export function SearchCommandCenter({
           className="flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 space-y-2 scroll-smooth"
         >
           {query.trim() === "" ? (
-            <div className="h-64 flex flex-col items-center justify-center space-y-4">
-              <span className="text-[10px] font-mono uppercase tracking-[0.4em] opacity-30">
-                Waiting for input
-              </span>
-            </div>
+            <div className="h-64 flex flex-col items-center justify-center space-y-4"></div>
           ) : !isSearching && searchResults.length === 0 ? (
             <div className="h-64 flex flex-col items-center justify-center">
               <span className="text-lg font-light text-zinc-400 italic">
@@ -176,11 +172,6 @@ export function SearchCommandCenter({
                   <div className="flex-1 min-w-0 space-y-2">
                     <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest opacity-40">
                       <span>{result.post.category}</span>
-                      {index === selectedIndex && (
-                        <span className="animate-in fade-in slide-in-from-left-2 duration-500 text-zinc-900 dark:text-zinc-100">
-                          Selected
-                        </span>
-                      )}
                     </div>
 
                     <h4
@@ -221,7 +212,6 @@ export function SearchCommandCenter({
               <kbd className="px-1 border border-current rounded">Esc</kbd> 关闭
             </div>
           </div>
-          <div>{searchResults.length} Results</div>
         </div>
       </div>
     </div>

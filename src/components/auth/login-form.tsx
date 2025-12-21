@@ -1,16 +1,11 @@
-import TechButton from "@/components/ui/tech-button";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   AlertCircle,
-  ChevronRight,
+  ArrowRight,
   Loader2,
-  Lock,
-  Mail,
-  ShieldCheck,
-  Zap,
 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -19,16 +14,14 @@ import { z } from "zod";
 import { useQueryClient } from "@tanstack/react-query";
 
 const loginSchema = z.object({
-  email: z.email("无效的频道格式"),
-  password: z.string().min(1, "需要访问密钥"),
+  email: z.string().email("无效的邮箱格式"),
+  password: z.string().min(1, "请输入密码"),
 });
 
 type LoginSchema = z.infer<typeof loginSchema>;
 
 export function LoginForm({ redirectTo }: { redirectTo?: string }) {
-  const [loginStep, setLoginStep] = useState<
-    "IDLE" | "VERIFYING" | "SYNCING" | "SUCCESS"
-  >("IDLE");
+  const [loginStep, setLoginStep] = useState<"IDLE" | "VERIFYING" | "SUCCESS">("IDLE");
   const [isUnverifiedEmail, setIsUnverifiedEmail] = useState(false);
   const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
 
@@ -60,32 +53,21 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     if (error) {
       setLoginStep("IDLE");
       if (error.status === 403) {
-        setError("root", {
-          message: "ACCESS_DENIED: 未验证的邮箱",
-        });
+        setError("root", { message: "邮箱尚未验证" });
         setIsUnverifiedEmail(true);
       } else {
-        setError("root", {
-          message: "ACCESS_DENIED: 无效的凭据",
-        });
+        setError("root", { message: "无效的账号或密码" });
       }
-      toast.error("访问被拒绝", {
-        description: error.message,
-      });
+      toast.error("登录失败", { description: error.message });
       return;
     }
 
     queryClient.removeQueries({ queryKey: ["session"] });
-
-    setLoginStep("SYNCING");
+    setLoginStep("SUCCESS");
+    
     setTimeout(() => {
-      setLoginStep("SUCCESS");
-      setTimeout(() => {
-        navigate({ to: redirectTo ?? previousLocation });
-        toast.success("访问已授予", {
-          description: "欢迎回来，绳匠！",
-        });
-      }, 800);
+      navigate({ to: redirectTo ?? previousLocation });
+      toast.success("欢迎回来");
     }, 800);
   };
 
@@ -97,155 +79,100 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
         callbackURL: `${window.location.origin}/verify-email`,
       }),
       {
-        loading: "正在传输信号...",
-        success: "验证链接已重新发送",
-        error: "传输失败",
+        loading: "正在发送验证邮件...",
+        success: "验证邮件已发送",
+        error: "发送失败，请稍后重试",
       }
     );
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {errors.root && (
-        <div className="bg-zzz-orange/10 border border-zzz-orange p-3 flex flex-col items-start gap-2 animate-in fade-in slide-in-from-top-2">
+        <div className="bg-red-50 dark:bg-red-950/10 border-l-2 border-red-500 p-4 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-500">
           <div className="flex items-center gap-3">
-            <AlertCircle size={16} className="text-zzz-orange shrink-0" />
-            <div className="text-xs font-mono text-zzz-orange font-bold uppercase">
+            <AlertCircle size={14} className="text-red-500 shrink-0" />
+            <div className="text-[11px] font-medium text-red-500 uppercase tracking-widest">
               {errors.root.message}
             </div>
           </div>
-          {/* Specific UI for unverified email based on typical auth flows */}
           {isUnverifiedEmail && (
             <button
               type="button"
               onClick={handleResendVerification}
-              className="text-[10px] font-mono text-white underline hover:text-zzz-lime ml-7"
+              className="text-[10px] text-zinc-900 dark:text-zinc-100 underline underline-offset-4 hover:opacity-70 transition-opacity ml-7 text-left"
             >
-              [重发验证信号]
+              重新发送验证邮件
             </button>
           )}
         </div>
       )}
 
-      <div className="space-y-4">
-        {/* Email */}
-        <div className="space-y-1 group">
-          <label
-            className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-              errors.email
-                ? "text-zzz-orange"
-                : "text-gray-500 group-focus-within:text-zzz-lime"
-            }`}
-          >
-            代理人频道 (Email)
+      <div className="space-y-6">
+        <div className="space-y-2 group">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+            邮箱地址
           </label>
-          <div className="relative">
-            <Mail
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.email
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-zzz-lime"
-              }`}
-              size={18}
-            />
-            <input
-              type="email"
-              {...register("email")}
-              className={`w-full bg-black border text-white font-mono text-sm py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
-                errors.email
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-zzz-lime"
-              }`}
-              placeholder="name@example.com"
-              autoComplete="username"
-              disabled={isSubmitting || loginStep !== "IDLE"}
-            />
-          </div>
+          <input
+            type="email"
+            {...register("email")}
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="example@mail.com"
+            autoComplete="username"
+            disabled={isSubmitting || loginStep !== "IDLE"}
+          />
           {errors.email && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1 pt-1">
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
               {errors.email.message}
-            </div>
+            </span>
           )}
         </div>
 
-        {/* Password */}
-        <div className="space-y-1 group">
+        <div className="space-y-2 group">
           <div className="flex justify-between items-center">
-            <label
-              className={`text-[10px] font-mono font-bold uppercase tracking-widest transition-colors ${
-                errors.password
-                  ? "text-zzz-orange"
-                  : "text-gray-500 group-focus-within:text-zzz-cyan"
-              }`}
-            >
-              访问密钥 (Access Key)
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+              登录密码
             </label>
             {isEmailVerficationRequired && (
               <Link
                 to="/forgot-password"
                 tabIndex={-1}
-                className="text-[9px] font-mono font-bold text-gray-600 hover:text-zzz-cyan uppercase tracking-wider transition-colors"
+                className="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
               >
-                丢失密钥？
+                找回密码
               </Link>
             )}
           </div>
-          <div className="relative">
-            <Lock
-              className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-                errors.password
-                  ? "text-zzz-orange"
-                  : "text-gray-600 group-focus-within:text-zzz-cyan"
-              }`}
-              size={18}
-            />
-            <input
-              type="password"
-              {...register("password")}
-              className={`w-full bg-black border text-white font-mono text-sm py-3 pl-10 pr-4 focus:outline-none focus:bg-zzz-dark transition-all placeholder-gray-800 ${
-                errors.password
-                  ? "border-zzz-orange focus:border-zzz-orange"
-                  : "border-zzz-gray focus:border-zzz-cyan"
-              }`}
-              placeholder="••••••••"
-              autoComplete="current-password"
-              disabled={isSubmitting || loginStep !== "IDLE"}
-            />
-          </div>
+          <input
+            type="password"
+            {...register("password")}
+            className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+            placeholder="••••••••"
+            autoComplete="current-password"
+            disabled={isSubmitting || loginStep !== "IDLE"}
+          />
           {errors.password && (
-            <div className="text-[10px] text-zzz-orange font-mono uppercase pl-1 pt-1">
+            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
               {errors.password.message}
-            </div>
+            </span>
           )}
         </div>
       </div>
 
-      {/* Submit Button */}
-      <TechButton
+      <button
         type="submit"
         disabled={isSubmitting || loginStep !== "IDLE"}
-        className={`w-full h-12 text-sm justify-center ${
-          loginStep === "SUCCESS"
-            ? "bg-zzz-lime! text-black! border-zzz-lime!"
-            : ""
-        }`}
-        icon={
-          loginStep === "VERIFYING" ? (
-            <Loader2 className="animate-spin" size={18} />
-          ) : loginStep === "SYNCING" ? (
-            <Zap className="animate-pulse" size={18} />
-          ) : loginStep === "SUCCESS" ? (
-            <ShieldCheck size={18} />
-          ) : (
-            <ChevronRight size={18} />
-          )
-        }
+        className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
       >
-        {loginStep === "IDLE" && "建立连接"}
-        {loginStep === "VERIFYING" && "验证凭据..."}
-        {loginStep === "SYNCING" && "同步中..."}
-        {loginStep === "SUCCESS" && "访问已授予"}
-      </TechButton>
+        {loginStep === "VERIFYING" ? (
+          <Loader2 className="animate-spin" size={16} />
+        ) : (
+          <>
+            <span>登录</span>
+            <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+          </>
+        )}
+      </button>
     </form>
   );
 }

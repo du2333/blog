@@ -49,13 +49,12 @@ export function Navbar({
       }`}>
         <div className="container mx-auto px-6 md:px-12 flex items-center justify-between">
           {/* Left: Brand */}
-          <Link to="/" className="group flex items-center gap-2 select-none">
-            <span className="font-serif text-xl tracking-widest text-zinc-900 dark:text-zinc-100">
-              编年史
-            </span>
-            <span className="text-[9px] font-mono text-zinc-400 dark:text-zinc-500 tracking-[0.3em] pt-1">
-              ARCHIVE
-            </span>
+          <Link to="/" className="group select-none">
+            <div className="w-8 h-8 text-zinc-900 dark:text-zinc-100">
+              <div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
+                <div className="w-full h-full bg-current rounded-full"></div>
+              </div>
+            </div>
           </Link>
 
           {/* Center: Main Nav (Absolute center for true minimalist feel) */}

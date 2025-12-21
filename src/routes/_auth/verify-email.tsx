@@ -1,13 +1,9 @@
-import TechButton from "@/components/ui/tech-button";
-import { cn } from "@/lib/utils";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import {
-  AlertTriangle,
+  AlertCircle,
   ArrowRight,
+  Check,
   Loader2,
-  ShieldCheck,
-  Terminal,
-  Wifi,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
@@ -32,26 +28,15 @@ function RouteComponent() {
   const [status, setStatus] = useState<"ANALYZING" | "SUCCESS" | "ERROR">(
     "ANALYZING"
   );
-  const [log, setLog] = useState<string[]>([]);
 
   useEffect(() => {
-    const addLog = (msg: string) => setLog((prev) => [...prev, msg]);
-
-    // Simulate the visual process of checking the "Incoming Signal"
     const analyzeSignal = async () => {
-      addLog("> DETECTING INCOMING DATA STREAM...");
-      await new Promise((r) => setTimeout(r, 600));
-
-      addLog("> PARSING AUTHENTICATION HEADER...");
-      await new Promise((r) => setTimeout(r, 800));
+      // Small artificial delay for smooth transition
+      await new Promise((r) => setTimeout(r, 1500));
 
       if (error) {
-        addLog(`> ERROR DETECTED: ${error.toUpperCase()}`);
-        addLog("> SIGNAL CORRUPTED.");
         setStatus("ERROR");
       } else {
-        addLog("> SIGNATURE MATCHED.");
-        addLog("> PROXY ACCESS GRANTED.");
         setStatus("SUCCESS");
       }
     };
@@ -60,129 +45,81 @@ function RouteComponent() {
   }, [error]);
 
   return (
-    <>
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h1 className="text-3xl font-black font-sans uppercase text-white italic tracking-tighter">
-          Signal{" "}
-          <span
-            className={status === "ERROR" ? "text-zzz-orange" : "text-zzz-lime"}
-          >
-            Verification
-          </span>
+    <div className="space-y-12">
+      <header className="text-center space-y-2">
+        <h1 className="text-4xl font-serif font-medium tracking-tight transition-colors duration-700">
+          {status === "ANALYZING" && "正在验证身份"}
+          {status === "SUCCESS" && "验证成功"}
+          {status === "ERROR" && "验证失败"}
         </h1>
-        <p className="text-xs font-mono text-gray-500 mt-2 tracking-[0.2em] uppercase">
-          PROXY AUTHENTICATION PROTOCOL
-        </p>
-      </div>
+      </header>
 
-      {/* Terminal Card */}
-      <div
-        className={`
-            bg-zzz-black border-2 shadow-[0_0_50px_rgba(0,0,0,0.5)] p-0 relative clip-corner-tr overflow-hidden flex flex-col min-h-[300px]
-            ${status === "ERROR" ? "border-zzz-orange" : "border-zzz-lime"}
-        `}
-      >
-        {/* Status Visual */}
-        <div className="flex-1 flex flex-col items-center justify-center p-8 border-b border-zzz-gray/30 bg-zzz-dark/50 relative">
+      <div className="flex flex-col items-center justify-center space-y-10 py-10">
+        <div className="relative">
           {status === "ANALYZING" && (
-            <div className="relative">
-              <div className="absolute inset-0 bg-zzz-lime blur-xl opacity-20 animate-pulse"></div>
-              <Loader2
-                size={64}
-                className="text-zzz-lime animate-spin relative z-10"
-              />
-              <div className="absolute inset-0 flex items-center justify-center z-20">
-                <Terminal size={32} className="text-black animate-pulse" />
-              </div>
+            <div className="w-24 h-24 rounded-full border border-zinc-100 dark:border-zinc-900 flex items-center justify-center animate-in fade-in zoom-in-95 duration-700">
+              <Loader2 size={32} className="text-zinc-400 animate-spin" />
             </div>
           )}
 
           {status === "SUCCESS" && (
-            <div className="relative animate-in zoom-in-95 duration-300">
-              <div className="absolute inset-0 bg-zzz-lime blur-2xl opacity-20"></div>
-              <div className="w-20 h-20 bg-zzz-lime rounded-full flex items-center justify-center mb-4 mx-auto shadow-[0_0_30px_#ccff00]">
-                <ShieldCheck size={40} className="text-black" />
-              </div>
-              <h2 className="text-xl font-bold text-white uppercase tracking-widest text-center">
-                身份已确认
-              </h2>
-              <div className="text-[10px] font-mono text-zzz-lime text-center mt-1">
-                会话已激活
-              </div>
+            <div className="w-24 h-24 rounded-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center animate-in zoom-in duration-700">
+              <Check size={32} className="text-zinc-900 dark:text-zinc-100" />
             </div>
           )}
 
           {status === "ERROR" && (
-            <div className="relative animate-in shake duration-300">
-              <div className="absolute inset-0 bg-zzz-orange blur-2xl opacity-20"></div>
-              <div className="w-20 h-20 bg-zzz-orange rounded-full flex items-center justify-center mb-4 mx-auto border-2 border-white/20">
-                <AlertTriangle size={40} className="text-black" />
-              </div>
-              <h2 className="text-xl font-bold text-zzz-orange uppercase tracking-widest text-center">
-                链接失败
-              </h2>
-              <p className="text-[10px] font-mono text-gray-400 mt-2 text-center uppercase">
-                {error === "invalid_token" ? "TOKEN_EXPIRED_OR_INVALID" : error}
-              </p>
+            <div className="w-24 h-24 rounded-full bg-red-50 dark:bg-red-950/10 border border-red-100 dark:border-red-900 flex items-center justify-center animate-in shake duration-500">
+              <AlertCircle size={32} className="text-red-500" />
             </div>
           )}
         </div>
 
-        {/* Terminal Log */}
-        <div className="bg-black p-4 font-mono text-[10px] space-y-1 h-32 overflow-y-auto custom-scrollbar border-t border-zzz-gray/30">
-          {log.map((line, i) => (
-            <div
-              key={i}
-              className={cn(
-                line.includes("ERROR") ? "text-zzz-orange" : "text-zzz-gray",
-                line.includes("GRANTED") || line.includes("ACTIVE")
-                  ? "text-zzz-lime"
-                  : ""
-              )}
-            >
-              {line}
-            </div>
-          ))}
+        <div className="text-center space-y-6 w-full">
           {status === "ANALYZING" && (
-            <div className="text-zzz-lime animate-pulse">_</div>
+            <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic">
+              请稍候，我们正在核对您的身份认证令牌...
+            </p>
           )}
-        </div>
 
-        {/* Footer Action */}
-        <div className="p-4 bg-zzz-dark border-t border-zzz-gray/30 flex justify-center">
-          {status === "SUCCESS" ? (
-            <TechButton
-              onClick={() => navigate({ to: "/admin" })}
-              className="w-full justify-center"
-              icon={<ArrowRight size={16} />}
-            >
-              进入系统
-            </TechButton>
-          ) : status === "ERROR" ? (
-            <div className="flex gap-2 w-full">
-              <TechButton
-                onClick={() => navigate({ to: "/login" })}
-                variant="secondary"
-                className="flex-1 justify-center"
+          {status === "SUCCESS" && (
+            <>
+              <p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+                您的邮箱已成功验证。
+              </p>
+              <button
+                onClick={() => navigate({ to: "/" })}
+                className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 group"
               >
-                返回登录
-              </TechButton>
-              <TechButton
-                onClick={() => navigate({ to: "/login" })}
-                variant="danger"
-                className="flex-1 justify-center"
-              >
-                重新发送信号
-              </TechButton>
-            </div>
-          ) : (
-            <div className="text-[10px] text-gray-500 font-mono flex items-center gap-2">
-              <Wifi size={12} className="animate-pulse" /> 正在建立链接...
-            </div>
+                <span>返回主页</span>
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              </button>
+            </>
+          )}
+
+          {status === "ERROR" && (
+            <>
+              <p className="text-sm font-light text-red-500 leading-relaxed max-w-[280px] mx-auto">
+                {error === "invalid_token" ? "验证链接已失效或已过期。" : "验证过程中发生错误，请重试。"}
+              </p>
+              <div className="space-y-4">
+                <button
+                  onClick={() => navigate({ to: "/login" })}
+                  className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+                >
+                  返回登录
+                </button>
+                <button
+                  onClick={() => navigate({ to: "/login" })}
+                  className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors underline underline-offset-4"
+                >
+                  重新发送验证邮件
+                </button>
+              </div>
+            </>
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 }

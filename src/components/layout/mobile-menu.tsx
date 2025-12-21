@@ -49,9 +49,6 @@ export function MobileMenu({
             <span className="font-serif italic text-2xl tracking-tight text-zinc-900 dark:text-zinc-100">
               导航
             </span>
-            <span className="text-[10px] uppercase tracking-[0.4em] opacity-40 mt-1">
-              Directory
-            </span>
           </div>
           <button
             onClick={onClose}
@@ -151,7 +148,7 @@ export function MobileMenu({
               className="inline-block pt-12 border-t border-zinc-100 dark:border-zinc-900 w-full"
             >
               <span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
-                建立连接 / Login
+                登录 / Login
               </span>
             </Link>
           )}

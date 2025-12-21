@@ -4,11 +4,13 @@ export function Footer() {
       <div className="container mx-auto px-6 md:px-10">
         <div className="flex flex-col md:flex-row justify-between items-start gap-12 md:gap-8">
           <div className="space-y-4">
-            <h3 className="font-serif italic text-2xl tracking-tight">
-              编年史
-            </h3>
+            <div className="w-10 h-10 text-zinc-900 dark:text-zinc-100">
+              <div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
+                <div className="w-full h-full bg-current rounded-full"></div>
+              </div>
+            </div>
             <p className="max-w-xs text-sm opacity-50 font-light leading-relaxed">
-              来自新艾利都世界的数字档案馆，记录每一个被遗忘的数据片段。
+              记录每一个被遗忘的数据片段。
             </p>
           </div>
 
@@ -55,12 +57,7 @@ export function Footer() {
 
         <div className="mt-20 pt-8 border-t border-black/5 dark:border-white/5 flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="font-mono text-[10px] opacity-30 tracking-widest uppercase">
-            © {new Date().getFullYear()} Chronicles Archive. 版权所有
-          </div>
-          <div className="flex gap-4">
-            <span className="font-mono text-[10px] opacity-30 tracking-widest uppercase">
-              Stable_v2.0
-            </span>
+            © {new Date().getFullYear()} Chronicle Archive. 版权所有
           </div>
         </div>
       </div>
