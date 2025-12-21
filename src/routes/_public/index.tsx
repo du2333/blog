@@ -29,13 +29,15 @@ function App() {
             <div className="flex items-center gap-3">
               <span className="h-px w-12 bg-black dark:bg-white/40"></span>
             </div>
-            <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight">
+            <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-zinc-950 dark:text-zinc-50">
               数字 <br />
-              <span className="italic font-normal opacity-80">异象</span>
+              <span className="italic font-normal text-zinc-400 dark:text-zinc-600">
+                异象
+              </span>
             </h1>
           </header>
 
-          <p className="max-w-xl text-lg md:text-xl font-light leading-relaxed opacity-70">
+          <p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-zinc-500 dark:text-zinc-500">
             在衰败的都市中探索科技与人性的交汇点。记录空洞侵蚀的痕迹与残留的数字记忆。
           </p>
 

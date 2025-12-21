@@ -6,36 +6,24 @@ interface StatCardProps {
   color: string;
 }
 
-export function StatCard({ label, value, icon, trend, color }: StatCardProps) {
-  const colors: Record<string, string> = {
-    cyan: "border-zzz-cyan text-zzz-cyan",
-    lime: "border-zzz-lime text-zzz-lime",
-    orange: "border-zzz-orange text-zzz-orange",
-    red: "border-red-500 text-red-500",
-  };
-
+export function StatCard({ label, value, icon, trend }: StatCardProps) {
   return (
-    <div
-      className={`bg-zzz-dark border-l-4 p-5 shadow-lg relative overflow-hidden group hover:bg-white/5 transition-colors ${
-        colors[color].split(" ")[0]
-      }`}
-    >
-      <div className="flex justify-between items-start mb-2">
-        <span className="text-[10px] font-bold uppercase text-gray-400 tracking-wider">
+    <div className="bg-white dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 p-6 space-y-4 relative overflow-hidden group hover:border-zinc-200 dark:hover:border-white/10 transition-all duration-500 rounded-sm">
+      <div className="flex justify-between items-start">
+        <span className="text-[10px] font-medium uppercase text-zinc-400 tracking-[0.2em]">
           {label}
         </span>
-        {icon}
+        <div className="text-zinc-300 dark:text-zinc-700 group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors duration-500">
+          {icon}
+        </div>
       </div>
-      <div className="text-3xl font-black text-white mb-1">{value}</div>
-      <div
-        className={`text-xs font-bold font-mono ${colors[color].split(" ")[1]}`}
-      >
-        {trend}
-      </div>
-
-      {/* Deco */}
-      <div className="absolute -bottom-4 -right-4 text-[6rem] opacity-5 font-black text-white pointer-events-none select-none">
-        {value.charAt(0)}
+      <div className="space-y-1">
+        <div className="text-4xl font-serif font-medium tracking-tight text-zinc-900 dark:text-zinc-100">
+          {value}
+        </div>
+        <div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-500 tracking-wider">
+          {trend}
+        </div>
       </div>
     </div>
   );

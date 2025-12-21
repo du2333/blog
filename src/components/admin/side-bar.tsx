@@ -41,16 +41,14 @@ export function SideBar({
 
     if (error) {
       toast.error("注销失败", {
-        description: "会话终止失败。",
+        description: "请重试。",
       });
       return;
     }
 
     queryClient.removeQueries({ queryKey: ["session"] });
 
-    toast.success("会话已终止", {
-      description: "你已注销。",
-    });
+    toast.success("已退出登录");
     navigate({ to: "/login" });
   };
 
@@ -64,26 +62,27 @@ export function SideBar({
     {
       path: "/admin/posts" as const,
       icon: FileText,
-      label: "数据日志",
+      label: "文章管理",
       exact: false,
     },
     {
       path: "/admin/media" as const,
       icon: ImageIcon,
-      label: "存储库",
+      label: "媒体库",
       exact: false,
     },
   ];
 
-  const activeClass = "bg-zzz-orange/10 text-zzz-orange border-zzz-orange";
+  const activeClass =
+    "text-zinc-900 dark:text-zinc-100 bg-zinc-100/50 dark:bg-white/5 font-medium";
   const inactiveClass =
-    "text-gray-400 border-transparent hover:bg-white/5 hover:text-white";
+    "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100/30 dark:hover:bg-white/[0.02]";
 
   return (
     <>
       {isMobileSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/80 z-55 md:hidden backdrop-blur-sm animate-in fade-in"
+          className="fixed inset-0 bg-white/80 dark:bg-black/80 z-[60] md:hidden backdrop-blur-sm animate-in fade-in duration-500"
           onClick={closeMobileSidebar}
         />
       )}
@@ -91,103 +90,94 @@ export function SideBar({
       {/* Sidebar */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-60 w-64 border-r border-zzz-gray flex flex-col bg-zzz-black/95 backdrop-blur md:bg-zzz-dark/50 
-        transform transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
-        ${
-          isMobileSidebarOpen
-            ? "translate-x-0 shadow-[10px_0_30px_rgba(0,0,0,0.5)]"
-            : "-translate-x-full"
-        }
+        fixed inset-y-0 left-0 z-[70] w-72 border-r border-zinc-100 dark:border-white/5 flex flex-col bg-white dark:bg-[#050505]
+        transform transition-transform duration-500 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
+        ${isMobileSidebarOpen ? "translate-x-0" : "-translate-x-full"}
       `}
       >
         {/* Logo Area */}
-        <div className="h-20 flex items-center justify-between px-6 border-b border-zzz-gray bg-zzz-black shrink-0">
-          <div className="flex items-center">
-            <Logo className="w-6 h-6 text-zzz-orange mr-3" />
-            <div>
-              <div className="font-sans font-black uppercase text-lg italic leading-none">
-                Proxy<span className="text-zzz-orange">HDD</span>
-              </div>
-              <div className="text-[10px] text-gray-500 tracking-widest">
-                ADMIN_MODE
-              </div>
-            </div>
-          </div>
+        <div className="h-24 flex items-center justify-between px-8 shrink-0">
+          <Link to="/" className="flex items-center gap-3">
+            <Logo className="w-8 h-8 text-zinc-900 dark:text-zinc-100" />
+            <span className="font-serif text-xl tracking-tight">控制台</span>
+          </Link>
           <button
             onClick={closeMobileSidebar}
-            className="md:hidden text-gray-400 hover:text-white"
+            className="md:hidden p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              onClick={closeMobileSidebar}
-              activeOptions={{ exact: item.exact }}
-              className={`flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all clip-corner-tr border-l-2 ${inactiveClass}`}
-              activeProps={{
-                className: `flex items-center gap-3 px-4 py-3 text-xs font-bold uppercase tracking-wider transition-all clip-corner-tr border-l-2 ${activeClass}`,
-              }}
-            >
-              <item.icon size={16} />
-              {item.label}
-            </Link>
-          ))}
-
-          <div className="my-6 border-t border-zzz-gray opacity-50"></div>
-
-          <div className="px-4 text-[10px] text-gray-600 font-bold mb-2">
-            NETWORK
+        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto custom-scrollbar">
+          <div className="space-y-1">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={closeMobileSidebar}
+                activeOptions={{ exact: item.exact }}
+                className={`flex items-center gap-3 px-4 py-3 text-[11px] uppercase tracking-[0.2em] transition-all rounded-sm ${inactiveClass}`}
+                activeProps={{
+                  className: `${activeClass}`,
+                }}
+              >
+                <item.icon size={16} strokeWidth={1.5} />
+                {item.label}
+              </Link>
+            ))}
           </div>
 
-          <Link
-            to="/"
-            className="flex items-center justify-between px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-zzz-lime transition-colors group"
-          >
-            <div className="flex items-center gap-3">
-              <Globe size={16} className="group-hover:animate-pulse" />
-              公共网络
+          <div className="space-y-4">
+            <div className="px-4 text-[9px] uppercase tracking-[0.4em] text-zinc-300 dark:text-zinc-700 font-bold">
+              站点
             </div>
-            <ArrowUpRight
-              size={12}
-              className="opacity-0 group-hover:opacity-100 transition-opacity"
-            />
-          </Link>
-
-          <div className="my-4"></div>
-
-          <div className="px-4 text-[10px] text-gray-600 font-bold mb-2">
-            SYSTEM
+            <div className="space-y-1">
+              <Link
+                to="/"
+                className={`flex items-center justify-between px-4 py-3 text-[11px] uppercase tracking-[0.2em] transition-all rounded-sm group ${inactiveClass}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Globe size={16} strokeWidth={1.5} />
+                  查看前台
+                </div>
+                <ArrowUpRight
+                  size={14}
+                  className="opacity-0 group-hover:opacity-40 transition-opacity"
+                />
+              </Link>
+              <Link
+                to="/admin/settings"
+                className={`flex items-center gap-3 px-4 py-3 text-[11px] uppercase tracking-[0.2em] transition-all rounded-sm ${inactiveClass}`}
+                activeProps={{
+                  className: `${activeClass}`,
+                }}
+              >
+                <Settings size={16} strokeWidth={1.5} />
+                系统设置
+              </Link>
+            </div>
           </div>
-          <Link
-            to="/admin/settings"
-            className="flex items-center gap-3 px-4 py-2 text-xs font-bold uppercase tracking-wider text-gray-400 hover:text-white transition-colors"
-          >
-            <Settings size={16} /> 系统配置
-          </Link>
         </nav>
 
         {/* User Status */}
-        <div className="p-4 border-t border-zzz-gray bg-zzz-black shrink-0">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-2">
-              <div className="w-2 h-2 bg-zzz-lime rounded-full animate-pulse"></div>
-              <span className="text-xs text-zzz-lime font-bold">ONLINE</span>
+        <div className="p-6 border-t border-zinc-100 dark:border-white/5 shrink-0">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-[10px] uppercase tracking-widest opacity-40 font-medium">
+                系统在线
+              </span>
             </div>
             <button
               onClick={handleSignOutClick}
-              className="text-gray-500 hover:text-white transition-colors"
+              className="p-2 text-zinc-400 hover:text-red-500 transition-colors"
               title="Logout"
             >
-              <LogOut size={14} />
+              <LogOut size={16} strokeWidth={1.5} />
             </button>
           </div>
-          <div className="text-[10px] text-gray-500">ID: PHAETHON_01</div>
         </div>
       </aside>
 
@@ -196,9 +186,9 @@ export function SideBar({
         isOpen={showLogoutConfirm}
         onClose={() => setShowLogoutConfirm(false)}
         onConfirm={handleConfirmSignOut}
-        title="TERMINATE SESSION"
-        message="你确定要注销吗？ "
-        confirmLabel="注销"
+        title="确认退出"
+        message="您确定要结束当前管理会话并注销吗？"
+        confirmLabel="确认退出"
         isLoading={isLoggingOut}
       />
     </>

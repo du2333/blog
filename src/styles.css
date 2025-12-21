@@ -37,12 +37,12 @@ mark {
 
 @layer base {
   body {
-    @apply bg-zinc-50 text-zinc-900 overflow-x-hidden;
+    @apply bg-zinc-50 text-zinc-800 overflow-x-hidden font-sans;
     transition: background-color 0.5s ease-in-out;
   }
 
   .dark body {
-    @apply bg-[#050505] text-zinc-100;
+    @apply bg-[#050505] text-zinc-200;
   }
 
   button:not(:disabled),

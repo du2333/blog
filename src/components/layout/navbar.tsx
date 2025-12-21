@@ -65,12 +65,21 @@ export function Navbar({
               <Link
                 key={option.id}
                 to={option.to}
-                className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors py-2"
+                className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100 transition-all py-2 font-medium relative group"
                 activeProps={{
-                  className: "text-zinc-900 dark:text-zinc-100",
+                  className: "!text-zinc-950 dark:!text-zinc-50",
                 }}
               >
-                {option.label}
+                {({ isActive }) => (
+                  <>
+                    {option.label}
+                    <span
+                      className={`absolute -bottom-1 left-0 h-px bg-current transition-all duration-500 ${
+                        isActive ? "w-full" : "w-0 group-hover:w-1/2"
+                      }`}
+                    />
+                  </>
+                )}
               </Link>
             ))}
           </nav>
@@ -143,7 +152,7 @@ export function Navbar({
                       </>
                     ) : (
                       <Link to="/login">
-                        <span className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+                        <span className="text-[10px] uppercase tracking-[0.4em] text-zinc-600 dark:text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors font-medium">
                           Login
                         </span>
                       </Link>
@@ -156,8 +165,8 @@ export function Navbar({
                 className="w-10 h-10 flex flex-col items-center justify-center gap-1 group"
                 onClick={onMenuClick}
               >
-                <div className="w-6 h-[1px] bg-zinc-900 dark:bg-zinc-100 transition-transform group-hover:scale-x-75 origin-right"></div>
-                <div className="w-6 h-[1px] bg-zinc-900 dark:bg-zinc-100 transition-transform group-hover:scale-x-110 origin-right"></div>
+                <div className="w-6 h-px bg-zinc-900 dark:bg-zinc-100 transition-transform group-hover:scale-x-75 origin-right"></div>
+                <div className="w-6 h-px bg-zinc-900 dark:bg-zinc-100 transition-transform group-hover:scale-x-110 origin-right"></div>
               </button>
             </div>
           </div>

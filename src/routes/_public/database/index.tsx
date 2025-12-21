@@ -82,10 +82,10 @@ function RouteComponent() {
           <div className="flex items-center gap-3">
             <span className="h-px w-12 bg-black dark:bg-white/40"></span>
           </div>
-          <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight">
+          <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-zinc-950 dark:text-zinc-50">
             文章
           </h1>
-          <p className="max-w-xl text-lg md:text-xl font-light leading-relaxed opacity-60">
+          <p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-zinc-500 dark:text-zinc-500">
             按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
           </p>
         </div>
@@ -96,10 +96,10 @@ function RouteComponent() {
             <button
               key={cat.value}
               onClick={() => handleCategoryChange(cat.value)}
-              className={`text-[11px] uppercase tracking-[0.2em] transition-all duration-500 relative group ${
+              className={`text-[11px] uppercase tracking-[0.2em] transition-all duration-500 relative group font-medium ${
                 activeCategory === cat.value
-                  ? "text-zinc-900 dark:text-zinc-100 font-bold"
-                  : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100"
+                  ? "text-zinc-950 dark:text-zinc-50"
+                  : "text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100"
               }`}
             >
               {cat.label}

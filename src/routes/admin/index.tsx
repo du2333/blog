@@ -1,7 +1,7 @@
 import { StatCard } from "@/components/admin/dashboard/stat-card";
 import { ADMIN_STATS } from "@/lib/constants";
 import { createFileRoute } from "@tanstack/react-router";
-import { Activity, AlertTriangle, Database, Users } from "lucide-react";
+import { Activity, Database, Users, Shield } from "lucide-react";
 
 export const Route = createFileRoute("/admin/")({
   component: DashboardOverview,
@@ -9,76 +9,82 @@ export const Route = createFileRoute("/admin/")({
 
 function DashboardOverview() {
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-      <div className="flex justify-between items-end">
-        <h1 className="text-3xl font-black font-sans uppercase text-white italic">
-          System <span className="text-zzz-orange">Overview</span>
-        </h1>
-        <div className="text-xs font-mono text-gray-500">LAST_UPDATE: NOW</div>
-      </div>
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+      <header className="flex justify-between items-end">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-serif font-medium tracking-tight">概览</h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">System Insight</p>
+        </div>
+        <div className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-widest hidden sm:block">
+          Auto-Sync Active
+        </div>
+      </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
-          label="Total Views"
+          label="访客统计"
           value={ADMIN_STATS.totalViews.toLocaleString()}
-          icon={<Users size={18} className="text-zzz-cyan" />}
-          trend="+12%"
-          color="cyan"
+          icon={<Users size={18} strokeWidth={1.5} />}
+          trend="+12% Since last month"
+          color="zinc"
         />
         <StatCard
-          label="Ether Stability"
+          label="系统稳定性"
           value={`${ADMIN_STATS.etherStability}%`}
-          icon={<Activity size={18} className="text-zzz-lime" />}
-          trend="STABLE"
-          color="lime"
+          icon={<Shield size={18} strokeWidth={1.5} />}
+          trend="Operational"
+          color="zinc"
         />
         <StatCard
-          label="Database Size"
+          label="数据库容量"
           value={ADMIN_STATS.databaseSize}
-          icon={<Database size={18} className="text-zzz-orange" />}
-          trend="GROWING"
-          color="orange"
+          icon={<Database size={18} strokeWidth={1.5} />}
+          trend="Growing stable"
+          color="zinc"
         />
         <StatCard
-          label="Issues"
-          value="0"
-          icon={<AlertTriangle size={18} className="text-red-500" />}
-          trend="CLEAR"
-          color="red"
+          label="性能指标"
+          value="Good"
+          icon={<Activity size={18} strokeWidth={1.5} />}
+          trend="Clear of issues"
+          color="zinc"
         />
       </div>
 
       {/* Visuals Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Main Graph */}
-        <div className="lg:col-span-2 bg-zzz-dark border border-zzz-gray p-6 relative overflow-hidden">
-          <div className="flex justify-between mb-6">
-            <h3 className="font-bold text-sm uppercase text-white flex items-center gap-2">
-              <Activity size={14} className="text-zzz-lime" />
-              Traffic Analysis
+        <div className="lg:col-span-2 space-y-6">
+          <div className="flex justify-between items-baseline border-b border-zinc-100 dark:border-white/5 pb-4">
+            <h3 className="text-sm font-medium uppercase tracking-[0.2em]">
+              流量趋势
             </h3>
+            <span className="text-[9px] font-mono text-zinc-400 uppercase tracking-widest">Analysis // 24H</span>
           </div>
 
-          {/* CSS Graph Placeholder */}
-          <div className="h-64 w-full flex items-end gap-2 border-b border-zzz-gray/30 pb-2 relative">
+          <div className="h-72 w-full flex items-end gap-1.5 md:gap-3 group/chart relative">
             {Array.from({ length: 24 }).map((_, i) => (
               <div
                 key={i}
-                className="flex-1 bg-zzz-lime/20 hover:bg-zzz-lime transition-colors relative group"
-                style={{ height: `${Math.random() * 80 + 10}%` }}
+                className="flex-1 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-900 dark:hover:bg-zinc-100 transition-all duration-500 relative group/bar rounded-t-[1px]"
+                style={{ height: `${Math.random() * 70 + 10}%` }}
               >
-                <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-black text-zzz-lime text-[10px] px-1 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] py-1 px-2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none rounded-sm">
                   {Math.floor(Math.random() * 100)}
                 </div>
               </div>
             ))}
-            {/* Grid Lines */}
-            <div className="absolute inset-0 border-t border-dashed border-zzz-gray/20 top-1/4"></div>
-            <div className="absolute inset-0 border-t border-dashed border-zzz-gray/20 top-2/4"></div>
-            <div className="absolute inset-0 border-t border-dashed border-zzz-gray/20 top-3/4"></div>
+            
+            {/* Minimal Background Grid */}
+            <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+              <div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
+              <div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
+              <div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
+              <div className="h-0"></div>
+            </div>
           </div>
-          <div className="flex justify-between text-[10px] text-gray-500 mt-2 font-mono uppercase">
+          <div className="flex justify-between text-[9px] text-zinc-400 font-mono uppercase tracking-[0.3em]">
             <span>00:00</span>
             <span>12:00</span>
             <span>23:59</span>
@@ -86,25 +92,34 @@ function DashboardOverview() {
         </div>
 
         {/* Activity Log */}
-        <div className="bg-black border border-zzz-gray p-0 flex flex-col">
-          <div className="p-4 border-b border-zzz-gray bg-zzz-dark/50">
-            <h3 className="font-bold text-sm uppercase text-white">
-              System Log
+        <div className="space-y-6">
+          <div className="flex justify-between items-baseline border-b border-zinc-100 dark:border-white/5 pb-4">
+            <h3 className="text-sm font-medium uppercase tracking-[0.2em]">
+              系统日志
             </h3>
           </div>
-          <div className="flex-1 p-4 font-mono text-[10px] space-y-2 text-gray-400 overflow-y-auto max-h-[300px] custom-scrollbar">
-            <div className="text-zzz-lime">
-              &gt;&gt; AUTH_SUCCESS: USER_PHAETHON
-            </div>
-            <div>&gt;&gt; DB_BACKUP_INIT... OK</div>
-            <div>&gt;&gt; CACHE_CLEAR: 12ms</div>
-            <div className="text-zzz-orange">
-              &gt;&gt; WARN: HIGH_LATENCY [NODE_04]
-            </div>
-            <div>&gt;&gt; POST_PUBLISHED: ID_2049</div>
-            <div>&gt;&gt; MEDIA_UPLOAD: img_hollow.png</div>
-            <div>&gt;&gt; SYSTEM_CHECK... OK</div>
-            <div className="animate-pulse">&gt;&gt; _</div>
+          <div className="space-y-6 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
+            {[
+              { type: 'success', text: 'Auth success: User established', time: 'Just now' },
+              { type: 'info', text: 'Database backup completed', time: '12m ago' },
+              { type: 'info', text: 'Cache synchronized (12ms)', time: '45m ago' },
+              { type: 'warning', text: 'Low bandwidth on storage node', time: '1h ago' },
+              { type: 'success', text: 'Article published: #2049', time: '3h ago' },
+              { type: 'info', text: 'New media asset indexed', time: '5h ago' },
+            ].map((log, i) => (
+              <div key={i} className="flex gap-4 group cursor-default">
+                <div className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+                  log.type === 'success' ? 'bg-green-500' :
+                  log.type === 'warning' ? 'bg-amber-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                }`}></div>
+                <div className="space-y-1">
+                  <p className="text-xs font-light leading-snug group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+                    {log.text}
+                  </p>
+                  <p className="text-[9px] font-mono text-zinc-400 uppercase tracking-wider">{log.time}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>

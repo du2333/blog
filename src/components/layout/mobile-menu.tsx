@@ -68,14 +68,24 @@ export function MobileMenu({
               className={`group flex items-baseline gap-6 transition-all duration-500 ${
                 isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
               }`}
-              style={{ transitionDelay: isOpen ? `${100 + idx * 75}ms` : "0ms" }}
+              activeProps={{
+                className: "!text-zinc-950 dark:!text-zinc-50",
+              }}
+              style={{ transitionDelay: isOpen ? `${50 + idx * 50}ms` : "0ms" }}
             >
-              <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
-                0{idx + 1}
-              </span>
-              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700">
-                {item.label}
-              </span>
+              {({ isActive }) => (
+                <>
+                  <span className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}>
+                    0{idx + 1}
+                  </span>
+                  <span className={`text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative`}>
+                    {item.label}
+                    {isActive && (
+                      <span className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2 w-4 md:w-6 h-px bg-current animate-in slide-in-from-left-4 duration-500" />
+                    )}
+                  </span>
+                </>
+              )}
             </Link>
           ))}
 
@@ -86,14 +96,24 @@ export function MobileMenu({
               className={`group flex items-baseline gap-6 transition-all duration-500 ${
                 isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
-              style={{ transitionDelay: isOpen ? `${200 + navOptions.length * 100}ms` : "0ms" }}
+              activeProps={{
+                className: "!text-zinc-950 dark:!text-zinc-50",
+              }}
+              style={{ transitionDelay: isOpen ? `${100 + navOptions.length * 75}ms` : "0ms" }}
             >
-              <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
-                0{navOptions.length + 1}
-              </span>
-              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700">
-                控制台
-              </span>
+              {({ isActive }) => (
+                <>
+                  <span className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}>
+                    0{navOptions.length + 1}
+                  </span>
+                  <span className={`text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative`}>
+                    控制台
+                    {isActive && (
+                      <span className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2 w-4 md:w-6 h-px bg-current animate-in slide-in-from-left-4 duration-500" />
+                    )}
+                  </span>
+                </>
+              )}
             </Link>
           )}
         </nav>
