@@ -1,16 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import {
-  Globe,
-  Cpu,
-  Server,
-  Search,
-  AlertTriangle,
-  RefreshCw,
-  Database,
-} from "lucide-react";
+import { AiProviderSection } from "@/components/admin/settings/ai-provider-section";
+import { EmailServiceSection } from "@/components/admin/settings/email-service-section";
+import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";
 import TechButton from "@/components/ui/tech-button";
-import { buildSearchIndexFn } from "@/features/search/search.api";
-import { useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { Check, Terminal } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/settings/")({
@@ -18,23 +11,18 @@ export const Route = createFileRoute("/admin/settings/")({
 });
 
 function RouteComponent() {
-  const [isIndexing, setIsIndexing] = useState(false);
-
-  const handleRebuildIndex = () => {
-    setIsIndexing(true);
-
-    toast.promise(buildSearchIndexFn, {
-      loading: "扫描数据...",
-      success: ({ duration, indexed }) => {
-        setIsIndexing(false);
-        return `搜索索引重建完成, 耗时 ${duration}ms, 索引 ${indexed} 条数据`;
-      },
-      error: "索引重建失败",
+  const handleSaveConfig = () => {
+    // TODO: 添加实际的写入逻辑
+    const promise = new Promise((resolve) => setTimeout(resolve, 1200));
+    toast.promise(promise, {
+      loading: "正在写入固件...",
+      success: "系统配置已永久生效",
+      error: "写入冲突",
     });
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 max-w-4xl">
+    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 max-w-5xl">
       <div className="flex justify-between items-end border-b border-zzz-gray pb-4">
         <div>
           <h1 className="text-3xl font-black font-sans uppercase text-white italic">
@@ -44,139 +32,30 @@ function RouteComponent() {
             GLOBAL_SETTINGS // MAINTENANCE_PROTOCOLS
           </p>
         </div>
+        <TechButton onClick={handleSaveConfig} icon={<Check size={16} />}>
+          保存更改
+        </TechButton>
       </div>
 
-      {/* --- General Settings (Mock) --- */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-zzz-dark border border-zzz-gray p-6 relative overflow-hidden group">
-          <div className="flex items-center gap-3 mb-4 text-zzz-lime">
-            <Globe size={18} />
-            <h3 className="font-bold font-sans uppercase text-sm tracking-wider">
-              Site Metadata
-            </h3>
-          </div>
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <label className="text-[10px] font-mono text-gray-500 uppercase">
-                Proxy Name
-              </label>
-              <input
-                disabled
-                value="Proxy's Archive"
-                className="w-full bg-black border border-zzz-gray text-xs font-mono px-3 py-2 text-gray-400 cursor-not-allowed"
-              />
-            </div>
-            <div className="space-y-1">
-              <label className="text-[10px] font-mono text-gray-500 uppercase">
-                Environment
-              </label>
-              <div className="flex items-center gap-2 text-xs font-bold text-white">
-                <div className="w-2 h-2 bg-zzz-lime rounded-full animate-pulse"></div>
-                PRODUCTION
-              </div>
-            </div>
-          </div>
-        </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        {/* AI Provider Config Module */}
+        <AiProviderSection />
 
-        <div className="bg-zzz-dark border border-zzz-gray p-6 relative overflow-hidden group">
-          <div className="flex items-center gap-3 mb-4 text-zzz-cyan">
-            <Cpu size={18} />
-            <h3 className="font-bold font-sans uppercase text-sm tracking-wider">
-              Render Engine
-            </h3>
-          </div>
-          <div className="space-y-2 font-mono text-xs text-gray-400">
-            <div className="flex justify-between border-b border-zzz-gray/30 pb-2">
-              <span>React Version</span>
-              <span className="text-white">18.3.1</span>
-            </div>
-            <div className="flex justify-between border-b border-zzz-gray/30 pb-2">
-              <span>Tailwind CSS</span>
-              <span className="text-white">Enabled</span>
-            </div>
-            <div className="flex justify-between pb-2">
-              <span>Tiptap Editor</span>
-              <span className="text-white">Active</span>
-            </div>
-          </div>
-        </div>
+        {/* Email Service Config Module */}
+        <EmailServiceSection />
       </div>
 
-      {/* --- DATA MAINTENANCE ZONE --- */}
-      <div className="mt-12">
-        <h2 className="text-xl font-bold font-sans uppercase text-white mb-6 flex items-center gap-2">
-          <Server size={20} className="text-zzz-orange" />
-          Data Maintenance
-        </h2>
+      {/* Data Maintenance Module */}
+      <MaintenanceSection />
 
-        <div className="bg-black border border-zzz-gray p-1">
-          {/* Search Index Module */}
-          <div className="bg-zzz-dark/30 p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-zzz-gray border-dashed last:border-0 relative overflow-hidden">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-zzz-gray/20 p-2 rounded text-white">
-                  <Search size={20} />
-                </div>
-                <h3 className="font-bold text-white uppercase tracking-wider">
-                  搜索索引
-                </h3>
-              </div>
-              <p className="text-xs font-mono text-gray-500 leading-relaxed max-w-lg">
-                重新扫描所有数据库条目（日志和媒体）以重建搜索索引映射。
-                <span className="text-zzz-orange block mt-1">
-                  <AlertTriangle size={10} className="inline mr-1" />
-                  仅在开发期间或导入大量数据后使用。
-                </span>
-              </p>
-            </div>
-
-            <div className="relative z-10">
-              <TechButton
-                variant="secondary"
-                onClick={handleRebuildIndex}
-                disabled={isIndexing}
-                className="border-zzz-orange text-zzz-orange hover:bg-zzz-orange hover:text-black w-48"
-                icon={
-                  isIndexing ? (
-                    <RefreshCw size={16} className="animate-spin" />
-                  ) : (
-                    <Database size={16} />
-                  )
-                }
-              >
-                {isIndexing ? "构建中..." : "重建索引"}
-              </TechButton>
-            </div>
-
-            {/* Background Deco */}
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-stripe-pattern opacity-5 pointer-events-none"></div>
-          </div>
-
-          {/* Cache Clear Module (Mock) */}
-          <div className="bg-zzz-dark/30 p-6 flex flex-col md:flex-row justify-between items-center gap-6 relative overflow-hidden opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-            <div className="flex-1">
-              <div className="flex items-center gap-3 mb-2">
-                <div className="bg-zzz-gray/20 p-2 rounded text-white">
-                  <RefreshCw size={20} />
-                </div>
-                <h3 className="font-bold text-white uppercase tracking-wider">
-                  系统缓存清理
-                </h3>
-              </div>
-              <p className="text-xs font-mono text-gray-500">
-                清除本地存储和会话数据。强制断开所有已建立的代理人连接。
-              </p>
-            </div>
-            <div>
-              <button
-                disabled
-                className="px-6 py-2 border border-zzz-gray text-gray-600 font-mono text-xs font-bold uppercase cursor-not-allowed"
-              >
-                清理缓存
-              </button>
-            </div>
-          </div>
-        </div>
+      {/* System Footer Info */}
+      <div className="flex items-center gap-4 text-[10px] font-mono text-gray-700 uppercase tracking-[0.3em] pt-12">
+        <Terminal size={12} />
+        <span>Kernel_Version: 3.1.2-ZZZ</span>
+        <span>//</span>
+        <span>Uptime: 1,244h</span>
+        <span>//</span>
+        <span className="text-zzz-lime animate-pulse">All Systems Nominal</span>
       </div>
     </div>
   );

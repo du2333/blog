@@ -109,6 +109,14 @@ mark {
   }
 }
 
+/* Disable native browser UI on password inputs */
+input::-ms-reveal,
+input::-ms-clear,
+input::-webkit-contacts-auto-fill-button,
+input::-webkit-credentials-auto-fill-button {
+  display: none !important;
+}
+
 /* ZZZ Style Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
