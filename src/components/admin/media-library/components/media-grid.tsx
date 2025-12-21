@@ -1,7 +1,7 @@
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 import { formatBytes } from "@/lib/utils";
-import { Check, Film, Link2, Loader2 } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { Check, Film, Link2, Loader2, Image as ImageIcon } from "lucide-react";
+import { useEffect, useRef, useState, memo } from "react";
 import { useLongPress } from "../hooks";
 import { MediaAsset } from "../types";
 
@@ -16,7 +16,7 @@ interface MediaGridProps {
   linkedMediaIds: Set<string>;
 }
 
-function MediaCard({
+const MediaCard = memo(({
   asset,
   isSelected,
   isLinked,
@@ -32,7 +32,8 @@ function MediaCard({
   onToggleSelect: (key: string) => void;
   onPreview: (asset: MediaAsset) => void;
   selectionModeActive: boolean;
-}) {
+}) => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const thumbnailUrl = getOptimizedImageUrl(asset.key);
 
   const handleStandardClick = () => {
@@ -92,15 +93,23 @@ function MediaCard({
       {/* Preview */}
       <div className="aspect-square relative overflow-hidden bg-zinc-50 dark:bg-[#0c0c0c]">
         {isImage ? (
-          <img
-            src={thumbnailUrl}
-            alt={asset.fileName}
-            className={`w-full h-full object-cover transition-all duration-1000 ${
-              isSelected ? "scale-110 blur-[2px] opacity-40" : "group-hover:scale-105"
-            }`}
-            loading="lazy"
-            decoding="async"
-          />
+          <>
+            {!isLoaded && (
+              <div className="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 animate-pulse">
+                <ImageIcon size={24} className="text-zinc-300 dark:text-zinc-700" />
+              </div>
+            )}
+            <img
+              src={thumbnailUrl}
+              alt={asset.fileName}
+              className={`w-full h-full object-cover transition-all duration-1000 ${
+                isLoaded ? "opacity-100" : "opacity-0"
+              } ${
+                isSelected ? "scale-110 blur-[2px] opacity-40" : "group-hover:scale-105"
+              }`}
+              onLoad={() => setIsLoaded(true)}
+            />
+          </>
         ) : (
           <div className="w-full h-full flex items-center justify-center text-zinc-300 dark:text-zinc-700">
             <Film size={32} strokeWidth={1} />
@@ -120,7 +129,9 @@ function MediaCard({
       </div>
     </div>
   );
-}
+});
+
+MediaCard.displayName = "MediaCard";
 
 export function MediaGrid({
   media,
