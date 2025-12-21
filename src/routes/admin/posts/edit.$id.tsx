@@ -3,7 +3,7 @@ import {
   type PostEditorData,
 } from "@/components/admin/posts/post-editor";
 import { ErrorPage } from "@/components/common/error-page";
-import { LoadingFallback } from "@/components/common/loading-fallback";
+import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import { updatePostFn } from "@/features/posts/api/posts.admin.api";
 import { postByIdQuery } from "@/features/posts/posts.query";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -25,18 +25,18 @@ function EditPost() {
   }
 
   if (isPending) {
-    return <LoadingFallback />;
+    return <PostEditorSkeleton />;
   }
 
   if (!post) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
-        <div className="text-center">
-          <h2 className="text-2xl font-black text-zzz-orange mb-2">
-            POST_NOT_FOUND
+        <div className="text-center space-y-4">
+          <h2 className="text-4xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+            未找到文章
           </h2>
-          <p className="text-gray-500 font-mono text-sm">
-            No entry found with id: {id}
+          <p className="text-zinc-400 font-light text-sm">
+            ID 为 {id} 的文章记录不存在或已被移除。
           </p>
         </div>
       </div>

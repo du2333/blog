@@ -48,22 +48,14 @@ export function AiProviderSection({
   const currentConfig = PROVIDER_CONFIG[provider];
 
   const handleTest = async () => {
-    if (
-      !isConfigured ||
-      !currentProviderConfig?.apiKey ||
-      !currentProviderConfig?.model
-    )
-      return;
+    if (!isConfigured) return;
     setStatus("TESTING");
     setLogs([]);
     const addLog = (msg: string, type: TerminalLog["type"] = "info") =>
       setLogs((prev) => [...prev, { msg: `> ${msg}`, type }]);
 
     addLog(`正在连接至 ${currentConfig.name}...`);
-    await new Promise((r) => setTimeout(r, 800));
-    addLog(`正在解析 API 端点...`, "system");
-    await new Promise((r) => setTimeout(r, 1000));
-
+    
     try {
       const result = await testAiConnection({
         data: {
@@ -74,35 +66,39 @@ export function AiProviderSection({
       });
 
       if (result.success) {
-        addLog(`成功建立安全连接`, "success");
+        addLog(`连接成功`, "success");
         setStatus("SUCCESS");
       } else {
         addLog(`错误: ${result.error || "连接失败"}`, "error");
         setStatus("ERROR");
       }
     } catch (error) {
-      addLog(`错误: 远程主机拒绝连接 (403)`, "error");
+      addLog(`连接失败`, "error");
       setStatus("ERROR");
     }
   };
 
   return (
-    <div className="bg-white dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 p-8 space-y-10 rounded-sm transition-all duration-500 hover:border-zinc-200 dark:hover:border-white/10 group">
+    <div className="bg-white dark:bg-[#080808] border border-zinc-100 dark:border-white/5 p-8 sm:p-12 space-y-12 transition-all duration-500 rounded-sm">
       {/* Header */}
-      <div className="flex items-center justify-between pb-6 border-b border-zinc-100 dark:border-white/5">
-        <div className="flex items-center gap-4">
-          <div className={`p-2.5 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-green-500/10 text-green-500" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
-            <Sparkles size={20} strokeWidth={1} className={status === "SUCCESS" ? "fill-current" : ""} />
+      <div className="space-y-6">
+        <div className="flex items-center gap-5">
+          <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-700 ${
+            status === "SUCCESS" 
+              ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent" 
+              : "border-zinc-100 dark:border-white/10 text-zinc-400"
+          }`}>
+            <Sparkles size={20} strokeWidth={1.2} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50">AI 智能助理</h3>
+            <h3 className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">AI 智能助理</h3>
             <div className="flex items-center gap-2">
               <div className={`w-1 h-1 rounded-full ${
-                status === "SUCCESS" ? "bg-green-500 animate-pulse" : 
+                status === "SUCCESS" ? "bg-green-500" : 
                 status === "ERROR" ? "bg-red-500" : "bg-zinc-200 dark:bg-zinc-800"
               }`} />
-              <span className={`text-[9px] uppercase tracking-widest font-bold ${
-                status === "SUCCESS" ? "text-green-500" : 
+              <span className={`text-[10px] uppercase tracking-[0.2em] font-bold ${
+                status === "SUCCESS" ? "text-green-600 dark:text-green-500" : 
                 status === "ERROR" ? "text-red-500" : "text-zinc-400"
               }`}>
                 {status === "TESTING" ? "测试中" : status === "SUCCESS" ? "在线" : status === "ERROR" ? "连接失败" : "待机"}
@@ -110,14 +106,17 @@ export function AiProviderSection({
             </div>
           </div>
         </div>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed font-light">
+          利用大型语言模型为内容创作提供支持，涵盖自动摘要生成、内容校对及风格优化。
+        </p>
       </div>
 
       {/* Provider Selector */}
       <div className="space-y-4">
-        <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
-          服务提供商
+        <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+          服务供应商
         </label>
-        <div className="flex gap-2 p-1 bg-zinc-50 dark:bg-white/[0.03] rounded-sm w-fit">
+        <div className="flex gap-2 p-1 bg-zinc-50 dark:bg-white/[0.02] rounded-sm w-fit border border-zinc-100 dark:border-white/5">
           {(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map((p) => (
             <button
               key={p}
@@ -125,9 +124,9 @@ export function AiProviderSection({
                 onChange({ ...value, activeProvider: p });
                 setStatus("IDLE");
               }}
-              className={`px-6 py-2 text-[10px] uppercase tracking-[0.1em] font-bold transition-all rounded-sm ${
+              className={`px-8 py-2.5 text-[10px] uppercase tracking-[0.1em] font-bold transition-all rounded-sm ${
                 provider === p
-                  ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
+                  ? "bg-white dark:bg-zinc-800 text-zinc-950 dark:text-zinc-50 shadow-sm"
                   : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
               }`}
             >
@@ -138,17 +137,16 @@ export function AiProviderSection({
       </div>
 
       {/* Inputs */}
-      <div className="space-y-8 pt-4">
+      <div className="space-y-10 pt-4">
         <div className="space-y-4">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
-            API 密钥 (Secret Key)
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+            API 令牌
           </label>
           <div className="relative group/input">
-            <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
             <input
               type={showKey ? "text" : "password"}
               value={currentProviderConfig?.apiKey || ""}
-              placeholder="输入协议密钥..."
+              placeholder="在此处粘贴您的 API 令牌..."
               onChange={(e) => {
                 onChange({
                   ...value,
@@ -162,24 +160,23 @@ export function AiProviderSection({
                 });
                 setStatus("IDLE");
               }}
-              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-4 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
             />
             <button
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
             >
-              {showKey ? <EyeOff size={16} strokeWidth={1} /> : <Eye size={16} strokeWidth={1} />}
+              {showKey ? <EyeOff size={18} strokeWidth={1} /> : <Eye size={18} strokeWidth={1} />}
             </button>
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-8 sm:items-end">
-          <div className="flex-1 space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
-              模型版本
+        <div className="flex flex-col sm:flex-row gap-8 items-end">
+          <div className="flex-1 space-y-4 w-full">
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+              选择模型
             </label>
             <div className="relative group/input">
-              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
               <select
                 value={currentProviderConfig?.model || currentConfig.models[0]}
                 onChange={(e) => {
@@ -194,7 +191,7 @@ export function AiProviderSection({
                     },
                   });
                 }}
-                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none appearance-none cursor-pointer"
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-4 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 appearance-none cursor-pointer transition-all"
               >
                 {currentConfig.models.map((m) => (
                   <option key={m} value={m} className="bg-white dark:bg-[#0c0c0c]">{m}</option>
@@ -206,19 +203,18 @@ export function AiProviderSection({
           <button
             onClick={handleTest}
             disabled={status === "TESTING" || !isConfigured}
-            className={`h-12 px-8 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 ${
-              !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
-              status === "TESTING" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 animate-pulse" :
-              "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 shadow-sm"
+            className={`h-14 px-10 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 w-full sm:w-auto ${
+              !isConfigured ? "bg-zinc-50 dark:bg-zinc-900/50 text-zinc-300 cursor-not-allowed" :
+              status === "TESTING" ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 animate-pulse" :
+              "border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-950 dark:hover:bg-white hover:text-white dark:hover:text-zinc-950"
             }`}
           >
-            {status === "TESTING" ? <Loader2 size={14} className="animate-spin" /> : <Wifi size={14} />}
-            测试连接
+            {status === "TESTING" ? <Loader2 size={16} className="animate-spin" /> : <Wifi size={16} />}
+            连接测试
           </button>
         </div>
       </div>
 
-      {/* Terminal Monitor */}
       <TerminalMonitor logs={logs} status={status} />
     </div>
   );

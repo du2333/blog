@@ -21,12 +21,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   // Parse initial value or default to today
   const initialDate = value ? new Date(value) : new Date();
-  // State for the currently viewed month/year in the calendar
   const [viewDate, setViewDate] = useState(initialDate);
 
-  const daysOfWeek = ["SU", "MO", "TU", "WE", "TH", "FR", "SA"];
+  const daysOfWeek = ["日", "一", "二", "三", "四", "五", "六"];
 
-  // Handle outside click to close
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -40,7 +38,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Calendar Logic
   const getDaysInMonth = (date: Date) => {
     const year = date.getFullYear();
     const month = date.getMonth();
@@ -74,13 +71,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const isSelected = (day: number) => {
     if (!value) return false;
-    // Use UTC methods to avoid timezone shift issues on simple date strings
     const currentYear = viewDate.getFullYear();
     const currentMonth = viewDate.getMonth();
-
-    // Parse the value string manually to avoid timezone offset
     const [vYear, vMonth, vDay] = value.split("-").map(Number);
-
     return vYear === currentYear && vMonth - 1 === currentMonth && vDay === day;
   };
 
@@ -98,12 +91,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const firstDay = getFirstDayOfMonth(viewDate);
     const slots = [];
 
-    // Empty slots for previous month
     for (let i = 0; i < firstDay; i++) {
-      slots.push(<div key={`empty-${i}`} className="w-8 h-8"></div>);
+      slots.push(<div key={`empty-${i}`} className="w-9 h-9"></div>);
     }
 
-    // Days
     for (let i = 1; i <= daysInMonth; i++) {
       const selected = isSelected(i);
       const today = isToday(i);
@@ -113,18 +104,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
           key={i}
           onClick={() => handleDayClick(i)}
           className={`
-            w-8 h-8 text-xs font-mono font-bold flex items-center justify-center transition-colors relative group
+            w-9 h-9 text-[11px] font-medium flex items-center justify-center transition-all duration-300 rounded-sm relative group
             ${
               selected
-                ? "bg-zzz-lime text-black"
-                : "text-gray-400 hover:text-white hover:bg-zzz-gray"
+                ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-lg"
+                : "text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-white/5"
             }
-            ${today && !selected ? "border border-zzz-lime text-zzz-lime" : ""}
+            ${today && !selected ? "text-zinc-950 dark:text-zinc-100 font-bold" : ""}
           `}
         >
           {i}
-          {/* Decorative corner for hover */}
-          <div className="absolute top-0 right-0 w-1.5 h-1.5 border-t border-r border-zzz-cyan opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          {today && !selected && (
+            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-zinc-950 dark:bg-white rounded-full"></div>
+          )}
         </button>
       );
     }
@@ -134,49 +126,49 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={containerRef}>
-      {/* Input Trigger */}
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`
-            relative w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-3 cursor-pointer select-none transition-colors group
-            ${isOpen ? "border-zzz-lime" : "border-zzz-gray hover:border-white"}
+            relative w-full bg-zinc-50 dark:bg-white/[0.03] text-zinc-900 dark:text-zinc-100 text-xs font-light pl-11 pr-4 py-4 cursor-pointer select-none transition-all rounded-sm group
+            ${isOpen ? "ring-1 ring-zinc-950 dark:ring-zinc-100 shadow-sm" : "hover:bg-zinc-100 dark:hover:bg-white/5"}
         `}
       >
         <CalendarIcon
-          className={`absolute left-3 top-1/2 -translate-y-1/2 transition-colors ${
-            isOpen ? "text-zzz-lime" : "text-gray-500 group-hover:text-white"
+          className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${
+            isOpen ? "text-zinc-950 dark:text-zinc-100" : "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
           }`}
-          size={14}
+          size={16}
+          strokeWidth={1.5}
         />
-        {value || "SELECT_DATE"}
+        <span className={value ? "opacity-100" : "opacity-40"}>
+          {value || "选择日期"}
+        </span>
       </div>
 
-      {/* Dropdown Popover */}
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 mt-2 bg-zzz-black border-2 border-zzz-lime shadow-[0_10px_30px_rgba(0,0,0,0.8)] p-4 w-64 animate-in fade-in zoom-in-95 duration-200 clip-corner-bl">
-          {/* Decoration */}
-          <div className="absolute top-0 right-0 w-4 h-4 border-t-2 border-r-2 border-zzz-lime"></div>
-
+        <div className="absolute top-full left-0 z-50 mt-2 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl p-6 w-[320px] animate-in fade-in zoom-in-95 duration-300 rounded-sm">
           {/* Header */}
-          <div className="flex items-center justify-between mb-4 border-b border-zzz-gray pb-2">
-            <button
-              onClick={() => changeMonth(-1)}
-              className="text-gray-500 hover:text-zzz-cyan transition-colors p-1"
-            >
-              <ChevronLeft size={16} />
-            </button>
-            <div className="text-xs font-bold font-sans uppercase tracking-widest text-white">
-              {viewDate.toLocaleString("default", {
+          <div className="flex items-center justify-between mb-6">
+            <h4 className="text-sm font-serif font-medium text-zinc-950 dark:text-zinc-50 tracking-tight">
+              {viewDate.toLocaleString("zh-CN", {
                 month: "long",
                 year: "numeric",
               })}
+            </h4>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => changeMonth(-1)}
+                className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+              >
+                <ChevronLeft size={18} strokeWidth={1.5} />
+              </button>
+              <button
+                onClick={() => changeMonth(1)}
+                className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+              >
+                <ChevronRight size={18} strokeWidth={1.5} />
+              </button>
             </div>
-            <button
-              onClick={() => changeMonth(1)}
-              className="text-gray-500 hover:text-zzz-cyan transition-colors p-1"
-            >
-              <ChevronRight size={16} />
-            </button>
           </div>
 
           {/* Grid Header (Days) */}
@@ -184,7 +176,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
             {daysOfWeek.map((d) => (
               <div
                 key={d}
-                className="w-8 text-center text-[10px] font-mono font-bold text-zzz-gray"
+                className="w-9 text-center text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-widest"
               >
                 {d}
               </div>
@@ -193,15 +185,6 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
           {/* Grid Body */}
           <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
-
-          {/* Footer */}
-          <div className="mt-4 pt-2 border-t border-dashed border-zzz-gray text-[9px] font-mono text-gray-600 text-center uppercase tracking-wider">
-            System_Time:{" "}
-            {new Date().toLocaleTimeString([], {
-              hour: "2-digit",
-              minute: "2-digit",
-            })}
-          </div>
         </div>
       )}
     </div>

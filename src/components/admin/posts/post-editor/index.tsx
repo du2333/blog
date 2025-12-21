@@ -3,6 +3,7 @@ import { useRouter, useBlocker } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 
 import { EditorToolbar, SettingsDrawer } from "./components";
@@ -13,7 +14,7 @@ import { type PostEditorData, type PostEditorProps } from "./types";
 export type { PostEditorData, PostEditorProps } from "./types";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
-  if (!initialData) return null;
+  if (!initialData) return <PostEditorSkeleton />;
   const router = useRouter();
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
@@ -96,13 +97,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       <div className="flex-1 overflow-y-auto custom-scrollbar relative">
         <div className="w-full max-w-4xl mx-auto py-20 px-6 md:px-12 min-h-full">
           {/* Title Field (Auto-expanding Textarea) */}
-          <div className="mb-12 group">
+          <div className="mb-16 group">
             <TextareaAutosize
               value={post.title}
               onChange={(e) => setPost({ ...post, title: e.target.value })}
               minRows={1}
-              placeholder="在此输入标题..."
-              className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none"
+              placeholder="输入标题"
+              className="w-full bg-transparent text-5xl md:text-8xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.05] resize-none border-none p-0"
             />
           </div>
 

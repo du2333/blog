@@ -56,11 +56,11 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         className="md:col-span-6 min-w-0 cursor-pointer group/title w-full"
         onClick={handleEdit}
       >
-        <div className="flex items-center gap-3 mb-2">
-          <h3 className="text-zinc-900 dark:text-zinc-100 font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
+          <h3 className="text-zinc-900 dark:text-zinc-100 font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate min-w-0 flex-1">
             {post.title}
           </h3>
-          <div className="hidden md:block">
+          <div className="hidden md:block shrink-0">
             <StatusBadge status={post.status} />
           </div>
         </div>

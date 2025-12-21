@@ -41,11 +41,7 @@ export function EmailServiceSection({
     const addLog = (msg: string, type: TerminalLog["type"] = "info") =>
       setLogs((prev) => [...prev, { msg: `> ${msg}`, type }]);
 
-    addLog(`正在初始化邮件协议握手...`);
-    await new Promise((r) => setTimeout(r, 500));
-    addLog(`正在验证 Resend 访问令牌...`, "system");
-    await new Promise((r) => setTimeout(r, 500));
-    addLog(`正在校验发件人地址: ${value.senderAddress}...`, "info");
+    addLog(`正在连接至邮件推送节点...`);
 
     try {
       const result = await testEmailConnection({
@@ -57,98 +53,101 @@ export function EmailServiceSection({
       });
 
       if (result.success) {
-        addLog(`测试邮件已发送至管理员邮箱`, "success");
-        addLog(`成功建立稳定信道 (SMTP_OK)`, "success");
+        addLog(`握手成功，测试邮件已进入队列`, "success");
         setStatus("SUCCESS");
       } else {
-        addLog(`错误: ${result.error || "连接失败"}`, "error");
+        addLog(`连接受阻: ${result.error || "未知原因"}`, "error");
         setStatus("ERROR");
       }
     } catch (error) {
-      addLog(`错误: ${error instanceof Error ? error.message : "未知错误"}`, "error");
+      addLog(`节点无响应`, "error");
       setStatus("ERROR");
     }
   };
 
   return (
-    <div className="bg-white dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 p-8 space-y-10 rounded-sm transition-all duration-500 hover:border-zinc-200 dark:hover:border-white/10 group">
+    <div className="bg-white dark:bg-[#080808] border border-zinc-100 dark:border-white/5 p-8 sm:p-12 space-y-12 transition-all duration-500 rounded-sm">
       {/* Header */}
-      <div className="flex items-center justify-between pb-6 border-b border-zinc-100 dark:border-white/5">
-        <div className="flex items-center gap-4">
-          <div className={`p-2.5 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
-            <Mail size={20} strokeWidth={1} />
+      <div className="space-y-6">
+        <div className="flex items-center gap-5">
+          <div className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all duration-700 ${
+            status === "SUCCESS" 
+              ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent" 
+              : "border-zinc-100 dark:border-white/10 text-zinc-400"
+          }`}>
+            <Mail size={20} strokeWidth={1.2} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-base font-serif font-medium tracking-tight">邮件服务</h3>
+            <h3 className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">邮件服务</h3>
             <div className="flex items-center gap-2">
               <div className={`w-1 h-1 rounded-full ${
-                status === "SUCCESS" ? "bg-green-500 animate-pulse" : 
+                status === "SUCCESS" ? "bg-green-500" : 
                 status === "ERROR" ? "bg-red-500" : "bg-zinc-200 dark:bg-zinc-800"
               }`} />
-              <span className={`text-[9px] uppercase tracking-widest font-bold ${
-                status === "SUCCESS" ? "text-green-500" : 
+              <span className={`text-[10px] uppercase tracking-[0.2em] font-bold ${
+                status === "SUCCESS" ? "text-green-600 dark:text-green-500" : 
                 status === "ERROR" ? "text-red-500" : "text-zinc-400"
               }`}>
-                {status === "TESTING" ? "同步中" : status === "SUCCESS" ? "连接成功" : status === "ERROR" ? "已屏蔽" : "待机"}
+                {status === "TESTING" ? "连接中" : status === "SUCCESS" ? "可用" : status === "ERROR" ? "不可用" : "待命"}
               </span>
             </div>
           </div>
         </div>
+        <p className="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed font-light">
+          配置基于 Resend 的邮件发送接口，用于处理系统级别的消息推送、评论回复通知以及账号安全验证。
+        </p>
       </div>
 
-      <div className="space-y-8 pt-4">
+      <div className="space-y-10 pt-4">
         {/* API Key */}
         <div className="space-y-4">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
             Resend API 令牌
           </label>
           <div className="relative group/input">
-            <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
             <input
               type={showKey ? "text" : "password"}
               value={value.apiKey || ""}
-              placeholder="输入 Resend 访问令牌..."
+              placeholder="在此处输入访问令牌..."
               onChange={(e) => {
                 onChange({ ...value, apiKey: e.target.value });
                 setStatus("IDLE");
               }}
-              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-4 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
             />
             <button
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
             >
-              {showKey ? <EyeOff size={16} strokeWidth={1} /> : <Eye size={16} strokeWidth={1} />}
+              {showKey ? <EyeOff size={18} strokeWidth={1} /> : <Eye size={18} strokeWidth={1} />}
             </button>
           </div>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
-              发件人显示名称
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+              发信显示名称
             </label>
             <div className="relative group/input">
-              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
               <input
                 value={value.senderName || ""}
                 onChange={(e) => onChange({ ...value, senderName: e.target.value })}
-                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
-                placeholder="系统通知显示名称"
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-4 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 transition-all"
+                placeholder="例如：系统通知"
               />
             </div>
           </div>
 
           <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
-              发件邮箱地址
+            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+              发信地址 (Email)
             </label>
             <div className="relative group/input">
-              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
               <input
                 value={value.senderAddress || ""}
                 onChange={(e) => onChange({ ...value, senderAddress: e.target.value })}
-                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all font-mono"
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-4 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 transition-all font-mono"
                 placeholder="noreply@domain.com"
               />
             </div>
@@ -159,14 +158,14 @@ export function EmailServiceSection({
           <button
             onClick={handleTest}
             disabled={status === "TESTING" || !isConfigured}
-            className={`h-12 px-8 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 ${
-              !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
-              status === "TESTING" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 animate-pulse" :
-              "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 shadow-sm"
+            className={`h-14 px-10 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 w-full sm:w-auto ${
+              !isConfigured ? "bg-zinc-50 dark:bg-zinc-900/50 text-zinc-300 cursor-not-allowed" :
+              status === "TESTING" ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 animate-pulse" :
+              "border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-950 dark:hover:bg-white hover:text-white dark:hover:text-zinc-950"
             }`}
           >
-            {status === "TESTING" ? <Loader2 size={14} className="animate-spin" /> : <Wifi size={14} />}
-            发送测试邮件
+            {status === "TESTING" ? <Loader2 size={16} className="animate-spin" /> : <Wifi size={16} />}
+            发信测试
           </button>
         </div>
       </div>
