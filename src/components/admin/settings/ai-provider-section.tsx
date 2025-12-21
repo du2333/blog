@@ -77,20 +77,25 @@ export function AiProviderSection({
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       {/* Section Header */}
-      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-6">
-        <h3 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
-          AI 智能
-        </h3>
+      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-10">
+        <div className="space-y-1.5">
+          <h3 className="text-4xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50">
+            AI 智能
+          </h3>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-semibold opacity-80">
+            Artificial Intelligence Configuration
+          </p>
+        </div>
         {status !== "IDLE" && (
           <div
-            className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
               status === "SUCCESS"
-                ? "bg-green-500/5 border-green-500/20 text-green-600"
+                ? "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/5 dark:border-emerald-500/20 dark:text-emerald-500"
                 : status === "ERROR"
-                ? "bg-red-500/5 border-red-500/20 text-red-600"
-                : "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-400"
+                ? "bg-rose-50 border-rose-100 text-rose-600 dark:bg-rose-500/5 dark:border-rose-500/20 dark:text-rose-500"
+                : "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-500"
             }`}
           >
             {status === "TESTING" ? (
@@ -101,21 +106,21 @@ export function AiProviderSection({
               <AlertCircle size={10} />
             )}
             {status === "TESTING"
-              ? "Testing"
+              ? "Validating"
               : status === "SUCCESS"
-              ? "Active"
-              : "Failed"}
+              ? "Connected"
+              : "Connection Failed"}
           </div>
         )}
       </div>
 
       <div className="space-y-px">
         {/* Property Row: Provider */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             服务平台
           </div>
-          <div className="flex-1 flex gap-2">
+          <div className="flex-1 flex gap-2.5">
             {(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map((p) => (
               <button
                 key={p}
@@ -123,10 +128,10 @@ export function AiProviderSection({
                   onChange({ ...value, activeProvider: p });
                   setStatus("IDLE");
                 }}
-                className={`px-4 py-2 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all border ${
+                className={`px-5 py-2.5 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all border ${
                   provider === p
-                    ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent shadow-md"
-                    : "border-zinc-100 dark:border-white/5 text-zinc-400 hover:border-zinc-300 dark:hover:border-white/20"
+                    ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent shadow-lg shadow-black/5"
+                    : "border-zinc-200 dark:border-white/5 text-zinc-400 dark:text-zinc-500 hover:border-zinc-400 dark:hover:border-white/20"
                 }`}
               >
                 {p}
@@ -136,8 +141,8 @@ export function AiProviderSection({
         </div>
 
         {/* Property Row: API Key */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             授权密钥
           </div>
           <div className="flex-1 flex items-center gap-4">
@@ -145,7 +150,7 @@ export function AiProviderSection({
               <input
                 type={showKey ? "text" : "password"}
                 value={currentProviderConfig?.apiKey || ""}
-                placeholder="在此输入密钥..."
+                placeholder="Enter your API Key..."
                 onChange={(e) => {
                   onChange({
                     ...value,
@@ -159,16 +164,16 @@ export function AiProviderSection({
                   });
                   setStatus("IDLE");
                 }}
-                className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800 pr-10"
+                className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-800 pr-10"
               />
               <button
                 onClick={() => setShowKey(!showKey)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
               >
                 {showKey ? (
-                  <EyeOff size={16} strokeWidth={1.5} />
+                  <EyeOff size={18} strokeWidth={1.5} />
                 ) : (
-                  <Eye size={16} strokeWidth={1.5} />
+                  <Eye size={18} strokeWidth={1.5} />
                 )}
               </button>
             </div>
@@ -176,8 +181,8 @@ export function AiProviderSection({
         </div>
 
         {/* Property Row: Model */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             模型版本
           </div>
           <div className="flex-1">

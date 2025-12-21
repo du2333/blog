@@ -1,40 +1,27 @@
 export function SectionSkeleton() {
   return (
-    <div className="bg-white dark:bg-[#0c0c0c] p-10 sm:p-14 space-y-16 animate-pulse rounded-sm border border-zinc-100 dark:border-white/5">
+    <div className="space-y-16 animate-pulse">
       {/* Header Skeleton */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
-        <div className="flex items-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900"></div>
-          <div className="space-y-2">
-            <div className="h-6 w-32 bg-zinc-100 dark:bg-zinc-900 rounded"></div>
-          </div>
+      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-10">
+        <div className="space-y-3">
+          <div className="h-10 w-40 bg-zinc-100 dark:bg-zinc-900 rounded"></div>
+          <div className="h-2 w-64 bg-zinc-50 dark:bg-zinc-900/50 rounded opacity-50"></div>
         </div>
+        <div className="h-8 w-24 bg-zinc-50 dark:bg-zinc-900 rounded-full"></div>
       </div>
 
-      <div className="grid grid-cols-1 gap-12 max-w-2xl">
-        {/* Selector Skeleton */}
-        <div className="space-y-6">
-          <div className="h-2 w-24 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
-          <div className="flex gap-3">
-            <div className="h-14 w-32 bg-zinc-100 dark:bg-zinc-900 rounded-sm"></div>
-            <div className="h-14 w-32 bg-zinc-100 dark:bg-zinc-900 rounded-sm opacity-50"></div>
+      <div className="space-y-px">
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="flex flex-col sm:flex-row py-10 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+            <div className="w-56 shrink-0">
+              <div className="h-3 w-24 bg-zinc-100 dark:bg-zinc-900 rounded"></div>
+            </div>
+            <div className="flex-1 space-y-4">
+              <div className="h-4 w-full max-w-md bg-zinc-50 dark:bg-zinc-900/50 rounded"></div>
+              {i === 3 && <div className="h-12 w-48 bg-zinc-100 dark:bg-zinc-900 rounded-sm mt-8"></div>}
+            </div>
           </div>
-        </div>
-
-        {/* Input Skeleton */}
-        <div className="space-y-6">
-          <div className="h-2 w-32 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
-          <div className="h-16 w-full border-b border-zinc-100 dark:border-zinc-900"></div>
-        </div>
-
-        {/* Bottom Area Skeleton */}
-        <div className="flex flex-col md:flex-row gap-10 md:items-end">
-          <div className="flex-1 space-y-6">
-            <div className="h-2 w-24 bg-zinc-100 dark:bg-zinc-900 rounded opacity-30"></div>
-            <div className="h-16 w-full border-b border-zinc-100 dark:border-zinc-900"></div>
-          </div>
-          <div className="h-[60px] w-48 bg-zinc-100 dark:bg-zinc-900 rounded-sm"></div>
-        </div>
+        ))}
       </div>
     </div>
   );

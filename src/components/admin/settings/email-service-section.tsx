@@ -63,20 +63,25 @@ export function EmailServiceSection({
   };
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-16">
       {/* Section Header */}
-      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-6">
-        <h3 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
-          邮件分发
-        </h3>
+      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-10">
+        <div className="space-y-1.5">
+          <h3 className="text-4xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50">
+            邮件分发
+          </h3>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-semibold opacity-80">
+            Email Delivery & Notification Services
+          </p>
+        </div>
         {status !== "IDLE" && (
           <div
-            className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
               status === "SUCCESS"
-                ? "bg-green-500/5 border-green-500/20 text-green-600"
+                ? "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/5 dark:border-emerald-500/20 dark:text-emerald-500"
                 : status === "ERROR"
-                ? "bg-red-500/5 border-red-500/20 text-red-600"
-                : "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-400"
+                ? "bg-rose-50 border-rose-100 text-rose-600 dark:bg-rose-500/5 dark:border-rose-500/20 dark:text-rose-500"
+                : "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-500"
             }`}
           >
             {status === "TESTING" ? (
@@ -89,16 +94,16 @@ export function EmailServiceSection({
             {status === "TESTING"
               ? "Syncing"
               : status === "SUCCESS"
-              ? "Stable"
-              : "Blocked"}
+              ? "Healthy"
+              : "Service Interrupted"}
           </div>
         )}
       </div>
 
       <div className="space-y-px">
         {/* Property Row: API Key */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             Resend 令牌
           </div>
           <div className="flex-1 flex items-center gap-4">
@@ -106,21 +111,21 @@ export function EmailServiceSection({
               <input
                 type={showKey ? "text" : "password"}
                 value={value.apiKey || ""}
-                placeholder="在此输入推送令牌..."
+                placeholder="re_xxxxxxxxxxxxxx"
                 onChange={(e) => {
                   onChange({ ...value, apiKey: e.target.value });
                   setStatus("IDLE");
                 }}
-                className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800 pr-10"
+                className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-800 pr-10"
               />
               <button
                 onClick={() => setShowKey(!showKey)}
                 className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
               >
                 {showKey ? (
-                  <EyeOff size={16} strokeWidth={1.5} />
+                  <EyeOff size={18} strokeWidth={1.5} />
                 ) : (
-                  <Eye size={16} strokeWidth={1.5} />
+                  <Eye size={18} strokeWidth={1.5} />
                 )}
               </button>
             </div>
@@ -128,8 +133,8 @@ export function EmailServiceSection({
         </div>
 
         {/* Property Row: Sender Name */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             发信人名称
           </div>
           <div className="flex-1">
@@ -138,15 +143,15 @@ export function EmailServiceSection({
               onChange={(e) =>
                 onChange({ ...value, senderName: e.target.value })
               }
-              className="w-full bg-transparent text-sm text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
-              placeholder="例如：系统管理员"
+              className="w-full bg-transparent text-sm text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-800"
+              placeholder="e.g. System Administrator"
             />
           </div>
         </div>
 
         {/* Property Row: Sender Email */}
-        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
-          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+          <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
             发信邮箱
           </div>
           <div className="flex-1">
@@ -155,8 +160,8 @@ export function EmailServiceSection({
               onChange={(e) =>
                 onChange({ ...value, senderAddress: e.target.value })
               }
-              className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
-              placeholder="noreply@domain.com"
+              className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-800"
+              placeholder="noreply@yourdomain.com"
             />
           </div>
         </div>

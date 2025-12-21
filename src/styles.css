@@ -37,12 +37,17 @@ mark {
 
 @layer base {
   body {
-    @apply bg-zinc-50 text-zinc-800 overflow-x-hidden font-sans;
+    @apply bg-white text-zinc-900 overflow-x-hidden font-sans selection:bg-zinc-950 selection:text-white antialiased;
     transition: background-color 0.5s ease-in-out;
+    line-height: 1.6;
+  }
+
+  p {
+    @apply leading-relaxed;
   }
 
   .dark body {
-    @apply bg-[#050505] text-zinc-200;
+    @apply bg-[#050505] text-zinc-100 selection:bg-white selection:text-black;
   }
 
   button:not(:disabled),
