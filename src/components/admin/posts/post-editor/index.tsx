@@ -81,7 +81,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#050505] selection:bg-zinc-100 dark:selection:bg-zinc-800 overflow-hidden">
+    <div className="fixed inset-0 z-80 flex flex-col bg-white dark:bg-[#050505] selection:bg-zinc-100 dark:selection:bg-zinc-800 overflow-hidden">
       <ConfirmationModal
         isOpen={status === "blocked"}
         onClose={() => reset?.()}
@@ -92,12 +92,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       />
 
       {/* Control Header */}
-      <header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md">
+      <header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md border-b border-zinc-100/50 dark:border-white/5">
         <button
           onClick={() => router.history.back()}
-          className="group flex items-center gap-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
+          className="group flex items-center gap-3 text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
         >
-          <div className="p-2 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full group-hover:scale-105 active:scale-95 transition-all">
+          <div className="p-2 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full group-hover:scale-105 active:scale-95 transition-all shadow-sm">
             <ChevronLeft size={18} />
           </div>
           <span className="text-[10px] uppercase tracking-[0.2em] font-bold">

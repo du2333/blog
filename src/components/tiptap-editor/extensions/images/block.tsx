@@ -12,58 +12,52 @@ export function ImageBlock({
   const isUploading = useMemo(() => src?.startsWith("blob:"), [src]);
 
   return (
-    <NodeViewWrapper className="my-10 group relative image-node-view">
+    <NodeViewWrapper className="my-16 group relative image-node-view">
       <div
         className={`
-            relative border-2 bg-black p-2 overflow-hidden transition-colors duration-300 clip-corner-tr
+            relative overflow-hidden transition-all duration-700 rounded-sm border
             ${
               selected
-                ? "border-zzz-lime shadow-[0_0_20px_rgba(204,255,0,0.2)]"
-                : "border-zzz-gray hover:border-white"
+                ? "border-zinc-900 dark:border-zinc-100 shadow-2xl scale-[1.01]"
+                : "border-zinc-100 dark:border-zinc-900 hover:border-zinc-300 dark:hover:border-zinc-700"
             }
-            ${isUploading ? "border-zzz-orange border-dashed" : ""}
+            ${isUploading ? "border-dashed opacity-50" : ""}
         `}
       >
         <div className="relative">
           <img
             src={src}
             alt={node.attrs.alt}
-            className={`w-full h-auto object-cover max-h-[600px] transition-opacity duration-300 ${
-              isUploading ? "opacity-50 blur-sm grayscale" : "opacity-100"
-            }`}
+            className={`w-full h-auto object-cover max-h-[800px] transition-all duration-1000 ${
+              isUploading ? "blur-sm grayscale" : "opacity-100"
+            } ${selected ? "scale-105" : "group-hover:scale-102"}`}
           />
 
           {/* Uploading Overlay */}
           {isUploading && (
             <div className="absolute inset-0 flex flex-col items-center justify-center z-10">
-              <div className="bg-black/80 backdrop-blur border border-zzz-orange p-4 rounded-sm flex flex-col items-center gap-2 shadow-xl">
-                <Loader2 className="text-zzz-orange animate-spin" size={24} />
-                <div className="text-[10px] font-mono font-bold text-zzz-orange uppercase tracking-widest flex items-center gap-2">
-                  <UploadCloud size={12} /> Uploading Asset...
+              <div className="bg-white/80 dark:bg-black/80 backdrop-blur-xl p-6 rounded-sm flex flex-col items-center gap-4 shadow-2xl border border-zinc-100 dark:border-white/5">
+                <Loader2 className="text-zinc-900 dark:text-zinc-100 animate-spin" size={24} />
+                <div className="text-[10px] font-bold text-zinc-900 dark:text-zinc-100 uppercase tracking-[0.3em] flex items-center gap-3">
+                  <UploadCloud size={14} /> Processing Asset
                 </div>
               </div>
             </div>
           )}
         </div>
-
-        {/* Scanline overlay */}
-        <div className="absolute inset-0 bg-stripe-pattern opacity-10 pointer-events-none"></div>
       </div>
 
-      <div className="mt-2 flex items-center gap-2 font-mono text-xs text-gray-500">
-        <div className="h-px bg-zzz-gray flex-1"></div>
-        <span className="uppercase tracking-widest text-[10px] shrink-0">
-          FIG.
-        </span>
+      <div className="mt-4 flex items-center gap-4">
+        <div className="h-px bg-zinc-100 dark:bg-zinc-900 flex-1"></div>
         <input
           type="text"
           value={node.attrs.alt || ""}
           onChange={(e) => updateAttributes({ alt: e.target.value })}
           placeholder={
-            isUploading ? "等待上传..." : "输入图片描述..."
+            isUploading ? "Processing..." : "Describe this image..."
           }
           disabled={isUploading}
-          className="bg-transparent border-b border-zzz-gray/30 text-zzz-lime text-xs font-mono uppercase focus:outline-none focus:border-zzz-lime w-48 md:w-64 placeholder-gray-700 text-right transition-colors disabled:opacity-50"
+          className="bg-transparent text-[10px] font-medium uppercase tracking-[0.2em] text-zinc-400 focus:text-zinc-950 dark:focus:text-zinc-50 focus:outline-none w-48 md:w-64 placeholder:text-zinc-200 dark:placeholder:text-zinc-800 text-right transition-colors disabled:opacity-50"
         />
       </div>
     </NodeViewWrapper>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import type { NodeViewProps } from "@tiptap/react";
 import { LANGUAGES } from "./languages";
+import DropdownMenu from "@/components/ui/dropdown-menu";
 
 export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
   const [copied, setCopied] = useState(false);
@@ -26,22 +27,14 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
         {/* Simple Header */}
         <div className="flex items-center justify-between px-6 py-3 select-none">
           <div className="flex items-center gap-3">
-            <select
+            <DropdownMenu
               value={language}
-              onChange={handleLanguageChange}
-              contentEditable={false}
-              className="appearance-none bg-transparent font-mono text-[10px] font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em] border-none outline-none cursor-pointer hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
-            >
-              {LANGUAGES.map((lang) => (
-                <option
-                  key={lang.value}
-                  value={lang.value}
-                  className="bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100"
-                >
-                  {lang.label}
-                </option>
-              ))}
-            </select>
+              onChange={(val) => updateAttributes({ language: val })}
+              options={LANGUAGES.map((lang) => ({
+                label: lang.label,
+                value: lang.value,
+              }))}
+            />
           </div>
 
           <button

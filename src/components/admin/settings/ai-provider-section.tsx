@@ -11,6 +11,7 @@ import {
 import { useState } from "react";
 import { GoogleModels, DeepSeekModels } from "@/lib/ai";
 import { SystemConfig } from "@/features/config/config.schema";
+import DropdownMenu from "@/components/ui/dropdown-menu";
 
 type AiProvider = "GOOGLE" | "DEEPSEEK";
 type ConnectionStatus = "IDLE" | "TESTING" | "SUCCESS" | "ERROR";
@@ -173,31 +174,30 @@ export function AiProviderSection({
             <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
               选择模型版本
             </label>
-            <div className="relative group/input">
-              <select
+            <div className="pt-2 border-b border-zinc-100 dark:border-white/10 pb-4">
+              <DropdownMenu
                 value={currentProviderConfig?.model || currentConfig.models[0]}
-                onChange={(e) => {
+                onChange={(val) => {
                   onChange({
                     ...value,
                     providers: {
                       ...value.providers,
                       [provider]: {
                         ...value.providers?.[provider],
-                        model: e.target.value,
+                        model: val,
                       },
                     },
                   });
                 }}
-                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-5 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 appearance-none cursor-pointer transition-all"
-              >
-                {currentConfig.models.map((m) => (
-                  <option key={m} value={m} className="bg-white dark:bg-[#0c0c0c]">{m}</option>
-                ))}
-              </select>
-              <ChevronDown size={16} className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none" />
+                options={currentConfig.models.map((m) => ({
+                  label: m,
+                  value: m,
+                }))}
+                className="w-full"
+              />
             </div>
           </div>
-          
+
           <div className="space-y-4 w-full md:w-auto">
             <button
               onClick={handleTest}
