@@ -68,6 +68,10 @@ function MediaLibrary() {
     }
   };
 
+  if (isPending) {
+    return <MediaLibrarySkeleton />;
+  }
+
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
       <header className="flex justify-between items-end">
@@ -111,20 +115,16 @@ function MediaLibrary() {
       />
 
       {/* Media Grid */}
-      {isPending ? (
-        <MediaLibrarySkeleton />
-      ) : (
-        <MediaGrid
-          media={mediaItems}
-          selectedIds={selectedIds}
-          onToggleSelect={toggleSelection}
-          onPreview={setPreviewAsset}
-          onLoadMore={loadMore}
-          hasMore={hasMore}
-          isLoadingMore={isLoadingMore}
-          linkedMediaIds={linkedMediaIds}
-        />
-      )}
+      <MediaGrid
+        media={mediaItems}
+        selectedIds={selectedIds}
+        onToggleSelect={toggleSelection}
+        onPreview={setPreviewAsset}
+        onLoadMore={loadMore}
+        hasMore={hasMore}
+        isLoadingMore={isLoadingMore}
+        linkedMediaIds={linkedMediaIds}
+      />
 
       {/* --- Upload Modal --- */}
       <UploadModal

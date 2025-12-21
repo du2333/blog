@@ -91,32 +91,50 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         onToggleSettings={() => setIsSettingsOpen(!isSettingsOpen)}
         handleProcessData={handleProcessData}
         processState={processState}
+        onViewPublic={() => {
+          if (post.slug) {
+            window.open(`/post/${post.slug}`, "_blank");
+          }
+        }}
       />
 
       {/* Main Document Area */}
       <div className="flex-1 overflow-y-auto custom-scrollbar relative">
-        <div className="w-full max-w-4xl mx-auto py-20 px-6 md:px-12 min-h-full">
+        <div className="w-full max-w-5xl mx-auto py-24 px-8 md:px-16 min-h-full">
           {/* Title Field (Auto-expanding Textarea) */}
-          <div className="mb-16 group">
+          <div className="mb-20 group">
+            <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.5em] text-zinc-300 dark:text-zinc-700 font-bold mb-8">
+              <span className="h-px w-12 bg-current opacity-30"></span>
+              Headline
+            </div>
             <TextareaAutosize
               value={post.title}
               onChange={(e) => setPost({ ...post, title: e.target.value })}
               minRows={1}
-              placeholder="输入标题"
-              className="w-full bg-transparent text-5xl md:text-8xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.05] resize-none border-none p-0"
+              placeholder="Start your story..."
+              className="w-full bg-transparent text-6xl md:text-9xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[0.95] resize-none border-none p-0"
             />
           </div>
 
-          {/* Editor */}
-          <div className="min-h-[600px] pb-32">
+          {/* Editor Container with higher focus */}
+          <div className="min-h-[70vh] pb-40">
             <Editor
               content={post.contentJson ?? ""}
               onChange={handleContentChange}
             />
           </div>
 
-          {/* Bottom Footer Decoration */}
-          <div className="h-px w-full bg-zinc-100 dark:bg-white/5 mt-auto mb-20" />
+          {/* Document Metadata Footer */}
+          <div className="pt-12 border-t border-zinc-100 dark:border-white/5 mb-32 flex justify-between items-center text-[9px] font-mono text-zinc-400 uppercase tracking-[0.3em]">
+            <div className="flex items-center gap-6">
+              <span>Chars: {JSON.stringify(post.contentJson).length}</span>
+              <span>Words: {Math.ceil(JSON.stringify(post.contentJson).length / 5)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-1.5 h-1.5 rounded-full bg-green-500/20" />
+              Document Secure
+            </div>
+          </div>
         </div>
       </div>
 

@@ -42,20 +42,19 @@ function RouteComponent() {
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 max-w-6xl mx-auto">
-      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
-        <div className="space-y-2">
-          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-bold">
-            <span className="h-px w-8 bg-zinc-200 dark:bg-zinc-800"></span>
-            系统配置
-          </div>
-          <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight">System Settings</h1>
+      <header className="flex justify-between items-end">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-serif font-medium tracking-tight">系统设置</h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
+            Global Configuration // System Protocols
+          </p>
         </div>
         <button
           onClick={handleSaveConfig}
-          className="flex items-center gap-3 px-8 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] uppercase tracking-[0.3em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-xl shadow-black/10"
+          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
         >
-          <Check size={14} strokeWidth={3} />
-          同步配置
+          <Check size={14} />
+          保存更改
         </button>
       </header>
 
