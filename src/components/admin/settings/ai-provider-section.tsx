@@ -58,8 +58,8 @@ export function AiProviderSection({
       const result = await testAiConnection({
         data: {
           provider,
-          apiKey: currentProviderConfig.apiKey,
-          model: currentProviderConfig.model,
+          apiKey: currentProviderConfig?.apiKey || "",
+          model: currentProviderConfig?.model || "",
         },
       });
 
@@ -77,44 +77,45 @@ export function AiProviderSection({
   };
 
   return (
-    <div className="bg-white dark:bg-[#0c0c0c] p-10 sm:p-14 space-y-16 transition-all duration-500 rounded-sm border border-zinc-100 dark:border-white/5">
-      {/* Header with Integrated Status */}
-      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-8">
-        <div className="space-y-4">
-          <div className="flex items-center gap-4">
-            <div className={`w-12 h-12 rounded-full flex items-center justify-center transition-all duration-700 ${
-              status === "SUCCESS" 
-                ? "bg-green-500 text-white shadow-lg shadow-green-500/20" 
-                : "bg-zinc-50 dark:bg-white/[0.03] text-zinc-400"
-            }`}>
-              <Sparkles size={22} strokeWidth={1.2} className={status === "SUCCESS" ? "fill-current" : ""} />
-            </div>
-            <div>
-              <h3 className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">AI 智能助理</h3>
-            </div>
-          </div>
-        </div>
-
+    <div className="space-y-12">
+      {/* Section Header */}
+      <div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-6">
+        <h3 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+          AI 智能
+        </h3>
         {status !== "IDLE" && (
-          <div className={`flex items-center gap-3 px-4 py-2 rounded-full border text-[10px] font-bold uppercase tracking-widest animate-in fade-in slide-in-from-right-4 duration-500 ${
-            status === "SUCCESS" ? "bg-green-500/5 border-green-500/20 text-green-600" :
-            status === "ERROR" ? "bg-red-500/5 border-red-500/20 text-red-600" :
-            "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-400"
-          }`}>
-            {status === "TESTING" ? <Loader2 size={12} className="animate-spin" /> : 
-             status === "SUCCESS" ? <CheckCircle2 size={12} /> : <AlertCircle size={12} />}
-            {status === "TESTING" ? "Testing" : status === "SUCCESS" ? "Active" : "Failed"}
+          <div
+            className={`flex items-center gap-2 px-3 py-1 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
+              status === "SUCCESS"
+                ? "bg-green-500/5 border-green-500/20 text-green-600"
+                : status === "ERROR"
+                ? "bg-red-500/5 border-red-500/20 text-red-600"
+                : "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-400"
+            }`}
+          >
+            {status === "TESTING" ? (
+              <Loader2 size={10} className="animate-spin" />
+            ) : status === "SUCCESS" ? (
+              <CheckCircle2 size={10} />
+            ) : (
+              <AlertCircle size={10} />
+            )}
+            {status === "TESTING"
+              ? "Testing"
+              : status === "SUCCESS"
+              ? "Active"
+              : "Failed"}
           </div>
         )}
       </div>
 
-      <div className="grid grid-cols-1 gap-12 max-w-2xl">
-        {/* Provider Selector */}
-        <div className="space-y-6">
-          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+      <div className="space-y-px">
+        {/* Property Row: Provider */}
+        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
+          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
             服务平台
-          </label>
-          <div className="flex flex-wrap gap-3">
+          </div>
+          <div className="flex-1 flex gap-2">
             {(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map((p) => (
               <button
                 key={p}
@@ -122,9 +123,9 @@ export function AiProviderSection({
                   onChange({ ...value, activeProvider: p });
                   setStatus("IDLE");
                 }}
-                className={`px-10 py-4 text-[10px] uppercase tracking-[0.2em] font-bold transition-all rounded-sm border ${
+                className={`px-4 py-2 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all border ${
                   provider === p
-                    ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent shadow-xl shadow-black/10"
+                    ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent shadow-md"
                     : "border-zinc-100 dark:border-white/5 text-zinc-400 hover:border-zinc-300 dark:hover:border-white/20"
                 }`}
               >
@@ -134,95 +135,112 @@ export function AiProviderSection({
           </div>
         </div>
 
-        {/* API Key */}
-        <div className="space-y-6">
-          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
-            API 授权密钥
-          </label>
-          <div className="relative group/input">
-            <input
-              type={showKey ? "text" : "password"}
-              value={currentProviderConfig?.apiKey || ""}
-              placeholder="在此输入您的密钥..."
-              onChange={(e) => {
-                onChange({
-                  ...value,
-                  providers: {
-                    ...value.providers,
-                    [provider]: {
-                      ...value.providers?.[provider],
-                      apiKey: e.target.value,
-                    },
-                  },
-                });
-                setStatus("IDLE");
-              }}
-              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-950 dark:text-zinc-50 text-base font-light px-0 py-5 focus:outline-none focus:border-zinc-950 dark:focus:border-zinc-100 transition-all placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
-            />
-            <button
-              onClick={() => setShowKey(!showKey)}
-              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
-            >
-              {showKey ? <EyeOff size={20} strokeWidth={1} /> : <Eye size={20} strokeWidth={1} />}
-            </button>
+        {/* Property Row: API Key */}
+        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
+          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+            授权密钥
           </div>
-        </div>
-
-        {/* Model & Test */}
-        <div className="flex flex-col md:flex-row gap-10 md:items-end">
-          <div className="flex-1 space-y-6 w-full">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
-              选择模型版本
-            </label>
-            <div className="pt-2 border-b border-zinc-100 dark:border-white/10 pb-4">
-              <DropdownMenu
-                value={currentProviderConfig?.model || currentConfig.models[0]}
-                onChange={(val) => {
+          <div className="flex-1 flex items-center gap-4">
+            <div className="flex-1 relative">
+              <input
+                type={showKey ? "text" : "password"}
+                value={currentProviderConfig?.apiKey || ""}
+                placeholder="在此输入密钥..."
+                onChange={(e) => {
                   onChange({
                     ...value,
                     providers: {
                       ...value.providers,
                       [provider]: {
                         ...value.providers?.[provider],
-                        model: val,
+                        apiKey: e.target.value,
                       },
                     },
                   });
+                  setStatus("IDLE");
                 }}
-                options={currentConfig.models.map((m) => ({
-                  label: m,
-                  value: m,
-                }))}
-                className="w-full"
+                className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800 pr-10"
               />
+              <button
+                onClick={() => setShowKey(!showKey)}
+                className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+              >
+                {showKey ? (
+                  <EyeOff size={16} strokeWidth={1.5} />
+                ) : (
+                  <Eye size={16} strokeWidth={1.5} />
+                )}
+              </button>
             </div>
-          </div>
-
-          <div className="space-y-4 w-full md:w-auto">
-            <button
-              onClick={handleTest}
-              disabled={status === "TESTING" || !isConfigured}
-              className={`h-[60px] px-12 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 w-full ${
-                !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
-                status === "TESTING" ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 animate-pulse" :
-                "border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-950 dark:hover:bg-white hover:text-white dark:hover:text-zinc-950"
-              }`}
-            >
-              {status === "TESTING" ? <Loader2 size={16} className="animate-spin" /> : <Wifi size={16} />}
-              验证连通性
-            </button>
           </div>
         </div>
 
-        {statusMsg && (
-          <p className={`text-[11px] font-medium transition-all duration-500 animate-in fade-in slide-in-from-top-2 ${
-            status === "SUCCESS" ? "text-green-600 dark:text-green-500" :
-            status === "ERROR" ? "text-red-600 dark:text-red-500" :
-            "text-zinc-400"
-          }`}>
-            {statusMsg}
-          </p>
-        )}
+        {/* Property Row: Model */}
+        <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-zinc-50 dark:border-white/[0.02]">
+          <div className="w-48 shrink-0 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+            模型版本
+          </div>
+          <div className="flex-1">
+            <DropdownMenu
+              value={currentProviderConfig?.model || currentConfig.models[0]}
+              onChange={(val) => {
+                onChange({
+                  ...value,
+                  providers: {
+                    ...value.providers,
+                    [provider]: {
+                      ...value.providers?.[provider],
+                      model: val,
+                    },
+                  },
+                });
+              }}
+              options={currentConfig.models.map((m) => ({
+                label: m,
+                value: m,
+              }))}
+              className="w-full sm:w-fit"
+            />
+          </div>
+        </div>
+
+        {/* Property Row: Test Connection */}
+        <div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0">
+          <div className="w-48 shrink-0" />
+          <div className="flex-1 flex items-center gap-6">
+            <button
+              onClick={handleTest}
+              disabled={status === "TESTING" || !isConfigured}
+              className={`flex items-center gap-3 px-6 py-3 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all ${
+                !isConfigured
+                  ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed"
+                  : status === "TESTING"
+                  ? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 animate-pulse"
+                  : "border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-950 dark:hover:bg-white hover:text-white dark:hover:text-zinc-950"
+              }`}
+            >
+              {status === "TESTING" ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Wifi size={14} />
+              )}
+              验证服务连通性
+            </button>
+            {statusMsg && (
+              <p
+                className={`text-[10px] font-medium transition-all duration-500 animate-in fade-in slide-in-from-left-2 ${
+                  status === "SUCCESS"
+                    ? "text-green-600 dark:text-green-500"
+                    : status === "ERROR"
+                    ? "text-red-600 dark:text-red-500"
+                    : "text-zinc-400"
+                }`}
+              >
+                {statusMsg}
+              </p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

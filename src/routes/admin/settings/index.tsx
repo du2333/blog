@@ -31,6 +31,10 @@ function RouteComponent() {
     }
   }, [settings]);
 
+  const [activeSection, setActiveSection] = useState<
+    "ai" | "email" | "maintenance"
+  >("ai");
+
   const handleSaveConfig = () => {
     const promise = saveSettings({ data: config });
     toast.promise(promise, {
@@ -40,51 +44,136 @@ function RouteComponent() {
     });
   };
 
+  const navGroups = [
+    {
+      label: "服务配置",
+      en: "SERVICES",
+      items: [
+        { id: "ai" as const, label: "AI 智能", en: "Artificial Intelligence" },
+        { id: "email" as const, label: "邮件分发", en: "Email Distribution" },
+      ],
+    },
+    {
+      label: "系统管理",
+      en: "SYSTEM",
+      items: [
+        { id: "maintenance" as const, label: "数据维护", en: "Maintenance" },
+      ],
+    },
+  ];
+
   return (
-    <div className="space-y-12 pb-20 max-w-6xl mx-auto">
-      <header className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
-        <div className="space-y-1">
-          <h1 className="text-4xl font-serif font-medium tracking-tight">系统设置</h1>
+    <div className="flex flex-col lg:flex-row gap-24 max-w-7xl mx-auto min-h-[calc(100vh-200px)] px-8 md:px-16 lg:px-20 pt-20 lg:pt-32">
+      {/* Left Sticky Navigation */}
+      <aside className="lg:w-72 shrink-0 lg:sticky lg:top-32 h-fit space-y-16 animate-in fade-in slide-in-from-left-4 duration-1000 fill-mode-both">
+        <div className="space-y-2">
+          <h1 className="text-5xl font-serif font-medium tracking-tight leading-none text-zinc-950 dark:text-zinc-50">
+            设置
+          </h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-bold opacity-40">
+            Preferences
+          </p>
         </div>
-        <button
-          onClick={handleSaveConfig}
-          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
+
+        <nav className="space-y-12">
+          {navGroups.map((group) => (
+            <div key={group.label} className="space-y-6">
+              <div className="flex items-center gap-3">
+                <span className="text-[9px] uppercase tracking-[0.3em] font-bold text-zinc-300 dark:text-zinc-700">
+                  {group.en}
+                </span>
+                <div className="h-px flex-1 bg-zinc-100 dark:bg-white/5"></div>
+              </div>
+              <div className="flex flex-col gap-1">
+                {group.items.map((item) => (
+                  <button
+                    key={item.id}
+                    onClick={() => setActiveSection(item.id)}
+                    className={`group flex flex-col items-start py-3 px-4 -mx-4 rounded-sm transition-all ${
+                      activeSection === item.id
+                        ? "bg-zinc-50 dark:bg-white/5"
+                        : "hover:bg-zinc-50/50 dark:hover:bg-white/[0.02]"
+                    }`}
+                  >
+                    <span
+                      className={`text-[11px] uppercase tracking-[0.2em] font-bold transition-colors ${
+                        activeSection === item.id
+                          ? "text-zinc-950 dark:text-zinc-50"
+                          : "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
+                      }`}
+                    >
+                      {item.label}
+                    </span>
+                    <span
+                      className={`text-[8px] uppercase tracking-[0.2em] font-mono transition-colors ${
+                        activeSection === item.id
+                          ? "text-zinc-400"
+                          : "text-zinc-200 dark:text-zinc-800"
+                      }`}
+                    >
+                      {item.en}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </nav>
+
+        <div className="pt-8">
+          <button
+            onClick={handleSaveConfig}
+            className="flex items-center justify-center gap-3 w-full py-4 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[10px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all shadow-xl shadow-black/10 rounded-sm"
+          >
+            <Check size={14} />
+            保存当前更改
+          </button>
+        </div>
+      </aside>
+
+      {/* Right Content Area (Dynamic Content) */}
+      <div className="flex-1 lg:pl-12">
+        <div
+          key={activeSection}
+          className="animate-in fade-in slide-in-from-right-4 duration-700 fill-mode-both"
         >
-          <Check size={14} />
-          保存更改
-        </button>
-      </header>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in duration-1000 delay-100 fill-mode-both">
-        {isLoading ? (
-          <>
+          {isLoading ? (
             <SectionSkeleton />
-            <SectionSkeleton />
-          </>
-        ) : (
-          <>
-            {/* AI Provider Config Module */}
-            <AiProviderSection
-              value={config.ai || DEFAULT_CONFIG.ai!}
-              onChange={(aiConfig) => setConfig({ ...config, ai: aiConfig })}
-              testAiConnection={testAiConnection}
-            />
-
-            {/* Email Service Config Module */}
-            <EmailServiceSection
-              value={config.email || DEFAULT_CONFIG.email!}
-              onChange={(emailConfig) =>
-                setConfig({ ...config, email: emailConfig })
-              }
-              testEmailConnection={testEmailConnection}
-            />
-          </>
-        )}
+          ) : (
+            <>
+              {activeSection === "ai" && (
+                <AiProviderSection
+                  value={config.ai || DEFAULT_CONFIG.ai!}
+                  onChange={(aiConfig) =>
+                    setConfig({ ...config, ai: aiConfig })
+                  }
+                  testAiConnection={testAiConnection}
+                />
+              )}
+              {activeSection === "email" && (
+                <EmailServiceSection
+                  value={config.email || DEFAULT_CONFIG.email!}
+                  onChange={(emailConfig) =>
+                    setConfig({ ...config, email: emailConfig })
+                  }
+                  testEmailConnection={testEmailConnection}
+                />
+              )}
+              {activeSection === "maintenance" && <MaintenanceSection />}
+            </>
+          )}
+        </div>
       </div>
 
-      {/* Data Maintenance Module */}
-      <div className="animate-in fade-in duration-1000 delay-200 fill-mode-both">
-        <MaintenanceSection />
+      {/* Mobile Save Button */}
+      <div className="lg:hidden fixed bottom-10 right-10 z-40">
+        <button
+          onClick={handleSaveConfig}
+          className="flex items-center gap-3 px-10 py-5 bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 text-[10px] uppercase tracking-[0.2em] font-bold rounded-full shadow-2xl transition-all active:scale-95"
+        >
+          <Check size={14} />
+          保存
+        </button>
       </div>
     </div>
   );
