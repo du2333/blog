@@ -1,12 +1,8 @@
 import {
   ChevronDown,
-  Cpu,
   Eye,
   EyeOff,
-  Key,
   Loader2,
-  Share2,
-  Shield,
   Sparkles,
   Wifi,
 } from "lucide-react";
@@ -95,36 +91,33 @@ export function AiProviderSection({
       {/* Header */}
       <div className="flex items-center justify-between pb-6 border-b border-zinc-100 dark:border-white/5">
         <div className="flex items-center gap-4">
-          <div className={`p-2 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-green-500/10 text-green-500" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
-            <Sparkles size={20} strokeWidth={1.5} className={status === "SUCCESS" ? "fill-current" : ""} />
+          <div className={`p-2.5 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-green-500/10 text-green-500" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
+            <Sparkles size={20} strokeWidth={1} className={status === "SUCCESS" ? "fill-current" : ""} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-medium tracking-tight">AI 辅助协议</h3>
+            <h3 className="text-base font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50">AI 智能助理</h3>
             <div className="flex items-center gap-2">
               <div className={`w-1 h-1 rounded-full ${
                 status === "SUCCESS" ? "bg-green-500 animate-pulse" : 
-                status === "ERROR" ? "bg-red-500" : "bg-zinc-300 dark:bg-zinc-700"
+                status === "ERROR" ? "bg-red-500" : "bg-zinc-200 dark:bg-zinc-800"
               }`} />
               <span className={`text-[9px] uppercase tracking-widest font-bold ${
                 status === "SUCCESS" ? "text-green-500" : 
                 status === "ERROR" ? "text-red-500" : "text-zinc-400"
               }`}>
-                {status === "TESTING" ? "Testing..." : status === "SUCCESS" ? "Active" : status === "ERROR" ? "Failed" : "Standby"}
+                {status === "TESTING" ? "测试中" : status === "SUCCESS" ? "在线" : status === "ERROR" ? "连接失败" : "待机"}
               </span>
             </div>
           </div>
-        </div>
-        <div className="text-[10px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-widest">
-          Neural_Link
         </div>
       </div>
 
       {/* Provider Selector */}
       <div className="space-y-4">
-        <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-          <Share2 size={12} strokeWidth={1.5} /> 服务提供商
+        <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+          服务提供商
         </label>
-        <div className="grid grid-cols-2 gap-2 p-1 bg-zinc-50 dark:bg-white/[0.03] rounded-sm">
+        <div className="flex gap-2 p-1 bg-zinc-50 dark:bg-white/[0.03] rounded-sm w-fit">
           {(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map((p) => (
             <button
               key={p}
@@ -132,7 +125,7 @@ export function AiProviderSection({
                 onChange({ ...value, activeProvider: p });
                 setStatus("IDLE");
               }}
-              className={`py-2 text-[10px] uppercase tracking-[0.1em] font-bold transition-all rounded-sm ${
+              className={`px-6 py-2 text-[10px] uppercase tracking-[0.1em] font-bold transition-all rounded-sm ${
                 provider === p
                   ? "bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 shadow-sm"
                   : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
@@ -145,12 +138,13 @@ export function AiProviderSection({
       </div>
 
       {/* Inputs */}
-      <div className="space-y-8">
+      <div className="space-y-8 pt-4">
         <div className="space-y-4">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-            <Key size={12} strokeWidth={1.5} /> API 密钥
+          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+            API 密钥 (Secret Key)
           </label>
-          <div className="relative">
+          <div className="relative group/input">
+            <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
             <input
               type={showKey ? "text" : "password"}
               value={currentProviderConfig?.apiKey || ""}
@@ -168,23 +162,24 @@ export function AiProviderSection({
                 });
                 setStatus("IDLE");
               }}
-              className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-4 pr-12 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
             />
             <button
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              {showKey ? <EyeOff size={16} strokeWidth={1.5} /> : <Eye size={16} strokeWidth={1.5} />}
+              {showKey ? <EyeOff size={16} strokeWidth={1} /> : <Eye size={16} strokeWidth={1} />}
             </button>
           </div>
         </div>
 
-        <div className="flex gap-4">
+        <div className="flex flex-col sm:flex-row gap-8 sm:items-end">
           <div className="flex-1 space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-              <Cpu size={12} strokeWidth={1.5} /> 模型版本
+            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+              模型版本
             </label>
-            <div className="relative">
+            <div className="relative group/input">
+              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
               <select
                 value={currentProviderConfig?.model || currentConfig.models[0]}
                 onChange={(e) => {
@@ -199,29 +194,27 @@ export function AiProviderSection({
                     },
                   });
                 }}
-                className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-4 pr-10 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm appearance-none cursor-pointer"
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none appearance-none cursor-pointer"
               >
                 {currentConfig.models.map((m) => (
                   <option key={m} value={m} className="bg-white dark:bg-[#0c0c0c]">{m}</option>
                 ))}
               </select>
-              <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none" />
+              <ChevronDown size={14} className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 pointer-events-none" />
             </div>
           </div>
-          <div className="flex items-end">
-            <button
-              onClick={handleTest}
-              disabled={status === "TESTING" || !isConfigured}
-              className={`h-[52px] px-6 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center gap-2 ${
-                !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
-                status === "TESTING" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 animate-pulse" :
-                "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900"
-              }`}
-            >
-              {status === "TESTING" ? <Loader2 size={14} className="animate-spin" /> : <Wifi size={14} />}
-              测试连接
-            </button>
-          </div>
+          <button
+            onClick={handleTest}
+            disabled={status === "TESTING" || !isConfigured}
+            className={`h-12 px-8 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 ${
+              !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
+              status === "TESTING" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 animate-pulse" :
+              "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 shadow-sm"
+            }`}
+          >
+            {status === "TESTING" ? <Loader2 size={14} className="animate-spin" /> : <Wifi size={14} />}
+            测试连接
+          </button>
         </div>
       </div>
 

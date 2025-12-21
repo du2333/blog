@@ -42,19 +42,20 @@ function RouteComponent() {
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 max-w-6xl mx-auto">
-      <header className="flex justify-between items-end">
-        <div className="space-y-1">
-          <h1 className="text-4xl font-serif font-medium tracking-tight">系统设置</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
-            Global Configuration // System Protocols
-          </p>
+      <header className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-6">
+        <div className="space-y-2">
+          <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-bold">
+            <span className="h-px w-8 bg-zinc-200 dark:bg-zinc-800"></span>
+            系统配置
+          </div>
+          <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight">System Settings</h1>
         </div>
         <button
           onClick={handleSaveConfig}
-          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
+          className="flex items-center gap-3 px-8 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] uppercase tracking-[0.3em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all duration-500 shadow-xl shadow-black/10"
         >
-          <Check size={14} />
-          保存更改
+          <Check size={14} strokeWidth={3} />
+          同步配置
         </button>
       </header>
 
@@ -90,18 +91,21 @@ function RouteComponent() {
 
       {/* System Footer Info */}
       <div className="pt-12 border-t border-zinc-100 dark:border-white/5">
-        <div className="flex items-center gap-6 text-[10px] font-mono text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.3em]">
-          <div className="flex items-center gap-2">
-            <Info size={12} strokeWidth={1.5} />
-            <span>Kernel: v3.1.2-CMS</span>
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-6 text-[9px] font-mono text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.3em]">
+            <div className="flex items-center gap-2">
+              <Info size={12} strokeWidth={1.5} />
+              <span>Version 3.1.2</span>
+            </div>
+            <div className="hidden sm:block opacity-20">/</div>
+            <div className="hidden sm:flex items-center gap-2 text-zinc-300 dark:text-zinc-700">
+              <span>All Systems Operational</span>
+            </div>
           </div>
-          <div className="hidden sm:block opacity-20">/</div>
-          <div className="hidden sm:flex items-center gap-2">
-            <span>Server Uptime: 1,244h</span>
-          </div>
-          <div className="ml-auto flex items-center gap-2">
-            <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-green-500 font-bold">All Systems Operational</span>
+          
+          <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">
+            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+            已连接至安全节点
           </div>
         </div>
       </div>

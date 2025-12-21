@@ -1,5 +1,5 @@
 import { ErrorPage } from "@/components/common/error-page";
-import { LoadingFallback } from "@/components/common/loading-fallback";
+import { PostManagerSkeleton } from "@/components/skeletons/post-manager-skeleton";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -159,7 +159,7 @@ export function PostManager({
       {error ? (
         <ErrorPage error={error} />
       ) : isPending ? (
-        <LoadingFallback />
+        <PostManagerSkeleton />
       ) : (
         <div className="space-y-0 border-t border-zinc-100 dark:border-white/5">
           {posts.length === 0 ? (

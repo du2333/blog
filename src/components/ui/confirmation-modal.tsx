@@ -1,6 +1,5 @@
 import React from "react";
 import { AlertTriangle, X, Check, Trash2, Loader2 } from "lucide-react";
-import TechButton from "@/components/ui/tech-button";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -26,103 +25,87 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 animate-in fade-in duration-200">
+    <div className="fixed inset-0 z-100 flex items-center justify-center p-6 sm:p-12 animate-in fade-in duration-500">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-black/90 backdrop-blur-sm transition-opacity"
+        className="absolute inset-0 bg-white/80 dark:bg-[#050505]/90 backdrop-blur-xl transition-opacity"
         onClick={isLoading ? undefined : onClose}
       />
 
       {/* Modal Content */}
       <div
         className={`
-        relative w-full max-w-md bg-zzz-black border-2 shadow-[0_0_50px_rgba(0,0,0,0.5)] 
-        flex flex-col clip-corner-tr animate-in zoom-in-95 duration-300
-        ${
-          isDanger
-            ? "border-zzz-orange shadow-[0_0_30px_rgba(255,102,0,0.15)]"
-            : "border-zzz-lime"
-        }
+        relative w-full max-w-lg bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/5 
+        flex flex-col animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 shadow-2xl
       `}
       >
         {/* Header */}
-        <div
-          className={`
-            px-6 py-4 border-b flex items-center justify-between
-            ${
-              isDanger
-                ? "bg-zzz-orange/10 border-zzz-orange/30"
-                : "bg-zzz-lime/10 border-zzz-lime/30"
-            }
-        `}
-        >
-          <div
-            className={`flex items-center gap-2 font-mono font-bold uppercase tracking-widest text-sm ${
-              isDanger ? "text-zzz-orange" : "text-zzz-lime"
-            }`}
-          >
-            <AlertTriangle size={16} />
-            {title}
+        <div className="px-8 pt-10 pb-6 flex items-start justify-between">
+          <div className="space-y-2">
+            <div className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold ${
+              isDanger ? "text-red-500" : "text-zinc-400"
+            }`}>
+              <AlertTriangle size={14} strokeWidth={1.5} />
+              <span>系统确认</span>
+            </div>
+            <h2 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+              {title}
+            </h2>
           </div>
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="text-gray-500 hover:text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="p-2 -mr-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors disabled:opacity-50"
           >
-            <X size={18} />
+            <X size={20} strokeWidth={1} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="p-8 relative overflow-hidden">
-          {/* Background Stripe Decoration */}
-          <div className="absolute inset-0 bg-stripe-pattern opacity-5 pointer-events-none"></div>
-
-          <p className="font-mono text-sm text-gray-300 leading-relaxed relative z-10">
+        <div className="px-8 pb-10">
+          <p className="text-base text-zinc-500 dark:text-zinc-400 leading-relaxed font-light">
             {message}
           </p>
 
           {isDanger && (
-            <div className="mt-4 p-3 border border-red-500/30 bg-red-500/5 text-[10px] font-mono text-red-400">
-              警告：此操作无法撤销。数据将从 HDD 中清除。
+            <div className="mt-8 p-4 bg-red-500/5 border-l-2 border-red-500 text-[11px] font-sans uppercase tracking-widest text-red-500/80">
+              此操作无法撤销。数据将永久移除。
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="p-4 border-t border-zzz-gray bg-zzz-dark flex justify-end gap-3">
+        <div className="px-8 pb-10 flex flex-col sm:flex-row justify-end gap-4">
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-4 py-2 text-xs font-bold font-mono text-gray-500 hover:text-white uppercase tracking-wider transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors disabled:opacity-50 border border-transparent hover:border-zinc-100 dark:hover:border-white/5"
           >
-            取消操作
+            取消
           </button>
-          <TechButton
-            variant={isDanger ? "danger" : "primary"}
-            size="sm"
+          <button
             onClick={onConfirm}
             disabled={isLoading}
-            icon={
-              isLoading ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : isDanger ? (
-                <Trash2 size={14} />
-              ) : (
-                <Check size={14} />
-              )
-            }
+            className={`
+              flex items-center justify-center gap-3 px-10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500
+              ${
+                isDanger
+                  ? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
+                  : "bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 shadow-lg shadow-black/10"
+              }
+              disabled:opacity-50 disabled:cursor-not-allowed
+            `}
           >
-            {isLoading ? "PROCESSING..." : confirmLabel}
-          </TechButton>
+            {isLoading ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : isDanger ? (
+              <Trash2 size={14} />
+            ) : (
+              <Check size={14} />
+            )}
+            <span>{isLoading ? "处理中..." : confirmLabel}</span>
+          </button>
         </div>
-
-        {/* Decorative Corner */}
-        <div
-          className={`absolute bottom-0 left-0 w-4 h-4 border-b-2 border-l-2 ${
-            isDanger ? "border-zzz-orange" : "border-zzz-lime"
-          }`}
-        ></div>
       </div>
     </div>
   );

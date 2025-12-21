@@ -1,13 +1,8 @@
 import {
-  AtSign,
   Eye,
   EyeOff,
-  Key,
   Loader2,
   Mail,
-  Radio,
-  ShieldCheck,
-  User,
   Wifi,
 } from "lucide-react";
 import { useState } from "react";
@@ -80,37 +75,35 @@ export function EmailServiceSection({
       {/* Header */}
       <div className="flex items-center justify-between pb-6 border-b border-zinc-100 dark:border-white/5">
         <div className="flex items-center gap-4">
-          <div className={`p-2 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
-            <Mail size={20} strokeWidth={1.5} />
+          <div className={`p-2.5 rounded-full transition-all duration-700 ${status === "SUCCESS" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900" : "bg-zinc-50 dark:bg-white/5 text-zinc-400"}`}>
+            <Mail size={20} strokeWidth={1} />
           </div>
           <div className="space-y-1">
-            <h3 className="text-sm font-medium tracking-tight">邮件转发服务</h3>
+            <h3 className="text-base font-serif font-medium tracking-tight">邮件服务</h3>
             <div className="flex items-center gap-2">
               <div className={`w-1 h-1 rounded-full ${
                 status === "SUCCESS" ? "bg-green-500 animate-pulse" : 
-                status === "ERROR" ? "bg-red-500" : "bg-zinc-300 dark:bg-zinc-700"
+                status === "ERROR" ? "bg-red-500" : "bg-zinc-200 dark:bg-zinc-800"
               }`} />
               <span className={`text-[9px] uppercase tracking-widest font-bold ${
                 status === "SUCCESS" ? "text-green-500" : 
                 status === "ERROR" ? "text-red-500" : "text-zinc-400"
               }`}>
-                {status === "TESTING" ? "Syncing..." : status === "SUCCESS" ? "Secured" : status === "ERROR" ? "Blocked" : "Standby"}
+                {status === "TESTING" ? "同步中" : status === "SUCCESS" ? "连接成功" : status === "ERROR" ? "已屏蔽" : "待机"}
               </span>
             </div>
           </div>
         </div>
-        <div className="text-[10px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-widest">
-          Relay_Tunnel
-        </div>
       </div>
 
-      <div className="space-y-8">
+      <div className="space-y-8 pt-4">
         {/* API Key */}
         <div className="space-y-4">
-          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-            <ShieldCheck size={12} strokeWidth={1.5} /> 验证令牌
+          <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+            Resend API 令牌
           </label>
-          <div className="relative">
+          <div className="relative group/input">
+            <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
             <input
               type={showKey ? "text" : "password"}
               value={value.apiKey || ""}
@@ -119,55 +112,61 @@ export function EmailServiceSection({
                 onChange({ ...value, apiKey: e.target.value });
                 setStatus("IDLE");
               }}
-              className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-4 pr-12 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
             />
             <button
               onClick={() => setShowKey(!showKey)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+              className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
             >
-              {showKey ? <EyeOff size={16} strokeWidth={1.5} /> : <Eye size={16} strokeWidth={1.5} />}
+              {showKey ? <EyeOff size={16} strokeWidth={1} /> : <Eye size={16} strokeWidth={1} />}
             </button>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-              <User size={12} strokeWidth={1.5} /> 发件人名称
+            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+              发件人显示名称
             </label>
-            <input
-              value={value.senderName || ""}
-              onChange={(e) => onChange({ ...value, senderName: e.target.value })}
-              className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs pl-4 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
-              placeholder="系统通知显示名称"
-            />
+            <div className="relative group/input">
+              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
+              <input
+                value={value.senderName || ""}
+                onChange={(e) => onChange({ ...value, senderName: e.target.value })}
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all"
+                placeholder="系统通知显示名称"
+              />
+            </div>
           </div>
 
           <div className="space-y-4">
-            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold flex items-center gap-2">
-              <AtSign size={12} strokeWidth={1.5} /> 发件信箱
+            <label className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
+              发件邮箱地址
             </label>
-            <input
-              value={value.senderAddress || ""}
-              onChange={(e) => onChange({ ...value, senderAddress: e.target.value })}
-              className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-4 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
-              placeholder="noreply@domain.com"
-            />
+            <div className="relative group/input">
+              <div className="absolute left-0 bottom-0 w-0 h-px bg-zinc-900 dark:bg-zinc-100 transition-all duration-500 group-focus-within/input:w-full" />
+              <input
+                value={value.senderAddress || ""}
+                onChange={(e) => onChange({ ...value, senderAddress: e.target.value })}
+                className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-light px-0 py-4 focus:outline-none transition-all font-mono"
+                placeholder="noreply@domain.com"
+              />
+            </div>
           </div>
         </div>
 
-        <div className="flex justify-end pt-2">
+        <div className="flex justify-end pt-4">
           <button
             onClick={handleTest}
             disabled={status === "TESTING" || !isConfigured}
-            className={`h-[52px] px-8 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all flex items-center gap-2 ${
+            className={`h-12 px-8 rounded-sm text-[10px] uppercase tracking-[0.3em] font-bold transition-all flex items-center justify-center gap-3 ${
               !isConfigured ? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed" :
               status === "TESTING" ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 animate-pulse" :
-              "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900"
+              "bg-zinc-100 dark:bg-white/5 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 shadow-sm"
             }`}
           >
             {status === "TESTING" ? <Loader2 size={14} className="animate-spin" /> : <Wifi size={14} />}
-            测试信道握手
+            发送测试邮件
           </button>
         </div>
       </div>
