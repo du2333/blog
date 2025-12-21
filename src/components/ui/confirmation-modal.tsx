@@ -1,6 +1,7 @@
 import React from "react";
 import { createPortal } from "react-dom";
 import { AlertTriangle, X, Check, Trash2, Loader2 } from "lucide-react";
+import { ClientOnly } from "@tanstack/react-router";
 
 interface ConfirmationModalProps {
   isOpen: boolean;
@@ -13,7 +14,7 @@ interface ConfirmationModalProps {
   isLoading?: boolean;
 }
 
-const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
+const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -124,4 +125,10 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   );
 };
 
-export default ConfirmationModal;
+export default function ConfirmationModal(props: ConfirmationModalProps) {
+  return (
+    <ClientOnly>
+      <ConfirmationModalInternal {...props} />
+    </ClientOnly>
+  );
+}

@@ -2,6 +2,7 @@ import React, { useRef } from "react";
 import { createPortal } from "react-dom";
 import { AlertCircle, Check, Loader2, Upload, X } from "lucide-react";
 import { UploadItem } from "../types";
+import { ClientOnly } from "@tanstack/react-router";
 
 interface UploadModalProps {
   isOpen: boolean;
@@ -14,7 +15,7 @@ interface UploadModalProps {
   onDrop: (e: React.DragEvent) => void;
 }
 
-export function UploadModal({
+function UploadModalInternal({
   isOpen,
   queue,
   isDragging,
@@ -226,5 +227,13 @@ export function UploadModal({
       </div>
     </div>,
     document.body
+  );
+}
+
+export function UploadModal(props: UploadModalProps) {
+  return (
+    <ClientOnly>
+      <UploadModalInternal {...props} />
+    </ClientOnly>
   );
 }

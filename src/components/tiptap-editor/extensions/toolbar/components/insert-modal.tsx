@@ -13,6 +13,7 @@ import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { useMediaPicker } from "@/components/admin/media-library/hooks";
 import { MediaAsset } from "@/components/admin/media-library/types";
 import { getOptimizedImageUrl } from "@/lib/images/utils";
+import { ClientOnly } from "@tanstack/react-router";
 
 export type ModalType = "LINK" | "IMAGE" | null;
 
@@ -39,7 +40,7 @@ const MediaItem = memo(
       <div
         onClick={() => onSelect(media)}
         className={`
-                relative aspect-square border cursor-pointer transition-all duration-500 bg-zinc-50 dark:bg-white/[0.02] group overflow-hidden rounded-sm
+                relative aspect-square border cursor-pointer transition-all duration-500 bg-zinc-50 dark:bg-white/2 group overflow-hidden rounded-sm
                 ${
                   isSelected
                     ? "border-zinc-900 dark:border-zinc-100 opacity-100 shadow-lg"
@@ -77,7 +78,7 @@ const MediaItem = memo(
 
 MediaItem.displayName = "MediaItem";
 
-const InsertModal: React.FC<InsertModalProps> = ({
+const InsertModalInternal: React.FC<InsertModalProps> = ({
   type,
   initialUrl = "",
   onClose,
@@ -169,7 +170,11 @@ const InsertModal: React.FC<InsertModalProps> = ({
         <div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
           <div className="space-y-2">
             <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-400">
-              {activeType === "LINK" ? <LinkIcon size={14} /> : <ImageIcon size={14} />}
+              {activeType === "LINK" ? (
+                <LinkIcon size={14} />
+              ) : (
+                <ImageIcon size={14} />
+              )}
               <span>{activeType === "LINK" ? "Hyperlink" : "Media Asset"}</span>
             </div>
             <h2 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
@@ -199,16 +204,19 @@ const InsertModal: React.FC<InsertModalProps> = ({
                   placeholder="搜索媒体库内容..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm transition-all font-light"
+                  className="w-full bg-zinc-50 dark:bg-white/3 border-none text-zinc-900 dark:text-zinc-100 text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm transition-all font-light"
                 />
               </div>
 
               {/* Media Grid */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar border border-zinc-100 dark:border-white/5 bg-zinc-50/30 dark:bg-white/[0.01] p-4 rounded-sm">
+              <div className="flex-1 overflow-y-auto custom-scrollbar border border-zinc-100 dark:border-white/5 bg-zinc-50/30 dark:bg-white/1 p-4 rounded-sm">
                 {isPending ? (
-                   <div className="grid grid-cols-3 gap-4">
-                    {[1, 2, 3, 4, 5, 6].map(i => (
-                      <div key={i} className="aspect-square bg-zinc-100 dark:bg-zinc-800 animate-pulse rounded-sm" />
+                  <div className="grid grid-cols-3 gap-4">
+                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                      <div
+                        key={i}
+                        className="aspect-square bg-zinc-100 dark:bg-zinc-800 animate-pulse rounded-sm"
+                      />
                     ))}
                   </div>
                 ) : mediaItems.length === 0 ? (
@@ -228,8 +236,16 @@ const InsertModal: React.FC<InsertModalProps> = ({
                         }}
                       />
                     ))}
-                    <div ref={observerTarget} className="col-span-full h-8 flex items-center justify-center">
-                      {isLoadingMore && <Loader2 size={16} className="animate-spin text-zinc-400" />}
+                    <div
+                      ref={observerTarget}
+                      className="col-span-full h-8 flex items-center justify-center"
+                    >
+                      {isLoadingMore && (
+                        <Loader2
+                          size={16}
+                          className="animate-spin text-zinc-400"
+                        />
+                      )}
                     </div>
                   </div>
                 )}
@@ -277,6 +293,14 @@ const InsertModal: React.FC<InsertModalProps> = ({
       </div>
     </div>,
     document.body
+  );
+};
+
+const InsertModal: React.FC<InsertModalProps> = (props) => {
+  return (
+    <ClientOnly>
+      <InsertModalInternal {...props} />
+    </ClientOnly>
   );
 };
 
