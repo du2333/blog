@@ -53,7 +53,7 @@ export function Navbar({
           {/* Left: Brand */}
           <Link to="/" className="group select-none flex items-center gap-4">
             <div className="w-9 h-9 text-zinc-950 dark:text-zinc-50 relative">
-              <div className="absolute inset-0 border-[2px] border-current rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+              <div className="absolute inset-0 border-2 border-current rounded-full group-hover:scale-110 transition-transform duration-700"></div>
               <div className="absolute inset-[30%] bg-current rounded-full group-hover:scale-75 transition-transform duration-700"></div>
             </div>
             <span className="hidden md:block text-[11px] font-bold uppercase tracking-[0.6em] text-zinc-950 dark:text-zinc-50">
@@ -76,7 +76,7 @@ export function Navbar({
                   <>
                     {option.label}
                     <span
-                      className={`absolute -bottom-1 left-0 h-[2px] bg-current transition-all duration-700 ease-out ${
+                      className={`absolute -bottom-1 left-0 h-0.5 bg-current transition-all duration-700 ease-out ${
                         isActive
                           ? "w-full"
                           : "w-0 group-hover:w-full opacity-0 group-hover:opacity-20"
@@ -135,12 +135,12 @@ export function Navbar({
                           onClick={onOpenProfile}
                           className="group flex items-center p-0.5 rounded-full border border-transparent hover:border-zinc-200 dark:hover:border-zinc-800 transition-all duration-500"
                         >
-                          <div className="w-8 h-8 rounded-full overflow-hidden grayscale group-hover:grayscale-0 transition-all duration-700">
+                          <div className="w-8 h-8 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900/50 p-0.5 transition-all duration-700">
                             {user.image ? (
                               <img
                                 src={user.image}
                                 alt={user.name}
-                                className="w-full h-full object-cover"
+                                className="w-full h-full rounded-full object-cover"
                               />
                             ) : (
                               <div className="w-full h-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center">

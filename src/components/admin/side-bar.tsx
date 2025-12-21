@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   Settings,
+  User,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -23,6 +24,8 @@ export function SideBar({
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const { data: session } = authClient.useSession();
+  const user = session?.user;
 
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
@@ -94,40 +97,42 @@ export function SideBar({
       {/* Sidebar */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-70 w-64 md:w-20 lg:w-64 border-r border-zinc-100 dark:border-white/5 flex flex-col bg-white dark:bg-[#050505]
+        fixed inset-y-0 left-0 z-70 w-72 md:w-20 lg:w-64 border-r border-zinc-100 dark:border-white/5 flex flex-col bg-white dark:bg-[#050505]
         transform transition-all duration-500 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
         ${
           isMobileSidebarOpen
-            ? "translate-x-0"
+            ? "translate-x-0 shadow-2xl"
             : "-translate-x-full md:translate-x-0"
         }
       `}
       >
         {/* Logo Area */}
-        <div className="h-24 flex items-center justify-center lg:justify-between px-6 shrink-0">
+        <div className="h-24 flex items-center justify-between px-6 shrink-0 border-b border-zinc-50 dark:border-white/[0.02]">
           <Link to="/admin" className="flex items-center gap-3">
-            <Logo className="w-8 h-8 text-zinc-950 dark:text-zinc-50" />
-            <span className="font-serif text-xl tracking-tight hidden lg:block">
-              管理
+            <div className="w-9 h-9 relative">
+              <Logo className="w-full h-full text-zinc-950 dark:text-zinc-50" />
+            </div>
+            <span className="font-serif text-xl tracking-tight md:hidden lg:block">
+              控制台
             </span>
           </Link>
           <button
             onClick={closeMobileSidebar}
-            className="md:hidden p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
+            className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-zinc-50 dark:bg-white/5 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 px-4 py-8 space-y-1.5 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               onClick={closeMobileSidebar}
               activeOptions={{ exact: item.exact }}
-              className={`flex items-center justify-center lg:justify-start gap-4 px-4 py-4 text-[10px] uppercase tracking-[0.2em] transition-all rounded-sm group ${inactiveClass}`}
+              className={`flex items-center justify-center md:justify-center lg:justify-start gap-4 px-4 py-4 text-[10px] uppercase tracking-[0.2em] transition-all rounded-sm group ${inactiveClass}`}
               activeProps={{
                 className: `${activeClass}`,
               }}
@@ -139,22 +144,44 @@ export function SideBar({
                     strokeWidth={isActive ? 2.5 : 1.5}
                     className="shrink-0 transition-transform group-hover:scale-110"
                   />
-                  <span className="hidden lg:block truncate">{item.label}</span>
+                  <span className="md:hidden lg:block truncate font-bold">{item.label}</span>
                 </>
               )}
             </Link>
           ))}
         </nav>
 
-        {/* User Status / Logout */}
-        <div className="p-4 border-t border-zinc-100 dark:border-white/5 shrink-0 flex flex-col items-center">
-          <button
-            onClick={handleSignOutClick}
-            className="w-12 h-12 flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/5 rounded-full transition-all"
-            title="退出登录"
-          >
-            <LogOut size={20} strokeWidth={1.5} />
-          </button>
+        {/* User Profile / Logout */}
+        <div className="p-4 md:p-2 lg:p-6 border-t border-zinc-100 dark:border-white/5 shrink-0">
+          <div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
+              <div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900 shrink-0">
+                {user?.image ? (
+                  <img src={user.image} alt={user.name} className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-300">
+                    <User size={16} />
+                  </div>
+                )}
+              </div>
+              <div className="flex flex-col min-w-0">
+                <span className="text-xs font-bold text-zinc-900 dark:text-zinc-50 truncate">
+                  {user?.name || "管理员"}
+                </span>
+                <span className="text-[9px] uppercase tracking-widest text-zinc-400 truncate">
+                  {user?.role === "admin" ? "Admin" : "User"}
+                </span>
+              </div>
+            </div>
+            
+            <button
+              onClick={handleSignOutClick}
+              className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/5 rounded-full transition-all shrink-0"
+              title="退出登录"
+            >
+              <LogOut size={18} strokeWidth={1.5} />
+            </button>
+          </div>
         </div>
       </aside>
 

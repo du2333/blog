@@ -155,7 +155,7 @@ export function UserProfileModal({
         <div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/10">
           <div className="space-y-12">
             <div className="space-y-6">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden grayscale hover:grayscale-0 transition-all duration-1000 border border-zinc-100 dark:border-zinc-900 p-1 bg-white dark:bg-zinc-950">
+              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-zinc-100 dark:border-zinc-900 p-1 bg-white dark:bg-zinc-950">
                 {user.image ? (
                   <img
                     src={user.image}
