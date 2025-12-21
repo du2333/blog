@@ -2,50 +2,38 @@ import React from "react";
 import { Toaster as Sonner, ToasterProps } from "sonner";
 import {
   AlertCircle,
-  CheckCircle2,
+  Check,
   Info,
   Loader2,
-  XCircle,
+  X,
 } from "lucide-react";
 
 const Toaster: React.FC<ToasterProps> = (props) => {
   return (
     <Sonner
-      theme="dark"
       className="toaster group"
       position="bottom-right"
-      visibleToasts={5}
+      visibleToasts={3}
       duration={4000}
       icons={{
-        success: <CheckCircle2 size={18} className="text-black" />,
-        error: <XCircle size={18} className="text-black" />,
-        info: <Info size={18} className="text-black" />,
-        warning: <AlertCircle size={18} className="text-black" />,
-        loading: <Loader2 size={18} className="text-zzz-lime animate-spin" />,
+        success: <Check size={16} className="text-zinc-900 dark:text-zinc-100" />,
+        error: <X size={16} className="text-red-500" />,
+        info: <Info size={16} className="text-zinc-500" />,
+        warning: <AlertCircle size={16} className="text-amber-500" />,
+        loading: <Loader2 size={16} className="text-zinc-400 animate-spin" />,
       }}
       toastOptions={{
         unstyled: true,
         classNames: {
           toast:
-            "group w-full flex items-start gap-4 p-4 font-mono text-sm border-2 shadow-[0_0_20px_rgba(0,0,0,0.5)] transition-all data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:slide-in-from-right-full data-[state=open]:sm:slide-in-from-bottom-full clip-corner-tr backdrop-blur-md",
-          title: "font-bold uppercase tracking-wider text-xs md:text-sm",
+            "group w-full max-w-[320px] flex items-start gap-4 p-5 bg-white/95 dark:bg-[#050505]/95 backdrop-blur-2xl border border-zinc-100 dark:border-zinc-900 shadow-2xl transition-all duration-500 rounded-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[swipe=end]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:translate-y-2 data-[state=open]:translate-y-0 data-[state=closed]:scale-95 data-[state=open]:scale-100",
+          title: "font-serif text-sm font-medium tracking-tight text-zinc-900 dark:text-zinc-100",
           description:
-            "text-[10px] md:text-xs text-gray-400 mt-1 leading-relaxed",
+            "text-[11px] text-zinc-500 dark:text-zinc-400 mt-1 leading-relaxed font-sans",
           actionButton:
-            "bg-zzz-lime text-black font-bold px-3 py-1 text-xs uppercase hover:bg-white transition-colors",
+            "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 font-sans px-4 py-1.5 text-[10px] uppercase tracking-widest hover:opacity-80 transition-opacity",
           cancelButton:
-            "bg-zzz-dark text-gray-400 border border-zzz-gray px-3 py-1 text-xs uppercase hover:text-white transition-colors",
-
-          // Type Specific Styles
-          default: "bg-zzz-black/95 border-zzz-gray text-white",
-          success:
-            "bg-zzz-black/95 border-zzz-lime text-white [&_[data-icon]]:bg-zzz-lime [&_[data-icon]]:rounded-full [&_[data-icon]]:p-0.5",
-          error:
-            "bg-zzz-black/95 border-zzz-orange text-white [&_[data-icon]]:bg-zzz-orange [&_[data-icon]]:rounded-full [&_[data-icon]]:p-0.5",
-          warning:
-            "bg-zzz-black/95 border-yellow-500 text-white [&_[data-icon]]:bg-yellow-500 [&_[data-icon]]:rounded-full [&_[data-icon]]:p-0.5",
-          info: "bg-zzz-black/95 border-zzz-cyan text-white [&_[data-icon]]:bg-zzz-cyan [&_[data-icon]]:rounded-full [&_[data-icon]]:p-0.5",
-          loader: "bg-zzz-black/95 border-zzz-gray text-zzz-lime",
+            "bg-zinc-100 dark:bg-zinc-900 text-zinc-600 dark:text-zinc-400 px-4 py-1.5 text-[10px] uppercase tracking-widest hover:opacity-80 transition-opacity",
         },
       }}
       {...props}

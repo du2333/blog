@@ -24,6 +24,7 @@ export const postsInfiniteQueryOptions = (category?: PostCategory) =>
         data: {
           cursor: pageParam,
           category: category,
+          limit: 12,
         },
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

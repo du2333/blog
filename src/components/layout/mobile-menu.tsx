@@ -76,7 +76,7 @@ export function MobileMenu({
               <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
                 0{idx + 1}
               </span>
-              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:italic group-hover:translate-x-4 transition-all duration-700">
+              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700">
                 {item.label}
               </span>
             </Link>
@@ -86,7 +86,7 @@ export function MobileMenu({
             <Link
               to="/admin"
               onClick={onClose}
-              className={`group flex items-baseline gap-6 transition-all duration-1000 ${
+              className={`group flex items-baseline gap-6 transition-all duration-500 ${
                 isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
               }`}
               style={{ transitionDelay: isOpen ? `${200 + navOptions.length * 100}ms` : "0ms" }}
@@ -94,7 +94,7 @@ export function MobileMenu({
               <span className="font-mono text-[10px] opacity-20 group-hover:opacity-100 transition-opacity">
                 0{navOptions.length + 1}
               </span>
-              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:italic group-hover:translate-x-4 transition-all duration-700">
+              <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700">
                 控制台
               </span>
             </Link>
@@ -150,7 +150,7 @@ export function MobileMenu({
               onClick={onClose}
               className="inline-block pt-12 border-t border-zinc-100 dark:border-zinc-900 w-full"
             >
-              <span className="text-4xl md:text-6xl font-serif font-medium tracking-tight hover:italic transition-all">
+              <span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
                 建立连接 / Login
               </span>
             </Link>

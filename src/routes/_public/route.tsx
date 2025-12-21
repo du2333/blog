@@ -23,11 +23,12 @@ function PublicLayout() {
   const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navOptions = [
-    { label: "传输", to: "/", id: "transmission", color: "zzz-lime" },
-    { label: "数据库", to: "/database", id: "database", color: "zzz-lime" },
+    { label: "主页", to: "/", id: "transmission", color: "zzz-lime" },
+    { label: "文章", to: "/database", id: "database", color: "zzz-lime" },
   ];
 
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending: isSessionPending } =
+    authClient.useSession();
   const queryClient = useQueryClient();
   const logout = async () => {
     const { error } = await authClient.signOut();
@@ -70,6 +71,7 @@ function PublicLayout() {
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
         user={session?.user}
+        isLoading={isSessionPending}
         onOpenProfile={() => setIsProfileModalOpen(true)}
         navOptions={navOptions}
       />

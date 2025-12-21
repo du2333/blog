@@ -4,7 +4,7 @@ import { PostCategory } from "@/lib/db/schema";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowRight, Clock, RefreshCw } from "lucide-react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 
 const searchSchema = z.object({
@@ -47,11 +47,24 @@ function RouteComponent() {
     return data?.pages.flatMap((page) => page.items) ?? [];
   }, [data]);
 
-  const loadMore = useCallback(() => {
-    if (!isFetchingNextPage && hasNextPage) {
-      fetchNextPage();
+  // Infinite scroll observer
+  const observerRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 0.1, rootMargin: "0px" }
+    );
+
+    if (observerRef.current) {
+      observer.observe(observerRef.current);
     }
-  }, [isFetchingNextPage, hasNextPage, fetchNextPage]);
+
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const categories: { label: string; value: string }[] = [
     { label: "全部内容", value: "ALL" },
@@ -81,7 +94,7 @@ function RouteComponent() {
         </div>
 
         {/* Categories Filter */}
-        <nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-black/5 dark:border-white/5 pb-8 animate-in fade-in duration-1000 delay-300 fill-mode-forwards">
+        <nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-zinc-100 dark:border-zinc-900 pb-8 animate-in fade-in duration-1000 delay-300 fill-mode-both">
           {categories.map((cat) => (
             <button
               key={cat.value}
@@ -106,13 +119,13 @@ function RouteComponent() {
       </header>
 
       {/* Posts List */}
-      <div className="flex flex-col gap-0 border-t border-black/5 dark:border-white/10">
+      <div className="flex flex-col gap-0 border-t border-zinc-100 dark:border-white/10">
         {posts.map((post, index) => (
           <Link
             key={post.id}
             to="/post/$slug"
             params={{ slug: post.slug }}
-            className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-black/5 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors duration-500 px-4 -mx-4"
+            className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-zinc-100 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors duration-500 px-4 -mx-4"
           >
             <div className="md:col-span-1 text-[10px] font-mono opacity-30 mt-2">
               {(index + 1).toString().padStart(2, "0")}
@@ -143,24 +156,34 @@ function RouteComponent() {
         ))}
       </div>
 
-      {/* Load More Area */}
-      {hasNextPage && (
-        <div className="mt-20 flex justify-center">
-          <button
-            onClick={loadMore}
-            disabled={isFetchingNextPage}
-            className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] opacity-40 hover:opacity-100 transition-all duration-500 disabled:opacity-20"
-          >
-            {isFetchingNextPage ? "数据加载中..." : "加载更多记录"}
-            <div className="w-10 h-10 rounded-full border border-current flex items-center justify-center group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-all duration-500">
-              <RefreshCw
-                size={14}
-                className={isFetchingNextPage ? "animate-spin" : ""}
-              />
+      {/* Load More Area & Infinite Scroll Observer */}
+      <div
+        ref={observerRef}
+        className="py-20 flex flex-col items-center justify-center gap-6"
+      >
+        {isFetchingNextPage ? (
+          <div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
+            <div className="relative">
+              <div className="w-12 h-12 rounded-full border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
+                <RefreshCw size={16} className="text-zinc-400 animate-spin" />
+              </div>
+              <div className="absolute inset-0 w-12 h-12 rounded-full border-t border-zinc-900 dark:border-zinc-100 animate-[spin_1.5s_linear_infinite]"></div>
             </div>
-          </button>
-        </div>
-      )}
+            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400">
+              Fetching Data...
+            </span>
+          </div>
+        ) : hasNextPage ? (
+          <div className="h-px w-24 bg-zinc-100 dark:bg-zinc-800"></div>
+        ) : posts.length > 0 ? (
+          <div className="flex flex-col items-center gap-3 opacity-20">
+            <div className="h-px w-32 bg-current"></div>
+            <span className="text-[9px] font-mono uppercase tracking-[0.5em]">
+              End of Archive
+            </span>
+          </div>
+        ) : null}
+      </div>
     </div>
   );
 }

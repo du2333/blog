@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="flex flex-col w-full max-w-7xl mx-auto px-6 md:px-10">
       {/* Hero Section - Minimalist & Bold */}
-      <section className="min-h-[70vh] flex flex-col justify-center py-20 md:py-32 border-b border-black/5 dark:border-white/5">
+      <section className="min-h-[70vh] flex flex-col justify-center py-20 md:py-32 border-b border-zinc-100 dark:border-zinc-900">
         <div className="space-y-8 animate-in fade-in slide-in-from-bottom-10 duration-1000 ease-out fill-mode-forwards">
           <header className="space-y-4">
             <div className="flex items-center gap-3">
@@ -50,7 +50,7 @@ function App() {
               className="group inline-flex items-center gap-4 text-sm font-medium uppercase tracking-widest hover:gap-6 transition-all duration-500"
             >
               <span>访问档案馆</span>
-              <div className="w-12 h-12 rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center group-hover:bg-black group-hover:text-white dark:group-hover:bg-white dark:group-hover:text-black transition-colors duration-500">
+              <div className="w-12 h-12 rounded-full border border-zinc-100 dark:border-zinc-900 flex items-center justify-center group-hover:bg-zinc-900 dark:group-hover:bg-white group-hover:text-white dark:group-hover:text-zinc-900 transition-colors duration-500">
                 <ArrowRight size={18} />
               </div>
             </Link>
@@ -63,25 +63,25 @@ function App() {
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
           <div className="space-y-4">
             <h2 className="text-4xl md:text-5xl font-serif">最新传输</h2>
-            <p className="opacity-50 font-mono text-sm tracking-widest uppercase">
-              // Incoming stream_
+            <p className="opacity-50 font-mono text-sm tracking-widest uppercase italic">
+              // Incoming stream
             </p>
           </div>
           <Link
             to="/database"
-            className="text-sm border-b border-black/20 dark:border-white/20 pb-1 hover:border-black dark:hover:border-white transition-colors"
+            className="text-sm border-b border-zinc-200 dark:border-zinc-800 pb-1 hover:border-zinc-900 dark:hover:border-zinc-100 transition-colors"
           >
             浏览所有故事
           </Link>
         </div>
 
-        <div className="flex flex-col gap-0 border-t border-black/5 dark:border-white/10">
+        <div className="flex flex-col gap-0 border-t border-zinc-100 dark:border-zinc-900">
           {posts.map((post, index) => (
             <Link
               key={post.id}
               to="/post/$slug"
               params={{ slug: post.slug }}
-              className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-black/5 dark:border-white/10 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors duration-500 px-4 -mx-4"
+              className="group grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-zinc-100 dark:border-zinc-900 hover:bg-zinc-50 dark:hover:bg-zinc-900/50 transition-colors duration-500 px-4 -mx-4"
             >
               {/* Index/Number */}
               <div className="md:col-span-1 text-[10px] font-mono opacity-30 mt-2">
