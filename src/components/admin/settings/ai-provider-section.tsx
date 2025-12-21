@@ -14,6 +14,8 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { TerminalLog, TerminalMonitor } from "./terminal-monitor";
+import { GoogleModels, DeepSeekModels } from "@/lib/ai";
+import { SystemConfig } from "@/features/config/config.schema";
 
 type AiProvider = "GOOGLE" | "DEEPSEEK";
 type ConnectionStatus = "IDLE" | "TESTING" | "SUCCESS" | "ERROR";
@@ -22,11 +24,7 @@ const PROVIDER_CONFIG = {
   GOOGLE: {
     name: "Google Gemini",
     endpoint: "generativelanguage.googleapis.com",
-    models: [
-      "gemini-3-flash-preview",
-      "gemini-3-pro-preview",
-      "gemini-2.5-flash",
-    ],
+    models: GoogleModels,
     color: "text-zzz-lime",
     borderColor: "border-zzz-lime",
     bgColor: "bg-zzz-lime/5",
@@ -35,7 +33,7 @@ const PROVIDER_CONFIG = {
   DEEPSEEK: {
     name: "DeepSeek AI",
     endpoint: "api.deepseek.com",
-    models: ["deepseek-chat", "deepseek-reasoner"],
+    models: DeepSeekModels,
     color: "text-zzz-cyan",
     borderColor: "border-zzz-cyan",
     bgColor: "bg-zzz-cyan/5",
@@ -43,19 +41,36 @@ const PROVIDER_CONFIG = {
   },
 };
 
-export function AiProviderSection() {
-  const [provider, setProvider] = useState<AiProvider>("GOOGLE");
-  const [keys, setKeys] = useState({ GOOGLE: "", DEEPSEEK: "" });
+interface AiSectionProps {
+  value: NonNullable<SystemConfig["ai"]>;
+  onChange: (cfg: NonNullable<SystemConfig["ai"]>) => void;
+  testAiConnection: (params: {
+    data: { provider: "GOOGLE" | "DEEPSEEK"; apiKey: string; model: string };
+  }) => Promise<{ success: boolean; error?: string }>;
+}
+
+export function AiProviderSection({
+  value,
+  onChange,
+  testAiConnection,
+}: AiSectionProps) {
   const [showKey, setShowKey] = useState(false);
   const [status, setStatus] = useState<ConnectionStatus>("IDLE");
   const [logs, setLogs] = useState<TerminalLog[]>([]);
 
-  const isConfigured = !!keys[provider].trim();
+  const provider = (value.activeProvider || "GOOGLE") as AiProvider;
+  const currentProviderConfig = value.providers?.[provider];
+  const isConfigured = !!currentProviderConfig?.apiKey?.trim();
   const currentConfig = PROVIDER_CONFIG[provider];
   const isLinked = status === "SUCCESS";
 
   const handleTest = async () => {
-    if (!isConfigured) return;
+    if (
+      !isConfigured ||
+      !currentProviderConfig?.apiKey ||
+      !currentProviderConfig?.model
+    )
+      return;
     setStatus("TESTING");
     setLogs([]);
     const addLog = (msg: string, type: TerminalLog["type"] = "info") =>
@@ -66,16 +81,23 @@ export function AiProviderSection() {
     addLog(`NETWORK: 解析端点 [${currentConfig.endpoint}]...`, "system");
     await new Promise((r) => setTimeout(r, 1000));
 
-    const isSuccess = Math.random() > 0.15;
-    if (isSuccess) {
-      addLog(
-        `SIGNAL: 建立稳定连接 [LATENCY: ${Math.floor(
-          Math.random() * 50 + 20
-        )}ms]`,
-        "success"
-      );
-      setStatus("SUCCESS");
-    } else {
+    try {
+      const result = await testAiConnection({
+        data: {
+          provider,
+          apiKey: currentProviderConfig.apiKey,
+          model: currentProviderConfig.model,
+        },
+      });
+
+      if (result.success) {
+        addLog(`SIGNAL: 建立稳定连接`, "success");
+        setStatus("SUCCESS");
+      } else {
+        addLog(`ERROR: ${result.error || "连接失败"}`, "error");
+        setStatus("ERROR");
+      }
+    } catch (error) {
       addLog(`ERROR: 连接被远程主机拒绝。403_FORBIDDEN`, "error");
       setStatus("ERROR");
     }
@@ -159,7 +181,7 @@ export function AiProviderSection() {
               <button
                 key={p}
                 onClick={() => {
-                  setProvider(p);
+                  onChange({ ...value, activeProvider: p });
                   setStatus("IDLE");
                 }}
                 className={`
@@ -214,10 +236,19 @@ export function AiProviderSection() {
               />
               <input
                 type={showKey ? "text" : "password"}
-                value={keys[provider]}
+                value={currentProviderConfig?.apiKey || ""}
                 placeholder="在此输入协议密钥..."
                 onChange={(e) => {
-                  setKeys({ ...keys, [provider]: e.target.value });
+                  onChange({
+                    ...value,
+                    providers: {
+                      ...value.providers,
+                      [provider]: {
+                        ...value.providers?.[provider],
+                        apiKey: e.target.value,
+                      },
+                    },
+                  });
                   setStatus("IDLE");
                 }}
                 className={`w-full bg-black border text-white font-mono text-xs pl-10 pr-10 py-3 focus:outline-none transition-all ${
@@ -241,7 +272,24 @@ export function AiProviderSection() {
                 <Cpu size={10} /> 指定模型 (Model_ID)
               </label>
               <div className="relative">
-                <select className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-3 pr-8 py-2.5 focus:outline-none appearance-none cursor-pointer hover:border-gray-500 transition-colors">
+                <select
+                  value={
+                    currentProviderConfig?.model || currentConfig.models[0]
+                  }
+                  onChange={(e) => {
+                    onChange({
+                      ...value,
+                      providers: {
+                        ...value.providers,
+                        [provider]: {
+                          ...value.providers?.[provider],
+                          model: e.target.value,
+                        },
+                      },
+                    });
+                  }}
+                  className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-3 pr-8 py-2.5 focus:outline-none appearance-none cursor-pointer hover:border-gray-500 transition-colors"
+                >
                   {currentConfig.models.map((m) => (
                     <option key={m}>{m}</option>
                   ))}

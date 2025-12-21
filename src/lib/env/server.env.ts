@@ -14,7 +14,6 @@ const serverEnvSchema = z.object({
       /^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
       "Must be a valid domain (e.g., www.example.com)"
     ),
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string(),
   ENVIRONMENT: z.enum(["dev", "prod"]).optional(),
 });
 

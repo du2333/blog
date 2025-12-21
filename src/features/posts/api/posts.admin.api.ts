@@ -187,11 +187,17 @@ export const previewSummaryFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(PostSelectSchema.pick({ contentJson: true }))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
     const plainText = convertToPlainText(data.contentJson);
-    const { summary } = await summarizeText({ text: plainText });
-
-    return { summary };
+    try {
+      const { summary } = await summarizeText(context.db, plainText);
+      return { summary };
+    } catch (error) {
+      if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
+        return { error: "AI 服务未配置" };
+      }
+      throw error;
+    }
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()

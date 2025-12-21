@@ -1,7 +1,10 @@
 import { userHasPassword } from "@/features/auth/auth.data";
+import { getSystemConfig } from "@/features/config/config.data";
+import { cachedData } from "@/lib/cache/cache.data";
 import { createAuthedFn } from "@/lib/middlewares";
 import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
+import { z } from "zod";
 
 export const getSessionFn = createServerFn().handler(async ({ context }) => {
   const headers = getRequestHeaders();
@@ -19,8 +22,15 @@ export const userHasPasswordFn = createAuthedFn().handler(
 );
 
 export const getIsEmailVerficationRequiredFn = createServerFn().handler(
-  async () => {
-    // TODO: Check if email provider and sender configuration environment variables are set
-    return true;
+  async ({ context }) => {
+    return cachedData(
+      context,
+      ["isEmailVerficationRequired"],
+      z.boolean(),
+      async () => {
+        const config = await getSystemConfig(context.db);
+        return !!(config?.email?.apiKey && config?.email?.senderAddress);
+      }
+    );
   }
 );

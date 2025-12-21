@@ -1,7 +1,12 @@
 import { ForgotPasswordForm } from "@/components/auth/forgot-password-form";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/_auth/forgot-password")({
+  beforeLoad: ({ context }) => {
+    if (!context.isEmailVerficationRequired) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
 });
 

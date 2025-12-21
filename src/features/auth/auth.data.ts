@@ -1,5 +1,5 @@
 import { DB } from "@/lib/db";
-import { account } from "@/lib/db/schema";
+import { account, user } from "@/lib/db/schema";
 import { and, eq, isNotNull } from "drizzle-orm";
 
 export async function userHasPassword(db: DB, userId: string) {
@@ -8,4 +8,17 @@ export async function userHasPassword(db: DB, userId: string) {
   });
 
   return !!user;
+}
+
+export async function updateUser(
+  db: DB,
+  userId: string,
+  data: Partial<Omit<typeof user.$inferInsert, "id" | "createdAt">>
+) {
+  const [updatedUser] = await db
+    .update(user)
+    .set(data)
+    .where(eq(user.id, userId))
+    .returning();
+  return updatedUser;
 }

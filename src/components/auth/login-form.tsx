@@ -2,7 +2,7 @@ import TechButton from "@/components/ui/tech-button";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   AlertCircle,
   ChevronRight,
@@ -29,6 +29,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     "IDLE" | "VERIFYING" | "SYNCING" | "SUCCESS"
   >("IDLE");
   const [isUnverifiedEmail, setIsUnverifiedEmail] = useState(false);
+  const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
 
   const navigate = useNavigate();
   const previousLocation = usePreviousLocation();
@@ -175,13 +176,15 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
             >
               访问密钥 (Access Key)
             </label>
-            <Link
-              to="/forgot-password"
-              tabIndex={-1}
-              className="text-[9px] font-mono font-bold text-gray-600 hover:text-zzz-cyan uppercase tracking-wider transition-colors"
-            >
-              丢失密钥？
-            </Link>
+            {isEmailVerficationRequired && (
+              <Link
+                to="/forgot-password"
+                tabIndex={-1}
+                className="text-[9px] font-mono font-bold text-gray-600 hover:text-zzz-cyan uppercase tracking-wider transition-colors"
+              >
+                丢失密钥？
+              </Link>
+            )}
           </div>
           <div className="relative">
             <Lock

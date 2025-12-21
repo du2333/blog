@@ -1,6 +1,6 @@
-import { createAuth } from "@/lib/auth/auth.server";
+import { getAuth } from "@/lib/auth/auth.server";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
-import { createDb } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
@@ -72,14 +72,14 @@ app.get("/images/:key", async (c) => {
 });
 
 app.on(["POST", "GET"], "/api/auth/*", (c) => {
-  const db = createDb(c.env);
-  const auth = createAuth(db, c.env);
+  const db = getDb(c.env);
+  const auth = getAuth({ db, env: c.env });
   return auth.handler(c.req.raw);
 });
 
 app.all("*", (c) => {
-  const db = createDb(c.env);
-  const auth = createAuth(db, c.env);
+  const db = getDb(c.env);
+  const auth = getAuth({ db, env: c.env });
   return handler.fetch(c.req.raw, {
     context: {
       db,

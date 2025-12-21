@@ -1,7 +1,7 @@
 import { generateSummaryByPostId } from "@/features/posts/services/posts-processing.service";
 import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { purgePostCDNCache } from "@/lib/cache/revalidate";
-import { createDb } from "@/lib/db";
+import { getDb } from "@/lib/db";
 import { addOrUpdateSearchDoc } from "@/lib/search/ops";
 import {
   WorkflowEntrypoint,
@@ -25,7 +25,7 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
         },
       },
       async () => {
-        const db = createDb(this.env);
+        const db = getDb(this.env);
         return await generateSummaryByPostId({
           db,
           postId: event.payload.postId,

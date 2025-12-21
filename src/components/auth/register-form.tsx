@@ -1,7 +1,8 @@
 import TechButton from "@/components/ui/tech-button";
+import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouteContext } from "@tanstack/react-router";
 import {
   ChevronRight,
   Loader2,
@@ -15,7 +16,6 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { useRouteContext } from "@tanstack/react-router";
 
 const registerSchema = z
   .object({
@@ -35,6 +35,7 @@ export function RegisterForm() {
   const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = React.useState(false);
+  const previousLocation = usePreviousLocation();
 
   const {
     register,
@@ -68,7 +69,7 @@ export function RegisterForm() {
       toast.success("访问已授予", {
         description: "欢迎来到绳网。",
       });
-      navigate({ to: "/admin" });
+      navigate({ to: previousLocation ?? "/" });
     }
   };
 

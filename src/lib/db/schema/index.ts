@@ -1,3 +1,4 @@
+import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
 import { sql } from "drizzle-orm";
 import {
@@ -76,6 +77,15 @@ export const PostMediaTable = sqliteTable(
   },
   (table) => [primaryKey({ columns: [table.postId, table.mediaId] })]
 );
+
+export const SystemConfigTable = sqliteTable("system_config", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  configJson: text("config_json", { mode: "json" }).$type<SystemConfig>(),
+  updatedAt: integer("updated_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`)
+    .$onUpdate(() => new Date()),
+});
 
 export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson">;

@@ -26,13 +26,22 @@ export async function generateSummaryByPostId({
     return post;
   }
 
-  const { summary } = await summarizeText({ text: plainText });
+  try {
+    const { summary } = await summarizeText(db, plainText);
 
-  const [updatedPost] = await db
-    .update(PostsTable)
-    .set({ summary })
-    .where(eq(PostsTable.id, post.id))
-    .returning();
+    const [updatedPost] = await db
+      .update(PostsTable)
+      .set({ summary })
+      .where(eq(PostsTable.id, post.id))
+      .returning();
 
-  return updatedPost;
+    return updatedPost;
+  } catch (error) {
+    // 如果 AI 服务未配置，静默跳过，返回原 post
+    if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
+      return post;
+    }
+    // 其他错误继续抛出
+    throw error;
+  }
 }

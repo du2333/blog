@@ -5,15 +5,35 @@ import TechButton from "@/components/ui/tech-button";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Terminal } from "lucide-react";
 import { toast } from "sonner";
+import { useSystemSetting } from "@/components/admin/settings/use-system-setting";
+import { SystemConfig, DEFAULT_CONFIG } from "@/features/config/config.schema";
+import { useState, useEffect } from "react";
+import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
 
 export const Route = createFileRoute("/admin/settings/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const {
+    settings,
+    saveSettings,
+    testAiConnection,
+    testEmailConnection,
+    isLoading,
+  } = useSystemSetting();
+
+  const [config, setConfig] = useState<SystemConfig>(DEFAULT_CONFIG);
+
+  // 同步 settings 到本地 config 状态
+  useEffect(() => {
+    if (settings) {
+      setConfig(settings);
+    }
+  }, [settings]);
+
   const handleSaveConfig = () => {
-    // TODO: 添加实际的写入逻辑
-    const promise = new Promise((resolve) => setTimeout(resolve, 1200));
+    const promise = saveSettings({ data: config });
     toast.promise(promise, {
       loading: "正在写入固件...",
       success: "系统配置已永久生效",
@@ -38,11 +58,30 @@ function RouteComponent() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* AI Provider Config Module */}
-        <AiProviderSection />
+        {isLoading ? (
+          <>
+            <SectionSkeleton />
+            <SectionSkeleton />
+          </>
+        ) : (
+          <>
+            {/* AI Provider Config Module */}
+            <AiProviderSection
+              value={config.ai || DEFAULT_CONFIG.ai!}
+              onChange={(aiConfig) => setConfig({ ...config, ai: aiConfig })}
+              testAiConnection={testAiConnection}
+            />
 
-        {/* Email Service Config Module */}
-        <EmailServiceSection />
+            {/* Email Service Config Module */}
+            <EmailServiceSection
+              value={config.email || DEFAULT_CONFIG.email!}
+              onChange={(emailConfig) =>
+                setConfig({ ...config, email: emailConfig })
+              }
+              testEmailConnection={testEmailConnection}
+            />
+          </>
+        )}
       </div>
 
       {/* Data Maintenance Module */}

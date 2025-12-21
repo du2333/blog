@@ -12,18 +12,32 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { TerminalLog, TerminalMonitor } from "./terminal-monitor";
+import { SystemConfig } from "@/features/config/config.schema";
 
 type ConnectionStatus = "IDLE" | "TESTING" | "SUCCESS" | "ERROR";
 
-export function EmailServiceSection() {
-  const [key, setKey] = useState("");
-  const [senderName, setSenderName] = useState("Inter-Knot Archive");
-  const [senderEmail, setSenderEmail] = useState("noreply@proxy-archive.xyz");
+interface EmailSectionProps {
+  value: NonNullable<SystemConfig["email"]>;
+  onChange: (cfg: NonNullable<SystemConfig["email"]>) => void;
+  testEmailConnection: (options: {
+    data: {
+      apiKey: string;
+      senderAddress: string;
+      senderName?: string;
+    };
+  }) => Promise<{ success: boolean; error?: string }>;
+}
+
+export function EmailServiceSection({
+  value,
+  onChange,
+  testEmailConnection,
+}: EmailSectionProps) {
   const [showKey, setShowKey] = useState(false);
   const [status, setStatus] = useState<ConnectionStatus>("IDLE");
   const [logs, setLogs] = useState<TerminalLog[]>([]);
 
-  const isConfigured = !!key.trim();
+  const isConfigured = !!value.apiKey?.trim() && !!value.senderAddress?.trim();
   const isLinked = status === "SUCCESS";
 
   const handleTest = async () => {
@@ -34,16 +48,34 @@ export function EmailServiceSection() {
       setLogs((prev) => [...prev, { msg: `> ${msg}`, type }]);
 
     addLog(`EMAIL_PROTOCOL: 初始化安全握手...`);
-    await new Promise((r) => setTimeout(r, 800));
+    await new Promise((r) => setTimeout(r, 500));
     addLog(`AUTHENTICATOR: 正在验证 Resend 令牌签名...`, "system");
-    await new Promise((r) => setTimeout(r, 1000));
+    await new Promise((r) => setTimeout(r, 500));
+    addLog(`SENDER_VERIFY: 验证发件人地址 ${value.senderAddress}...`, "info");
 
-    const isSuccess = Math.random() > 0.15;
-    if (isSuccess) {
-      addLog(`SIGNAL: 建立稳定连接 [STATUS: 200_OK]`, "success");
-      setStatus("SUCCESS");
-    } else {
-      addLog(`ERROR: 连接被远程主机拒绝。协议握手失败。`, "error");
+    try {
+      const result = await testEmailConnection({
+        data: {
+          apiKey: value.apiKey!,
+          senderAddress: value.senderAddress!,
+          senderName: value.senderName,
+        },
+      });
+
+      if (result.success) {
+        await new Promise((r) => setTimeout(r, 300));
+        addLog(`SMTP_HANDSHAKE: 测试邮件已发送至你的管理员邮箱`, "success");
+        addLog(`SIGNAL: 建立稳定连接 [STATUS: 200_OK]`, "success");
+        setStatus("SUCCESS");
+      } else {
+        addLog(`ERROR: ${result.error || "连接失败"}`, "error");
+        setStatus("ERROR");
+      }
+    } catch (error) {
+      addLog(
+        `ERROR: ${error instanceof Error ? error.message : "未知错误"}`,
+        "error"
+      );
       setStatus("ERROR");
     }
   };
@@ -138,10 +170,10 @@ export function EmailServiceSection() {
               />
               <input
                 type={showKey ? "text" : "password"}
-                value={key}
+                value={value.apiKey || ""}
                 placeholder="在此输入 Resend 令牌..."
                 onChange={(e) => {
-                  setKey(e.target.value);
+                  onChange({ ...value, apiKey: e.target.value });
                   setStatus("IDLE");
                 }}
                 className={`w-full bg-black border text-white font-mono text-xs pl-10 pr-10 py-3 focus:outline-none transition-all ${
@@ -166,8 +198,10 @@ export function EmailServiceSection() {
                 <User size={10} /> 发件人显示名称
               </label>
               <input
-                value={senderName}
-                onChange={(e) => setSenderName(e.target.value)}
+                value={value.senderName || ""}
+                onChange={(e) =>
+                  onChange({ ...value, senderName: e.target.value })
+                }
                 className="w-full bg-black border border-zzz-gray text-white text-xs font-mono px-3 py-3 focus:border-zzz-cyan focus:outline-none transition-all hover:border-gray-500"
                 placeholder="例如: Inter-Knot Archive"
               />
@@ -184,8 +218,10 @@ export function EmailServiceSection() {
                   size={14}
                 />
                 <input
-                  value={senderEmail}
-                  onChange={(e) => setSenderEmail(e.target.value)}
+                  value={value.senderAddress || ""}
+                  onChange={(e) =>
+                    onChange({ ...value, senderAddress: e.target.value })
+                  }
                   className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-3 focus:border-zzz-cyan focus:outline-none transition-all hover:border-gray-500"
                   placeholder="noreply@yourdomain.com"
                 />

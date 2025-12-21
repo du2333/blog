@@ -105,6 +105,12 @@ export function usePostActions({
         },
       }),
     onSuccess: (result) => {
+      if (result.error) {
+        toast.error("摘要生成失败", {
+          description: "请检查 AI 服务配置",
+        });
+        return;
+      }
       setPost((prev) => ({ ...prev, summary: result.summary }));
     },
     onError: (error) => {
