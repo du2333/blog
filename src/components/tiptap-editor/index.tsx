@@ -99,7 +99,7 @@ export const extensions = [
   }),
   BlockQuoteExtension,
   CodeBlockExtension.configure({
-    defaultTheme: "vitesse-dark", // 编辑器内部由于环境限制暂设一个，渲染端已实现双主题
+    defaultTheme: "vitesse-dark"
   }),
   ImageExtension,
   ImageUpload.configure({

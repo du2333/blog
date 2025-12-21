@@ -1,5 +1,4 @@
-import TechButton from "@/components/ui/tech-button";
-import { AlertCircle, CheckCircle2, Loader2, Upload, X } from "lucide-react";
+import { AlertCircle, Check, Loader2, Upload, X, FileText } from "lucide-react";
 import { useRef } from "react";
 import { UploadItem } from "../types";
 
@@ -39,20 +38,28 @@ export function UploadModal({
     queue.length > 0 &&
     queue.every((i) => i.status === "COMPLETE" || i.status === "ERROR");
 
-  return (
-    <div className="fixed inset-0 z-70 bg-black/90 backdrop-blur flex items-center justify-center animate-in fade-in p-4">
-      <div className="w-full max-w-2xl bg-zzz-black border-2 border-zzz-lime shadow-[0_0_50px_rgba(204,255,0,0.2)] relative clip-corner-tr p-8 flex flex-col max-h-[90vh]">
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-white"
-        >
-          <X size={20} />
-        </button>
+  const hasErrors = queue.some((i) => i.status === "ERROR");
 
-        <h2 className="text-2xl font-black font-sans uppercase text-white mb-2 flex items-center gap-2">
-          <Upload className="text-zzz-lime" /> 数据录入
-        </h2>
-        <div className="h-px w-full bg-zzz-gray mb-8"></div>
+  return (
+    <div className="fixed inset-0 z-[100] bg-white/80 dark:bg-black/80 backdrop-blur-xl flex items-center justify-center p-4 md:p-8 animate-in fade-in duration-500">
+      <div 
+        className={`w-full max-w-3xl bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/5 shadow-2xl relative flex flex-col max-h-[90vh] rounded-sm transform transition-all duration-500 ${
+          isOpen ? "scale-100 opacity-100" : "scale-95 opacity-0"
+        }`}
+      >
+        {/* Header */}
+        <div className="h-20 flex items-center justify-between px-8 border-b border-zinc-100 dark:border-white/5">
+          <div className="flex items-center gap-3">
+            <Upload size={18} strokeWidth={1.5} className="text-zinc-400" />
+            <span className="text-sm font-medium tracking-tight">上传媒体资产</span>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+          >
+            <X size={20} strokeWidth={1.5} />
+          </button>
+        </div>
 
         <input
           type="file"
@@ -62,103 +69,117 @@ export function UploadModal({
           multiple
         />
 
-        <div
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={onDragOver}
-          onDragLeave={onDragLeave}
-          onDrop={onDrop}
-          className={`
-            border-2 border-dashed h-32 flex flex-col items-center justify-center cursor-pointer transition-all gap-2 mb-6 shrink-0
-            ${
-              isDragging
-                ? "border-zzz-lime bg-zzz-lime/10 scale-[1.02]"
-                : "border-zzz-gray bg-zzz-dark/30 hover:border-zzz-lime hover:bg-zzz-lime/5"
-            }
-          `}
-        >
-          <div className="flex items-center gap-2 text-gray-400">
-            <Upload
-              size={20}
-              className={isDragging ? "animate-bounce text-zzz-lime" : ""}
-            />
-            <span className="text-sm font-bold uppercase">
-              {isDragging ? "松开上传" : "点击或拖拽文件"}
-            </span>
-          </div>
-          <div className="text-[10px] font-mono text-gray-600">
-            {isDragging
-              ? "检测数据流..."
-              : "系统准备好批量输入"}
-          </div>
-        </div>
-
-        <div className="flex-1 overflow-y-auto custom-scrollbar space-y-3 min-h-[200px] mb-6 p-1">
-          {queue.length === 0 && (
-            <div className="h-full flex items-center justify-center text-gray-600 font-mono text-xs">
-              等待输入...
+        <div className="p-8 space-y-8 overflow-y-auto custom-scrollbar flex-1">
+          {/* Drop Zone */}
+          <div
+            onClick={() => fileInputRef.current?.click()}
+            onDragOver={onDragOver}
+            onDragLeave={onDragLeave}
+            onDrop={onDrop}
+            className={`
+              relative border-2 border-dashed aspect-[21/9] min-h-[200px] flex flex-col items-center justify-center cursor-pointer transition-all duration-700 gap-4 rounded-sm
+              ${
+                isDragging
+                  ? "border-zinc-900 dark:border-zinc-100 bg-zinc-50 dark:bg-white/[0.03] scale-[0.99]"
+                  : "border-zinc-100 dark:border-white/5 bg-zinc-50/50 dark:bg-white/[0.01] hover:bg-zinc-50 dark:hover:bg-white/[0.03] hover:border-zinc-200 dark:hover:border-white/10"
+              }
+            `}
+          >
+            <div className={`p-4 rounded-full border border-current transition-all duration-700 ${isDragging ? "text-zinc-900 dark:text-zinc-100 animate-bounce" : "text-zinc-300 dark:text-zinc-700"}`}>
+              <Upload size={24} strokeWidth={1.5} />
             </div>
-          )}
-          {queue.map((item) => (
-            <div
-              key={item.id}
-              className="bg-black border border-zzz-gray p-3 flex flex-col gap-2 relative overflow-hidden"
-            >
-              <div className="flex justify-between items-center z-10 relative">
-                <div className="flex items-center gap-3">
-                  {item.status === "COMPLETE" ? (
-                    <CheckCircle2 size={16} className="text-zzz-lime" />
-                  ) : item.status === "ERROR" ? (
-                    <AlertCircle size={16} className="text-red-500" />
-                  ) : (
-                    <Loader2
-                      size={16}
-                      className="text-zzz-orange animate-spin"
-                    />
-                  )}
-                  <span className="text-xs font-bold text-white max-w-[200px] truncate">
-                    {item.name}
-                  </span>
-                </div>
-                <span className="text-[10px] font-mono text-gray-500">
-                  {item.size}
-                </span>
+            <div className="text-center space-y-1">
+              <p className="text-[11px] uppercase tracking-[0.3em] font-bold text-zinc-900 dark:text-zinc-100">
+                {isDragging ? "松开即可上传" : "点击或拖拽文件至此"}
+              </p>
+              <p className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest">
+                Max 50MB per file
+              </p>
+            </div>
+          </div>
+
+          {/* Queue List */}
+          <div className="space-y-4">
+            {queue.length > 0 && (
+              <div className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 font-bold border-b border-zinc-100 dark:border-white/5 pb-4">
+                上传队列 ({queue.length})
               </div>
-              <div className="h-1 bg-zzz-gray/30 w-full relative z-10">
+            )}
+            
+            <div className="space-y-3">
+              {queue.map((item) => (
                 <div
-                  className={`h-full transition-all duration-300 ${
-                    item.status === "COMPLETE"
-                      ? "bg-zzz-lime"
-                      : item.status === "ERROR"
-                      ? "bg-red-500"
-                      : "bg-zzz-orange"
-                  }`}
-                  style={{ width: `${item.progress}%` }}
-                ></div>
-              </div>
-              <div
-                className={`text-[10px] font-mono z-10 ${
-                  item.status === "ERROR" ? "text-red-400" : "text-gray-500"
-                }`}
-              >
-                {item.log}
-              </div>
+                  key={item.id}
+                  className="group bg-zinc-50 dark:bg-white/[0.02] p-4 flex flex-col gap-3 rounded-sm border border-transparent hover:border-zinc-100 dark:hover:border-white/5 transition-all"
+                >
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="shrink-0 text-zinc-400">
+                        {item.status === "COMPLETE" ? (
+                          <Check size={16} strokeWidth={3} className="text-green-500" />
+                        ) : item.status === "ERROR" ? (
+                          <AlertCircle size={16} strokeWidth={2} className="text-red-500" />
+                        ) : (
+                          <Loader2 size={16} strokeWidth={2} className="animate-spin text-zinc-400" />
+                        )}
+                      </div>
+                      <span className="text-xs font-medium text-zinc-900 dark:text-zinc-100 truncate">
+                        {item.name}
+                      </span>
+                    </div>
+                    <span className="text-[9px] font-mono text-zinc-400 shrink-0 uppercase tracking-wider">
+                      {item.size}
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar */}
+                  <div className="h-0.5 bg-zinc-100 dark:bg-white/5 w-full overflow-hidden rounded-full">
+                    <div
+                      className={`h-full transition-all duration-500 ease-out ${
+                        item.status === "COMPLETE"
+                          ? "bg-green-500"
+                          : item.status === "ERROR"
+                          ? "bg-red-500"
+                          : "bg-zinc-900 dark:bg-zinc-100"
+                      }`}
+                      style={{ width: `${item.progress}%` }}
+                    ></div>
+                  </div>
+                  
+                  {item.log && (
+                    <div className={`text-[9px] font-mono leading-relaxed ${
+                      item.status === "ERROR" ? "text-red-500" : "text-zinc-400 opacity-60"
+                    }`}>
+                      {item.log}
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
 
-        <div className="flex justify-end gap-3 shrink-0">
+        {/* Footer */}
+        <div className="p-8 border-t border-zinc-100 dark:border-white/5 flex justify-end gap-4">
           {isAllComplete ? (
-            <TechButton
+            <button
               onClick={onClose}
-              className="w-full"
-              icon={<CheckCircle2 size={16} />}
+              className={`flex-1 flex items-center justify-center gap-2 py-4 text-[11px] uppercase tracking-[0.2em] font-bold transition-all ${
+                hasErrors 
+                  ? "bg-red-500 text-white hover:bg-red-600" 
+                  : "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 hover:scale-[1.02] active:scale-[0.98]"
+              }`}
             >
-              批处理完成 - 返回
-            </TechButton>
+              <Check size={16} strokeWidth={2.5} />
+              {hasErrors ? "任务存在错误 - 确认" : "上传任务已完成"}
+            </button>
           ) : (
-            <TechButton variant="secondary" onClick={onClose}>
+            <button
+              onClick={onClose}
+              className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+            >
               取消
-            </TechButton>
+            </button>
           )}
         </div>
       </div>

@@ -1,7 +1,7 @@
-import { CATEGORY_COLORS } from "@/lib/constants";
 import { formatDate } from "@/lib/utils";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
-import { Calendar, Clock, Edit3, Eye, Trash2 } from "lucide-react";
+import { Calendar, Edit3, Eye, Trash2, MoreVertical } from "lucide-react";
+import { useState } from "react";
 
 import { isPostPubliclyViewable, type PostListItem } from "../types";
 
@@ -12,119 +12,124 @@ interface PostRowProps {
 
 export function PostRow({ post, onDelete }: PostRowProps) {
   const navigate = useNavigate();
+  const [showMobileActions, setShowMobileActions] = useState(false);
 
   const viewTitle = !isPostPubliclyViewable(post)
     ? post.status === "draft"
-      ? "Cannot view Draft"
-      : "Scheduled - not yet public"
-    : "View Public";
+      ? "草稿无法直接预览"
+      : "计划发布 - 尚未公开"
+    : "查看文章";
+
+  const handleEdit = () => {
+    navigate({
+      to: "/admin/posts/edit/$id",
+      params: { id: String(post.id) },
+    });
+  };
+
+  const handleView = () => {
+    if (isPostPubliclyViewable(post)) {
+      navigate({ to: "/post/$slug", params: { slug: post.slug } });
+    }
+  };
 
   return (
-    <div className="group bg-zzz-dark border border-zzz-gray p-4 grid grid-cols-1 md:grid-cols-12 gap-4 items-center hover:border-zzz-lime transition-all relative overflow-hidden">
-      {/* Status Stripe */}
-      <div
-        className={`absolute left-0 top-0 bottom-0 w-1 transition-colors ${
-          post.status === "published"
-            ? "bg-zzz-lime group-hover:bg-white"
-            : post.status === "draft"
-            ? "bg-zzz-orange"
-            : "bg-red-600"
-        }`}
-      ></div>
-
-      {/* ID */}
-      <div className="md:col-span-1 font-mono text-gray-500 text-xs flex justify-between md:block">
-        <span className="md:hidden">ID:</span> #{post.id}
+    <div className="group bg-white dark:bg-transparent px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-zinc-50 dark:hover:bg-white/[0.02] transition-all duration-500 relative">
+      {/* ID & Status (Combined for mobile) */}
+      <div className="md:col-span-1 flex items-center justify-between w-full md:block">
+        <span className="font-mono text-zinc-300 dark:text-zinc-700 text-[10px] tracking-widest">
+          #{post.id}
+        </span>
+        <div className="md:hidden flex items-center gap-3">
+          <StatusBadge status={post.status} />
+          <button 
+            onClick={() => setShowMobileActions(!showMobileActions)}
+            className="p-2 text-zinc-400"
+          >
+            <MoreVertical size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Title & Summary */}
       <div
-        className="md:col-span-5 min-w-0 cursor-pointer"
-        onClick={() => navigate({ to: `/admin/posts/edit/${post.id}` })}
+        className="md:col-span-6 min-w-0 cursor-pointer group/title w-full"
+        onClick={handleEdit}
       >
-        <div className="flex flex-col gap-1 mb-1">
-          <div className="flex items-center gap-2">
-            <h3 className="text-white font-bold font-sans uppercase text-base md:text-lg leading-tight wrap-break-word md:truncate flex-1">
-              {post.title}
-            </h3>
-            {post.status !== "published" && (
-              <span
-                className={`text-[9px] px-1.5 py-0.5 font-bold rounded-sm shrink-0 border ${
-                  post.status === "draft"
-                    ? "border-zzz-orange text-zzz-orange"
-                    : "border-red-500 text-red-500"
-                }`}
-              >
-                {post.status}
-              </span>
-            )}
+        <div className="flex items-center gap-3 mb-2">
+          <h3 className="text-zinc-900 dark:text-zinc-100 font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate">
+            {post.title}
+          </h3>
+          <div className="hidden md:block">
+            <StatusBadge status={post.status} />
           </div>
         </div>
-        <div className="text-xs text-gray-500 font-mono truncate">
+        <div className="text-xs text-zinc-400 dark:text-zinc-600 font-normal truncate max-w-2xl">
           {post.summary}
         </div>
       </div>
 
-      {/* Category */}
-      <div className="md:col-span-2 flex items-center">
-        <span
-          className={`text-[10px] px-2 py-0.5 border ${
-            CATEGORY_COLORS[post.category]
-          } bg-black/40`}
-        >
-          {post.category}
-        </span>
-      </div>
-
-      {/* Date */}
-      <div className="md:col-span-2 font-mono text-xs text-gray-400 shrink-0 flex flex-col gap-1">
+      {/* Category & Date (Responsive stacking) */}
+      <div className="md:col-span-4 flex md:grid md:grid-cols-2 items-center gap-6 w-full text-zinc-400">
         <div className="flex items-center gap-2">
-          <Calendar size={10} />
+          <div className="w-1 h-1 rounded-full bg-current opacity-40 md:hidden" />
+          <span className="text-[10px] uppercase tracking-[0.3em] font-medium">
+            {post.category}
+          </span>
+        </div>
+        <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
+          <Calendar size={10} strokeWidth={1.5} className="opacity-40" />
           <ClientOnly fallback={<span>-</span>}>
             {formatDate(post.createdAt)}
           </ClientOnly>
         </div>
-        <div className="flex items-center gap-2 text-gray-600">
-          <Clock size={10} /> {post.readTimeInMinutes} MINS
-        </div>
       </div>
 
-      {/* Actions */}
-      <div className="md:col-span-2 flex justify-end gap-2 mt-2 md:mt-0 opacity-80 group-hover:opacity-100 transition-opacity">
+      {/* Actions (Desktop: Hover, Mobile: Expandable) */}
+      <div className={`
+        md:col-span-1 flex items-center justify-end gap-1 w-full md:w-auto
+        ${showMobileActions ? "flex mt-4 pt-4 border-t border-zinc-100 dark:border-white/5" : "hidden md:flex"}
+        md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 transition-all duration-500
+      `}>
         <button
           disabled={!isPostPubliclyViewable(post)}
-          onClick={() =>
-            navigate({ to: "/post/$slug", params: { slug: post.slug } })
-          }
-          className={`h-8 w-8 flex items-center justify-center border transition-colors ${
-            post.status === "draft"
-              ? "text-gray-700 border-gray-800 cursor-not-allowed"
-              : "text-zzz-cyan border-zzz-cyan hover:bg-zzz-cyan hover:text-black"
-          }`}
+          onClick={handleView}
+          className="p-3 md:p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors disabled:opacity-10"
           title={viewTitle}
         >
-          <Eye size={14} />
+          <Eye size={18} strokeWidth={1.5} />
         </button>
         <button
-          onClick={() =>
-            navigate({
-              to: "/admin/posts/edit/$id",
-              params: { id: String(post.id) },
-            })
-          }
-          className="h-8 w-8 flex items-center justify-center border border-zzz-lime text-zzz-lime hover:bg-zzz-lime hover:text-black transition-colors"
-          title="Edit"
+          onClick={handleEdit}
+          className="p-3 md:p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors"
+          title="编辑"
         >
-          <Edit3 size={14} />
+          <Edit3 size={18} strokeWidth={1.5} />
         </button>
         <button
-          className="h-8 w-8 flex items-center justify-center border border-zzz-orange text-zzz-orange hover:bg-zzz-orange hover:text-black transition-colors"
-          title="Delete"
+          className="p-3 md:p-2 text-zinc-400 hover:text-red-500 transition-colors"
+          title="删除"
           onClick={() => onDelete(post)}
         >
-          <Trash2 size={14} />
+          <Trash2 size={18} strokeWidth={1.5} />
         </button>
       </div>
     </div>
+  );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  return (
+    <span
+      className={`text-[9px] px-2 py-0.5 uppercase tracking-[0.2em] font-bold rounded-full border ${
+        status === "published"
+          ? "border-green-500/20 text-green-500 bg-green-500/5"
+          : status === "draft"
+          ? "border-zinc-400/20 text-zinc-400 bg-zinc-400/5"
+          : "border-amber-500/20 text-amber-500 bg-amber-500/5"
+      }`}
+    >
+      {status === "published" ? "已发布" : status === "draft" ? "草稿" : "计划中"}
+    </span>
   );
 }

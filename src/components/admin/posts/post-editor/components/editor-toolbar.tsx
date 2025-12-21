@@ -1,8 +1,6 @@
-import TechButton from "@/components/ui/tech-button";
 import {
   ArrowLeft,
   Check,
-  CheckCircle2,
   Cpu,
   Loader2,
   RefreshCw,
@@ -38,66 +36,62 @@ export function EditorToolbar({
   processState,
 }: EditorToolbarProps) {
   return (
-    <div className="h-14 md:h-16 border-b border-zzz-gray bg-zzz-dark/80 backdrop-blur-md flex items-center justify-between px-3 md:px-6 z-40 shrink-0 transition-all">
+    <div className="h-16 border-b border-zinc-100 dark:border-white/5 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl flex items-center justify-between px-6 z-40 shrink-0 transition-all">
       {/* Left Section */}
-      <div className="flex items-center gap-2 md:gap-4">
+      <div className="flex items-center gap-6">
         <button
           onClick={onBack}
-          className="text-gray-500 hover:text-white transition-colors flex items-center gap-2 p-1"
+          className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors flex items-center gap-2"
         >
-          <ArrowLeft size={18} />
-          <span className="font-mono text-xs hidden md:inline">
-            返回日志
+          <ArrowLeft size={18} strokeWidth={1.5} />
+          <span className="text-[10px] uppercase tracking-[0.2em] font-medium hidden md:inline">
+            返回
           </span>
         </button>
 
-        <div className="h-4 md:h-6 w-px bg-zzz-gray" />
+        <div className="h-4 w-px bg-zinc-100 dark:bg-white/10" />
 
-        <div className="font-mono text-[10px] md:text-xs text-gray-500 uppercase flex items-center whitespace-nowrap">
+        <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-widest flex items-center gap-3">
           <span
             className={
-              status === "published" ? "text-zzz-lime" : "text-zzz-orange"
+              status === "published" ? "text-green-500" : "text-amber-500"
             }
           >
             {status || "DRAFT"}
           </span>
-          <span className="mx-1.5 md:mx-2">//</span>
-          <span>#{postId}</span>
+          <span className="opacity-20">/</span>
+          <span>ID: {postId}</span>
         </div>
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-2 md:gap-6">
-        <div className="hidden md:flex items-center gap-2">
-          <TechButton
-            variant={processState === "SUCCESS" ? "primary" : "secondary"}
-            size="sm"
+      <div className="flex items-center gap-6">
+        <div className="hidden md:flex items-center gap-4">
+          <button
             onClick={handleProcessData}
             disabled={status !== "published" || processState !== "IDLE"}
-            icon={
-              processState === "PROCESSING" ? (
-                <Loader2 size={14} className="animate-spin" />
-              ) : processState === "SUCCESS" ? (
-                <Check size={14} />
-              ) : (
-                <Cpu size={14} />
-              )
-            }
             className={`
-                        transition-all duration-300 min-w-[140px] justify-center
-                        ${
-                          processState === "IDLE"
-                            ? "border-dashed opacity-80 hover:opacity-100"
-                            : ""
-                        }
-                    `}
+                flex items-center gap-2 px-4 py-2 text-[10px] uppercase tracking-[0.2em] font-bold transition-all
+                ${
+                  processState === "SUCCESS"
+                    ? "text-green-500"
+                    : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 disabled:opacity-20"
+                }
+            `}
           >
+            {processState === "PROCESSING" ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : processState === "SUCCESS" ? (
+              <Check size={14} />
+            ) : (
+              <Cpu size={14} strokeWidth={1.5} />
+            )}
             {processState === "PROCESSING"
-              ? "TRANSMITTING..."
+              ? "部署中..."
               : processState === "SUCCESS"
-              ? "SIGNAL_QUEUED"
-              : "发布更新"}
-          </TechButton>
+              ? "已部署"
+              : "部署更新"}
+          </button>
         </div>
 
         <SaveIndicator
@@ -106,18 +100,18 @@ export function EditorToolbar({
           error={error}
         />
 
-        <div className="h-4 md:h-6 w-px bg-zzz-gray hidden sm:block" />
+        <div className="h-4 w-px bg-zinc-100 dark:bg-white/10 hidden sm:block" />
 
         <button
           onClick={onToggleSettings}
-          className={`flex items-center gap-2 px-2 md:px-3 py-2 text-xs font-bold uppercase transition-colors border cursor-pointer ${
+          className={`flex items-center gap-2 p-2 rounded-full transition-all duration-500 ${
             isSettingsOpen
-              ? "bg-zzz-gray text-white border-white"
-              : "text-gray-400 border-transparent hover:text-white"
+              ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rotate-90"
+              : "text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-white/5"
           }`}
+          title="文章设置"
         >
-          <Settings size={16} />
-          <span className="hidden md:inline">日志配置</span>
+          <Settings size={18} strokeWidth={1.5} />
         </button>
       </div>
     </div>
@@ -134,32 +128,30 @@ function SaveIndicator({
   error: string | null;
 }) {
   return (
-    <div className="flex items-center gap-2 font-mono text-[10px] tracking-widest uppercase">
+    <div className="flex items-center gap-3 text-[10px] font-mono tracking-widest uppercase">
       {saveStatus === "ERROR" ? (
         <>
-          <X size={12} className="text-zzz-orange" />
-          <span className="text-zzz-orange hidden sm:inline">{error}</span>
+          <X size={12} className="text-red-500" />
+          <span className="text-red-500 hidden sm:inline">{error}</span>
         </>
       ) : saveStatus === "SAVING" ? (
         <>
-          <RefreshCw size={12} className="text-zzz-orange animate-spin" />
-          <span className="text-zzz-orange hidden sm:inline">
-            传输中...
-          </span>
+          <RefreshCw size={12} className="text-zinc-400 animate-spin" />
+          <span className="text-zinc-400 hidden sm:inline">保存中...</span>
         </>
       ) : saveStatus === "PENDING" ? (
         <>
-          <div className="w-3 h-3 rounded-full bg-gray-500 animate-pulse" />
-          <span className="text-gray-400 hidden sm:inline">未同步</span>
+          <div className="w-1.5 h-1.5 rounded-full bg-zinc-300 dark:bg-zinc-700 animate-pulse" />
+          <span className="text-zinc-400 hidden sm:inline">待保存</span>
         </>
       ) : (
         <>
-          <CheckCircle2 size={12} className="text-zzz-lime" />
-          <span className="text-zzz-lime hidden sm:inline">
-            已同步{" "}
+          <div className="w-1.5 h-1.5 rounded-full bg-green-500" />
+          <span className="text-zinc-400 hidden sm:inline">
+            已保存{" "}
             {lastSaved && (
-              <span className="hidden lg:inline">
-                [{lastSaved.toLocaleTimeString()}]
+              <span className="opacity-40">
+                {lastSaved.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
               </span>
             )}
           </span>

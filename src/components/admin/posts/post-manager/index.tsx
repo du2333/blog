@@ -1,7 +1,6 @@
 import { ErrorPage } from "@/components/common/error-page";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
-import TechButton from "@/components/ui/tech-button";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
@@ -121,25 +120,23 @@ export function PostManager({
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
       {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-black font-sans uppercase text-white italic">
-            Data <span className="text-zzz-lime">Logs</span>
-          </h1>
-          <div className="text-[10px] font-mono text-gray-500 tracking-widest mt-1">
-            TOTAL_RECORDS: {totalCount} // FILTERED: {posts.length}
-          </div>
+      <div className="flex justify-between items-end">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-serif font-medium tracking-tight">文章管理</h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
+            Archive Registry // {totalCount} Records
+          </p>
         </div>
-        <TechButton
-          size="sm"
-          icon={<Plus size={14} />}
+        <button
           onClick={() => createMutation.mutate()}
           disabled={createMutation.isPending}
+          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
         >
-          {createMutation.isPending ? "创建中..." : "新建条目"}
-        </TechButton>
+          <Plus size={14} />
+          {createMutation.isPending ? "创建中..." : "新建文章"}
+        </button>
       </div>
 
       {/* Toolbar */}
@@ -164,35 +161,36 @@ export function PostManager({
       ) : isPending ? (
         <LoadingFallback />
       ) : (
-        <div className="space-y-2 relative z-0">
+        <div className="space-y-0 border-t border-zinc-100 dark:border-white/5">
           {posts.length === 0 ? (
-            <div className="p-12 flex flex-col items-center justify-center border border-dashed border-zzz-gray text-gray-500 font-mono text-xs gap-4">
-              <ListFilter size={48} className="opacity-20" />
+            <div className="py-24 flex flex-col items-center justify-center text-zinc-400 font-serif italic gap-4">
+              <ListFilter size={40} strokeWidth={1} className="opacity-20" />
               <div className="text-center">
-                NO_DATA_MATCHING_CRITERIA
-                <br />
-                <span
-                  className="text-zzz-orange mt-2 block cursor-pointer hover:underline"
+                未找到匹配的文章
+                <button
+                  className="text-zinc-900 dark:text-zinc-100 mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
                   onClick={onResetFilters}
                 >
-                  [CLEAR_FILTERS]
-                </span>
+                  [清除所有筛选]
+                </button>
               </div>
             </div>
           ) : (
             <>
-              {/* Desktop Header */}
-              <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-[10px] font-mono text-gray-600 font-bold uppercase tracking-wider border-b border-zzz-gray/30">
+              {/* Desktop Header (Simplified) */}
+              <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-bold border-b border-zinc-100 dark:border-white/5">
                 <div className="col-span-1">ID</div>
-                <div className="col-span-5">主题 (Subject)</div>
-                <div className="col-span-2">分类 (Class)</div>
-                <div className="col-span-2">日期 (Date)</div>
-                <div className="col-span-2 text-right">操作 (Ops)</div>
+                <div className="col-span-6">文章摘要</div>
+                <div className="col-span-2">分类</div>
+                <div className="col-span-2">日期</div>
+                <div className="col-span-1 text-right">操作</div>
               </div>
 
-              {posts.map((post) => (
-                <PostRow key={post.id} post={post} onDelete={handleDelete} />
-              ))}
+              <div className="divide-y divide-zinc-100 dark:divide-white/5">
+                {posts.map((post) => (
+                  <PostRow key={post.id} post={post} onDelete={handleDelete} />
+                ))}
+              </div>
             </>
           )}
         </div>
@@ -213,9 +211,9 @@ export function PostManager({
         isOpen={!!postToDelete}
         onClose={() => !deleteMutation.isPending && setPostToDelete(null)}
         onConfirm={confirmDelete}
-        title="PURGE DATA LOG"
-        message={`你确定要永久删除条目 "${postToDelete?.title}"? 此操作无法撤销。`}
-        confirmLabel="永久删除"
+        title="删除文章"
+        message={`您确定要永久删除文章 "${postToDelete?.title}" 吗？此操作无法撤销。`}
+        confirmLabel="确认删除"
         isDanger={true}
         isLoading={deleteMutation.isPending}
       />

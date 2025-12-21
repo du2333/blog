@@ -1,13 +1,13 @@
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 import { formatBytes } from "@/lib/utils";
-import { CheckCircle2, Circle, Film, Link2, Loader2 } from "lucide-react";
+import { Check, Film, Link2, Loader2 } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { useLongPress } from "../hooks";
 import { MediaAsset } from "../types";
 
 interface MediaGridProps {
   media: MediaAsset[];
-  selectedIds: Set<string>; // 使用 key 作为标识
+  selectedIds: Set<string>;
   onToggleSelect: (key: string) => void;
   onPreview: (asset: MediaAsset) => void;
   onLoadMore?: () => void;
@@ -44,7 +44,6 @@ function MediaCard({
   };
 
   const handleLongPress = () => {
-    // Long press always toggles selection (entering selection mode if not active)
     onToggleSelect(asset.key);
   };
 
@@ -56,104 +55,67 @@ function MediaCard({
     <div
       {...longPressHandlers}
       className={`
-        group relative aspect-square flex flex-col clip-corner-bl cursor-pointer transition-all touch-manipulation select-none
-        border-2 ${
+        group relative flex flex-col cursor-pointer transition-all duration-500 touch-manipulation select-none overflow-hidden rounded-sm border
+        ${
           isSelected
-            ? "border-zzz-cyan bg-zzz-cyan/5"
+            ? "border-zinc-900 dark:border-zinc-100 ring-4 ring-zinc-900/5 dark:ring-zinc-100/5 scale-[0.98]"
             : isLinked
-            ? "border-zzz-orange/30"
-            : "border-zzz-gray bg-black hover:border-gray-500"
+            ? "border-zinc-200 dark:border-white/10"
+            : "border-zinc-100 dark:border-white/5 hover:border-zinc-300 dark:hover:border-white/20"
         }
-        `}
+      `}
     >
+      {/* Selection Overlay */}
+      <div 
+        className={`absolute top-3 left-3 z-30 w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-500 ${
+          isSelected 
+            ? "bg-zinc-900 dark:bg-zinc-100 border-transparent scale-110" 
+            : "bg-white/40 dark:bg-black/40 border-white/20 dark:border-white/10 opacity-0 group-hover:opacity-100"
+        }`}
+        onMouseDown={(e) => e.stopPropagation()}
+        onMouseUp={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleSelect(asset.key);
+        }}
+      >
+        {isSelected && <Check size={12} className="text-white dark:text-zinc-900" strokeWidth={3} />}
+      </div>
+
+      {/* Linked Indicator */}
+      {isLinked && !isSelected && (
+        <div className="absolute top-3 right-3 z-20 text-zinc-400">
+          <Link2 size={12} strokeWidth={1.5} />
+        </div>
+      )}
+
       {/* Preview */}
-      <div className="flex-1 relative overflow-hidden bg-zzz-dark/50 pointer-events-none">
+      <div className="aspect-square relative overflow-hidden bg-zinc-50 dark:bg-[#0c0c0c]">
         {isImage ? (
           <img
             src={thumbnailUrl}
             alt={asset.fileName}
-            className="w-full h-full object-cover transition-opacity duration-300 opacity-80 group-hover:opacity-100"
+            className={`w-full h-full object-cover transition-all duration-1000 ${
+              isSelected ? "scale-110 blur-[2px] opacity-40" : "group-hover:scale-105"
+            }`}
             loading="lazy"
             decoding="async"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-600">
-            <Film size={32} />
+          <div className="w-full h-full flex items-center justify-center text-zinc-300 dark:text-zinc-700">
+            <Film size={32} strokeWidth={1} />
           </div>
         )}
-
-        {/* Linked Indicator */}
-        {isLinked && (
-          <div
-            className="absolute top-2 right-2 z-10 bg-zzz-black/80 backdrop-blur border border-zzz-orange text-zzz-orange p-1 rounded-sm pointer-events-none"
-            title="Asset Linked to Post"
-          >
-            <Link2 size={12} />
-          </div>
-        )}
-
-        {/* Selection Checkbox 
-            - Always visible on mobile (opacity-100)
-            - On Desktop (md): Hidden by default (md:opacity-0), visible on hover (md:group-hover:opacity-100)
-            - If selected: Always visible (opacity-100 override)
-        */}
-        <div
-          onMouseDown={(e) => e.stopPropagation()}
-          onTouchStart={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
-          onTouchEnd={(e) => e.stopPropagation()}
-          onClick={(e) => {
-            e.stopPropagation();
-            onToggleSelect(asset.key);
-          }}
-          className={`
-                absolute top-0 left-0 p-3 z-20 transition-all duration-200 cursor-pointer pointer-events-auto
-                ${
-                  isSelected
-                    ? "opacity-100"
-                    : "opacity-100 md:opacity-0 md:group-hover:opacity-100"
-                }
-            `}
-        >
-          <div
-            className={`
-                w-6 h-6 flex items-center justify-center border rounded-full backdrop-blur-sm shadow-md transition-all
-                ${
-                  isSelected
-                    ? "bg-zzz-cyan border-zzz-cyan text-black"
-                    : "bg-black/50 border-white/50 text-transparent hover:bg-black hover:border-zzz-cyan"
-                }
-            `}
-          >
-            {isSelected ? <CheckCircle2 size={16} /> : <Circle size={16} />}
-          </div>
-        </div>
       </div>
 
       {/* Info */}
-      <div
-        className={`p-3 border-t transition-colors ${
-          isSelected
-            ? "border-zzz-cyan bg-zzz-cyan/10"
-            : isLinked
-            ? "border-zzz-orange/30 bg-zzz-orange/5"
-            : "border-zzz-gray bg-zzz-dark/80"
-        }`}
-      >
-        <div
-          className={`text-xs font-bold truncate mb-1 ${
-            isLinked ? "text-zzz-orange" : "text-white"
-          }`}
-        >
+      <div className="p-4 space-y-1 bg-white dark:bg-[#0c0c0c]">
+        <div className="text-[11px] font-medium text-zinc-900 dark:text-zinc-100 truncate">
           {asset.fileName}
         </div>
-        <div className="flex justify-between text-[10px] text-gray-500 font-mono">
+        <div className="flex justify-between text-[9px] text-zinc-400 dark:text-zinc-600 font-mono tracking-wider uppercase">
           <span>{formatBytes(asset.sizeInBytes)}</span>
-          <span>
-            {asset.createdAt
-              ? new Date(asset.createdAt).toLocaleDateString()
-              : ""}
-          </span>
+          <span>{asset.mimeType.split('/')[1]}</span>
         </div>
       </div>
     </div>
@@ -199,8 +161,8 @@ export function MediaGrid({
 
   if (media.length === 0) {
     return (
-      <div className="p-12 text-center border-2 border-dashed border-zzz-gray bg-black/50 text-gray-500 font-mono text-xs">
-        扇区内未找到资产
+      <div className="py-32 text-center font-serif italic text-zinc-400 border border-dashed border-zinc-100 dark:border-white/5 rounded-sm">
+        媒体库中暂无资产
       </div>
     );
   }
@@ -208,8 +170,8 @@ export function MediaGrid({
   const selectionModeActive = selectedIds.size > 0;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div className="space-y-12">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
         {media.map((asset) => {
           const isSelected = selectedIds.has(asset.key);
           const isLinked = linkedMediaIds.has(asset.key);
@@ -233,19 +195,20 @@ export function MediaGrid({
       {/* Loading / Sentinel */}
       <div
         ref={observerTarget}
-        className="h-10 flex items-center justify-center w-full"
+        className="py-12 flex flex-col items-center justify-center gap-4"
       >
-        {isLoadingMore && (
-          <div className="flex items-center gap-2 text-zzz-lime text-xs font-mono animate-pulse">
-            <Loader2 size={16} className="animate-spin" />{" "}
-            LOADING_SECTOR_DATA...
+        {isLoadingMore ? (
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-10 h-10 rounded-full border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
+              <Loader2 size={16} className="text-zinc-400 animate-spin" />
+            </div>
+            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400 animate-pulse">
+              Syncing
+            </span>
           </div>
-        )}
-        {!hasMore && media.length > 0 && (
-          <div className="text-gray-600 text-[10px] font-mono">
-            END_OF_ARCHIVE
-          </div>
-        )}
+        ) : !hasMore && media.length > 0 ? (
+          <div className="h-px w-24 bg-zinc-100 dark:bg-white/5" />
+        ) : null}
       </div>
     </div>
   );

@@ -1,8 +1,13 @@
 import { SideBar } from "@/components/admin/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/cache/cache-control";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
-import { Menu } from "lucide-react";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+} from "@tanstack/react-router";
+import { ArrowUpRight, Menu } from "lucide-react";
 import { useState } from "react";
 
 export const Route = createFileRoute("/admin")({
@@ -29,7 +34,7 @@ function AdminLayout() {
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-zinc-100 flex relative transition-colors duration-500">
+    <div className="min-h-screen bg-zinc-50 dark:bg-[#050505] text-zinc-900 dark:text-zinc-100 flex relative transition-colors duration-500 font-sans">
       <SideBar
         isMobileSidebarOpen={isMobileSidebarOpen}
         closeMobileSidebar={closeMobileSidebar}
@@ -49,20 +54,31 @@ function AdminLayout() {
             <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-zinc-400">
               <span className="hidden sm:inline">Admin</span>
               <span className="hidden sm:inline opacity-30">/</span>
-              <span className="text-zinc-900 dark:text-zinc-100 font-medium">
-                Dashboard
+              <span className="text-zinc-950 dark:text-zinc-50 font-bold tracking-widest uppercase">
+                Workspace
               </span>
             </div>
           </div>
 
-          <div className="text-[10px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.4em] hidden sm:block">
-            System Control Center
+          <div className="flex items-center gap-6">
+            <Link
+              to="/"
+              className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors group"
+            >
+              <span>查看前台</span>
+              <ArrowUpRight
+                size={12}
+                className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
+              />
+            </Link>
           </div>
         </header>
 
         {/* Content Scroll */}
-        <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
-          <Outlet />
+        <div className="flex-1 overflow-y-auto p-6 md:p-12 custom-scrollbar">
+          <div className="max-w-7xl mx-auto">
+            <Outlet />
+          </div>
         </div>
       </main>
     </div>

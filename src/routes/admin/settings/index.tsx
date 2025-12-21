@@ -1,9 +1,8 @@
 import { AiProviderSection } from "@/components/admin/settings/ai-provider-section";
 import { EmailServiceSection } from "@/components/admin/settings/email-service-section";
 import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";
-import TechButton from "@/components/ui/tech-button";
 import { createFileRoute } from "@tanstack/react-router";
-import { Check, Terminal } from "lucide-react";
+import { Check, Info } from "lucide-react";
 import { toast } from "sonner";
 import { useSystemSetting } from "@/components/admin/settings/use-system-setting";
 import { SystemConfig, DEFAULT_CONFIG } from "@/features/config/config.schema";
@@ -35,29 +34,31 @@ function RouteComponent() {
   const handleSaveConfig = () => {
     const promise = saveSettings({ data: config });
     toast.promise(promise, {
-      loading: "正在写入固件...",
-      success: "系统配置已永久生效",
-      error: "写入冲突",
+      loading: "正在保存系统配置...",
+      success: "系统配置已生效",
+      error: "保存失败，请重试",
     });
   };
 
   return (
-    <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20 max-w-5xl">
-      <div className="flex justify-between items-end border-b border-zzz-gray pb-4">
-        <div>
-          <h1 className="text-3xl font-black font-sans uppercase text-white italic">
-            System <span className="text-zzz-cyan">Config</span>
-          </h1>
-          <p className="text-xs font-mono text-gray-500 mt-1">
-            GLOBAL_SETTINGS // MAINTENANCE_PROTOCOLS
+    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 max-w-6xl mx-auto">
+      <header className="flex justify-between items-end">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-serif font-medium tracking-tight">系统设置</h1>
+          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
+            Global Configuration // System Protocols
           </p>
         </div>
-        <TechButton onClick={handleSaveConfig} icon={<Check size={16} />}>
+        <button
+          onClick={handleSaveConfig}
+          className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
+        >
+          <Check size={14} />
           保存更改
-        </TechButton>
-      </div>
+        </button>
+      </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
         {isLoading ? (
           <>
             <SectionSkeleton />
@@ -88,13 +89,21 @@ function RouteComponent() {
       <MaintenanceSection />
 
       {/* System Footer Info */}
-      <div className="flex items-center gap-4 text-[10px] font-mono text-gray-700 uppercase tracking-[0.3em] pt-12">
-        <Terminal size={12} />
-        <span>Kernel_Version: 3.1.2-ZZZ</span>
-        <span>//</span>
-        <span>Uptime: 1,244h</span>
-        <span>//</span>
-        <span className="text-zzz-lime animate-pulse">All Systems Nominal</span>
+      <div className="pt-12 border-t border-zinc-100 dark:border-white/5">
+        <div className="flex items-center gap-6 text-[10px] font-mono text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.3em]">
+          <div className="flex items-center gap-2">
+            <Info size={12} strokeWidth={1.5} />
+            <span>Kernel: v3.1.2-CMS</span>
+          </div>
+          <div className="hidden sm:block opacity-20">/</div>
+          <div className="hidden sm:flex items-center gap-2">
+            <span>Server Uptime: 1,244h</span>
+          </div>
+          <div className="ml-auto flex items-center gap-2">
+            <div className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
+            <span className="text-green-500 font-bold">All Systems Operational</span>
+          </div>
+        </div>
       </div>
     </div>
   );

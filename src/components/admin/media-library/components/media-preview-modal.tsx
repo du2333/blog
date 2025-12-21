@@ -1,5 +1,4 @@
 import { MediaAsset } from "@/components/admin/media-library/types";
-import TechButton from "@/components/ui/tech-button";
 import { getLinkedPostsFn } from "@/features/media/images.api";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { formatBytes } from "@/lib/utils";
@@ -16,6 +15,7 @@ import {
   Loader2,
   Pencil,
   X,
+  Layout,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -78,174 +78,158 @@ export function MediaPreviewModal({
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center ${
+      className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 ${
         isMounted ? "pointer-events-auto" : "pointer-events-none"
       }`}
     >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-black/95 backdrop-blur-md transition-opacity duration-200 ${
+        className={`absolute inset-0 bg-white/90 dark:bg-black/90 backdrop-blur-xl transition-all duration-500 ${
           isMounted ? "opacity-100" : "opacity-0"
         }`}
         onClick={onClose}
       />
 
-      {/* Close Button (Absolute Top Right) */}
+      {/* Close Button */}
       <button
         onClick={onClose}
-        className={`absolute top-4 right-4 z-50 text-gray-500 hover:text-white transition-all p-2 bg-black/80 rounded-full border border-zzz-gray hover:border-white ${
+        className={`absolute top-8 right-8 z-[110] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all duration-500 ${
           isMounted ? "opacity-100 scale-100" : "opacity-0 scale-90"
         }`}
       >
-        <X size={24} />
+        <X size={32} strokeWidth={1} />
       </button>
 
       <div
         className={`
-        w-full max-w-6xl h-full md:h-[85vh] flex flex-col md:flex-row bg-zzz-dark border border-zzz-gray shadow-[0_0_100px_rgba(0,0,0,0.8)] relative overflow-hidden clip-corner-tr z-10
+        w-full max-w-7xl h-full flex flex-col md:flex-row bg-white dark:bg-[#050505] border border-zinc-100 dark:border-white/5 shadow-2xl relative overflow-hidden z-10 rounded-sm
         ${
           isMounted
             ? "animate-in fade-in zoom-in-95"
             : "animate-out fade-out zoom-out-95"
-        } duration-200
+        } duration-500
       `}
       >
         {/* --- Image Viewport (Left/Top) --- */}
-        <div className="h-[40vh] md:h-auto md:flex-1 bg-black relative flex items-center justify-center overflow-hidden p-8 group border-b md:border-b-0 md:border-r border-zzz-gray">
-          {/* Grid Background */}
-          <div className="absolute inset-0 bg-dot-pattern opacity-20 pointer-events-none"></div>
-
+        <div className="h-[45vh] md:h-auto md:flex-1 bg-zinc-50 dark:bg-black/20 relative flex items-center justify-center overflow-hidden p-8 md:p-12 border-b md:border-b-0 md:border-r border-zinc-100 dark:border-white/5">
           <img
             src={activeAsset.url}
             alt={activeAsset.fileName}
-            className="max-w-full max-h-full object-contain shadow-2xl drop-shadow-[0_0_50px_rgba(0,0,0,0.5)] border border-zzz-gray/20 bg-black relative z-10"
+            className="max-w-full max-h-full object-contain relative z-10 transition-transform duration-1000 group-hover:scale-[1.02]"
           />
-
-          {/* Deco Corners */}
-          <div className="absolute top-4 left-4 w-16 h-16 border-t-2 border-l-2 border-zzz-lime/30"></div>
-          <div className="absolute bottom-4 right-4 w-16 h-16 border-b-2 border-r-2 border-zzz-lime/30"></div>
         </div>
 
         {/* --- Metadata Sidebar (Right/Bottom) --- */}
-        <div className="flex-1 md:w-80 md:flex-none bg-zzz-black flex flex-col min-h-0">
-          {/* Header with Safe Area for Close Button */}
-          <div className="p-6 border-b border-zzz-gray pr-16 relative">
-            <div className="text-[10px] font-mono text-zzz-orange uppercase tracking-widest mb-2">
-              Asset_Inspector // V.01
+        <div className="flex-1 md:w-[400px] md:flex-none flex flex-col min-h-0 bg-white dark:bg-[#050505]">
+          {/* Header */}
+          <div className="p-8 md:p-10 border-b border-zinc-100 dark:border-white/5">
+            <div className="text-[10px] font-mono text-zinc-400 uppercase tracking-[0.3em] mb-4">
+              Asset Details
             </div>
 
             {isEditing ? (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-3">
                 <input
                   type="text"
                   value={editName}
                   onChange={(e) => setEditName(e.target.value)}
-                  className="w-full bg-black border border-zzz-lime text-white text-sm font-bold p-1 focus:outline-none"
+                  className="flex-1 bg-zinc-50 dark:bg-white/5 border-none text-sm font-medium p-3 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
                   autoFocus
                 />
                 <button
                   onClick={handleSaveName}
                   disabled={isSaving}
-                  className="text-zzz-lime hover:bg-zzz-lime/10 p-1 rounded"
+                  className="p-2 text-green-500 hover:bg-green-500/5 rounded-full"
                 >
-                  {isSaving ? (
-                    <Loader2 size={16} className="animate-spin" />
-                  ) : (
-                    <Check size={16} />
-                  )}
+                  {isSaving ? <Loader2 size={18} className="animate-spin" /> : <Check size={18} strokeWidth={2.5} />}
                 </button>
                 <button
                   onClick={() => setIsEditing(false)}
                   disabled={isSaving}
-                  className="text-red-500 hover:bg-red-500/10 p-1 rounded"
+                  className="p-2 text-zinc-400 hover:text-red-500 rounded-full"
                 >
-                  <X size={16} />
+                  <X size={18} strokeWidth={2.5} />
                 </button>
               </div>
             ) : (
-              <div className="flex justify-between items-start gap-2 group/edit">
-                <h2 className="text-xl font-bold font-sans text-white uppercase break-all leading-tight">
+              <div className="flex justify-between items-start gap-4 group/edit">
+                <h2 className="text-2xl font-serif font-medium tracking-tight text-zinc-900 dark:text-zinc-50 break-all leading-[1.1]">
                   {activeAsset.fileName}
                 </h2>
                 <button
                   onClick={() => setIsEditing(true)}
-                  className="text-gray-600 hover:text-zzz-cyan transition-colors opacity-0 group-hover/edit:opacity-100"
-                  title="Rename Asset"
+                  className="mt-1 text-zinc-300 dark:text-zinc-700 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors opacity-0 group-hover/edit:opacity-100"
                 >
-                  <Pencil size={14} />
+                  <Pencil size={16} strokeWidth={1.5} />
                 </button>
               </div>
             )}
           </div>
 
           {/* Details List */}
-          <div className="flex-1 p-6 space-y-6 overflow-y-auto custom-scrollbar">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <HardDrive size={14} /> 文件大小
-              </div>
-              <div className="text-white font-mono">
-                {formatBytes(activeAsset.sizeInBytes)}
-              </div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <FileText size={14} /> 文件类型
-              </div>
-              <div className="text-white font-mono">{activeAsset.mimeType}</div>
-            </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                <Calendar size={14} /> 上传日期
-              </div>
-              <div className="text-white font-mono">
-                {activeAsset.createdAt
-                  ? new Date(activeAsset.createdAt).toLocaleDateString()
-                  : "Unknown"}
-              </div>
-            </div>
-
-            {/* Dimensions (if available) */}
-            {activeAsset.width && activeAsset.height && (
-              <div className="space-y-1">
-                <div className="flex items-center gap-2 text-xs font-mono text-gray-500 uppercase">
-                  尺寸
+          <div className="flex-1 p-8 md:p-10 space-y-10 overflow-y-auto custom-scrollbar">
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                  <HardDrive size={12} strokeWidth={1.5} /> 大小
                 </div>
-                <div className="text-white font-mono">
-                  {activeAsset.width} × {activeAsset.height}
+                <div className="text-sm font-medium font-mono text-zinc-900 dark:text-zinc-100 uppercase">
+                  {formatBytes(activeAsset.sizeInBytes)}
                 </div>
               </div>
-            )}
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                  <FileText size={12} strokeWidth={1.5} /> 格式
+                </div>
+                <div className="text-sm font-medium font-mono text-zinc-900 dark:text-zinc-100 uppercase">
+                  {activeAsset.mimeType.split('/')[1]}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                  <Layout size={12} strokeWidth={1.5} /> 尺寸
+                </div>
+                <div className="text-sm font-medium font-mono text-zinc-900 dark:text-zinc-100 uppercase">
+                  {activeAsset.width && activeAsset.height ? `${activeAsset.width} × ${activeAsset.height}` : "Unknown"}
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-widest">
+                  <Calendar size={12} strokeWidth={1.5} /> 日期
+                </div>
+                <div className="text-sm font-medium font-mono text-zinc-900 dark:text-zinc-100 uppercase">
+                  {activeAsset.createdAt ? new Date(activeAsset.createdAt).toLocaleDateString() : "Unknown"}
+                </div>
+              </div>
+            </div>
 
             {/* Linked Posts Section */}
-            <div className="pt-4 border-t border-dashed border-zzz-gray/30">
-              <div className="flex items-center gap-2 text-xs font-mono text-zzz-cyan uppercase mb-3">
-                <Link2 size={14} /> 关联条目 ({linkedPosts.length})
+            <div className="pt-8 border-t border-zinc-100 dark:border-white/5">
+              <div className="flex items-center gap-2 text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em] mb-6">
+                <Link2 size={12} strokeWidth={1.5} /> 关联文章 ({linkedPosts.length})
               </div>
               {linkedPosts.length === 0 ? (
-                <div className="text-[10px] text-gray-600 font-mono italic">
-                  未检测到关联条目
+                <div className="text-[11px] font-serif italic text-zinc-300 dark:text-zinc-700">
+                  未关联任何文章
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
                   {linkedPosts.map((post) => (
                     <Link
                       key={post.id}
                       to={"/admin/posts/edit/$id"}
                       params={{ id: String(post.id) }}
-                      className="block p-2 bg-zzz-dark/50 border border-zzz-gray/30 hover:border-zzz-cyan hover:text-zzz-cyan transition-colors group"
+                      className="block p-4 bg-zinc-50 dark:bg-white/[0.03] hover:bg-zinc-100 dark:hover:bg-white/[0.06] transition-all rounded-sm group"
                     >
-                      <div className="text-[10px] font-bold uppercase truncate flex items-center gap-1">
+                      <div className="text-[11px] font-medium text-zinc-900 dark:text-zinc-100 truncate mb-1 flex items-center justify-between">
                         {post.title}
-                        <ExternalLink
-                          size={10}
-                          className="opacity-50 group-hover:opacity-100"
-                        />
+                        <ExternalLink size={10} className="opacity-0 group-hover:opacity-100 transition-opacity" />
                       </div>
-                      <div className="text-[9px] text-gray-500 font-mono">
-                        SLUG: {post.slug}
+                      <div className="text-[9px] font-mono text-zinc-400 uppercase tracking-wider">
+                        /{post.slug}
                       </div>
                     </Link>
                   ))}
@@ -253,32 +237,27 @@ export function MediaPreviewModal({
               )}
             </div>
 
-            <div className="space-y-1 pt-4 border-t border-dashed border-zzz-gray/30">
-              <div className="text-xs font-mono text-gray-500 uppercase mb-2">
-                资产密钥
+            <div className="space-y-3 pt-8 border-t border-zinc-100 dark:border-white/5">
+              <div className="text-[10px] font-bold text-zinc-400 uppercase tracking-[0.2em]">
+                资产 ID / KEY
               </div>
-              <div className="bg-zzz-dark p-2 text-[10px] font-mono text-zzz-cyan break-all border border-zzz-gray/50">
+              <div className="p-4 bg-zinc-50 dark:bg-white/[0.03] text-[10px] font-mono text-zinc-500 dark:text-zinc-500 break-all rounded-sm leading-relaxed select-all">
                 {activeAsset.key}
               </div>
             </div>
           </div>
 
           {/* Actions */}
-          <div className="p-6 border-t border-zzz-gray bg-zzz-dark/30 shrink-0">
+          <div className="p-8 md:p-10 border-t border-zinc-100 dark:border-white/5">
             <a
               href={`${activeAsset.url}?original=true`}
               download={activeAsset.fileName}
               target="_blank"
               rel="noreferrer"
-              className="block"
+              className="flex items-center justify-center gap-3 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
             >
-              <TechButton
-                variant="secondary"
-                className="w-full"
-                icon={<Download size={16} />}
-              >
-                下载原始文件
-              </TechButton>
+              <Download size={16} strokeWidth={1.5} />
+              下载原始文件
             </a>
           </div>
         </div>

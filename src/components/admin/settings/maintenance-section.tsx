@@ -1,5 +1,4 @@
 import ConfirmationModal from "@/components/ui/confirmation-modal";
-import TechButton from "@/components/ui/tech-button";
 import {
   AlertTriangle,
   Database,
@@ -19,80 +18,74 @@ export function MaintenanceSection() {
     setIsModalOpen(false);
     setIsIndexing(true);
     toast.promise(buildSearchIndexFn, {
-      loading: "正在扫描扇区数据...",
+      loading: "正在重新映射索引...",
       success: ({ duration, indexed }) => {
         setIsIndexing(false);
-        return `搜索索引重建完成, 耗时 ${duration}ms, 索引 ${indexed} 条数据`;
+        return `索引重建完成 (耗时 ${duration}ms, 共 ${indexed} 条数据)`;
       },
-      error: "索引构建失败",
+      error: "索引重建失败",
     });
   };
 
   return (
-    <div className="mt-12">
-      <h2 className="text-xl font-bold font-sans uppercase text-white mb-6 flex items-center gap-2">
-        <Server size={20} className="text-zzz-orange" />
-        数据维护 (Maintenance)
+    <div className="space-y-8">
+      <h2 className="text-xl font-serif font-medium tracking-tight flex items-center gap-3">
+        <Server size={20} strokeWidth={1.5} className="text-zinc-400" />
+        系统维护
       </h2>
 
-      <div className="bg-black border border-zzz-gray p-1">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Index Module */}
-        <div className="bg-zzz-dark/30 p-6 flex flex-col md:flex-row justify-between items-center gap-6 border-b border-zzz-gray border-dashed relative overflow-hidden group">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="bg-zzz-gray/20 p-2 rounded text-white group-hover:bg-zzz-lime group-hover:text-black transition-colors">
-                <Search size={20} />
+        <div className="bg-white dark:bg-white/[0.02] border border-zinc-100 dark:border-white/5 p-8 rounded-sm space-y-6 flex flex-col group hover:border-zinc-200 dark:hover:border-white/10 transition-all duration-500">
+          <div className="flex-1 space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-zinc-50 dark:bg-white/5 text-zinc-400 group-hover:bg-zinc-900 dark:group-hover:bg-zinc-100 group-hover:text-white dark:group-hover:text-zinc-900 transition-all duration-500">
+                <Search size={18} strokeWidth={1.5} />
               </div>
-              <h3 className="font-bold text-white uppercase tracking-wider">
-                搜索索引重建
-              </h3>
+              <h3 className="text-sm font-medium tracking-tight uppercase">搜索索引重建</h3>
             </div>
-            <p className="text-xs font-mono text-gray-500 leading-relaxed max-w-lg">
-              重新扫描所有数据库条目以重建搜索映射。
-              <span className="text-zzz-orange block mt-1">
-                <AlertTriangle size={10} className="inline mr-1" />{" "}
-                仅在批量导入后使用。
-              </span>
+            <p className="text-xs text-zinc-500 dark:text-zinc-400 leading-relaxed font-normal">
+              同步全站数据库记录至搜索映射表。建议在手动修改数据库或执行大批量数据录入后运行此操作。
             </p>
+            <div className="flex items-center gap-2 text-[10px] font-bold text-amber-500 uppercase tracking-widest bg-amber-500/5 px-3 py-1 rounded-full w-fit">
+              <AlertTriangle size={10} strokeWidth={2.5} />
+              仅限管理员操作
+            </div>
           </div>
-          <TechButton
-            variant="secondary"
+          
+          <button
             onClick={() => setIsModalOpen(true)}
             disabled={isIndexing}
-            className="border-zzz-orange text-zzz-orange hover:bg-zzz-orange hover:text-black w-48"
-            icon={
-              isIndexing ? (
-                <RefreshCw size={16} className="animate-spin" />
-              ) : (
-                <Database size={16} />
-              )
-            }
+            className="w-full flex items-center justify-center gap-3 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50"
           >
-            {isIndexing ? "构建中..." : "重建索引"}
-          </TechButton>
-          <div className="absolute right-0 top-0 bottom-0 w-32 bg-stripe-pattern opacity-5 pointer-events-none"></div>
+            {isIndexing ? (
+              <RefreshCw size={16} className="animate-spin" />
+            ) : (
+              <Database size={16} strokeWidth={1.5} />
+            )}
+            {isIndexing ? "同步中..." : "启动索引重建"}
+          </button>
         </div>
 
-        {/* Cache Module */}
-        <div className="bg-zzz-dark/30 p-6 flex flex-col md:flex-row justify-between items-center gap-6 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all">
-          <div className="flex-1">
-            <div className="flex items-center gap-3 mb-2">
-              <div className="bg-zzz-gray/20 p-2 rounded text-white group-hover:bg-red-500 group-hover:text-black transition-colors">
-                <RefreshCw size={20} />
+        {/* Cache Module (Locked/Disabled State) */}
+        <div className="bg-zinc-50 dark:bg-black/20 border border-zinc-100 dark:border-white/5 p-8 rounded-sm space-y-6 flex flex-col opacity-40 grayscale pointer-events-none">
+          <div className="flex-1 space-y-4">
+            <div className="flex items-center gap-3 text-zinc-400">
+              <div className="p-2 rounded-full bg-white dark:bg-zinc-900 border border-current">
+                <RefreshCw size={18} strokeWidth={1.5} />
               </div>
-              <h3 className="font-bold text-white uppercase tracking-wider">
-                系统缓存清理
-              </h3>
+              <h3 className="text-sm font-medium tracking-tight uppercase">系统缓存清理</h3>
             </div>
-            <p className="text-xs font-mono text-gray-500">
-              清除本地存储和会话数据。强制断开代理人连接。
+            <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+              清除全站分布式缓存及边缘节点镜像。此操作将导致短时间内的访问速度下降。
             </p>
           </div>
+          
           <button
             disabled
-            className="px-6 py-2 border border-zzz-gray text-gray-600 font-mono text-xs font-bold uppercase cursor-not-allowed"
+            className="w-full py-4 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-300 dark:text-zinc-700"
           >
-            清理缓存
+            暂时不可用
           </button>
         </div>
       </div>
@@ -101,9 +94,9 @@ export function MaintenanceSection() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onConfirm={handleRebuild}
-        title="确认重建索引"
-        message="正在请求全扇区扫描。此操作将重新映射所有 HDD 数据日志，可能会导致短时间的检索延迟。是否继续执行?"
-        confirmLabel="启动构建协议"
+        title="确认索引重建"
+        message="该操作将全量扫描所有数据库日志并重新建立搜索映射。在执行过程中，前端搜索功能可能出现短暂不可用或延迟。是否确认执行？"
+        confirmLabel="启动同步协议"
       />
     </div>
   );

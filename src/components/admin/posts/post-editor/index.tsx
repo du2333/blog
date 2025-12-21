@@ -68,13 +68,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
   }, []);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] relative overflow-hidden bg-black">
+    <div className="flex flex-col h-[calc(100vh-4rem)] relative overflow-hidden bg-white dark:bg-[#050505]">
       <ConfirmationModal
         isOpen={status === "blocked"}
         onClose={() => reset?.()}
         onConfirm={() => proceed?.()}
-        title="未保存的更改"
-        message="你确定要离开吗？你将丢失所有未保存的更改。"
+        title="离开页面？"
+        message="您有正在保存的更改。离开可能会导致部分数据丢失。"
+        confirmLabel="确认离开"
       />
 
       {/* Top Control Bar */}
@@ -93,31 +94,28 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 
       {/* Main Document Area */}
       <div className="flex-1 overflow-y-auto custom-scrollbar relative">
-        <div className="w-full max-w-4xl mx-auto py-12 px-6 md:px-12 min-h-full bg-black">
+        <div className="w-full max-w-4xl mx-auto py-20 px-6 md:px-12 min-h-full">
           {/* Title Field (Auto-expanding Textarea) */}
-          <div className="mb-8 relative group">
+          <div className="mb-12 group">
             <TextareaAutosize
               value={post.title}
               onChange={(e) => setPost({ ...post, title: e.target.value })}
               minRows={1}
-              placeholder="UNTITLED_LOG..."
-              className="w-full bg-transparent text-4xl md:text-6xl font-black font-sans uppercase text-white placeholder-gray-800 focus:outline-none border-l-4 border-transparent focus:border-zzz-lime pl-4 py-1 transition-all overflow-hidden leading-none resize-none"
+              placeholder="在此输入标题..."
+              className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none"
             />
-            <div className="absolute -left-6 top-2 bottom-2 w-1 bg-zzz-gray/20 group-hover:bg-zzz-gray/50 transition-colors pointer-events-none" />
           </div>
 
           {/* Editor */}
-          <div className="min-h-[500px]">
+          <div className="min-h-[600px] pb-32">
             <Editor
               content={post.contentJson ?? ""}
               onChange={handleContentChange}
             />
           </div>
 
-          {/* Bottom Spacer */}
-          <div className="h-40 flex items-center justify-center opacity-30 pointer-events-none">
-            <div className="h-1 w-20 bg-zzz-gray" />
-          </div>
+          {/* Bottom Footer Decoration */}
+          <div className="h-px w-full bg-zinc-100 dark:bg-white/5 mt-auto mb-20" />
         </div>
       </div>
 

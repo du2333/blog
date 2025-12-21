@@ -1,7 +1,6 @@
 import {
   ArrowUpDown,
-  Calendar,
-  ChevronRight,
+  ChevronDown,
   Filter,
   Search,
   Tag,
@@ -51,24 +50,25 @@ export function PostsToolbar({
     searchTerm !== "";
 
   return (
-    <div className="flex flex-col xl:flex-row gap-4 mb-6 relative z-20 bg-zzz-dark/30 border border-zzz-gray p-2 items-start xl:items-center">
+    <div className="flex flex-col lg:flex-row gap-6 mb-12 items-start lg:items-center">
       {/* Search */}
-      <div className="relative flex-1 w-full xl:w-auto">
+      <div className="relative w-full lg:max-w-md">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
-          size={14}
+          className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700"
+          size={16}
+          strokeWidth={1.5}
         />
         <input
           type="text"
-          placeholder="检索日志 (标题)..."
+          placeholder="检索文章标题..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-2.5 focus:border-zzz-lime focus:outline-none transition-colors"
+          className="w-full bg-transparent border-b border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-serif italic pl-8 pr-8 py-3 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
         />
         {searchTerm && (
           <button
             onClick={() => onSearchChange("")}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-white"
+            className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
           >
             <X size={14} />
           </button>
@@ -76,9 +76,9 @@ export function PostsToolbar({
       </div>
 
       {/* Filters Container */}
-      <div className="flex flex-wrap gap-2 w-full xl:w-auto">
+      <div className="flex flex-wrap gap-4 w-full lg:w-auto">
         {/* 1. Category Filter */}
-        <div className="relative filter-dropdown-container">
+        <div className="relative">
           <button
             onClick={() =>
               setActiveDropdown(
@@ -86,26 +86,25 @@ export function PostsToolbar({
               )
             }
             className={`
-                            h-10 px-4 border flex items-center gap-2 text-[10px] font-bold uppercase transition-all min-w-[140px] justify-between
-                            ${
-                              category !== "ALL"
-                                ? "bg-zzz-cyan/10 border-zzz-cyan text-zzz-cyan"
-                                : "bg-black border-zzz-gray text-gray-400 hover:text-white hover:border-white"
-                            }
-                        `}
+                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
+                ${
+                  category !== "ALL"
+                    ? "text-zinc-950 dark:text-zinc-50"
+                    : "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+                }
+            `}
           >
-            <span className="flex items-center gap-2">
-              <Tag size={14} /> {category === "ALL" ? "分类" : category}
-            </span>
-            <ChevronRight
+            <Tag size={12} strokeWidth={1.5} />
+            {category === "ALL" ? "所有分类" : category}
+            <ChevronDown
               size={12}
-              className={`transition-transform ${
-                activeDropdown === "CATEGORY" ? "rotate-90" : ""
+              className={`transition-transform duration-500 opacity-40 ${
+                activeDropdown === "CATEGORY" ? "rotate-180" : ""
               }`}
             />
           </button>
           {activeDropdown === "CATEGORY" && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-zzz-black border border-zzz-gray shadow-xl z-30 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
               {CATEGORY_FILTERS.map((cat) => (
                 <button
                   key={cat}
@@ -113,16 +112,13 @@ export function PostsToolbar({
                     onCategoryChange(cat);
                     setActiveDropdown(null);
                   }}
-                  className={`w-full text-left px-4 py-2 text-[10px] font-mono font-bold hover:bg-zzz-gray/20 flex items-center justify-between group ${
+                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
                     category === cat
-                      ? "text-zzz-cyan bg-zzz-cyan/5"
-                      : "text-gray-400"
+                      ? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
+                      : "text-zinc-400"
                   }`}
                 >
                   {cat}
-                  {category === cat && (
-                    <div className="w-1.5 h-1.5 bg-zzz-cyan rounded-full"></div>
-                  )}
                 </button>
               ))}
             </div>
@@ -130,32 +126,31 @@ export function PostsToolbar({
         </div>
 
         {/* 2. Status Filter */}
-        <div className="relative filter-dropdown-container">
+        <div className="relative">
           <button
             onClick={() =>
               setActiveDropdown(activeDropdown === "STATUS" ? null : "STATUS")
             }
             className={`
-                            h-10 px-4 border flex items-center gap-2 text-[10px] font-bold uppercase transition-all min-w-[130px] justify-between
-                            ${
-                              status !== "ALL"
-                                ? "bg-zzz-lime/10 border-zzz-lime text-zzz-lime"
-                                : "bg-black border-zzz-gray text-gray-400 hover:text-white hover:border-white"
-                            }
-                        `}
+                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
+                ${
+                  status !== "ALL"
+                    ? "text-zinc-950 dark:text-zinc-50"
+                    : "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+                }
+            `}
           >
-            <span className="flex items-center gap-2">
-              <Filter size={14} /> {status === "ALL" ? "状态" : status}
-            </span>
-            <ChevronRight
+            <Filter size={12} strokeWidth={1.5} />
+            {status === "ALL" ? "所有状态" : status}
+            <ChevronDown
               size={12}
-              className={`transition-transform ${
-                activeDropdown === "STATUS" ? "rotate-90" : ""
+              className={`transition-transform duration-500 opacity-40 ${
+                activeDropdown === "STATUS" ? "rotate-180" : ""
               }`}
             />
           </button>
           {activeDropdown === "STATUS" && (
-            <div className="absolute top-full left-0 mt-1 w-40 bg-zzz-black border border-zzz-gray shadow-xl z-30 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
               {STATUS_FILTERS.map((s) => (
                 <button
                   key={s}
@@ -163,16 +158,13 @@ export function PostsToolbar({
                     onStatusChange(s);
                     setActiveDropdown(null);
                   }}
-                  className={`w-full text-left px-4 py-2 text-[10px] font-mono font-bold hover:bg-zzz-gray/20 flex items-center justify-between group ${
+                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
                     status === s
-                      ? "text-zzz-lime bg-zzz-lime/5"
-                      : "text-gray-400"
+                      ? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
+                      : "text-zinc-400"
                   }`}
                 >
                   {s}
-                  {status === s && (
-                    <div className="w-1.5 h-1.5 bg-zzz-lime rounded-full"></div>
-                  )}
                 </button>
               ))}
             </div>
@@ -180,33 +172,31 @@ export function PostsToolbar({
         </div>
 
         {/* 3. Sort Dropdown */}
-        <div className="relative filter-dropdown-container">
+        <div className="relative">
           <button
             onClick={() =>
               setActiveDropdown(activeDropdown === "SORT" ? null : "SORT")
             }
             className={`
-                            h-10 px-4 border flex items-center gap-2 text-[10px] font-bold uppercase transition-all min-w-[140px] justify-between
-                            ${
-                              sortDir !== "DESC"
-                                ? "bg-zzz-orange/10 border-zzz-orange text-zzz-orange"
-                                : "bg-black border-zzz-gray text-gray-400 hover:text-white hover:border-white"
-                            }
-                        `}
+                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
+                ${
+                  sortDir !== "DESC"
+                    ? "text-zinc-950 dark:text-zinc-50"
+                    : "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+                }
+            `}
           >
-            <span className="flex items-center gap-2">
-              <ArrowUpDown size={14} />
-              {sortDir === "DESC" ? "日期 | 降序" : "日期 | 升序"}
-            </span>
-            <ChevronRight
+            <ArrowUpDown size={12} strokeWidth={1.5} />
+            {sortDir === "DESC" ? "最新发布" : "最早发布"}
+            <ChevronDown
               size={12}
-              className={`transition-transform ${
-                activeDropdown === "SORT" ? "rotate-90" : ""
+              className={`transition-transform duration-500 opacity-40 ${
+                activeDropdown === "SORT" ? "rotate-180" : ""
               }`}
             />
           </button>
           {activeDropdown === "SORT" && (
-            <div className="absolute top-full right-0 mt-1 w-40 bg-zzz-black border border-zzz-gray shadow-xl z-30 animate-in fade-in zoom-in-95 duration-150">
+            <div className="absolute top-full right-0 lg:left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
               {[
                 { label: "最新发布", dir: "DESC" as SortDirection },
                 { label: "最早发布", dir: "ASC" as SortDirection },
@@ -217,13 +207,12 @@ export function PostsToolbar({
                     onSortChange(opt.dir);
                     setActiveDropdown(null);
                   }}
-                  className={`w-full text-left px-4 py-2 text-[10px] font-mono font-bold hover:bg-zzz-gray/20 flex items-center gap-3 ${
+                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
                     sortDir === opt.dir
-                      ? "text-zzz-orange bg-zzz-orange/5"
-                      : "text-gray-400"
+                      ? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
+                      : "text-zinc-400"
                   }`}
                 >
-                  <Calendar size={14} />
                   {opt.label}
                 </button>
               ))}
@@ -235,10 +224,11 @@ export function PostsToolbar({
         {hasActiveFilters && (
           <button
             onClick={onResetFilters}
-            className="h-10 w-10 flex items-center justify-center border border-dashed border-red-500/50 text-red-500 hover:bg-red-500 hover:text-black hover:border-red-500 transition-all animate-in fade-in zoom-in-50"
-            title="Reset Filters"
+            className="h-10 flex items-center gap-2 px-4 text-[10px] uppercase tracking-[0.2em] text-red-500 hover:text-red-600 transition-colors animate-in fade-in slide-in-from-left-2 duration-500"
+            title="重置所有筛选"
           >
-            <X size={16} />
+            <X size={14} />
+            <span>重置</span>
           </button>
         )}
       </div>

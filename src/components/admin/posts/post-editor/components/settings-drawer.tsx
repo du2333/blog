@@ -1,6 +1,4 @@
 import DatePicker from "@/components/ui/date-picker";
-import TechButton from "@/components/ui/tech-button";
-import { CATEGORY_COLORS } from "@/lib/constants";
 import {
   POST_STATUSES,
   type PostCategory,
@@ -10,12 +8,12 @@ import {
   Check,
   Clock,
   FileText,
-  Layout,
   Link as LinkIcon,
   Loader2,
   Sparkles,
   Tag,
   X,
+  Layout,
 } from "lucide-react";
 import type { PostEditorData } from "../types";
 
@@ -37,7 +35,6 @@ interface SettingsDrawerProps {
 
 export function SettingsDrawer({
   isOpen,
-  postId,
   post,
   isGeneratingSlug,
   isCalculatingReadTime,
@@ -51,86 +48,95 @@ export function SettingsDrawer({
   processState,
 }: SettingsDrawerProps) {
   return (
-    <div
-      className={`fixed inset-y-0 right-0 w-80 bg-zzz-dark border-l border-zzz-gray shadow-[-20px_0_50px_rgba(0,0,0,0.5)] transform transition-transform duration-300 ease-out z-50 flex flex-col ${
-        isOpen ? "translate-x-0" : "translate-x-full"
-      }`}
-    >
-      {/* Header */}
-      <div className="h-16 flex items-center justify-between px-6 border-b border-zzz-gray bg-zzz-black">
-        <div className="flex items-center gap-2 font-mono text-xs font-bold text-zzz-cyan uppercase">
-          <Layout size={14} /> 日志配置
-        </div>
-        <button onClick={onClose} className="text-gray-500 hover:text-white">
-          <X size={18} />
-        </button>
-      </div>
-
-      {/* Content */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-8 custom-scrollbar">
-        <StatusSelector
-          value={post.status}
-          onChange={(status) => onPostChange({ status })}
+    <>
+      {/* Backdrop */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-white/60 dark:bg-black/60 backdrop-blur-sm z-[60] animate-in fade-in duration-500"
+          onClick={onClose}
         />
+      )}
 
-        <CategorySelector
-          value={post.category}
-          onChange={(category) => onPostChange({ category })}
-        />
-
-        <SlugField
-          value={post.slug}
-          isGenerating={isGeneratingSlug}
-          onChange={(slug) => onPostChange({ slug })}
-          onGenerate={onGenerateSlug}
-        />
-
-        <DateTimeFields
-          publishedAt={post.publishedAt}
-          readTimeInMinutes={post.readTimeInMinutes}
-          isCalculating={isCalculatingReadTime}
-          onDateChange={(publishedAt) => onPostChange({ publishedAt })}
-          onReadTimeChange={(readTimeInMinutes) =>
-            onPostChange({ readTimeInMinutes })
-          }
-          onCalculateReadTime={onCalculateReadTime}
-        />
-
-        <SummaryField
-          value={post.summary}
-          isGenerating={isGeneratingSummary}
-          onChange={(summary) => onPostChange({ summary })}
-          onGenerate={onGenerateSummary}
-        />
-        <div className="md:hidden space-y-3 pt-4 border-t border-zzz-gray/30">
-          <div className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-            移动端操作
+      {/* Drawer */}
+      <div
+        className={`fixed inset-y-0 right-0 w-full sm:w-96 bg-white dark:bg-[#0c0c0c] border-l border-zinc-100 dark:border-white/5 shadow-2xl transform transition-transform duration-700 ease-in-out z-[70] flex flex-col ${
+          isOpen ? "translate-x-0" : "translate-x-full"
+        }`}
+      >
+        {/* Header */}
+        <div className="h-20 flex items-center justify-between px-8 border-b border-zinc-100 dark:border-white/5">
+          <div className="flex items-center gap-3">
+            <Layout size={18} strokeWidth={1.5} className="text-zinc-400" />
+            <span className="text-sm font-medium tracking-tight">文章设置</span>
           </div>
-          <TechButton
-            variant={processState === "SUCCESS" ? "primary" : "secondary"}
-            onClick={handleProcessData}
-            disabled={processState !== "IDLE"}
-            className="w-full justify-center"
-            icon={processState === "SUCCESS" ? <Check size={14} /> : undefined}
+          <button
+            onClick={onClose}
+            className="p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
           >
-            {processState === "PROCESSING"
-              ? "TRANSMITTING..."
-              : processState === "SUCCESS"
-              ? "WORKFLOW_QUEUED"
-              : "RUN SYSTEM DIAGNOSTICS"}
-          </TechButton>
+            <X size={20} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-8 space-y-10 custom-scrollbar">
+          <StatusSelector
+            value={post.status}
+            onChange={(status) => onPostChange({ status })}
+          />
+
+          <CategorySelector
+            value={post.category}
+            onChange={(category) => onPostChange({ category })}
+          />
+
+          <SlugField
+            value={post.slug}
+            isGenerating={isGeneratingSlug}
+            onChange={(slug) => onPostChange({ slug })}
+            onGenerate={onGenerateSlug}
+          />
+
+          <DateTimeFields
+            publishedAt={post.publishedAt}
+            readTimeInMinutes={post.readTimeInMinutes}
+            isCalculating={isCalculatingReadTime}
+            onDateChange={(publishedAt) => onPostChange({ publishedAt })}
+            onReadTimeChange={(readTimeInMinutes) =>
+              onPostChange({ readTimeInMinutes })
+            }
+            onCalculateReadTime={onCalculateReadTime}
+          />
+
+          <SummaryField
+            value={post.summary}
+            isGenerating={isGeneratingSummary}
+            onChange={(summary) => onPostChange({ summary })}
+            onGenerate={onGenerateSummary}
+          />
+
+          <div className="lg:hidden pt-6">
+            <button
+              onClick={handleProcessData}
+              disabled={processState !== "IDLE"}
+              className="w-full flex items-center justify-center gap-2 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-bold transition-all disabled:opacity-50"
+            >
+              {processState === "PROCESSING" ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : processState === "SUCCESS" ? (
+                <Check size={14} />
+              ) : null}
+              {processState === "PROCESSING"
+                ? "处理中..."
+                : processState === "SUCCESS"
+                ? "已就绪"
+                : "运行部署诊断"}
+            </button>
+          </div>
         </div>
       </div>
-
-      {/* Footer */}
-      <div className="p-4 border-t border-zzz-gray bg-black text-[10px] font-mono text-gray-600 text-center">
-        BUFFER_ID: {postId}
-      </div>
-    </div>
+    </>
   );
 }
-
-// --- Sub-components ---
 
 function StatusSelector({
   value,
@@ -140,22 +146,22 @@ function StatusSelector({
   onChange: (status: PostStatus) => void;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-        日志状态
+    <div className="space-y-4">
+      <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+        <div className="w-1 h-1 rounded-full bg-current" /> 发布状态
       </label>
       <div className="grid grid-cols-3 gap-2">
         {POST_STATUSES.map((s) => (
           <button
             key={s}
             onClick={() => onChange(s)}
-            className={`text-[10px] py-2 font-bold border uppercase ${
+            className={`py-3 text-[10px] uppercase tracking-[0.1em] font-medium transition-all rounded-sm border ${
               value === s
-                ? "bg-zzz-lime text-black border-zzz-lime"
-                : "border-zzz-gray text-gray-400 hover:border-white"
+                ? "bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 border-transparent"
+                : "border-zinc-100 dark:border-white/5 text-zinc-400 hover:border-zinc-300 dark:hover:border-white/20"
             }`}
           >
-            {s}
+            {s === "published" ? "已发布" : s === "draft" ? "草稿" : "计划中"}
           </button>
         ))}
       </div>
@@ -170,23 +176,25 @@ function CategorySelector({
   value: PostCategory;
   onChange: (category: PostCategory) => void;
 }) {
+  const categories = ["DEV", "DESIGN", "LIFE", "TECH"];
   return (
-    <div className="space-y-2">
-      <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-        日志分类
+    <div className="space-y-4">
+      <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+        <div className="w-1 h-1 rounded-full bg-current" /> 分类
       </label>
       <div className="relative">
         <Tag
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700 pointer-events-none"
           size={14}
+          strokeWidth={1.5}
         />
         <select
           value={value}
           onChange={(e) => onChange(e.target.value as PostCategory)}
-          className="w-full bg-black border border-zzz-gray text-white text-xs font-mono pl-9 pr-3 py-3 focus:border-zzz-lime focus:outline-none appearance-none uppercase"
+          className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-medium pl-11 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm appearance-none"
         >
-          {Object.keys(CATEGORY_COLORS).map((c) => (
-            <option key={c} value={c}>
+          {categories.map((c) => (
+            <option key={c} value={c} className="bg-white dark:bg-[#0c0c0c]">
               {c}
             </option>
           ))}
@@ -208,40 +216,36 @@ function SlugField({
   onGenerate: () => void;
 }) {
   return (
-    <div className="space-y-2">
-      <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
-        <span>URL Slug</span>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-current" /> URL 路径
+        </label>
         <button
           onClick={onGenerate}
           disabled={isGenerating}
-          className={`transition-colors ${
-            isGenerating ? "text-zzz-orange" : "text-zzz-lime hover:text-white"
-          }`}
-          title="Generate Slug"
+          className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          title="自动生成"
         >
           {isGenerating ? (
             <Loader2 size={12} className="animate-spin" />
           ) : (
-            <Sparkles size={12} />
+            <Sparkles size={12} strokeWidth={1.5} />
           )}
         </button>
-      </label>
+      </div>
       <div className="relative">
         <LinkIcon
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700"
           size={14}
+          strokeWidth={1.5}
         />
         <input
           type="text"
           value={value || ""}
           onChange={(e) => onChange(e.target.value)}
           placeholder="post-url-slug"
-          className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-3 py-3 focus:outline-none placeholder-gray-700 transition-colors ${
-            isGenerating
-              ? "border-zzz-orange/50 text-gray-500"
-              : "border-zzz-gray focus:border-zzz-lime"
-          }`}
-          readOnly={isGenerating}
+          className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-11 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
         />
       </div>
     </div>
@@ -264,10 +268,10 @@ function DateTimeFields({
   onCalculateReadTime: () => void;
 }) {
   return (
-    <div className="grid grid-cols-1 gap-4">
-      <div className="space-y-2">
-        <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest">
-          发布日期
+    <div className="space-y-8">
+      <div className="space-y-4">
+        <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-current" /> 发布日期
         </label>
         <DatePicker
           value={publishedAt ? publishedAt.toISOString().split("T")[0] : ""}
@@ -277,43 +281,39 @@ function DateTimeFields({
         />
       </div>
 
-      <div className="space-y-2">
-        <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
-          <span>阅读时长</span>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+            <div className="w-1 h-1 rounded-full bg-current" /> 阅读时长
+          </label>
           <button
             onClick={onCalculateReadTime}
             disabled={isCalculating}
-            className={`transition-colors ${
-              isCalculating
-                ? "text-zzz-orange"
-                : "text-zzz-lime hover:text-white"
-            }`}
-            title="Auto-Calculate"
+            className="text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+            title="自动计算"
           >
             {isCalculating ? (
               <Loader2 size={12} className="animate-spin" />
             ) : (
-              <Sparkles size={12} />
+              <Sparkles size={12} strokeWidth={1.5} />
             )}
           </button>
-        </label>
-        <div className="relative flex">
-          <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">
-            <Clock size={14} />
-          </div>
+        </div>
+        <div className="relative">
+          <Clock
+            className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700"
+            size={14}
+            strokeWidth={1.5}
+          />
           <input
             type="number"
             min="1"
             value={readTimeInMinutes}
             onChange={(e) => onReadTimeChange(parseInt(e.target.value))}
-            className={`w-full bg-black border text-white text-xs font-mono pl-9 pr-12 py-3 focus:outline-none ${
-              isCalculating
-                ? "border-zzz-orange/50"
-                : "border-zzz-gray focus:border-zzz-lime"
-            }`}
+            className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-xs font-mono pl-11 pr-12 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm"
           />
-          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-bold text-gray-500 pointer-events-none">
-            分钟
+          <span className="absolute right-4 top-1/2 -translate-y-1/2 text-[9px] uppercase tracking-widest font-bold text-zinc-300 dark:text-zinc-700 pointer-events-none">
+            MIN
           </span>
         </div>
       </div>
@@ -333,48 +333,43 @@ function SummaryField({
   onGenerate: () => void;
 }) {
   return (
-    <div className="space-y-2 relative">
-      <label className="text-[10px] text-gray-500 font-bold uppercase tracking-widest flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <FileText size={12} /> 摘要
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold flex items-center gap-2">
+          <div className="w-1 h-1 rounded-full bg-current" /> 文章摘要
+        </label>
         <button
           onClick={onGenerate}
           disabled={isGenerating}
-          className={`transition-colors flex items-center gap-1 ${
-            isGenerating
-              ? "text-zzz-orange cursor-wait"
-              : "text-zzz-lime hover:text-white"
-          }`}
-          title="Generate Summary with AI"
+          className="flex items-center gap-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+          title="AI 生成"
         >
           {isGenerating ? (
-            <>
-              <span className="text-[9px] animate-pulse">PROCESSING</span>
-              <Loader2 size={12} className="animate-spin" />
-            </>
+            <Loader2 size={12} className="animate-spin" />
           ) : (
-            <Sparkles size={12} />
+            <Sparkles size={12} strokeWidth={1.5} />
           )}
         </button>
-      </label>
+      </div>
       <div className="relative">
+        <FileText
+          className="absolute left-4 top-4 text-zinc-300 dark:text-zinc-700"
+          size={14}
+          strokeWidth={1.5}
+        />
         <textarea
           value={value}
           onChange={(e) => onChange(e.target.value)}
           disabled={isGenerating}
-          className={`w-full bg-black border text-gray-300 text-xs font-mono p-3 focus:outline-none resize-none h-32 leading-relaxed custom-scrollbar transition-all ${
-            isGenerating
-              ? "border-zzz-orange/50 text-zzz-orange/70 bg-zzz-orange/5"
-              : "border-zzz-gray focus:border-zzz-cyan"
+          className={`w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-700 dark:text-zinc-300 text-xs leading-relaxed pl-11 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm h-40 resize-none custom-scrollbar transition-all ${
+            isGenerating ? "opacity-50" : ""
           }`}
-          placeholder="Enter short description..."
+          placeholder="输入文章简短摘要..."
         />
         {isGenerating && (
-          <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-            <div className="bg-black/80 border border-zzz-orange px-3 py-1 text-zzz-orange text-[10px] font-mono tracking-widest flex items-center gap-2">
-              <Sparkles size={10} className="animate-spin-slow" />{" "}
-              AI_GENERATING...
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="bg-white/80 dark:bg-black/80 px-4 py-2 rounded-sm border border-zinc-100 dark:border-white/10 text-[10px] uppercase tracking-widest font-bold flex items-center gap-2">
+              <Sparkles size={12} className="animate-pulse" /> AI 分析中
             </div>
           </div>
         )}
