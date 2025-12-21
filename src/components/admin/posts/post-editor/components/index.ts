@@ -1,3 +1,2 @@
-export { EditorToolbar } from "./editor-toolbar";
-export { SettingsDrawer } from "./settings-drawer";
-
+// Currently no components exported here as they are integrated into the main editor view
+export {};

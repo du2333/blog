@@ -7,7 +7,6 @@ export function SectionSkeleton() {
           <div className="w-12 h-12 rounded-full bg-zinc-100 dark:bg-zinc-900"></div>
           <div className="space-y-2">
             <div className="h-6 w-32 bg-zinc-100 dark:bg-zinc-900 rounded"></div>
-            <div className="h-3 w-48 bg-zinc-100 dark:bg-zinc-900 rounded opacity-50"></div>
           </div>
         </div>
       </div>

@@ -41,13 +41,10 @@ function RouteComponent() {
   };
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20 max-w-6xl mx-auto">
-      <header className="flex justify-between items-end">
+    <div className="space-y-12 pb-20 max-w-6xl mx-auto">
+      <header className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
         <div className="space-y-1">
           <h1 className="text-4xl font-serif font-medium tracking-tight">系统设置</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
-            Global Configuration // System Protocols
-          </p>
         </div>
         <button
           onClick={handleSaveConfig}
@@ -58,7 +55,7 @@ function RouteComponent() {
         </button>
       </header>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 animate-in fade-in duration-1000 delay-100 fill-mode-both">
         {isLoading ? (
           <>
             <SectionSkeleton />
@@ -86,27 +83,8 @@ function RouteComponent() {
       </div>
 
       {/* Data Maintenance Module */}
-      <MaintenanceSection />
-
-      {/* System Footer Info */}
-      <div className="pt-12 border-t border-zinc-100 dark:border-white/5">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-center gap-6 text-[9px] font-mono text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.3em]">
-            <div className="flex items-center gap-2">
-              <Info size={12} strokeWidth={1.5} />
-              <span>Version 3.1.2</span>
-            </div>
-            <div className="hidden sm:block opacity-20">/</div>
-            <div className="hidden sm:flex items-center gap-2 text-zinc-300 dark:text-zinc-700">
-              <span>All Systems Operational</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-2 text-[9px] uppercase tracking-[0.2em] font-bold text-zinc-400">
-            <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-            已连接至安全节点
-          </div>
-        </div>
+      <div className="animate-in fade-in duration-1000 delay-200 fill-mode-both">
+        <MaintenanceSection />
       </div>
     </div>
   );

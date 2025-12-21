@@ -1,4 +1,5 @@
 import React from "react";
+import { createPortal } from "react-dom";
 import { AlertTriangle, X, Check, Trash2, Loader2 } from "lucide-react";
 
 interface ConfirmationModalProps {
@@ -22,29 +23,40 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   isDanger = false,
   isLoading = false,
 }) => {
-  if (!isOpen) return null;
-
-  return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-6 sm:p-12 animate-in fade-in duration-500">
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+        isOpen
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
+      }`}
+    >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-white/80 dark:bg-[#050505]/90 backdrop-blur-xl transition-opacity"
+        className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
         onClick={isLoading ? undefined : onClose}
       />
 
       {/* Modal Content */}
       <div
         className={`
-        relative w-full max-w-lg bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/5 
-        flex flex-col animate-in zoom-in-95 slide-in-from-bottom-8 duration-500 shadow-2xl
-      `}
+          relative w-full max-w-lg bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-900
+          flex flex-col shadow-2xl transform transition-all duration-500 ease-in-out rounded-sm
+          ${
+            isOpen
+              ? "translate-y-0 scale-100 opacity-100"
+              : "translate-y-8 scale-[0.99] opacity-0"
+          }
+        `}
       >
         {/* Header */}
         <div className="px-8 pt-10 pb-6 flex items-start justify-between">
           <div className="space-y-2">
-            <div className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold ${
-              isDanger ? "text-red-500" : "text-zinc-400"
-            }`}>
+            <div
+              className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold ${
+                isDanger ? "text-red-500" : "text-zinc-400"
+              }`}
+            >
               <AlertTriangle size={14} strokeWidth={1.5} />
               <span>系统确认</span>
             </div>
@@ -107,7 +119,8 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

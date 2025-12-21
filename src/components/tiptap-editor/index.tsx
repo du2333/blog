@@ -99,7 +99,7 @@ export const extensions = [
   }),
   BlockQuoteExtension,
   CodeBlockExtension.configure({
-    defaultTheme: "vitesse-dark"
+    defaultTheme: "vitesse-dark",
   }),
   ImageExtension,
   ImageUpload.configure({

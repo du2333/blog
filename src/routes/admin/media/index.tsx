@@ -73,13 +73,10 @@ function MediaLibrary() {
   }
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
-      <header className="flex justify-between items-end">
+    <div className="space-y-12 pb-20">
+      <header className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
         <div className="space-y-1">
           <h1 className="text-4xl font-serif font-medium tracking-tight">媒体库</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
-            Asset Repository // {totalCount} Items
-          </p>
         </div>
         <button
           onClick={() => setIsUploadOpen(true)}
@@ -91,7 +88,7 @@ function MediaLibrary() {
       </header>
 
       {/* Stats Bar */}
-      <div className="flex flex-wrap gap-x-12 gap-y-4 pt-6 border-t border-zinc-100 dark:border-white/5">
+      <div className="flex flex-wrap gap-x-12 gap-y-4 pt-6 border-t border-zinc-100 dark:border-white/5 animate-in fade-in duration-1000 delay-100 fill-mode-both">
         <div className="space-y-1">
           <div className="text-[9px] uppercase tracking-[0.2em] text-zinc-400 font-bold">总容量</div>
           <div className="text-xl font-serif">{formatBytes(totalMediaSize ?? 0)}</div>
@@ -104,27 +101,29 @@ function MediaLibrary() {
         </div>
       </div>
 
-      {/* Toolbar */}
-      <MediaToolbar
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        selectedCount={selectedIds.size}
-        totalCount={mediaItems.length}
-        onSelectAll={selectAll}
-        onDelete={handleDeleteRequest}
-      />
+      <div className="animate-in fade-in duration-1000 delay-200 fill-mode-both space-y-12">
+        {/* Toolbar */}
+        <MediaToolbar
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          selectedCount={selectedIds.size}
+          totalCount={mediaItems.length}
+          onSelectAll={selectAll}
+          onDelete={handleDeleteRequest}
+        />
 
-      {/* Media Grid */}
-      <MediaGrid
-        media={mediaItems}
-        selectedIds={selectedIds}
-        onToggleSelect={toggleSelection}
-        onPreview={setPreviewAsset}
-        onLoadMore={loadMore}
-        hasMore={hasMore}
-        isLoadingMore={isLoadingMore}
-        linkedMediaIds={linkedMediaIds}
-      />
+        {/* Media Grid */}
+        <MediaGrid
+          media={mediaItems}
+          selectedIds={selectedIds}
+          onToggleSelect={toggleSelection}
+          onPreview={setPreviewAsset}
+          onLoadMore={loadMore}
+          hasMore={hasMore}
+          isLoadingMore={isLoadingMore}
+          linkedMediaIds={linkedMediaIds}
+        />
+      </div>
 
       {/* --- Upload Modal --- */}
       <UploadModal

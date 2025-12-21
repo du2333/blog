@@ -77,7 +77,6 @@ export function EmailServiceSection({
             </div>
             <div>
               <h3 className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">邮件分发</h3>
-              <p className="text-xs text-zinc-500 dark:text-zinc-500 font-light mt-1">基于 Resend 协议的系统级消息推送</p>
             </div>
           </div>
         </div>

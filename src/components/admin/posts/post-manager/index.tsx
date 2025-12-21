@@ -120,14 +120,11 @@ export function PostManager({
   };
 
   return (
-    <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
+    <div className="space-y-12 pb-20">
       {/* Header */}
-      <div className="flex justify-between items-end">
+      <div className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
         <div className="space-y-1">
           <h1 className="text-4xl font-serif font-medium tracking-tight">文章管理</h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
-            Archive Registry // {totalCount} Records
-          </p>
         </div>
         <button
           onClick={() => createMutation.mutate()}
@@ -139,72 +136,74 @@ export function PostManager({
         </button>
       </div>
 
-      {/* Toolbar */}
-      <PostsToolbar
-        searchTerm={searchInput}
-        onSearchChange={setSearchInput}
-        category={category}
-        onCategoryChange={onCategoryChange}
-        status={status}
-        onStatusChange={onStatusChange}
-        sortDir={sortDir}
-        onSortChange={onSortChange}
-        onResetFilters={() => {
-          setSearchInput("");
-          onResetFilters();
-        }}
-      />
+      <div className="animate-in fade-in duration-1000 delay-100 fill-mode-both space-y-12">
+        {/* Toolbar */}
+        <PostsToolbar
+          searchTerm={searchInput}
+          onSearchChange={setSearchInput}
+          category={category}
+          onCategoryChange={onCategoryChange}
+          status={status}
+          onStatusChange={onStatusChange}
+          sortDir={sortDir}
+          onSortChange={onSortChange}
+          onResetFilters={() => {
+            setSearchInput("");
+            onResetFilters();
+          }}
+        />
 
-      {/* List Content */}
-      {error ? (
-        <ErrorPage error={error} />
-      ) : isPending ? (
-        <PostManagerSkeleton />
-      ) : (
-        <div className="space-y-0 border-t border-zinc-100 dark:border-white/5">
-          {posts.length === 0 ? (
-            <div className="py-24 flex flex-col items-center justify-center text-zinc-400 font-serif italic gap-4">
-              <ListFilter size={40} strokeWidth={1} className="opacity-20" />
-              <div className="text-center">
-                未找到匹配的文章
-                <button
-                  className="text-zinc-900 dark:text-zinc-100 mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
-                  onClick={onResetFilters}
-                >
-                  [清除所有筛选]
-                </button>
+        {/* List Content */}
+        {error ? (
+          <ErrorPage error={error} />
+        ) : isPending ? (
+          <PostManagerSkeleton />
+        ) : (
+          <div className="space-y-0 border-t border-zinc-100 dark:border-white/5">
+            {posts.length === 0 ? (
+              <div className="py-24 flex flex-col items-center justify-center text-zinc-400 font-serif italic gap-4">
+                <ListFilter size={40} strokeWidth={1} className="opacity-20" />
+                <div className="text-center">
+                  未找到匹配的文章
+                  <button
+                    className="text-zinc-900 dark:text-zinc-100 mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
+                    onClick={onResetFilters}
+                  >
+                    [清除所有筛选]
+                  </button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <>
-              {/* Desktop Header (Simplified) */}
-              <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-bold border-b border-zinc-100 dark:border-white/5">
-                <div className="col-span-1">ID</div>
-                <div className="col-span-6">文章摘要</div>
-                <div className="col-span-2">分类</div>
-                <div className="col-span-2">日期</div>
-                <div className="col-span-1 text-right">操作</div>
-              </div>
+            ) : (
+              <>
+                {/* Desktop Header (Simplified) */}
+                <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-bold border-b border-zinc-100 dark:border-white/5">
+                  <div className="col-span-1">ID</div>
+                  <div className="col-span-6">文章摘要</div>
+                  <div className="col-span-2">分类</div>
+                  <div className="col-span-2">日期</div>
+                  <div className="col-span-1 text-right">操作</div>
+                </div>
 
-              <div className="divide-y divide-zinc-100 dark:divide-white/5">
-                {posts.map((post) => (
-                  <PostRow key={post.id} post={post} onDelete={handleDelete} />
-                ))}
-              </div>
-            </>
-          )}
-        </div>
-      )}
+                <div className="divide-y divide-zinc-100 dark:divide-white/5">
+                  {posts.map((post) => (
+                    <PostRow key={post.id} post={post} onDelete={handleDelete} />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
+        )}
 
-      {/* Pagination */}
-      <PostsPagination
-        currentPage={page}
-        totalPages={totalPages}
-        totalItems={totalCount}
-        itemsPerPage={ADMIN_ITEMS_PER_PAGE}
-        currentPageItemCount={posts.length}
-        onPageChange={onPageChange}
-      />
+        {/* Pagination */}
+        <PostsPagination
+          currentPage={page}
+          totalPages={totalPages}
+          totalItems={totalCount}
+          itemsPerPage={ADMIN_ITEMS_PER_PAGE}
+          currentPageItemCount={posts.length}
+          onPageChange={onPageChange}
+        />
+      </div>
 
       {/* --- Confirmation Modal --- */}
       <ConfirmationModal

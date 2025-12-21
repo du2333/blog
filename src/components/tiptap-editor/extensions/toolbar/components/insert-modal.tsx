@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo, useRef } from "react";
+import { createPortal } from "react-dom";
 import {
   X,
   Link as LinkIcon,
@@ -138,29 +139,34 @@ const InsertModal: React.FC<InsertModalProps> = ({
 
   if (!shouldRender) return null;
 
-  return (
-    <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-12">
+  return createPortal(
+    <div
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+        isMounted
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
+      }`}
+    >
       {/* Backdrop */}
       <div
-        className={`absolute inset-0 bg-white/80 dark:bg-[#050505]/90 backdrop-blur-xl transition-opacity duration-500 ${
-          isMounted ? "opacity-100" : "opacity-0"
-        }`}
+        className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
         onClick={onClose}
       />
 
       {/* Modal Content */}
       <div
         className={`
-            bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/5 shadow-2xl relative z-10 flex flex-col w-full max-w-2xl max-h-[80vh] overflow-hidden transition-all duration-500
+            relative w-full max-w-4xl bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-900 shadow-2xl 
+            flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
             ${
               isMounted
-                ? "opacity-100 translate-y-0 scale-100"
-                : "opacity-0 translate-y-8 scale-98"
+                ? "translate-y-0 scale-100 opacity-100"
+                : "translate-y-8 scale-[0.99] opacity-0"
             }
        `}
       >
         {/* Header */}
-        <div className="flex justify-between items-start p-8 pt-10 shrink-0">
+        <div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
           <div className="space-y-2">
             <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-400">
               {activeType === "LINK" ? <LinkIcon size={14} /> : <ImageIcon size={14} />}
@@ -178,7 +184,7 @@ const InsertModal: React.FC<InsertModalProps> = ({
           </button>
         </div>
 
-        <div className="flex flex-col gap-8 flex-1 overflow-hidden min-h-0 px-8 pb-8">
+        <div className="flex flex-col gap-8 flex-1 overflow-hidden min-h-0 px-8 md:px-12 pb-8">
           {activeType === "IMAGE" && (
             <div className="flex flex-col gap-6 flex-1 min-h-0">
               {/* Search Bar */}
@@ -232,7 +238,7 @@ const InsertModal: React.FC<InsertModalProps> = ({
           )}
 
           {/* URL Input */}
-          <div className="space-y-4">
+          <div className="space-y-4 pb-4">
             <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-400 flex items-center gap-2">
               <Globe size={12} strokeWidth={1.5} />
               {activeType === "IMAGE" ? "或输入外部链接" : "目标链接地址"}
@@ -247,16 +253,16 @@ const InsertModal: React.FC<InsertModalProps> = ({
               }}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
               placeholder="https://example.com/..."
-              className="w-full bg-zinc-50 dark:bg-white/[0.03] border-none text-zinc-900 dark:text-zinc-100 text-sm p-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm transition-all"
+              className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm py-4 focus:border-zinc-950 dark:focus:border-zinc-100 focus:outline-none transition-all"
             />
           </div>
         </div>
 
         {/* Actions */}
-        <div className="p-8 border-t border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row justify-end gap-4 shrink-0">
+        <div className="p-8 md:p-12 py-8 border-t border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row justify-end gap-4 shrink-0">
           <button
             onClick={onClose}
-            className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors border border-transparent hover:border-zinc-100 dark:hover:border-white/5"
+            className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
           >
             取消
           </button>
@@ -269,7 +275,8 @@ const InsertModal: React.FC<InsertModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

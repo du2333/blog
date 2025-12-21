@@ -1,22 +1,36 @@
 import { Editor } from "@/components/tiptap-editor";
 import { useRouter, useBlocker } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
+import {
+  Check,
+  Cpu,
+  Loader2,
+  RefreshCw,
+  Globe,
+  Tag,
+  Link as LinkIcon,
+  Calendar,
+  Clock,
+  FileText,
+  Sparkles,
+  Eye,
+  ChevronLeft,
+  X,
+} from "lucide-react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
+import DatePicker from "@/components/ui/date-picker";
+import DropdownMenu from "@/components/ui/dropdown-menu";
+import { POST_STATUSES, type PostCategory } from "@/lib/db/schema";
 
-import { EditorToolbar, SettingsDrawer } from "./components";
 import { useAutoSave, usePostActions } from "./hooks";
 import { type PostEditorData, type PostEditorProps } from "./types";
-
-// Re-export types for external use
-export type { PostEditorData, PostEditorProps } from "./types";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
   if (!initialData) return <PostEditorSkeleton />;
   const router = useRouter();
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   // Initialize post state from initialData (always provided)
   const [post, setPost] = useState<PostEditorData>(() => ({
@@ -30,8 +44,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     publishedAt: initialData.publishedAt,
   }));
 
-  // Auto-save hook - always enabled
-  const { saveStatus, lastSaved, error, setError } = useAutoSave({
+  // Auto-save hook
+  const { saveStatus, lastSaved, setError } = useAutoSave({
     post,
     onSave,
   });
@@ -41,7 +55,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     withResolver: true,
   });
 
-  // Post actions hook (slug, read time, summary)
+  // Post actions hook
   const {
     isGeneratingSlug,
     isCalculatingReadTime,
@@ -58,18 +72,16 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     setError,
   });
 
-  // Content change handler
   const handleContentChange = useCallback((json: JSONContent) => {
     setPost((prev) => ({ ...prev, contentJson: json }));
   }, []);
 
-  // Partial post update handler for settings drawer
   const handlePostChange = useCallback((updates: Partial<PostEditorData>) => {
     setPost((prev) => ({ ...prev, ...updates }));
   }, []);
 
   return (
-    <div className="flex flex-col h-[calc(100vh-4rem)] relative overflow-hidden bg-white dark:bg-[#050505]">
+    <div className="fixed inset-0 z-50 flex flex-col bg-white dark:bg-[#050505] selection:bg-zinc-100 dark:selection:bg-zinc-800 overflow-hidden">
       <ConfirmationModal
         isOpen={status === "blocked"}
         onClose={() => reset?.()}
@@ -79,81 +91,324 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         confirmLabel="确认离开"
       />
 
-      {/* Top Control Bar */}
-      <EditorToolbar
-        postId={initialData.id}
-        status={post.status}
-        saveStatus={saveStatus}
-        lastSaved={lastSaved}
-        error={error}
-        isSettingsOpen={isSettingsOpen}
-        onBack={() => router.history.back()}
-        onToggleSettings={() => setIsSettingsOpen(!isSettingsOpen)}
-        handleProcessData={handleProcessData}
-        processState={processState}
-        onViewPublic={() => {
-          if (post.slug) {
-            window.open(`/post/${post.slug}`, "_blank");
-          }
-        }}
-      />
+      {/* Control Header */}
+      <header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md">
+        <button
+          onClick={() => router.history.back()}
+          className="group flex items-center gap-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
+        >
+          <div className="p-2 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full group-hover:scale-105 active:scale-95 transition-all">
+            <ChevronLeft size={18} />
+          </div>
+          <span className="text-[10px] uppercase tracking-[0.2em] font-bold">
+            Back
+          </span>
+        </button>
 
-      {/* Main Document Area */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar relative">
-        <div className="w-full max-w-5xl mx-auto py-24 px-8 md:px-16 min-h-full">
-          {/* Title Field (Auto-expanding Textarea) */}
-          <div className="mb-20 group">
-            <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.5em] text-zinc-300 dark:text-zinc-700 font-bold mb-8">
-              <span className="h-px w-12 bg-current opacity-30"></span>
-              Headline
-            </div>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => {
+              if (post.slug) window.open(`/post/${post.slug}`, "_blank");
+            }}
+            className="px-6 py-2.5 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full text-[10px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all flex items-center gap-2 group"
+          >
+            <Eye
+              size={14}
+              className="group-hover:scale-110 transition-transform"
+            />
+            <span>Preview</span>
+          </button>
+
+          <button
+            onClick={handleProcessData}
+            disabled={processState !== "IDLE"}
+            className={`
+              px-6 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold transition-all flex items-center gap-2 shadow-lg shadow-black/5
+              ${
+                processState === "SUCCESS"
+                  ? "bg-green-500/10 border border-green-500/20 text-green-600"
+                  : "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 disabled:opacity-20"
+              }
+            `}
+          >
+            {processState === "PROCESSING" ? (
+              <Loader2 size={14} className="animate-spin" />
+            ) : processState === "SUCCESS" ? (
+              <Check size={14} strokeWidth={3} />
+            ) : (
+              <Cpu size={14} />
+            )}
+            <span>
+              {processState === "PROCESSING"
+                ? "Deploying"
+                : processState === "SUCCESS"
+                ? "Done"
+                : "Deploy"}
+            </span>
+          </button>
+        </div>
+      </header>
+
+      {/* Main Content Area (Only this scrolls) */}
+      <div className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both delay-100">
+        <div className="w-full max-w-3xl mx-auto py-20 px-6 md:px-0">
+          {/* Title Area */}
+          <div className="mb-12">
             <TextareaAutosize
               value={post.title}
-              onChange={(e) => setPost({ ...post, title: e.target.value })}
+              onChange={(e) =>
+                setPost((prev) => ({ ...prev, title: e.target.value }))
+              }
               minRows={1}
-              placeholder="Start your story..."
-              className="w-full bg-transparent text-6xl md:text-9xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[0.95] resize-none border-none p-0"
+              placeholder="Post Title..."
+              className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
             />
           </div>
 
-          {/* Editor Container with higher focus */}
-          <div className="min-h-[70vh] pb-40">
+          {/* Notion-style Properties Section */}
+          <div className="mb-20 space-y-1 py-8 border-y border-zinc-50 dark:border-white/2">
+            {/* Property Row: Status */}
+            <div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400">
+                <Globe size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Status
+                </span>
+              </div>
+              <div className="flex-1 flex gap-2">
+                {POST_STATUSES.map((s) => (
+                  <button
+                    key={s}
+                    onClick={() => handlePostChange({ status: s })}
+                    className={`
+                      px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
+                      ${
+                        post.status === s
+                          ? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
+                          : "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+                      }
+                    `}
+                  >
+                    {s === "published"
+                      ? "Public"
+                      : s === "draft"
+                      ? "Draft"
+                      : "Scheduled"}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Property Row: Slug */}
+            <div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400">
+                <LinkIcon size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Slug
+                </span>
+              </div>
+              <div className="flex-1 flex items-center gap-2">
+                <input
+                  type="text"
+                  value={post.slug || ""}
+                  onChange={(e) => handlePostChange({ slug: e.target.value })}
+                  placeholder="article-slug..."
+                  className="flex-1 bg-transparent text-xs font-mono text-zinc-600 dark:text-zinc-400 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+                />
+                <button
+                  onClick={handleGenerateSlug}
+                  disabled={isGeneratingSlug}
+                  className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
+                  title="Auto Generate"
+                >
+                  {isGeneratingSlug ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={12} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Property Row: Category */}
+            <div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400">
+                <Tag size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Category
+                </span>
+              </div>
+              <div className="flex-1">
+                <DropdownMenu
+                  value={post.category}
+                  onChange={(val) =>
+                    handlePostChange({ category: val as PostCategory })
+                  }
+                  options={[
+                    { label: "DEV", value: "DEV" },
+                    { label: "DESIGN", value: "DESIGN" },
+                    { label: "LIFE", value: "LIFE" },
+                    { label: "TECH", value: "TECH" },
+                  ]}
+                />
+              </div>
+            </div>
+
+            {/* Property Row: Date */}
+            <div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400">
+                <Calendar size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Published
+                </span>
+              </div>
+              <div className="flex-1">
+                <DatePicker
+                  value={
+                    post.publishedAt
+                      ? post.publishedAt.toISOString().split("T")[0]
+                      : ""
+                  }
+                  onChange={(dateStr) =>
+                    handlePostChange({
+                      publishedAt: dateStr ? new Date(dateStr) : null,
+                    })
+                  }
+                  className="p-0! border-none! bg-transparent! text-xs text-zinc-600 dark:text-zinc-400"
+                />
+              </div>
+            </div>
+
+            {/* Property Row: Read Time */}
+            <div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400">
+                <Clock size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Reading
+                </span>
+              </div>
+              <div className="flex-1 flex items-center gap-2">
+                <input
+                  type="number"
+                  value={post.readTimeInMinutes}
+                  onChange={(e) =>
+                    handlePostChange({
+                      readTimeInMinutes: parseInt(e.target.value) || 0,
+                    })
+                  }
+                  className="w-12 bg-transparent text-xs text-zinc-600 dark:text-zinc-400 focus:outline-none"
+                />
+                <span className="text-[10px] text-zinc-300 uppercase tracking-widest font-bold">
+                  Mins
+                </span>
+                <button
+                  onClick={handleCalculateReadTime}
+                  disabled={isCalculatingReadTime}
+                  className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
+                  title="Auto Calculate"
+                >
+                  {isCalculatingReadTime ? (
+                    <Loader2 size={12} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={12} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Property Row: Summary */}
+            <div className="group flex items-start py-3 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-zinc-400 pt-1">
+                <FileText size={14} strokeWidth={1.5} />
+                <span className="text-[11px] uppercase tracking-wider font-medium">
+                  Summary
+                </span>
+              </div>
+              <div className="flex-1 flex flex-col gap-2">
+                <TextareaAutosize
+                  value={post.summary || ""}
+                  onChange={(e) =>
+                    handlePostChange({ summary: e.target.value })
+                  }
+                  placeholder="Brief overview..."
+                  className="w-full bg-transparent text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 focus:outline-none resize-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+                />
+                <button
+                  onClick={handleGenerateSummary}
+                  disabled={isGeneratingSummary}
+                  className="w-fit flex items-center gap-2 px-2 py-1 bg-zinc-50 dark:bg-white/5 text-[9px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 rounded-sm transition-all"
+                >
+                  {isGeneratingSummary ? (
+                    <Loader2 size={10} className="animate-spin" />
+                  ) : (
+                    <Sparkles size={10} />
+                  )}
+                  <span>
+                    {isGeneratingSummary ? "Generating..." : "AI Summary"}
+                  </span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Editor Area */}
+          <div className="min-h-[60vh] pb-32">
             <Editor
               content={post.contentJson ?? ""}
               onChange={handleContentChange}
             />
           </div>
-
-          {/* Document Metadata Footer */}
-          <div className="pt-12 border-t border-zinc-100 dark:border-white/5 mb-32 flex justify-between items-center text-[9px] font-mono text-zinc-400 uppercase tracking-[0.3em]">
-            <div className="flex items-center gap-6">
-              <span>Chars: {JSON.stringify(post.contentJson).length}</span>
-              <span>Words: {Math.ceil(JSON.stringify(post.contentJson).length / 5)}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-1.5 h-1.5 rounded-full bg-green-500/20" />
-              Document Secure
-            </div>
-          </div>
         </div>
       </div>
 
-      {/* Settings Drawer */}
-      <SettingsDrawer
-        isOpen={isSettingsOpen}
-        postId={initialData.id}
-        post={post}
-        isGeneratingSlug={isGeneratingSlug}
-        isCalculatingReadTime={isCalculatingReadTime}
-        isGeneratingSummary={isGeneratingSummary}
-        onClose={() => setIsSettingsOpen(false)}
-        onPostChange={handlePostChange}
-        onGenerateSlug={handleGenerateSlug}
-        onCalculateReadTime={handleCalculateReadTime}
-        onGenerateSummary={handleGenerateSummary}
-        handleProcessData={handleProcessData}
-        processState={processState}
-      />
+      {/* Floating Status Bar (Bottom Right) */}
+      <div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-white/80 dark:bg-black/80 backdrop-blur-md border border-zinc-100 dark:border-white/5 rounded-full shadow-2xl">
+        <div className="flex items-center gap-4 border-r border-zinc-100 dark:border-white/5 pr-4 text-[10px] font-medium text-zinc-400">
+          <div className="flex items-center gap-1">
+            <span className="text-zinc-950 dark:text-zinc-50">
+              {JSON.stringify(post.contentJson || "").length}
+            </span>
+            <span className="opacity-40">CHARS</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="text-zinc-950 dark:text-zinc-50">
+              {Math.ceil(JSON.stringify(post.contentJson || "").length / 5)}
+            </span>
+            <span className="opacity-40">WORDS</span>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+          {saveStatus === "ERROR" ? (
+            <div className="flex items-center gap-2 text-red-500">
+              <X size={14} />
+              <span>Error</span>
+            </div>
+          ) : saveStatus === "SAVING" ? (
+            <div className="flex items-center gap-2 text-zinc-400">
+              <RefreshCw size={14} className="animate-spin" />
+              <span>Saving</span>
+            </div>
+          ) : saveStatus === "PENDING" ? (
+            <div className="flex items-center gap-2 text-amber-500">
+              <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+              <span>Modified</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2 text-zinc-300 dark:text-zinc-700">
+              <Check size={14} strokeWidth={3} />
+              <span className="opacity-50">
+                {lastSaved
+                  ? lastSaved.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })
+                  : "Synced"}
+              </span>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
