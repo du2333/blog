@@ -6,7 +6,7 @@ export function Footer() {
 					<div className="space-y-4">
 						<div className="flex items-center gap-4">
 							<div className="w-10 h-10 text-zinc-950 dark:text-zinc-50 relative">
-								<div className="absolute inset-0 border-[2px] border-current rounded-full"></div>
+								<div className="absolute inset-0 border-2 border-current rounded-full"></div>
 								<div className="absolute inset-[30%] bg-current rounded-full"></div>
 							</div>
 							<span className="text-[12px] font-bold uppercase tracking-[0.6em] text-zinc-950 dark:text-zinc-50">

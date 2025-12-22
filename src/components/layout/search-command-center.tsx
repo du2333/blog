@@ -135,7 +135,7 @@ export function SearchCommandCenter({
 					/>
 					{isSearching && (
 						<div className="absolute -bottom-px left-0 w-full h-px overflow-hidden">
-							<div className="w-full h-full bg-zinc-900 dark:bg-zinc-100 animate-[scan_2s_infinite]"></div>
+							<div className="w-full h-full bg-zinc-900 dark:bg-zinc-100 animate-pulse transition-opacity duration-1000"></div>
 						</div>
 					)}
 				</div>
