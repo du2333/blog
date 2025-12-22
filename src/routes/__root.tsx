@@ -28,7 +28,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "MY BLOG",
+				title: "CHRONICLE",
+			},
+			{
+				name: "description",
+				content: "这是一个记录技术、思考与数字生活的博客。",
 			},
 		],
 		links: [

@@ -14,6 +14,13 @@ import {
 
 export const Route = createFileRoute("/admin/settings/")({
 	component: RouteComponent,
+	head: () => ({
+		meta: [
+			{
+				title: "设置",
+			},
+		],
+	}),
 });
 
 function RouteComponent() {
@@ -100,7 +107,7 @@ function RouteComponent() {
 										className={`group flex flex-col items-start py-4 px-5 -mx-5 rounded-sm transition-all ${
 											activeSection === item.id
 												? "bg-zinc-50 dark:bg-white/5 shadow-sm"
-												: "hover:bg-zinc-50/50 dark:hover:bg-white/[0.01]"
+												: "hover:bg-zinc-50/50 dark:hover:bg-white/1"
 										}`}
 									>
 										<span

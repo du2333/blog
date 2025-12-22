@@ -23,6 +23,13 @@ export type PostsSearchParams = z.infer<typeof searchSchema>;
 export const Route = createFileRoute("/admin/posts/")({
 	validateSearch: searchSchema,
 	component: PostManagerPage,
+	head: () => ({
+		meta: [
+			{
+				title: "文章管理",
+			},
+		],
+	}),
 });
 
 function PostManagerPage() {

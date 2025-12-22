@@ -22,7 +22,19 @@ export const Route = createFileRoute("/_public/post/$slug")({
 		if (!post) {
 			throw notFound();
 		}
+		return post;
 	},
+	head: ({ loaderData: post }) => ({
+		meta: [
+			{
+				title: post?.title,
+			},
+			{
+				name: "description",
+				content: post?.summary ?? "",
+			},
+		],
+	}),
 	pendingComponent: ArticleSkeleton,
 });
 
@@ -95,7 +107,7 @@ function RouteComponent() {
 
 				{/* Content Layout */}
 				<div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-20 items-start">
-					<main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-forwards text-zinc-800 dark:text-zinc-200 leading-relaxed">
+					<main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-both text-zinc-800 dark:text-zinc-200 leading-relaxed">
 						<ContentRenderer content={post.contentJson} />
 
 						<footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-end items-center">

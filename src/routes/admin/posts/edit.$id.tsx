@@ -1,4 +1,4 @@
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { PostEditor } from "@/components/admin/posts/post-editor";
 import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
@@ -8,22 +8,31 @@ import { updatePostFn } from "@/features/posts/api/posts.admin.api";
 import { postByIdQuery } from "@/features/posts/posts.query";
 
 export const Route = createFileRoute("/admin/posts/edit/$id")({
-	ssr: false,
 	component: EditPost,
+	pendingComponent: PostEditorSkeleton,
+	loader: async ({ context, params }) => {
+		const post = await context.queryClient.fetchQuery(
+			postByIdQuery(Number(params.id)),
+		);
+		return post;
+	},
+	head: ({ loaderData: post }) => ({
+		meta: [
+			{
+				title: post?.title,
+			},
+		],
+	}),
 });
 
 function EditPost() {
 	const { id } = Route.useParams();
 	const postId = Number(id);
 	const queryClient = useQueryClient();
-	const { data: post, isPending, error } = useQuery(postByIdQuery(postId));
+	const { data: post, error } = useSuspenseQuery(postByIdQuery(postId));
 
 	if (error) {
 		return <ErrorPage error={error} />;
-	}
-
-	if (isPending) {
-		return <PostEditorSkeleton />;
 	}
 
 	if (!post) {

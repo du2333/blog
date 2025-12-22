@@ -22,6 +22,18 @@ export const Route = createFileRoute("/_public/blog/")({
 			postsInfiniteQueryOptions(category),
 		);
 	},
+	head: () => ({
+		meta: [
+			{
+				title: "文章",
+			},
+			{
+				name: "description",
+				content:
+					"按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。",
+			},
+		],
+	}),
 });
 
 function RouteComponent() {

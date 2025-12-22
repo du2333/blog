@@ -5,6 +5,13 @@ import { ADMIN_STATS } from "@/lib/constants";
 
 export const Route = createFileRoute("/admin/")({
 	component: DashboardOverview,
+	head: () => ({
+		meta: [
+			{
+				title: "概览",
+			},
+		],
+	}),
 });
 
 function DashboardOverview() {
@@ -84,9 +91,9 @@ function DashboardOverview() {
 
 						{/* Minimal Background Grid */}
 						<div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-							<div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
-							<div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
-							<div className="border-t border-zinc-100/50 dark:border-white/[0.02] w-full"></div>
+							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
+							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
+							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
 							<div className="h-0"></div>
 						</div>
 					</div>
