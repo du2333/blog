@@ -48,7 +48,7 @@ function RouteComponent() {
 				to: "/blog",
 				search: cat === "ALL" ? {} : { category: cat as PostCategory },
 			});
-			window.scrollTo({ top: 0, behavior: "smooth" });
+			window.scrollTo(0, 0);
 		},
 		[navigate],
 	);
