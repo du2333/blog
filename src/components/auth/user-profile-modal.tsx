@@ -135,7 +135,7 @@ export function UserProfileModal({
 				className={`
             relative w-full max-w-5xl bg-white dark:bg-[#050505] shadow-2xl dark:shadow-none border border-zinc-100 dark:border-zinc-900
             flex flex-col md:flex-row overflow-hidden rounded-sm
-            max-h-[90vh] transition-all duration-500 ease-in-out transform
+            max-h-[90vh] transition-all duration-500 ease-in-out transform fill-mode-both
             ${
 							isOpen
 								? "translate-y-0 scale-100 opacity-100"

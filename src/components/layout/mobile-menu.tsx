@@ -6,7 +6,6 @@ interface MobileMenuProps {
 		label: string;
 		to: string;
 		id: string;
-		color: string;
 	}[];
 	isOpen: boolean;
 	onClose: () => void;
@@ -29,7 +28,7 @@ export function MobileMenu({
 }: MobileMenuProps) {
 	return (
 		<div
-			className={`fixed inset-0 z-[100] transition-all duration-500 ease-in-out ${
+			className={`fixed inset-0 z-100 transition-all duration-500 ease-in-out ${
 				isOpen
 					? "opacity-100 pointer-events-auto"
 					: "opacity-0 pointer-events-none"

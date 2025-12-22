@@ -90,7 +90,7 @@ function RouteComponent() {
 		<div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-10">
 			{/* Header Section */}
 			<header className="py-20 md:py-32 space-y-12">
-				<div className="space-y-4 animate-in fade-in slide-in-from-bottom-10 duration-1000 fill-mode-forwards">
+				<div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
 					<div className="flex items-center gap-3">
 						<span className="h-px w-12 bg-black dark:bg-white/40"></span>
 					</div>
@@ -103,7 +103,7 @@ function RouteComponent() {
 				</div>
 
 				{/* Categories Filter */}
-				<nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-zinc-100 dark:border-zinc-900 pb-8 animate-in fade-in duration-1000 delay-300 fill-mode-both">
+				<nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-zinc-100 dark:border-zinc-900 pb-8 animate-in fade-in duration-700 delay-200 fill-mode-both">
 					{categories.map((cat) => (
 						<button
 							key={cat.value}

@@ -106,7 +106,7 @@ export function SearchCommandCenter({
 			<div
 				className={`
         relative w-full max-w-3xl flex flex-col max-h-[70vh]
-        transition-all duration-500 ease-in-out transform
+        transition-all duration-500 ease-in-out transform fill-mode-both
         ${
 					isOpen
 						? "opacity-100 scale-100 translate-y-0"

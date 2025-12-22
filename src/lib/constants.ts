@@ -1,10 +1,11 @@
 export const ADMIN_ITEMS_PER_PAGE = 12;
 
 export const CATEGORY_COLORS = {
-	DEV: "text-zzz-lime border-zzz-lime",
-	LIFE: "text-zzz-white border-zzz-white",
-	GAMING: "text-zzz-orange border-zzz-orange",
-	TECH: "text-zzz-cyan border-zzz-cyan",
+	DEV: "text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800",
+	LIFE: "text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800",
+	GAMING:
+		"text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800",
+	TECH: "text-zinc-600 dark:text-zinc-400 border-zinc-200 dark:border-zinc-800",
 };
 
 export const ADMIN_STATS = {

@@ -8,7 +8,6 @@ interface NavbarProps {
 		label: string;
 		to: string;
 		id: string;
-		color: string;
 	}[];
 	onSearchClick: () => void;
 	onMenuClick: () => void;
@@ -119,7 +118,7 @@ export function Navbar({
 								{isLoading ? (
 									<div className="w-8 h-8 rounded-full bg-zinc-100 dark:bg-zinc-900 animate-pulse" />
 								) : (
-									<div className="flex items-center gap-4 animate-in fade-in duration-700">
+									<div className="flex items-center gap-4 animate-in fade-in duration-700 fill-mode-both">
 										{user ? (
 											<>
 												{user.role === "admin" && (

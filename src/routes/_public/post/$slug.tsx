@@ -62,7 +62,7 @@ function RouteComponent() {
 	return (
 		<div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
 			{/* Back Link */}
-			<nav className="py-12 animate-in fade-in duration-700 max-w-4xl">
+			<nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
 				<button
 					onClick={() => router.history.back()}
 					className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
@@ -77,7 +77,7 @@ function RouteComponent() {
 
 			<article className="space-y-16">
 				{/* Header Section */}
-				<header className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards max-w-4xl">
+				<header className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both max-w-4xl">
 					<div className="space-y-6">
 						<div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-500">
 							<span className="px-2 py-0.5 border border-zinc-200 dark:border-zinc-800 rounded-sm">
@@ -107,7 +107,7 @@ function RouteComponent() {
 
 				{/* Content Layout */}
 				<div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-20 items-start">
-					<main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-1000 delay-300 fill-mode-both text-zinc-800 dark:text-zinc-200 leading-relaxed">
+					<main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-700 delay-200 fill-mode-both text-zinc-800 dark:text-zinc-200 leading-relaxed">
 						<ContentRenderer content={post.contentJson} />
 
 						<footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-end items-center">
@@ -119,7 +119,7 @@ function RouteComponent() {
 					</main>
 
 					{/* Table of Contents Sidebar */}
-					<aside className="hidden lg:block sticky top-32 animate-in fade-in duration-1000 delay-500 fill-mode-forwards">
+					<aside className="hidden lg:block sticky top-32 animate-in fade-in duration-700 delay-300 fill-mode-both">
 						<div className="pl-8 border-l border-zinc-100 dark:border-zinc-900">
 							<TableOfContents headers={post.toc} />
 						</div>

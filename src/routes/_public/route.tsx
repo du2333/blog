@@ -23,8 +23,8 @@ function PublicLayout() {
 	const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
 	const navOptions = [
-		{ label: "主页", to: "/", id: "transmission", color: "zzz-lime" },
-		{ label: "文章", to: "/blog", id: "blog", color: "zzz-lime" },
+		{ label: "主页", to: "/", id: "home" },
+		{ label: "文章", to: "/blog", id: "blog" },
 	];
 
 	const { data: session, isPending: isSessionPending } =

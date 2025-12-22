@@ -20,7 +20,7 @@ function App() {
 		<div className="flex flex-col w-full max-w-7xl mx-auto px-6 md:px-12">
 			{/* Hero Section - Minimalist & Bold */}
 			<section className="min-h-[70vh] flex flex-col justify-center py-20 md:py-32 border-b border-zinc-100 dark:border-zinc-900">
-				<div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards">
+				<div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both">
 					<header className="space-y-4">
 						<div className="flex items-center gap-3">
 							<span className="h-0.5 w-12 bg-zinc-950 dark:bg-zinc-50"></span>
