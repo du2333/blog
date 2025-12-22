@@ -23,7 +23,7 @@ function App() {
 				<div className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 ease-out fill-mode-forwards">
 					<header className="space-y-4">
 						<div className="flex items-center gap-3">
-							<span className="h-[2px] w-12 bg-zinc-950 dark:bg-zinc-50"></span>
+							<span className="h-0.5 w-12 bg-zinc-950 dark:bg-zinc-50"></span>
 						</div>
 						<h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-zinc-950 dark:text-zinc-50">
 							数字 <br />

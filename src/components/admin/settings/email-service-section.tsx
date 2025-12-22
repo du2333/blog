@@ -101,7 +101,7 @@ export function EmailServiceSection({
 
 			<div className="space-y-px">
 				{/* Property Row: API Key */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
 					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
 						Resend 令牌
 					</div>
@@ -132,7 +132,7 @@ export function EmailServiceSection({
 				</div>
 
 				{/* Property Row: Sender Name */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
 					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
 						发信人名称
 					</div>
@@ -149,7 +149,7 @@ export function EmailServiceSection({
 				</div>
 
 				{/* Property Row: Sender Email */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
 					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
 						发信邮箱
 					</div>

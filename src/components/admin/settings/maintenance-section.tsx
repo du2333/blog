@@ -37,7 +37,7 @@ export function MaintenanceSection() {
 
 			<div className="space-y-px">
 				{/* Property Row: Search Index */}
-				<div className="group flex flex-col sm:flex-row py-10 gap-8 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02]">
+				<div className="group flex flex-col sm:flex-row py-10 gap-8 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
 					<div className="w-56 shrink-0 flex flex-col gap-2.5">
 						<span className="text-[11px] uppercase tracking-[0.25em] font-bold text-zinc-500 dark:text-zinc-400">
 							搜索索引
@@ -71,7 +71,7 @@ export function MaintenanceSection() {
 				</div>
 
 				{/* Property Row: Cache Management */}
-				<div className="group flex flex-col sm:flex-row py-10 gap-8 sm:gap-0 border-b border-zinc-100/60 dark:border-white/[0.02] opacity-40 grayscale">
+				<div className="group flex flex-col sm:flex-row py-10 gap-8 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2 opacity-40 grayscale">
 					<div className="w-56 shrink-0 flex flex-col gap-2.5">
 						<span className="text-[11px] uppercase tracking-[0.25em] font-bold text-zinc-500 dark:text-zinc-400">
 							边缘缓存

@@ -34,7 +34,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 	};
 
 	return (
-		<div className="group bg-white dark:bg-transparent px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-zinc-50 dark:hover:bg-white/[0.02] transition-all duration-500 relative">
+		<div className="group bg-white dark:bg-transparent px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-zinc-50 dark:hover:bg-white/2 transition-all duration-500 relative">
 			{/* ID & Status (Combined for mobile) */}
 			<div className="md:col-span-1 flex items-center justify-between w-full md:block">
 				<span className="font-mono text-zinc-300 dark:text-zinc-700 text-[10px] tracking-widest">
