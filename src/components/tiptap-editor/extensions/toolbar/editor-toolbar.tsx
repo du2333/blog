@@ -38,7 +38,6 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
 	isActive,
 	icon: Icon,
 	label,
-	variant = "default",
 }) => (
 	<button
 		onClick={onClick}

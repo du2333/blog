@@ -15,10 +15,6 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 		setTimeout(() => setCopied(false), 2000);
 	};
 
-	const handleLanguageChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-		updateAttributes({ language: e.target.value });
-	};
-
 	const language = node.attrs.language || "text";
 
 	return (

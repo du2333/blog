@@ -10,7 +10,7 @@ export default function TableOfContents({
 	headers: TableOfContentsItem[];
 }) {
 	const activeId = useActiveTOC(headers);
-	const [indicatorTop, setIndicatorTop] = useState<number>(0);
+	const [, setIndicatorTop] = useState<number>(0);
 	const navRef = useRef<HTMLElement>(null);
 	const navigate = useNavigate();
 

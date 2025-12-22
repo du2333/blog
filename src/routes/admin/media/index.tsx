@@ -24,7 +24,6 @@ function MediaLibrary() {
 	// Logic Hooks
 	const {
 		mediaItems,
-		totalCount,
 		searchQuery,
 		setSearchQuery,
 		selectedIds,
