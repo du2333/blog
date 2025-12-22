@@ -1,3 +1,4 @@
+import { ClientOnly } from "@tanstack/react-router";
 import { Download, X, ZoomIn } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -9,7 +10,7 @@ interface ZoomableImageProps
 	src?: string;
 }
 
-const ZoomableImage: React.FC<ZoomableImageProps> = ({
+const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
 	className = "",
 	alt = "",
 	src,
@@ -86,7 +87,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 			{/* Lightbox Portal - Always mounted but controlled via visibility/opacity */}
 			{createPortal(
 				<div
-					className={`fixed inset-0 z-[200] flex items-center justify-center transition-all duration-500 ease-in-out ${
+					className={`fixed inset-0 z-200 flex items-center justify-center transition-all duration-500 ease-in-out ${
 						isOpen
 							? "opacity-100 pointer-events-auto"
 							: "opacity-0 pointer-events-none"
@@ -100,7 +101,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 
 					{/* Controls */}
 					<div
-						className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-[210] transition-all duration-500 ease-in-out ${
+						className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-210 transition-all duration-500 ease-in-out ${
 							isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
 						}`}
 					>
@@ -126,7 +127,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 
 					{/* Image */}
 					<div
-						className={`relative z-[205] p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-500 ease-in-out ${
+						className={`relative z-205 p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-500 ease-in-out ${
 							isOpen ? "scale-100 opacity-100" : "scale-[1.01] opacity-0"
 						}`}
 					>
@@ -155,4 +156,10 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 	);
 };
 
-export default ZoomableImage;
+export default function ZoomableImage(props: ZoomableImageProps) {
+	return (
+		<ClientOnly>
+			<ZoomableImageInternal {...props} />
+		</ClientOnly>
+	);
+}

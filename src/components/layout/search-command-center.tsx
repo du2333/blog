@@ -131,7 +131,7 @@ export function SearchCommandCenter({
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
 						placeholder="搜索文章或想法..."
-						className="flex-1 bg-transparent text-3xl md:text-5xl font-serif italic text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
+						className="flex-1 bg-transparent text-3xl md:text-5xl font-serif text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
 					/>
 					{isSearching && (
 						<div className="absolute -bottom-px left-0 w-full h-px overflow-hidden">
