@@ -12,7 +12,7 @@ const searchSchema = z.object({
 	category: z.custom<PostCategory>().optional().catch(undefined),
 });
 
-export const Route = createFileRoute("/_public/database/")({
+export const Route = createFileRoute("/_public/blog/")({
 	component: RouteComponent,
 	pendingComponent: LoadingFallback,
 	validateSearch: searchSchema,
@@ -33,7 +33,7 @@ function RouteComponent() {
 	const handleCategoryChange = useCallback(
 		(cat: string) => {
 			navigate({
-				to: "/database",
+				to: "/blog",
 				search: cat === "ALL" ? {} : { category: cat as PostCategory },
 			});
 			window.scrollTo({ top: 0, behavior: "smooth" });

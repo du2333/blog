@@ -1,4 +1,4 @@
-import { Database, RefreshCw, Search, Server } from "lucide-react";
+import { Database, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import ConfirmationModal from "@/components/ui/confirmation-modal";

@@ -4,16 +4,12 @@ import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { featuredPostsQuery } from "@/features/posts/posts.query";
-import { HERO_ASSETS } from "@/lib/config/assets";
 
 export const Route = createFileRoute("/_public/")({
 	component: App,
 	loader: async ({ context }) => {
 		await context.queryClient.ensureQueryData(featuredPostsQuery);
 	},
-	head: () => ({
-		links: [...HERO_ASSETS],
-	}),
 	pendingComponent: LoadingFallback,
 });
 
@@ -42,7 +38,7 @@ function App() {
 
 						<div className="pt-4">
 							<Link
-								to="/database"
+								to="/blog"
 								className="group inline-flex items-center gap-4 text-sm font-bold uppercase tracking-widest hover:gap-6 transition-all duration-500"
 							>
 								<span>阅读文章</span>
@@ -64,7 +60,7 @@ function App() {
 						</h2>
 					</div>
 					<Link
-						to="/database"
+						to="/blog"
 						className="text-[11px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors pb-1 border-b border-zinc-200 dark:border-zinc-800 hover:border-zinc-950 dark:hover:border-zinc-100"
 					>
 						浏览全部内容

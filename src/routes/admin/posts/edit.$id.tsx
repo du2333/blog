@@ -1,9 +1,7 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import {
-	PostEditor,
-	type PostEditorData,
-} from "@/components/admin/posts/post-editor";
+import { PostEditor } from "@/components/admin/posts/post-editor";
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { ErrorPage } from "@/components/common/error-page";
 import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import { updatePostFn } from "@/features/posts/api/posts.admin.api";

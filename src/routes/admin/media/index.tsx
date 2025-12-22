@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Plus, Upload } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useState } from "react";
 import {
 	MediaGrid,

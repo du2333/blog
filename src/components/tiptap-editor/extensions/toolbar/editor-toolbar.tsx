@@ -14,7 +14,6 @@ import {
 	Quote,
 	Redo,
 	Strikethrough,
-	Terminal,
 	Underline as UnderlineIcon,
 	Undo,
 } from "lucide-react";

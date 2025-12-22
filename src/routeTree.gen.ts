@@ -22,7 +22,7 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
-import { Route as PublicDatabaseIndexRouteImport } from './routes/_public/database/index'
+import { Route as PublicBlogIndexRouteImport } from './routes/_public/blog/index'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 import { Route as AdminPostsEditIdRouteImport } from './routes/admin/posts/edit.$id'
 
@@ -89,9 +89,9 @@ const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   path: '/media/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const PublicDatabaseIndexRoute = PublicDatabaseIndexRouteImport.update({
-  id: '/database/',
-  path: '/database/',
+const PublicBlogIndexRoute = PublicBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
   getParentRoute: () => PublicRouteRoute,
 } as any)
 const PublicPostSlugRoute = PublicPostSlugRouteImport.update({
@@ -115,7 +115,7 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/database': typeof PublicDatabaseIndexRoute
+  '/blog': typeof PublicBlogIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
@@ -130,7 +130,7 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/database': typeof PublicDatabaseIndexRoute
+  '/blog': typeof PublicBlogIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
@@ -149,7 +149,7 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
-  '/_public/database/': typeof PublicDatabaseIndexRoute
+  '/_public/blog/': typeof PublicBlogIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
@@ -167,7 +167,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/'
     | '/post/$slug'
-    | '/database'
+    | '/blog'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/settings'
@@ -182,7 +182,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/post/$slug'
-    | '/database'
+    | '/blog'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/settings'
@@ -200,7 +200,7 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/admin/'
     | '/_public/post/$slug'
-    | '/_public/database/'
+    | '/_public/blog/'
     | '/admin/media/'
     | '/admin/posts/'
     | '/admin/settings/'
@@ -306,11 +306,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMediaIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_public/database/': {
-      id: '/_public/database/'
-      path: '/database'
-      fullPath: '/database'
-      preLoaderRoute: typeof PublicDatabaseIndexRouteImport
+    '/_public/blog/': {
+      id: '/_public/blog/'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof PublicBlogIndexRouteImport
       parentRoute: typeof PublicRouteRoute
     }
     '/_public/post/$slug': {
@@ -353,13 +353,13 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
 interface PublicRouteRouteChildren {
   PublicIndexRoute: typeof PublicIndexRoute
   PublicPostSlugRoute: typeof PublicPostSlugRoute
-  PublicDatabaseIndexRoute: typeof PublicDatabaseIndexRoute
+  PublicBlogIndexRoute: typeof PublicBlogIndexRoute
 }
 
 const PublicRouteRouteChildren: PublicRouteRouteChildren = {
   PublicIndexRoute: PublicIndexRoute,
   PublicPostSlugRoute: PublicPostSlugRoute,
-  PublicDatabaseIndexRoute: PublicDatabaseIndexRoute,
+  PublicBlogIndexRoute: PublicBlogIndexRoute,
 }
 
 const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(

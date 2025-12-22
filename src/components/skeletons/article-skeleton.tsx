@@ -9,7 +9,7 @@ export function ArticleSkeleton() {
 			{/* Back Link Skeleton */}
 			<nav className="py-12 animate-pulse max-w-3xl">
 				<button
-					onClick={() => navigate({ to: "/database" })}
+					onClick={() => navigate({ to: "/blog" })}
 					className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
 				>
 					<ArrowLeft size={12} />

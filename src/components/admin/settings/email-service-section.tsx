@@ -4,7 +4,6 @@ import {
 	Eye,
 	EyeOff,
 	Loader2,
-	Mail,
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";

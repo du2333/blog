@@ -16,16 +16,6 @@ export const PRELOAD_LINKS = [
 	},
 ];
 
-export const HERO_ASSETS = [
-	// Preload hero video poster (首页立即显示)
-	{
-		rel: "preload",
-		href: "/assets/hollow.webp",
-		as: "image" as const,
-		type: "image/webp",
-	},
-];
-
 /**
  * Google Fonts URLs - 这些将通过异步方式加载，不阻塞渲染
  */

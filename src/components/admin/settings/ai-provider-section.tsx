@@ -1,11 +1,9 @@
 import {
 	AlertCircle,
 	CheckCircle2,
-	ChevronDown,
 	Eye,
 	EyeOff,
 	Loader2,
-	Sparkles,
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";
