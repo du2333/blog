@@ -34,14 +34,14 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+				className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
 				onClick={isLoading ? undefined : onClose}
 			/>
 
 			{/* Modal Content */}
 			<div
 				className={`
-          relative w-full max-w-lg bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-900
+          relative w-full max-w-lg bg-background border border-border
           flex flex-col shadow-2xl transform transition-all duration-500 ease-in-out rounded-sm
           ${
 						isOpen
@@ -55,20 +55,20 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 					<div className="space-y-2">
 						<div
 							className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold ${
-								isDanger ? "text-red-500" : "text-zinc-400"
+								isDanger ? "text-red-500" : "text-muted-foreground"
 							}`}
 						>
 							<AlertTriangle size={14} strokeWidth={1.5} />
 							<span>系统确认</span>
 						</div>
-						<h2 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+						<h2 className="text-3xl font-serif font-medium text-foreground">
 							{title}
 						</h2>
 					</div>
 					<button
 						onClick={onClose}
 						disabled={isLoading}
-						className="p-2 -mr-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors disabled:opacity-50"
+						className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
 					>
 						<X size={20} strokeWidth={1} />
 					</button>
@@ -76,7 +76,7 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 
 				{/* Body */}
 				<div className="px-8 pb-10">
-					<p className="text-base text-zinc-500 dark:text-zinc-400 leading-relaxed font-light">
+					<p className="text-base text-muted-foreground leading-relaxed font-light">
 						{message}
 					</p>
 
@@ -92,7 +92,7 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 					<button
 						onClick={onClose}
 						disabled={isLoading}
-						className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors disabled:opacity-50 border border-transparent hover:border-zinc-100 dark:hover:border-white/5"
+						className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 border border-transparent hover:bg-accent"
 					>
 						取消
 					</button>
@@ -104,7 +104,7 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
               ${
 								isDanger
 									? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
-									: "bg-zinc-900 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 shadow-lg shadow-black/10"
+									: "bg-primary text-primary-foreground hover:opacity-90 shadow-lg shadow-black/10"
 							}
               disabled:opacity-50 disabled:cursor-not-allowed
             `}

@@ -47,7 +47,7 @@ export function PostsToolbar({
 			{/* Search */}
 			<div className="relative w-full lg:max-w-md">
 				<Search
-					className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700"
+					className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground"
 					size={16}
 					strokeWidth={1.5}
 				/>
@@ -56,12 +56,12 @@ export function PostsToolbar({
 					placeholder="检索文章标题..."
 					value={searchTerm}
 					onChange={(e) => onSearchChange(e.target.value)}
-					className="w-full bg-transparent border-b border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-serif italic pl-8 pr-8 py-3 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+					className="w-full bg-transparent border-b border-border text-sm font-serif italic pl-8 pr-8 py-3 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 				/>
 				{searchTerm && (
 					<button
 						onClick={() => onSearchChange("")}
-						className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
+						className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 					>
 						<X size={14} />
 					</button>
@@ -82,8 +82,8 @@ export function PostsToolbar({
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
 									category !== "ALL"
-										? "text-zinc-950 dark:text-zinc-50"
-										: "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+										? ""
+										: "text-muted-foreground hover:text-foreground"
 								}
             `}
 					>
@@ -97,7 +97,7 @@ export function PostsToolbar({
 						/>
 					</button>
 					{activeDropdown === "CATEGORY" && (
-						<div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
+						<div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
 							{CATEGORY_FILTERS.map((cat) => (
 								<button
 									key={cat}
@@ -105,10 +105,10 @@ export function PostsToolbar({
 										onCategoryChange(cat);
 										setActiveDropdown(null);
 									}}
-									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
+									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
 										category === cat
-											? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
-											: "text-zinc-400"
+											? "font-bold bg-accent"
+											: "text-muted-foreground"
 									}`}
 								>
 									{cat}
@@ -128,8 +128,8 @@ export function PostsToolbar({
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
 									status !== "ALL"
-										? "text-zinc-950 dark:text-zinc-50"
-										: "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+										? ""
+										: "text-muted-foreground hover:text-foreground"
 								}
             `}
 					>
@@ -143,7 +143,7 @@ export function PostsToolbar({
 						/>
 					</button>
 					{activeDropdown === "STATUS" && (
-						<div className="absolute top-full left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
+						<div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
 							{STATUS_FILTERS.map((s) => (
 								<button
 									key={s}
@@ -151,10 +151,10 @@ export function PostsToolbar({
 										onStatusChange(s);
 										setActiveDropdown(null);
 									}}
-									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
+									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
 										status === s
-											? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
-											: "text-zinc-400"
+											? "font-bold bg-accent"
+											: "text-muted-foreground"
 									}`}
 								>
 									{s}
@@ -174,8 +174,8 @@ export function PostsToolbar({
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
 									sortDir !== "DESC"
-										? "text-zinc-950 dark:text-zinc-50"
-										: "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+										? ""
+										: "text-muted-foreground hover:text-foreground"
 								}
             `}
 					>
@@ -189,7 +189,7 @@ export function PostsToolbar({
 						/>
 					</button>
 					{activeDropdown === "SORT" && (
-						<div className="absolute top-full right-0 lg:left-0 mt-2 w-48 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
+						<div className="absolute top-full right-0 lg:left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
 							{[
 								{ label: "最新发布", dir: "DESC" as SortDirection },
 								{ label: "最早发布", dir: "ASC" as SortDirection },
@@ -200,10 +200,10 @@ export function PostsToolbar({
 										onSortChange(opt.dir);
 										setActiveDropdown(null);
 									}}
-									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-zinc-50 dark:hover:bg-white/5 transition-colors ${
+									className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
 										sortDir === opt.dir
-											? "text-zinc-950 dark:text-zinc-50 font-bold bg-zinc-50 dark:bg-white/5"
-											: "text-zinc-400"
+											? "font-bold bg-accent"
+											: "text-muted-foreground"
 									}`}
 								>
 									{opt.label}

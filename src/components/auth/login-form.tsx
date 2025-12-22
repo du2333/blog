@@ -98,7 +98,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 						<button
 							type="button"
 							onClick={handleResendVerification}
-							className="text-[10px] text-zinc-900 dark:text-zinc-100 underline underline-offset-4 hover:opacity-70 transition-opacity ml-7 text-left"
+							className="text-[10px] underline underline-offset-4 hover:opacity-70 transition-opacity ml-7 text-left"
 						>
 							重新发送验证邮件
 						</button>
@@ -108,13 +108,13 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
 			<div className="space-y-6">
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						邮箱地址
 					</label>
 					<input
 						type="email"
 						{...register("email")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="example@mail.com"
 						autoComplete="username"
 						disabled={isSubmitting || loginStep !== "IDLE"}
@@ -128,14 +128,14 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
 				<div className="space-y-2 group">
 					<div className="flex justify-between items-center">
-						<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 							登录密码
 						</label>
 						{isEmailVerficationRequired && (
 							<Link
 								to="/forgot-password"
 								tabIndex={-1}
-								className="text-[9px] uppercase tracking-widest text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+								className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
 							>
 								找回密码
 							</Link>
@@ -144,7 +144,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 					<input
 						type="password"
 						{...register("password")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="••••••••"
 						autoComplete="current-password"
 						disabled={isSubmitting || loginStep !== "IDLE"}
@@ -160,7 +160,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 			<button
 				type="submit"
 				disabled={isSubmitting || loginStep !== "IDLE"}
-				className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
 			>
 				{loginStep === "VERIFYING" ? (
 					<Loader2 className="animate-spin" size={16} />

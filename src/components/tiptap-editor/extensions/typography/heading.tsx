@@ -9,10 +9,10 @@ export const HeadingExtension = Heading.extend({
 		const id = slugify(textContent);
 
 		const styles: Record<number, string> = {
-			1: "text-4xl md:text-6xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-10 mt-16 leading-[1.1] tracking-tight",
-			2: "text-3xl md:text-5xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-8 mt-14 leading-[1.1] tracking-tight",
-			3: "text-2xl md:text-3xl font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-6 mt-12",
-			4: "text-xl font-sans font-bold text-zinc-800 dark:text-zinc-200 mb-4 mt-8 uppercase tracking-widest",
+			1: "text-4xl md:text-6xl font-serif font-medium mb-10 mt-16 leading-[1.1] tracking-tight",
+			2: "text-3xl md:text-5xl font-serif font-medium mb-8 mt-14 leading-[1.1] tracking-tight",
+			3: "text-2xl md:text-3xl font-serif font-medium mb-6 mt-12",
+			4: "text-xl font-sans font-bold mb-4 mt-8 uppercase tracking-widest",
 		};
 
 		return [

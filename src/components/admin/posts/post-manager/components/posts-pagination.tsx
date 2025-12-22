@@ -61,8 +61,8 @@ export function PostsPagination({
 	const endItem = Math.min(startItem + currentPageItemCount - 1, totalItems);
 
 	return (
-		<div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-zinc-100 dark:border-white/5 mt-12">
-			<div className="text-[10px] font-mono text-zinc-400 dark:text-zinc-600 uppercase tracking-[0.3em]">
+		<div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-border mt-12">
+			<div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
 				Displaying {startItem} — {endItem} of {totalItems}
 			</div>
 
@@ -71,7 +71,7 @@ export function PostsPagination({
 				<button
 					onClick={() => onPageChange(currentPage - 1)}
 					disabled={currentPage === 1}
-					className="h-10 w-10 flex items-center justify-center text-zinc-400 disabled:opacity-10 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+					className="h-10 w-10 flex items-center justify-center text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors"
 				>
 					<ChevronLeft size={18} strokeWidth={1.5} />
 				</button>
@@ -81,7 +81,7 @@ export function PostsPagination({
 					{pageNumbers.map((pageNumber, index) => (
 						<React.Fragment key={index}>
 							{pageNumber === "..." ? (
-								<div className="w-8 text-center text-[10px] text-zinc-300 dark:text-zinc-700 tracking-tighter">
+								<div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter">
 									...
 								</div>
 							) : (
@@ -89,8 +89,8 @@ export function PostsPagination({
 									onClick={() => onPageChange(pageNumber)}
 									className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 ${
 										currentPage === pageNumber
-											? "text-zinc-950 dark:text-zinc-50 font-bold border-b border-zinc-900 dark:border-zinc-100"
-											: "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 border-b border-transparent"
+											? "text-foreground font-bold border-b border-foreground"
+											: "text-muted-foreground hover:text-foreground border-b border-transparent"
 									}`}
 								>
 									{pageNumber.toString().padStart(2, "0")}
@@ -104,7 +104,7 @@ export function PostsPagination({
 				<button
 					onClick={() => onPageChange(currentPage + 1)}
 					disabled={currentPage === totalPages}
-					className="h-10 w-10 flex items-center justify-center text-zinc-400 disabled:opacity-10 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+					className="h-10 w-10 flex items-center justify-center text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors"
 				>
 					<ChevronRight size={18} strokeWidth={1.5} />
 				</button>

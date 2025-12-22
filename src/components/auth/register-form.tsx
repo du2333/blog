@@ -72,19 +72,19 @@ export function RegisterForm() {
 		return (
 			<div className="text-center space-y-10 animate-in fade-in zoom-in-95 duration-700">
 				<div className="space-y-4">
-					<div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto border border-zinc-100 dark:border-zinc-800">
-						<Check size={24} className="text-zinc-900 dark:text-zinc-100" />
+					<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto border border-border">
+						<Check size={24} />
 					</div>
 					<h3 className="text-2xl font-serif font-medium tracking-tight">
 						验证您的邮箱
 					</h3>
-					<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+					<p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
 						一封验证邮件已发送至您的邮箱。请点击邮件中的链接以激活账户。
 					</p>
 				</div>
 				<button
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
 				>
 					返回登录
 				</button>
@@ -97,13 +97,13 @@ export function RegisterForm() {
 			<div className="space-y-6">
 				{/* Name */}
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						代理人代号
 					</label>
 					<input
 						type="text"
 						{...register("name")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="输入您的代号"
 					/>
 					{errors.name && (
@@ -115,13 +115,13 @@ export function RegisterForm() {
 
 				{/* Email */}
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						邮箱地址
 					</label>
 					<input
 						type="email"
 						{...register("email")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="example@mail.com"
 					/>
 					{errors.email && (
@@ -134,13 +134,13 @@ export function RegisterForm() {
 				{/* Passwords */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div className="space-y-2 group">
-						<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 							密码
 						</label>
 						<input
 							type="password"
 							{...register("password")}
-							className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+							className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 							placeholder="••••••••"
 						/>
 						{errors.password && (
@@ -150,13 +150,13 @@ export function RegisterForm() {
 						)}
 					</div>
 					<div className="space-y-2 group">
-						<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 							确认密码
 						</label>
 						<input
 							type="password"
 							{...register("confirmPassword")}
-							className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+							className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 							placeholder="••••••••"
 						/>
 						{errors.confirmPassword && (
@@ -171,7 +171,7 @@ export function RegisterForm() {
 			<button
 				type="submit"
 				disabled={isSubmitting}
-				className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
 			>
 				{isSubmitting ? (
 					<Loader2 className="animate-spin" size={16} />

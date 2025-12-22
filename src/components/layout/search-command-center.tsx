@@ -98,7 +98,7 @@ export function SearchCommandCenter({
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-white/90 dark:bg-[#050505]/95 backdrop-blur-xl"
+				className="absolute inset-0 bg-background/90 backdrop-blur-xl"
 				onClick={onClose}
 			/>
 
@@ -115,12 +115,12 @@ export function SearchCommandCenter({
       `}
 			>
 				{/* Header / Input */}
-				<div className="relative flex items-center gap-6 pb-8 border-b border-zinc-100 dark:border-zinc-900">
+				<div className="relative flex items-center gap-6 pb-8 border-b border-border">
 					<Search
 						className={`transition-colors duration-500 ${
 							isSearching
-								? "text-zinc-400 animate-pulse"
-								: "text-zinc-300 dark:text-zinc-700"
+								? "text-muted-foreground animate-pulse"
+								: "text-muted-foreground"
 						}`}
 						size={28}
 						strokeWidth={1.5}
@@ -131,11 +131,11 @@ export function SearchCommandCenter({
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
 						placeholder="搜索文章或想法..."
-						className="flex-1 bg-transparent text-3xl md:text-5xl font-serif italic text-zinc-900 dark:text-zinc-100 placeholder-zinc-200 dark:placeholder-zinc-800 focus:outline-none min-w-0"
+						className="flex-1 bg-transparent text-3xl md:text-5xl font-serif italic text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
 					/>
 					{isSearching && (
 						<div className="absolute -bottom-px left-0 w-full h-px overflow-hidden">
-							<div className="w-full h-full bg-zinc-900 dark:bg-zinc-100 animate-pulse transition-opacity duration-1000"></div>
+							<div className="w-full h-full bg-primary animate-pulse transition-opacity duration-1000"></div>
 						</div>
 					)}
 				</div>
@@ -149,7 +149,7 @@ export function SearchCommandCenter({
 						<div className="h-64 flex flex-col items-center justify-center space-y-4"></div>
 					) : !isSearching && searchResults.length === 0 ? (
 						<div className="h-64 flex flex-col items-center justify-center">
-							<span className="text-lg font-light text-zinc-400 italic">
+							<span className="text-lg font-light text-muted-foreground italic">
 								未找到相关结果
 							</span>
 						</div>
@@ -162,9 +162,7 @@ export function SearchCommandCenter({
 								className={`
                   group p-6 transition-all duration-500 rounded-sm relative
                   ${
-										index === selectedIndex
-											? "bg-zinc-50 dark:bg-zinc-900/50"
-											: "hover:bg-zinc-50/50 dark:hover:bg-zinc-900/30"
+										index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
 									}
                 `}
 							>
@@ -175,14 +173,14 @@ export function SearchCommandCenter({
 										</div>
 
 										<h4
-											className="text-xl md:text-2xl font-serif text-zinc-900 dark:text-zinc-100 leading-tight"
+											className="text-xl md:text-2xl font-serif text-foreground leading-tight"
 											dangerouslySetInnerHTML={{
 												__html: result.matches.title || result.post.title,
 											}}
 										/>
 
 										<div
-											className="text-sm font-light text-zinc-500 dark:text-zinc-400 line-clamp-1 italic"
+											className="text-sm font-light text-muted-foreground line-clamp-1 italic"
 											dangerouslySetInnerHTML={{
 												__html: result.matches.summary || result.post.summary,
 											}}
@@ -190,7 +188,10 @@ export function SearchCommandCenter({
 									</div>
 
 									<div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-										<CornerDownLeft size={16} className="text-zinc-400" />
+										<CornerDownLeft
+											size={16}
+											className="text-muted-foreground"
+										/>
 									</div>
 								</div>
 							</div>
@@ -199,7 +200,7 @@ export function SearchCommandCenter({
 				</div>
 
 				{/* Footer */}
-				<div className="pt-8 border-t border-zinc-100 dark:border-zinc-900 flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] opacity-30">
+				<div className="pt-8 border-t border-border flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] opacity-30">
 					<div className="flex gap-8">
 						<div className="flex items-center gap-2">
 							<kbd className="px-1 border border-current rounded">↑↓</kbd> 导航

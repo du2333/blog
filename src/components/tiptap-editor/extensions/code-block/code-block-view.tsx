@@ -19,9 +19,9 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 
 	return (
 		<NodeViewWrapper className="my-16 relative group">
-			<div className="rounded-sm overflow-hidden bg-zinc-950 dark:bg-zinc-900/20 transition-all duration-700 border border-zinc-900 dark:border-zinc-800 group-hover:border-zinc-800 dark:group-hover:border-zinc-700">
+			<div className="rounded-sm overflow-hidden bg-muted transition-all duration-700 border border-border group-hover:border-border">
 				{/* Simple Header */}
-				<div className="flex items-center justify-between px-6 py-3 select-none bg-zinc-900/50 dark:bg-zinc-900/30 border-b border-zinc-800/50">
+				<div className="flex items-center justify-between px-6 py-3 select-none bg-muted/50 border-b border-border/50">
 					<div className="flex items-center gap-3">
 						<DropdownMenu
 							value={language}
@@ -36,10 +36,10 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 					<button
 						onClick={handleCopy}
 						contentEditable={false}
-						className="flex items-center gap-2 text-[10px] font-mono font-medium text-zinc-500 hover:text-zinc-100 transition-all duration-300"
+						className="flex items-center gap-2 text-[10px] font-mono font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
 					>
 						{copied ? (
-							<span className="animate-in fade-in slide-in-from-right-2 text-zinc-100">
+							<span className="animate-in fade-in slide-in-from-right-2">
 								已复制
 							</span>
 						) : (
@@ -47,18 +47,14 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 								Copy
 							</span>
 						)}
-						{copied ? (
-							<Check size={12} className="text-zinc-100" />
-						) : (
-							<Copy size={12} />
-						)}
+						{copied ? <Check size={12} /> : <Copy size={12} />}
 					</button>
 				</div>
 
 				{/* Code Area */}
 				<NodeViewContent
 					as="div"
-					className="relative p-8 pt-4 overflow-x-auto custom-scrollbar text-sm md:text-base font-mono leading-relaxed outline-none text-zinc-200 dark:text-zinc-300"
+					className="relative p-8 pt-4 overflow-x-auto custom-scrollbar text-sm md:text-base font-mono leading-relaxed outline-none text-muted-foreground"
 					spellCheck={false}
 				/>
 			</div>

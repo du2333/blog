@@ -38,7 +38,7 @@ export default function TableOfContents({
 			className="sticky top-32 self-start hidden lg:block w-[200px] animate-in fade-in duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar fill-mode-backwards"
 		>
 			{/* Header */}
-			<div className="flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-400 dark:text-zinc-600">
+			<div className="flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
 				<AlignLeft size={12} />
 				<span>目录索引</span>
 			</div>
@@ -68,8 +68,8 @@ export default function TableOfContents({
                             block text-xs transition-all duration-300 leading-relaxed relative border-l-2
                             ${
 															activeId === node.id
-																? "text-zinc-950 dark:text-zinc-50 border-zinc-900 dark:border-zinc-100 pl-4 font-medium"
-																: "text-zinc-400 dark:text-zinc-600 border-transparent pl-4 hover:text-zinc-950 dark:hover:text-zinc-100"
+																? "text-foreground border-foreground pl-4 font-medium"
+																: "text-muted-foreground border-transparent pl-4 hover:text-foreground"
 														}
                         `}
 								style={{ marginLeft: `${(node.level - 2) * 1}rem` }}

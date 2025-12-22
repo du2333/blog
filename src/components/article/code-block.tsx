@@ -70,21 +70,21 @@ export const CodeBlock = memo(function CodeBlock({
 
 	return (
 		<div className="my-16 group relative max-w-full">
-			<div className="relative rounded-sm overflow-hidden bg-zinc-50/50 dark:bg-zinc-900/20 transition-all duration-700 border border-zinc-100 dark:border-zinc-900 group-hover:border-zinc-200 dark:group-hover:border-zinc-800">
+			<div className="relative rounded-sm overflow-hidden bg-muted/50 transition-all duration-700 border border-border group-hover:border-border">
 				{/* Minimal Header */}
 				<div className="flex items-center justify-between px-6 py-3 select-none">
 					<div className="flex items-center gap-4">
-						<span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+						<span className="text-[10px] font-mono font-medium text-muted-foreground uppercase tracking-[0.4em]">
 							{language || "Source"}
 						</span>
 					</div>
 
 					<button
 						onClick={handleCopy}
-						className="flex items-center gap-2 text-[10px] font-mono font-medium text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-500"
+						className="flex items-center gap-2 text-[10px] font-mono font-medium text-muted-foreground hover:text-foreground transition-all duration-500"
 					>
 						{copied ? (
-							<span className="animate-in fade-in slide-in-from-right-2 text-zinc-900 dark:text-zinc-100 tracking-widest">
+							<span className="animate-in fade-in slide-in-from-right-2 tracking-widest">
 								已复制
 							</span>
 						) : (
@@ -93,11 +93,7 @@ export const CodeBlock = memo(function CodeBlock({
 							</span>
 						)}
 						<div className="p-1 rounded-full transition-colors">
-							{copied ? (
-								<Check size={12} className="text-zinc-900 dark:text-zinc-100" />
-							) : (
-								<Copy size={12} />
-							)}
+							{copied ? <Check size={12} /> : <Copy size={12} />}
 						</div>
 					</button>
 				</div>
@@ -113,9 +109,9 @@ export const CodeBlock = memo(function CodeBlock({
 					</div>
 
 					{!isLoaded && (
-						<div className="absolute inset-0 flex items-center justify-center bg-zinc-50 dark:bg-zinc-900/30 min-h-[100px]">
+						<div className="absolute inset-0 flex items-center justify-center bg-muted min-h-[100px]">
 							<div className="flex flex-col items-center gap-3">
-								<div className="w-4 h-4 border border-zinc-200 dark:border-zinc-800 border-t-zinc-500 dark:border-t-zinc-400 rounded-full animate-spin"></div>
+								<div className="w-4 h-4 border border-border border-t-foreground rounded-full animate-spin"></div>
 							</div>
 						</div>
 					)}

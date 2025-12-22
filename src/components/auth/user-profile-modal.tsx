@@ -126,14 +126,14 @@ export function UserProfileModal({
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+				className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
 				onClick={onClose}
 			/>
 
 			{/* Modal Content */}
 			<div
 				className={`
-            relative w-full max-w-5xl bg-white dark:bg-[#050505] shadow-2xl dark:shadow-none border border-zinc-100 dark:border-zinc-900
+            relative w-full max-w-5xl bg-background shadow-2xl border border-border
             flex flex-col md:flex-row overflow-hidden rounded-sm
             max-h-[90vh] transition-all duration-500 ease-in-out transform fill-mode-both
             ${
@@ -146,16 +146,16 @@ export function UserProfileModal({
 				{/* Close Button */}
 				<button
 					onClick={onClose}
-					className="absolute top-8 right-8 z-50 p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					className="absolute top-8 right-8 z-50 p-2 text-muted-foreground hover:text-foreground transition-colors"
 				>
 					<X size={24} strokeWidth={1.5} />
 				</button>
 
 				{/* Left: Identity Summary */}
-				<div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-zinc-100 dark:border-zinc-900 bg-zinc-50/50 dark:bg-zinc-900/10">
+				<div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-border bg-muted/30">
 					<div className="space-y-12">
 						<div className="space-y-6">
-							<div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-zinc-100 dark:border-zinc-900 p-1 bg-white dark:bg-zinc-950">
+							<div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-border p-1">
 								{user.image ? (
 									<img
 										src={user.image}
@@ -163,28 +163,28 @@ export function UserProfileModal({
 										className="w-full h-full rounded-full object-cover"
 									/>
 								) : (
-									<div className="w-full h-full rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-300">
+									<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-muted-foreground/30">
 										<UserIcon size={40} strokeWidth={1} />
 									</div>
 								)}
 							</div>
 							<div className="space-y-2">
-								<h2 className="text-4xl font-serif font-medium text-zinc-900 dark:text-zinc-100 tracking-tight">
+								<h2 className="text-4xl font-serif font-medium tracking-tight">
 									{user.name}
 								</h2>
-								<div className="text-[10px] font-mono text-zinc-400 uppercase tracking-[0.4em]">
+								<div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.4em]">
 									{user.role === "admin" ? "管理员" : "用户"}
 								</div>
 							</div>
 						</div>
 
-						<div className="space-y-8 pt-12 border-t border-zinc-100 dark:border-zinc-900">
+						<div className="space-y-8 pt-12 border-t border-border">
 							<div className="space-y-1">
 								<span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
 									状态
 								</span>
 								<div className="flex items-center gap-2">
-									<div className="w-1.5 h-1.5 rounded-full bg-zinc-900 dark:bg-zinc-100 animate-pulse"></div>
+									<div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
 									<span className="text-sm font-light">在线</span>
 								</div>
 							</div>
@@ -238,7 +238,7 @@ export function UserProfileModal({
 									<input
 										type="text"
 										{...registerProfile("name")}
-										className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-4 text-xl font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all"
+										className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 									/>
 									{profileErrors.name && (
 										<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -256,12 +256,12 @@ export function UserProfileModal({
 									<input
 										type="text"
 										{...registerProfile("image")}
-										className="flex-1 min-w-0 bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-4 text-xl font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all"
+										className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 									/>
 									<button
 										type="submit"
 										disabled={isProfileSubmitting}
-										className="mb-2 w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 transition-all disabled:opacity-30 shrink-0"
+										className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
 									>
 										{isProfileSubmitting ? (
 											<Loader2 size={18} className="animate-spin" />
@@ -300,7 +300,7 @@ export function UserProfileModal({
 										<input
 											type="password"
 											{...registerPassword("currentPassword")}
-											className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-4 text-xl font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all"
+											className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 										/>
 										{passwordErrors.currentPassword && (
 											<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -317,7 +317,7 @@ export function UserProfileModal({
 											<input
 												type="password"
 												{...registerPassword("newPassword")}
-												className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-4 text-xl font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all"
+												className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 											/>
 											{passwordErrors.newPassword && (
 												<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -333,12 +333,12 @@ export function UserProfileModal({
 												<input
 													type="password"
 													{...registerPassword("confirmPassword")}
-													className="flex-1 min-w-0 bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-4 text-xl font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all"
+													className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 												/>
 												<button
 													type="submit"
 													disabled={isPasswordSubmitting}
-													className="mb-2 w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-900 dark:hover:bg-zinc-100 hover:text-white dark:hover:text-zinc-900 transition-all disabled:opacity-30 shrink-0"
+													className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
 												>
 													{isPasswordSubmitting ? (
 														<Loader2 size={18} className="animate-spin" />
@@ -357,14 +357,14 @@ export function UserProfileModal({
 								</div>
 							</form>
 						) : (
-							<div className="p-10 border border-zinc-100 dark:border-zinc-900 bg-white dark:bg-zinc-950/50 space-y-6 max-w-2xl">
-								<div className="flex items-center gap-4 text-zinc-400">
+							<div className="p-10 border border-border bg-muted/30 space-y-6 max-w-2xl">
+								<div className="flex items-center gap-4 text-muted-foreground">
 									<ShieldAlert size={24} strokeWidth={1.5} />
 									<span className="text-xs font-medium uppercase tracking-[0.2em]">
 										外部账户
 									</span>
 								</div>
-								<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic">
+								<p className="text-sm font-light text-muted-foreground leading-relaxed italic">
 									此账户通过第三方提供商（如 Github）登录。
 								</p>
 							</div>

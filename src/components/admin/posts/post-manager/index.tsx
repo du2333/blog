@@ -131,7 +131,7 @@ export function PostManager({
 				<button
 					onClick={() => createMutation.mutate()}
 					disabled={createMutation.isPending}
-					className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+					className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
 				>
 					<Plus size={14} />
 					{createMutation.isPending ? "创建中..." : "新建文章"}
@@ -161,14 +161,14 @@ export function PostManager({
 				) : isPending ? (
 					<PostManagerSkeleton />
 				) : (
-					<div className="space-y-0 border-t border-zinc-100 dark:border-white/5">
+					<div className="space-y-0 border-t border-border">
 						{posts.length === 0 ? (
-							<div className="py-24 flex flex-col items-center justify-center text-zinc-400 font-serif italic gap-4">
+							<div className="py-24 flex flex-col items-center justify-center text-muted-foreground font-serif italic gap-4">
 								<ListFilter size={40} strokeWidth={1} className="opacity-20" />
 								<div className="text-center">
 									未找到匹配的文章
 									<button
-										className="text-zinc-900 dark:text-zinc-100 mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
+										className="mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
 										onClick={onResetFilters}
 									>
 										[清除所有筛选]
@@ -178,7 +178,7 @@ export function PostManager({
 						) : (
 							<>
 								{/* Desktop Header (Simplified) */}
-								<div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-zinc-400 font-bold border-b border-zinc-100 dark:border-white/5">
+								<div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border">
 									<div className="col-span-1">ID</div>
 									<div className="col-span-6">文章摘要</div>
 									<div className="col-span-2">分类</div>
@@ -186,7 +186,7 @@ export function PostManager({
 									<div className="col-span-1 text-right">操作</div>
 								</div>
 
-								<div className="divide-y divide-zinc-100 dark:divide-white/5">
+								<div className="divide-y divide-border">
 									{posts.map((post) => (
 										<PostRow
 											key={post.id}

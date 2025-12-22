@@ -85,7 +85,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 	}, []);
 
 	return (
-		<div className="fixed inset-0 z-80 flex flex-col bg-white dark:bg-[#050505] selection:bg-zinc-100 dark:selection:bg-zinc-800 overflow-hidden">
+		<div className="fixed inset-0 z-80 flex flex-col bg-background selection:bg-accent overflow-hidden">
 			<ConfirmationModal
 				isOpen={status === "blocked"}
 				onClose={() => reset?.()}
@@ -96,12 +96,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 			/>
 
 			{/* Control Header */}
-			<header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-md border-b border-zinc-100/50 dark:border-white/5">
+			<header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
 				<button
 					onClick={() => router.history.back()}
-					className="group flex items-center gap-3 text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
+					className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all"
 				>
-					<div className="p-2 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full group-hover:scale-105 active:scale-95 transition-all shadow-sm">
+					<div className="p-2 bg-accent border border-border/50 rounded-full group-hover:scale-105 active:scale-95 transition-all shadow-sm">
 						<ChevronLeft size={18} />
 					</div>
 					<span className="text-[10px] uppercase tracking-[0.2em] font-bold">
@@ -114,7 +114,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						onClick={() => {
 							if (post.slug) window.open(`/post/${post.slug}`, "_blank");
 						}}
-						className="px-6 py-2.5 bg-zinc-50 dark:bg-white/5 border border-zinc-100 dark:border-white/5 rounded-full text-[10px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all flex items-center gap-2 group"
+						className="px-6 py-2.5 bg-accent border border-border/50 rounded-full text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all flex items-center gap-2 group"
 					>
 						<Eye
 							size={14}
@@ -131,7 +131,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               ${
 								processState === "SUCCESS"
 									? "bg-green-500/10 border border-green-500/20 text-green-600"
-									: "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:opacity-90 disabled:opacity-20"
+									: "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
 							}
             `}
 					>
@@ -165,15 +165,15 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							}
 							minRows={1}
 							placeholder="文章标题..."
-							className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50 placeholder:text-zinc-100 dark:placeholder:text-zinc-900 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
+							className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-foreground placeholder:text-muted/50 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
 						/>
 					</div>
 
 					{/* Notion-style Properties Section */}
-					<div className="mb-20 space-y-1 py-8 border-y border-zinc-50 dark:border-white/2">
+					<div className="mb-20 space-y-1 py-8 border-y border-border/50">
 						{/* Property Row: Status */}
-						<div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400">
+						<div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground">
 								<Globe size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									状态
@@ -188,8 +188,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                       px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
                       ${
 												post.status === s
-													? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900"
-													: "text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
+													? "bg-primary text-primary-foreground"
+													: "text-muted-foreground hover:text-foreground"
 											}
                     `}
 									>
@@ -204,8 +204,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						</div>
 
 						{/* Property Row: Slug */}
-						<div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400">
+						<div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground">
 								<LinkIcon size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									永久链接
@@ -217,12 +217,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									value={post.slug || ""}
 									onChange={(e) => handlePostChange({ slug: e.target.value })}
 									placeholder="文章链接..."
-									className="flex-1 bg-transparent text-xs font-mono text-zinc-600 dark:text-zinc-400 focus:outline-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+									className="flex-1 bg-transparent text-xs font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30"
 								/>
 								<button
 									onClick={handleGenerateSlug}
 									disabled={isGeneratingSlug}
-									className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
+									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
 									title="自动生成"
 								>
 									{isGeneratingSlug ? (
@@ -235,8 +235,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						</div>
 
 						{/* Property Row: Category */}
-						<div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400">
+						<div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground">
 								<Tag size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									类别
@@ -257,8 +257,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						</div>
 
 						{/* Property Row: Date */}
-						<div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400">
+						<div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground">
 								<Calendar size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									发布时间
@@ -276,14 +276,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 											publishedAt: dateStr ? new Date(dateStr) : null,
 										})
 									}
-									className="p-0! border-none! bg-transparent! text-xs text-zinc-600 dark:text-zinc-400"
+									className="p-0! border-none! bg-transparent! text-xs text-foreground"
 								/>
 							</div>
 						</div>
 
 						{/* Property Row: Read Time */}
-						<div className="group flex items-center min-h-10 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400">
+						<div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground">
 								<Clock size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									阅读时间
@@ -298,15 +298,15 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 											readTimeInMinutes: parseInt(e.target.value) || 0,
 										})
 									}
-									className="w-12 bg-transparent text-xs text-zinc-600 dark:text-zinc-400 focus:outline-none"
+									className="w-12 bg-transparent text-xs text-foreground focus:outline-none"
 								/>
-								<span className="text-[10px] text-zinc-300 uppercase tracking-widest font-bold">
+								<span className="text-[10px] text-muted-foreground/50 uppercase tracking-widest font-bold">
 									分钟
 								</span>
 								<button
 									onClick={handleCalculateReadTime}
 									disabled={isCalculatingReadTime}
-									className="p-1.5 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 opacity-0 group-hover:opacity-100 transition-all"
+									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
 									title="自动计算"
 								>
 									{isCalculatingReadTime ? (
@@ -319,8 +319,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						</div>
 
 						{/* Property Row: Summary */}
-						<div className="group flex items-start py-3 px-2 hover:bg-zinc-50 dark:hover:bg-white/2 rounded-sm transition-colors">
-							<div className="w-32 flex items-center gap-2 text-zinc-400 pt-1">
+						<div className="group flex items-start py-3 px-2 hover:bg-accent rounded-sm transition-colors">
+							<div className="w-32 flex items-center gap-2 text-muted-foreground pt-1">
 								<FileText size={14} strokeWidth={1.5} />
 								<span className="text-[11px] uppercase tracking-wider font-medium">
 									摘要
@@ -333,12 +333,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 										handlePostChange({ summary: e.target.value })
 									}
 									placeholder="简单介绍一下内容..."
-									className="w-full bg-transparent text-xs leading-relaxed text-zinc-600 dark:text-zinc-400 focus:outline-none resize-none placeholder:text-zinc-200 dark:placeholder:text-zinc-800"
+									className="w-full bg-transparent text-xs leading-relaxed text-foreground focus:outline-none resize-none placeholder:text-muted-foreground/30"
 								/>
 								<button
 									onClick={handleGenerateSummary}
 									disabled={isGeneratingSummary}
-									className="w-fit flex items-center gap-2 px-2 py-1 bg-zinc-50 dark:bg-white/5 text-[9px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 rounded-sm transition-all"
+									className="w-fit flex items-center gap-2 px-2 py-1 bg-accent text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground rounded-sm transition-all"
 								>
 									{isGeneratingSummary ? (
 										<Loader2 size={10} className="animate-spin" />
@@ -364,16 +364,16 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 			</div>
 
 			{/* Floating Status Bar (Bottom Right) */}
-			<div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-white/80 dark:bg-black/80 backdrop-blur-md border border-zinc-100 dark:border-white/5 rounded-full shadow-2xl">
-				<div className="flex items-center gap-4 border-r border-zinc-100 dark:border-white/5 pr-4 text-[10px] font-medium text-zinc-400">
+			<div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-background/80 backdrop-blur-md border border-border/50 rounded-full shadow-2xl">
+				<div className="flex items-center gap-4 border-r border-border/50 pr-4 text-[10px] font-medium text-muted-foreground">
 					<div className="flex items-center gap-1">
-						<span className="text-zinc-950 dark:text-zinc-50">
+						<span className="text-foreground">
 							{JSON.stringify(post.contentJson || "").length}
 						</span>
 						<span className="opacity-40">字符</span>
 					</div>
 					<div className="flex items-center gap-1">
-						<span className="text-zinc-950 dark:text-zinc-50">
+						<span className="text-foreground">
 							{Math.ceil(JSON.stringify(post.contentJson || "").length / 5)}
 						</span>
 						<span className="opacity-40">单词</span>
@@ -387,7 +387,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							<span>错误</span>
 						</div>
 					) : saveStatus === "SAVING" ? (
-						<div className="flex items-center gap-2 text-zinc-400">
+						<div className="flex items-center gap-2 text-muted-foreground">
 							<RefreshCw size={14} className="animate-spin" />
 							<span>正在保存</span>
 						</div>
@@ -397,7 +397,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							<span>已修改</span>
 						</div>
 					) : (
-						<div className="flex items-center gap-2 text-zinc-300 dark:text-zinc-700">
+						<div className="flex items-center gap-2 text-muted-foreground/30">
 							<Check size={14} strokeWidth={3} />
 							<span className="opacity-50">
 								{lastSaved

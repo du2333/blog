@@ -76,8 +76,8 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 				{/* Hover Hint Overlay */}
 				{showHint && (
 					<div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-						<div className="bg-white/90 dark:bg-zinc-900/90 backdrop-blur-sm p-4 rounded-full border border-zinc-200 dark:border-zinc-800 transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-xl">
-							<ZoomIn className="text-zinc-900 dark:text-zinc-100" size={20} />
+						<div className="bg-popover/90 backdrop-blur-sm p-4 rounded-full border border-border transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-xl">
+							<ZoomIn size={20} />
 						</div>
 					</div>
 				)}
@@ -94,7 +94,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 				>
 					{/* Backdrop */}
 					<div
-						className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+						className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
 						onClick={handleClose}
 					/>
 
@@ -105,19 +105,19 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 						}`}
 					>
 						<div className="flex flex-col">
-							<span className="text-[10px] font-mono font-medium text-zinc-400 dark:text-zinc-500 uppercase tracking-[0.4em]">
+							<span className="text-[10px] font-mono font-medium text-muted-foreground uppercase tracking-[0.4em]">
 								{alt || "Untitled"}
 							</span>
 						</div>
 						<div className="flex gap-6">
 							<a href={originalSrc} download target="_blank" rel="noreferrer">
-								<button className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300">
+								<button className="p-2 text-muted-foreground hover:text-foreground transition-all duration-300">
 									<Download size={18} />
 								</button>
 							</a>
 							<button
 								onClick={handleClose}
-								className="p-2 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-all duration-300"
+								className="p-2 text-muted-foreground hover:text-foreground transition-all duration-300"
 							>
 								<X size={22} />
 							</button>
@@ -134,7 +134,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 							src={src}
 							alt={alt}
 							loading="eager"
-							className="max-w-full max-h-full object-contain shadow-2xl dark:shadow-none"
+							className="max-w-full max-h-full object-contain shadow-2xl"
 						/>
 					</div>
 
@@ -144,7 +144,7 @@ const ZoomableImage: React.FC<ZoomableImageProps> = ({
 							isOpen ? "opacity-100" : "opacity-0"
 						}`}
 					>
-						<span className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-[0.8em]">
+						<span className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.8em]">
 							Esc or Click to Return
 						</span>
 					</div>

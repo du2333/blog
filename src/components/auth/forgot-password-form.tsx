@@ -48,23 +48,20 @@ export function ForgotPasswordForm() {
 		return (
 			<div className="text-center space-y-10 animate-in fade-in zoom-in-95 duration-700">
 				<div className="space-y-4">
-					<div className="w-16 h-16 bg-zinc-50 dark:bg-zinc-900 rounded-full flex items-center justify-center mx-auto border border-zinc-100 dark:border-zinc-800">
-						<Check size={24} className="text-zinc-900 dark:text-zinc-100" />
+					<div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto border border-border">
+						<Check size={24} />
 					</div>
 					<h3 className="text-2xl font-serif font-medium tracking-tight">
 						查收您的邮件
 					</h3>
-					<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+					<p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
 						重置密码链接已发送至{" "}
-						<span className="text-zinc-900 dark:text-zinc-100 font-medium">
-							{sentEmail}
-						</span>
-						。
+						<span className="font-medium">{sentEmail}</span>。
 					</p>
 				</div>
 				<button
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
 				>
 					返回登录
 				</button>
@@ -75,20 +72,20 @@ export function ForgotPasswordForm() {
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
 			<div className="space-y-2">
-				<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic border-l border-zinc-100 dark:border-zinc-900 pl-6">
+				<p className="text-sm font-light text-muted-foreground leading-relaxed italic border-l border-border pl-6">
 					请输入您的注册邮箱，我们将向您发送重置密码的链接。
 				</p>
 			</div>
 
 			<div className="space-y-6">
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						注册邮箱
 					</label>
 					<input
 						type="email"
 						{...register("email")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="example@mail.com"
 					/>
 					{errors.email && (
@@ -103,7 +100,7 @@ export function ForgotPasswordForm() {
 				<button
 					type="submit"
 					disabled={isSubmitting}
-					className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+					className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
 				>
 					{isSubmitting ? (
 						<Loader2 className="animate-spin" size={16} />
@@ -115,7 +112,7 @@ export function ForgotPasswordForm() {
 				<button
 					type="button"
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					className="w-full flex items-center justify-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
 				>
 					<ArrowLeft size={12} strokeWidth={1.5} />
 					<span>返回登录</span>

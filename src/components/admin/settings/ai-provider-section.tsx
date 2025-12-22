@@ -77,12 +77,12 @@ export function AiProviderSection({
 	return (
 		<div className="space-y-16">
 			{/* Section Header */}
-			<div className="flex items-end justify-between border-b border-zinc-100 dark:border-white/5 pb-10">
+			<div className="flex items-end justify-between border-b border-border/50 pb-10">
 				<div className="space-y-1.5">
-					<h3 className="text-4xl font-serif font-medium tracking-tight text-zinc-950 dark:text-zinc-50">
+					<h3 className="text-4xl font-serif font-medium tracking-tight text-foreground">
 						AI 智能
 					</h3>
-					<p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-semibold opacity-80">
+					<p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-semibold opacity-80">
 						Artificial Intelligence Configuration
 					</p>
 				</div>
@@ -93,7 +93,7 @@ export function AiProviderSection({
 								? "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/5 dark:border-emerald-500/20 dark:text-emerald-500"
 								: status === "ERROR"
 									? "bg-rose-50 border-rose-100 text-rose-600 dark:bg-rose-500/5 dark:border-rose-500/20 dark:text-rose-500"
-									: "bg-zinc-50 dark:bg-white/5 border-zinc-100 dark:border-white/10 text-zinc-500"
+									: "bg-muted border-border text-muted-foreground"
 						}`}
 					>
 						{status === "TESTING" ? (
@@ -114,8 +114,8 @@ export function AiProviderSection({
 
 			<div className="space-y-px">
 				{/* Property Row: Provider */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
-					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-border/30">
+					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-muted-foreground">
 						服务平台
 					</div>
 					<div className="flex-1 flex gap-2.5">
@@ -128,8 +128,8 @@ export function AiProviderSection({
 								}}
 								className={`px-5 py-2.5 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all border ${
 									provider === p
-										? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 border-transparent shadow-lg shadow-black/5"
-										: "border-zinc-200 dark:border-white/5 text-zinc-400 dark:text-zinc-500 hover:border-zinc-400 dark:hover:border-white/20"
+										? "bg-primary text-primary-foreground border-transparent shadow-lg shadow-black/5"
+										: "border-border text-muted-foreground hover:border-foreground"
 								}`}
 							>
 								{p}
@@ -139,8 +139,8 @@ export function AiProviderSection({
 				</div>
 
 				{/* Property Row: API Key */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
-					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-border/30">
+					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-muted-foreground">
 						授权密钥
 					</div>
 					<div className="flex-1 flex items-center gap-4">
@@ -162,11 +162,11 @@ export function AiProviderSection({
 									});
 									setStatus("IDLE");
 								}}
-								className="w-full bg-transparent text-sm font-mono text-zinc-950 dark:text-zinc-50 focus:outline-none placeholder:text-zinc-300 dark:placeholder:text-zinc-800 pr-10"
+								className="w-full bg-transparent text-sm font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30 pr-10"
 							/>
 							<button
 								onClick={() => setShowKey(!showKey)}
-								className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-300 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+								className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
 							>
 								{showKey ? (
 									<EyeOff size={18} strokeWidth={1.5} />
@@ -179,8 +179,8 @@ export function AiProviderSection({
 				</div>
 
 				{/* Property Row: Model */}
-				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-zinc-100/60 dark:border-white/2">
-					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-zinc-500 dark:text-zinc-400">
+				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0 border-b border-border/30">
+					<div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.3em] font-semibold text-muted-foreground">
 						模型版本
 					</div>
 					<div className="flex-1">
@@ -216,10 +216,10 @@ export function AiProviderSection({
 							disabled={status === "TESTING" || !isConfigured}
 							className={`flex items-center gap-3 px-6 py-3 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all ${
 								!isConfigured
-									? "bg-zinc-50 dark:bg-white/5 text-zinc-300 cursor-not-allowed"
+									? "bg-muted text-muted-foreground/50 cursor-not-allowed"
 									: status === "TESTING"
-										? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 animate-pulse"
-										: "border border-zinc-200 dark:border-white/10 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-950 dark:hover:bg-white hover:text-white dark:hover:text-zinc-950"
+										? "bg-primary text-primary-foreground animate-pulse"
+										: "border border-border text-muted-foreground hover:bg-primary hover:text-primary-foreground"
 							}`}
 						>
 							{status === "TESTING" ? (
@@ -236,7 +236,7 @@ export function AiProviderSection({
 										? "text-green-600 dark:text-green-500"
 										: status === "ERROR"
 											? "text-red-600 dark:text-red-500"
-											: "text-zinc-400"
+											: "text-muted-foreground"
 								}`}
 							>
 								{statusMsg}

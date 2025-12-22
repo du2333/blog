@@ -44,8 +44,8 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
 		className={clsx(
 			"p-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 group relative",
 			isActive
-				? "bg-zinc-900 text-white dark:bg-white dark:text-zinc-900 shadow-sm"
-				: "text-zinc-500 hover:bg-zinc-100 dark:hover:bg-zinc-800 hover:text-zinc-900 dark:hover:text-zinc-100",
+				? "bg-primary text-primary-foreground shadow-sm"
+				: "text-muted-foreground hover:bg-accent hover:text-foreground",
 		)}
 		title={label}
 		type="button"
@@ -90,7 +90,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 	if (!editor) return null;
 
 	return (
-		<div className="sticky top-0 z-30 mb-12 py-3 bg-white/80 dark:bg-[#050505]/80 backdrop-blur-xl border-b border-zinc-100 dark:border-zinc-900 flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">
+		<div className="sticky top-0 z-30 mb-12 py-3 bg-background/80 backdrop-blur-xl border-b border-border flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">
 			{/* Headings */}
 			<ToolbarButton
 				onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
@@ -105,7 +105,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 				label="小标题"
 			/>
 
-			<div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
+			<div className="h-6 w-px bg-border mx-2"></div>
 
 			{/* Formatting */}
 			<ToolbarButton
@@ -139,7 +139,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 				label="行内代码"
 			/>
 
-			<div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
+			<div className="h-6 w-px bg-border mx-2"></div>
 
 			{/* Lists & Blocks */}
 			<ToolbarButton
@@ -161,7 +161,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 				label="引用"
 			/>
 
-			<div className="h-6 w-px bg-zinc-100 dark:bg-zinc-800 mx-2"></div>
+			<div className="h-6 w-px bg-border mx-2"></div>
 
 			{/* Inserts */}
 			<ToolbarButton

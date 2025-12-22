@@ -22,11 +22,11 @@ function DashboardOverview() {
 					<h1 className="text-4xl font-serif font-medium tracking-tight">
 						概览
 					</h1>
-					<p className="text-[10px] uppercase tracking-[0.4em] text-zinc-400 font-mono">
+					<p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-mono">
 						System Insight
 					</p>
 				</div>
-				<div className="text-[9px] font-mono text-zinc-300 dark:text-zinc-700 uppercase tracking-widest hidden sm:block">
+				<div className="text-[9px] font-mono text-muted-foreground/30 uppercase tracking-widest hidden sm:block">
 					Auto-Sync Active
 				</div>
 			</header>
@@ -67,11 +67,11 @@ function DashboardOverview() {
 			<div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
 				{/* Main Graph */}
 				<div className="lg:col-span-2 space-y-6">
-					<div className="flex justify-between items-baseline border-b border-zinc-100 dark:border-white/5 pb-4">
+					<div className="flex justify-between items-baseline border-b border-border/50 pb-4">
 						<h3 className="text-sm font-medium uppercase tracking-[0.2em]">
 							流量趋势
 						</h3>
-						<span className="text-[9px] font-mono text-zinc-400 uppercase tracking-widest">
+						<span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
 							Analysis // 24H
 						</span>
 					</div>
@@ -80,10 +80,10 @@ function DashboardOverview() {
 						{Array.from({ length: 24 }).map((_, i) => (
 							<div
 								key={i}
-								className="flex-1 bg-zinc-100 dark:bg-white/5 hover:bg-zinc-900 dark:hover:bg-zinc-100 transition-all duration-500 relative group/bar rounded-t-[1px]"
+								className="flex-1 bg-accent hover:bg-primary transition-all duration-500 relative group/bar rounded-t-[1px]"
 								style={{ height: `${Math.random() * 70 + 10}%` }}
 							>
-								<div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[10px] py-1 px-2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none rounded-sm">
+								<div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] py-1 px-2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none rounded-sm">
 									{Math.floor(Math.random() * 100)}
 								</div>
 							</div>
@@ -91,13 +91,13 @@ function DashboardOverview() {
 
 						{/* Minimal Background Grid */}
 						<div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
-							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
-							<div className="border-t border-zinc-100/50 dark:border-white/2 w-full"></div>
+							<div className="border-t border-border/30 w-full"></div>
+							<div className="border-t border-border/30 w-full"></div>
+							<div className="border-t border-border/30 w-full"></div>
 							<div className="h-0"></div>
 						</div>
 					</div>
-					<div className="flex justify-between text-[9px] text-zinc-400 font-mono uppercase tracking-[0.3em]">
+					<div className="flex justify-between text-[9px] text-muted-foreground font-mono uppercase tracking-[0.3em]">
 						<span>00:00</span>
 						<span>12:00</span>
 						<span>23:59</span>
@@ -106,7 +106,7 @@ function DashboardOverview() {
 
 				{/* Activity Log */}
 				<div className="space-y-6">
-					<div className="flex justify-between items-baseline border-b border-zinc-100 dark:border-white/5 pb-4">
+					<div className="flex justify-between items-baseline border-b border-border/50 pb-4">
 						<h3 className="text-sm font-medium uppercase tracking-[0.2em]">
 							系统日志
 						</h3>
@@ -147,14 +147,14 @@ function DashboardOverview() {
 											? "bg-green-500"
 											: log.type === "warning"
 												? "bg-amber-500"
-												: "bg-zinc-300 dark:bg-zinc-700"
+												: "bg-muted-foreground/30"
 									}`}
 								></div>
 								<div className="space-y-1">
-									<p className="text-xs font-light leading-snug group-hover:text-zinc-900 dark:group-hover:text-zinc-100 transition-colors">
+									<p className="text-xs font-light leading-snug group-hover:text-foreground transition-colors">
 										{log.text}
 									</p>
-									<p className="text-[9px] font-mono text-zinc-400 uppercase tracking-wider">
+									<p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
 										{log.time}
 									</p>
 								</div>

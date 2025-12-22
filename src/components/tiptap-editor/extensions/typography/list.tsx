@@ -35,7 +35,7 @@ export const ListItemExtension = ListItem.extend({
 			"li",
 			mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
 				class:
-					"relative flex gap-4 text-zinc-700 dark:text-zinc-300 group items-start [counter-increment:minimal-counter] text-lg leading-relaxed",
+					"relative flex gap-4 group items-start [counter-increment:minimal-counter] text-lg leading-relaxed",
 			}),
 			// --- 标记图标区域 ---
 			[
@@ -50,8 +50,8 @@ export const ListItemExtension = ListItem.extend({
 					"div",
 					{
 						class: `
-              w-1.5 h-1.5 rounded-full bg-zinc-400 dark:bg-zinc-600 
-              group-hover:bg-zinc-900 dark:group-hover:bg-zinc-100 transition-all duration-300
+              w-1.5 h-1.5 rounded-full bg-muted-foreground 
+              group-hover:bg-foreground transition-all duration-300
               [.is-ol_&]:hidden
             `,
 					},

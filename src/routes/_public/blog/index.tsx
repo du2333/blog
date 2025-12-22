@@ -92,26 +92,26 @@ function RouteComponent() {
 			<header className="py-20 md:py-32 space-y-12">
 				<div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
 					<div className="flex items-center gap-3">
-						<span className="h-px w-12 bg-black dark:bg-white/40"></span>
+						<span className="h-px w-12 bg-foreground"></span>
 					</div>
-					<h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-zinc-950 dark:text-zinc-50">
+					<h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-foreground">
 						文章
 					</h1>
-					<p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-zinc-500 dark:text-zinc-500">
+					<p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-muted-foreground">
 						按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
 					</p>
 				</div>
 
 				{/* Categories Filter */}
-				<nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-zinc-100 dark:border-zinc-900 pb-8 animate-in fade-in duration-700 delay-200 fill-mode-both">
+				<nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-border pb-8 animate-in fade-in duration-700 delay-200 fill-mode-both">
 					{categories.map((cat) => (
 						<button
 							key={cat.value}
 							onClick={() => handleCategoryChange(cat.value)}
 							className={`text-[11px] uppercase tracking-[0.2em] transition-all duration-500 relative group font-medium ${
 								activeCategory === cat.value
-									? "text-zinc-950 dark:text-zinc-50"
-									: "text-zinc-400 dark:text-zinc-600 hover:text-zinc-950 dark:hover:text-zinc-100"
+									? "text-foreground"
+									: "text-muted-foreground hover:text-foreground"
 							}`}
 						>
 							{cat.label}
@@ -128,7 +128,7 @@ function RouteComponent() {
 			</header>
 
 			{/* Posts List */}
-			<div className="flex flex-col gap-0 border-t border-zinc-100 dark:border-white/10">
+			<div className="flex flex-col gap-0 border-t border-border">
 				{posts.map((post, index) => (
 					<PostItem key={post.id} post={post} index={index} />
 				))}
@@ -142,17 +142,20 @@ function RouteComponent() {
 				{isFetchingNextPage ? (
 					<div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
 						<div className="relative">
-							<div className="w-12 h-12 rounded-full border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
-								<RefreshCw size={16} className="text-zinc-400 animate-spin" />
+							<div className="w-12 h-12 rounded-full border border-border flex items-center justify-center">
+								<RefreshCw
+									size={16}
+									className="text-muted-foreground animate-spin"
+								/>
 							</div>
-							<div className="absolute inset-0 w-12 h-12 rounded-full border-t border-zinc-900 dark:border-zinc-100 animate-[spin_1.5s_linear_infinite]"></div>
+							<div className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary animate-[spin_1.5s_linear_infinite]"></div>
 						</div>
-						<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400">
+						<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground">
 							Loading
 						</span>
 					</div>
 				) : hasNextPage ? (
-					<div className="h-px w-24 bg-zinc-100 dark:bg-zinc-800"></div>
+					<div className="h-px w-24 bg-border"></div>
 				) : posts.length > 0 ? (
 					<div className="flex flex-col items-center gap-3 opacity-20">
 						<div className="h-px w-32 bg-current"></div>

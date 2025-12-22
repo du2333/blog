@@ -108,15 +108,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
             w-9 h-9 text-[11px] font-medium flex items-center justify-center transition-all duration-300 rounded-sm relative group
             ${
 							selected
-								? "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 shadow-lg"
-								: "text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-100 hover:bg-zinc-100 dark:hover:bg-white/5"
+								? "bg-primary text-primary-foreground shadow-lg"
+								: "text-muted-foreground hover:text-foreground hover:bg-accent"
 						}
-            ${today && !selected ? "text-zinc-950 dark:text-zinc-100 font-bold" : ""}
+            ${today && !selected ? "text-foreground font-bold" : ""}
           `}
 				>
 					{i}
 					{today && !selected && (
-						<div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-zinc-950 dark:bg-white rounded-full"></div>
+						<div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></div>
 					)}
 				</button>,
 			);
@@ -130,15 +130,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
 			<div
 				onClick={() => setIsOpen(!isOpen)}
 				className={`
-            relative w-full bg-zinc-50 dark:bg-white/[0.03] text-zinc-900 dark:text-zinc-100 text-xs font-light pl-11 pr-4 py-4 cursor-pointer select-none transition-all rounded-sm group
-            ${isOpen ? "ring-1 ring-zinc-950 dark:ring-zinc-100 shadow-sm" : "hover:bg-zinc-100 dark:hover:bg-white/5"}
+            relative w-full bg-muted/30 text-foreground text-xs font-light pl-11 pr-4 py-4 cursor-pointer select-none transition-all rounded-sm group
+            ${isOpen ? "ring-1 ring-primary shadow-sm" : "hover:bg-accent"}
         `}
 			>
 				<CalendarIcon
 					className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${
 						isOpen
-							? "text-zinc-950 dark:text-zinc-100"
-							: "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-300"
+							? "text-foreground"
+							: "text-muted-foreground group-hover:text-foreground"
 					}`}
 					size={16}
 					strokeWidth={1.5}
@@ -149,10 +149,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
 			</div>
 
 			{isOpen && (
-				<div className="absolute top-full left-0 z-50 mt-2 bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-white/10 shadow-2xl p-6 w-[320px] animate-in fade-in zoom-in-95 duration-300 rounded-sm">
+				<div className="absolute top-full left-0 z-50 mt-2 bg-popover border border-border shadow-2xl p-6 w-[320px] animate-in fade-in zoom-in-95 duration-300 rounded-sm">
 					{/* Header */}
 					<div className="flex items-center justify-between mb-6">
-						<h4 className="text-sm font-serif font-medium text-zinc-950 dark:text-zinc-50 tracking-tight">
+						<h4 className="text-sm font-serif font-medium text-foreground tracking-tight">
 							{viewDate.toLocaleString("zh-CN", {
 								month: "long",
 								year: "numeric",
@@ -161,13 +161,13 @@ const DatePicker: React.FC<DatePickerProps> = ({
 						<div className="flex items-center gap-1">
 							<button
 								onClick={() => changeMonth(-1)}
-								className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-full"
 							>
 								<ChevronLeft size={18} strokeWidth={1.5} />
 							</button>
 							<button
 								onClick={() => changeMonth(1)}
-								className="text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors p-2 hover:bg-zinc-100 dark:hover:bg-white/5 rounded-full"
+								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-full"
 							>
 								<ChevronRight size={18} strokeWidth={1.5} />
 							</button>
@@ -179,7 +179,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 						{daysOfWeek.map((d) => (
 							<div
 								key={d}
-								className="w-9 text-center text-[10px] font-bold text-zinc-300 dark:text-zinc-700 uppercase tracking-widest"
+								className="w-9 text-center text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest"
 							>
 								{d}
 							</div>

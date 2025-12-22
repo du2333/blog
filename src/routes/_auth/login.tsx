@@ -23,7 +23,7 @@ function RouteComponent() {
 						没有账户?{" "}
 						<Link
 							to="/register"
-							className="text-zinc-900 dark:text-zinc-100 font-medium hover:underline underline-offset-4 ml-2"
+							className="text-foreground font-medium hover:underline underline-offset-4 ml-2"
 						>
 							立即注册
 						</Link>

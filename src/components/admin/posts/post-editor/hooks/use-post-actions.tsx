@@ -55,11 +55,9 @@ export function usePostActions({
 			// Feedback: Notify user task is running
 			toast("发布流启动", {
 				description: "后台正在进行内容处理与部署分析。",
-				icon: (
-					<Radio className="animate-pulse text-zinc-950 dark:text-zinc-50" />
-				),
+				icon: <Radio className="animate-pulse text-foreground" />,
 				className:
-					"bg-white/95 dark:bg-[#050505]/95 backdrop-blur-2xl border border-zinc-100 dark:border-zinc-900 rounded-sm",
+					"bg-background/95 backdrop-blur-2xl border border-border rounded-sm",
 			});
 
 			setProcessState("SUCCESS");

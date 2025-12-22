@@ -36,7 +36,7 @@ export function MobileMenu({
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+				className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
 				onClick={onClose}
 			/>
 
@@ -49,13 +49,13 @@ export function MobileMenu({
 				{/* Header */}
 				<div className="flex justify-between items-center">
 					<div className="flex flex-col">
-						<span className="font-serif italic text-2xl tracking-tight text-zinc-950 dark:text-zinc-50">
+						<span className="font-serif italic text-2xl tracking-tight text-foreground">
 							菜单
 						</span>
 					</div>
 					<button
 						onClick={onClose}
-						className="w-12 h-12 flex items-center justify-center rounded-full border border-zinc-100 dark:border-zinc-900 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-white/5 transition-all"
+						className="w-12 h-12 flex items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
 					>
 						<X size={24} strokeWidth={1.5} />
 					</button>
@@ -72,7 +72,7 @@ export function MobileMenu({
 								isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
 							}`}
 							activeProps={{
-								className: "!text-zinc-950 dark:!text-zinc-50",
+								className: "!text-foreground",
 							}}
 							style={{ transitionDelay: isOpen ? `${50 + idx * 50}ms` : "0ms" }}
 						>
@@ -104,7 +104,7 @@ export function MobileMenu({
 								isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
 							}`}
 							activeProps={{
-								className: "!text-zinc-950 dark:!text-zinc-50",
+								className: "!text-foreground",
 							}}
 							style={{
 								transitionDelay: isOpen
@@ -142,7 +142,7 @@ export function MobileMenu({
 					}`}
 				>
 					{user ? (
-						<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-zinc-100 dark:border-zinc-900">
+						<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-border">
 							<button
 								onClick={() => {
 									onOpenProfile();
@@ -150,7 +150,7 @@ export function MobileMenu({
 								}}
 								className="flex items-center gap-6 group"
 							>
-								<div className="w-16 h-16 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900 p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
+								<div className="w-16 h-16 rounded-full overflow-hidden border border-border p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
 									{user.image ? (
 										<img
 											src={user.image}
@@ -158,16 +158,16 @@ export function MobileMenu({
 											className="w-full h-full rounded-full object-cover"
 										/>
 									) : (
-										<div className="w-full h-full rounded-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-300">
+										<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-zinc-300">
 											<UserIcon size={24} strokeWidth={1} />
 										</div>
 									)}
 								</div>
 								<div className="text-left">
-									<div className="text-2xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+									<div className="text-2xl font-serif font-medium text-foreground">
 										{user.name}
 									</div>
-									<div className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 font-bold">
+									<div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
 										个人资料
 									</div>
 								</div>
@@ -178,7 +178,7 @@ export function MobileMenu({
 									logout();
 									onClose();
 								}}
-								className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-400 hover:text-red-500 transition-colors py-4"
+								className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4"
 							>
 								<LogOut size={14} />
 								<span>退出登录</span>
@@ -188,7 +188,7 @@ export function MobileMenu({
 						<Link
 							to="/login"
 							onClick={onClose}
-							className="inline-block pt-12 border-t border-zinc-100 dark:border-zinc-900 w-full"
+							className="inline-block pt-12 border-t border-border w-full"
 						>
 							<span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
 								登录 / Login

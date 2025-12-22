@@ -39,9 +39,7 @@ function EditPost() {
 		return (
 			<div className="flex items-center justify-center h-[50vh]">
 				<div className="text-center space-y-4">
-					<h2 className="text-4xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
-						未找到文章
-					</h2>
+					<h2 className="text-4xl font-serif font-medium">未找到文章</h2>
 					<p className="text-zinc-400 font-light text-sm">
 						ID 为 {id} 的文章记录不存在或已被移除。
 					</p>

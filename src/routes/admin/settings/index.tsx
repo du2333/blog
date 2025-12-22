@@ -82,10 +82,10 @@ function RouteComponent() {
 			{/* Left Sticky Navigation */}
 			<aside className="lg:w-80 shrink-0 lg:sticky lg:top-40 h-fit space-y-20 animate-in fade-in slide-in-from-left-4 duration-1000 fill-mode-both">
 				<div className="space-y-3">
-					<h1 className="text-6xl font-serif font-medium tracking-tighter leading-none text-zinc-950 dark:text-zinc-50">
+					<h1 className="text-6xl font-serif font-medium tracking-tighter leading-none text-foreground">
 						设置
 					</h1>
-					<p className="text-[11px] uppercase tracking-[0.5em] text-zinc-400 font-bold opacity-60">
+					<p className="text-[11px] uppercase tracking-[0.5em] text-muted-foreground font-bold opacity-60">
 						System Preferences
 					</p>
 				</div>
@@ -94,10 +94,10 @@ function RouteComponent() {
 					{navGroups.map((group) => (
 						<div key={group.label} className="space-y-8">
 							<div className="flex items-center gap-4">
-								<span className="text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-300 dark:text-zinc-800">
+								<span className="text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground/30">
 									{group.en}
 								</span>
-								<div className="h-px flex-1 bg-zinc-100 dark:bg-white/5"></div>
+								<div className="h-px flex-1 bg-border/50"></div>
 							</div>
 							<div className="flex flex-col gap-2">
 								{group.items.map((item) => (
@@ -106,15 +106,15 @@ function RouteComponent() {
 										onClick={() => setActiveSection(item.id)}
 										className={`group flex flex-col items-start py-4 px-5 -mx-5 rounded-sm transition-all ${
 											activeSection === item.id
-												? "bg-zinc-50 dark:bg-white/5 shadow-sm"
-												: "hover:bg-zinc-50/50 dark:hover:bg-white/1"
+												? "bg-accent shadow-sm"
+												: "hover:bg-accent/50"
 										}`}
 									>
 										<span
 											className={`text-[12px] uppercase tracking-[0.25em] font-bold transition-colors ${
 												activeSection === item.id
-													? "text-zinc-950 dark:text-zinc-50"
-													: "text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-400"
+													? "text-foreground"
+													: "text-muted-foreground group-hover:text-foreground"
 											}`}
 										>
 											{item.label}
@@ -122,8 +122,8 @@ function RouteComponent() {
 										<span
 											className={`text-[9px] uppercase tracking-[0.2em] font-mono mt-1 transition-colors ${
 												activeSection === item.id
-													? "text-zinc-500"
-													: "text-zinc-300 dark:text-zinc-800"
+													? "text-muted-foreground"
+													: "text-muted-foreground/30"
 											}`}
 										>
 											{item.en}
@@ -141,8 +141,8 @@ function RouteComponent() {
 						disabled={isSaving}
 						className={`flex items-center justify-center gap-3 w-full py-4 transition-all shadow-xl shadow-black/10 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold ${
 							isSaving
-								? "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 cursor-wait"
-								: "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950 hover:scale-[1.02] active:scale-[0.98]"
+								? "bg-muted text-muted-foreground cursor-wait"
+								: "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
 						}`}
 					>
 						{isSaving ? (
@@ -196,8 +196,8 @@ function RouteComponent() {
 					disabled={isSaving}
 					className={`flex items-center gap-3 px-10 py-5 rounded-full shadow-2xl transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] font-bold ${
 						isSaving
-							? "bg-zinc-100 dark:bg-zinc-900 text-zinc-400 cursor-wait"
-							: "bg-zinc-950 dark:bg-white text-white dark:text-zinc-950"
+							? "bg-muted text-muted-foreground cursor-wait"
+							: "bg-primary text-primary-foreground"
 					}`}
 				>
 					{isSaving ? (

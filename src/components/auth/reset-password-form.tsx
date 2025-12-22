@@ -70,7 +70,7 @@ export function ResetPasswordForm({
 				</p>
 				<button
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
 				>
 					返回登录
 				</button>
@@ -86,7 +86,7 @@ export function ResetPasswordForm({
 				</p>
 				<button
 					onClick={() => navigate({ to: "/forgot-password" })}
-					className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
 				>
 					重新请求链接
 				</button>
@@ -97,20 +97,20 @@ export function ResetPasswordForm({
 	return (
 		<form onSubmit={handleSubmit(onSubmit)} className="space-y-10">
 			<div className="space-y-2">
-				<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic border-l border-zinc-100 dark:border-zinc-900 pl-6">
+				<p className="text-sm font-light text-muted-foreground leading-relaxed italic border-l border-border pl-6">
 					您的身份已验证。请在下方输入新密码以完成重置。
 				</p>
 			</div>
 
 			<div className="space-y-6">
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						新密码
 					</label>
 					<input
 						type="password"
 						{...register("password")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="••••••••"
 					/>
 					{errors.password && (
@@ -121,13 +121,13 @@ export function ResetPasswordForm({
 				</div>
 
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-zinc-400 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						确认新密码
 					</label>
 					<input
 						type="password"
 						{...register("confirmPassword")}
-						className="w-full bg-transparent border-b border-zinc-200 dark:border-zinc-800 py-3 text-lg font-light focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder-zinc-200 dark:placeholder-zinc-800"
+						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 						placeholder="••••••••"
 					/>
 					{errors.confirmPassword && (
@@ -141,7 +141,7 @@ export function ResetPasswordForm({
 			<button
 				type="submit"
 				disabled={isSubmitting}
-				className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
 			>
 				{isSubmitting ? (
 					<Loader2 className="animate-spin" size={16} />

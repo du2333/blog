@@ -65,7 +65,7 @@ function RouteComponent() {
 			<nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
 				<button
 					onClick={() => router.history.back()}
-					className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+					className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
 				>
 					<ArrowLeft
 						size={14}
@@ -79,8 +79,8 @@ function RouteComponent() {
 				{/* Header Section */}
 				<header className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both max-w-4xl">
 					<div className="space-y-6">
-						<div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-zinc-500 dark:text-zinc-500">
-							<span className="px-2 py-0.5 border border-zinc-200 dark:border-zinc-800 rounded-sm">
+						<div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground">
+							<span className="px-2 py-0.5 border border-border rounded-sm">
 								{post.category}
 							</span>
 							<span className="flex items-center gap-1.5">
@@ -95,23 +95,23 @@ function RouteComponent() {
 							</span>
 						</div>
 
-						<h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight text-zinc-950 dark:text-zinc-50">
+						<h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight text-foreground">
 							{post.title}
 						</h1>
 					</div>
 
-					<p className="text-xl md:text-2xl font-normal leading-relaxed text-zinc-500 dark:text-zinc-400 border-l border-zinc-200 dark:border-zinc-800 pl-8 italic">
+					<p className="text-xl md:text-2xl font-normal leading-relaxed text-muted-foreground border-l border-border pl-8 italic">
 						{post.summary}
 					</p>
 				</header>
 
 				{/* Content Layout */}
 				<div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-20 items-start">
-					<main className="min-w-0 max-w-3xl prose prose-zinc dark:prose-invert prose-lg md:prose-xl animate-in fade-in duration-700 delay-200 fill-mode-both text-zinc-800 dark:text-zinc-200 leading-relaxed">
+					<main className="min-w-0 max-w-3xl prose prose-zinc prose-invert prose-lg md:prose-xl animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed">
 						<ContentRenderer content={post.contentJson} />
 
-						<footer className="mt-32 pt-12 border-t border-zinc-100 dark:border-zinc-900 flex justify-end items-center">
-							<button className="group flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors">
+						<footer className="mt-32 pt-12 border-t border-border flex justify-end items-center">
+							<button className="group flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors">
 								<Share2 size={14} strokeWidth={1.5} />
 								<span>分享文章</span>
 							</button>
@@ -120,7 +120,7 @@ function RouteComponent() {
 
 					{/* Table of Contents Sidebar */}
 					<aside className="hidden lg:block sticky top-32 animate-in fade-in duration-700 delay-300 fill-mode-both">
-						<div className="pl-8 border-l border-zinc-100 dark:border-zinc-900">
+						<div className="pl-8 border-l border-border">
 							<TableOfContents headers={post.toc} />
 						</div>
 					</aside>
@@ -137,7 +137,7 @@ function RouteComponent() {
 			>
 				<button
 					onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-					className="w-12 h-12 rounded-full border border-zinc-200 dark:border-zinc-800 flex items-center justify-center hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all duration-500 group"
+					className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-500 group"
 				>
 					<ArrowUp
 						size={20}

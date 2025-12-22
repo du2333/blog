@@ -34,10 +34,10 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 	};
 
 	return (
-		<div className="group bg-white dark:bg-transparent px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-zinc-50 dark:hover:bg-white/2 transition-all duration-500 relative">
+		<div className="group px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-accent transition-all duration-500 relative">
 			{/* ID & Status (Combined for mobile) */}
 			<div className="md:col-span-1 flex items-center justify-between w-full md:block">
-				<span className="font-mono text-zinc-300 dark:text-zinc-700 text-[10px] tracking-widest">
+				<span className="font-mono text-muted-foreground text-[10px] tracking-widest">
 					#{post.id}
 				</span>
 				<div className="md:hidden flex items-center gap-3">
@@ -57,14 +57,14 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 				onClick={handleEdit}
 			>
 				<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
-					<h3 className="text-zinc-900 dark:text-zinc-100 font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate min-w-0 flex-1">
+					<h3 className="font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate min-w-0 flex-1">
 						{post.title}
 					</h3>
 					<div className="hidden md:block shrink-0">
 						<StatusBadge status={post.status} />
 					</div>
 				</div>
-				<div className="text-xs text-zinc-400 dark:text-zinc-600 font-normal truncate max-w-2xl">
+				<div className="text-xs text-muted-foreground font-normal truncate max-w-2xl">
 					{post.summary}
 				</div>
 			</div>
@@ -89,21 +89,21 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 			<div
 				className={`
         md:col-span-1 flex items-center justify-end gap-1 w-full md:w-auto
-        ${showMobileActions ? "flex mt-4 pt-4 border-t border-zinc-100 dark:border-white/5" : "hidden md:flex"}
+        ${showMobileActions ? "flex mt-4 pt-4 border-t border-border" : "hidden md:flex"}
         md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 transition-all duration-500
       `}
 			>
 				<button
 					disabled={!isPostPubliclyViewable(post)}
 					onClick={handleView}
-					className="p-3 md:p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors disabled:opacity-10"
+					className="p-3 md:p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-10"
 					title={viewTitle}
 				>
 					<Eye size={18} strokeWidth={1.5} />
 				</button>
 				<button
 					onClick={handleEdit}
-					className="p-3 md:p-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors"
+					className="p-3 md:p-2 text-muted-foreground hover:text-foreground transition-colors"
 					title="编辑"
 				>
 					<Edit3 size={18} strokeWidth={1.5} />

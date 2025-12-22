@@ -52,14 +52,14 @@ function RouteComponent() {
 			<div className="flex flex-col items-center justify-center space-y-10 py-10">
 				<div className="relative">
 					{status === "ANALYZING" && (
-						<div className="w-24 h-24 rounded-full border border-zinc-100 dark:border-zinc-900 flex items-center justify-center animate-in fade-in zoom-in-95 duration-700">
+						<div className="w-24 h-24 rounded-full border border-border flex items-center justify-center animate-in fade-in zoom-in-95 duration-700">
 							<Loader2 size={32} className="text-zinc-400 animate-spin" />
 						</div>
 					)}
 
 					{status === "SUCCESS" && (
-						<div className="w-24 h-24 rounded-full bg-zinc-50 dark:bg-zinc-900 border border-zinc-100 dark:border-zinc-800 flex items-center justify-center animate-in zoom-in duration-700">
-							<Check size={32} className="text-zinc-900 dark:text-zinc-100" />
+						<div className="w-24 h-24 rounded-full bg-muted border border-border flex items-center justify-center animate-in zoom-in duration-700">
+							<Check size={32} className="text-foreground" />
 						</div>
 					)}
 
@@ -72,19 +72,19 @@ function RouteComponent() {
 
 				<div className="text-center space-y-6 w-full">
 					{status === "ANALYZING" && (
-						<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed italic">
+						<p className="text-sm font-light text-muted-foreground leading-relaxed italic">
 							请稍候，我们正在核对您的身份认证令牌...
 						</p>
 					)}
 
 					{status === "SUCCESS" && (
 						<>
-							<p className="text-sm font-light text-zinc-500 dark:text-zinc-400 leading-relaxed max-w-[280px] mx-auto">
+							<p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
 								您的邮箱已成功验证。
 							</p>
 							<button
 								onClick={() => navigate({ to: "/" })}
-								className="w-full h-14 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 group"
+								className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 group"
 							>
 								<span>返回主页</span>
 								<ArrowRight
@@ -105,13 +105,13 @@ function RouteComponent() {
 							<div className="space-y-4">
 								<button
 									onClick={() => navigate({ to: "/login" })}
-									className="w-full h-14 border border-zinc-200 dark:border-zinc-800 text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-zinc-900 dark:hover:bg-white hover:text-white dark:hover:text-zinc-900 transition-all"
+									className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
 								>
 									返回登录
 								</button>
 								<button
 									onClick={() => navigate({ to: "/login" })}
-									className="text-[10px] uppercase tracking-[0.2em] text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors underline underline-offset-4"
+									className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
 								>
 									重新发送验证邮件
 								</button>

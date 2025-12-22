@@ -22,7 +22,7 @@ export function MediaToolbar({
 			{/* Search */}
 			<div className="relative w-full lg:max-w-md">
 				<Search
-					className="absolute left-0 top-1/2 -translate-y-1/2 text-zinc-300 dark:text-zinc-700"
+					className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground"
 					size={16}
 					strokeWidth={1.5}
 				/>
@@ -31,12 +31,12 @@ export function MediaToolbar({
 					placeholder="检索媒体文件..."
 					value={searchQuery}
 					onChange={(e) => onSearchChange(e.target.value)}
-					className="w-full bg-transparent border-b border-zinc-200 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm font-serif italic pl-8 pr-8 py-3 focus:border-zinc-900 dark:focus:border-zinc-100 focus:outline-none transition-all placeholder:text-zinc-300 dark:placeholder:text-zinc-700"
+					className="w-full bg-transparent border-b border-border text-sm font-serif italic pl-8 pr-8 py-3 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 				/>
 				{searchQuery && (
 					<button
 						onClick={() => onSearchChange("")}
-						className="absolute right-0 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
+						className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
 					>
 						<X size={14} />
 					</button>
@@ -48,8 +48,8 @@ export function MediaToolbar({
 					onClick={onSelectAll}
 					className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium transition-colors ${
 						selectedCount > 0
-							? "text-zinc-950 dark:text-zinc-50"
-							: "text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-100"
+							? ""
+							: "text-muted-foreground hover:text-foreground"
 					}`}
 				>
 					{selectedCount > 0 && selectedCount === totalCount ? (

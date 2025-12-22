@@ -5,8 +5,66 @@
 @custom-variant light (&:is(.light *));
 @custom-variant system (&:is(.system *));
 
+@layer base {
+	:root {
+		--background: #ffffff;
+		--foreground: #09090b;
+
+		--muted: #f4f4f5;
+		--muted-foreground: #71717a;
+
+		--popover: #ffffff;
+		--popover-foreground: #09090b;
+
+		--border: #e4e4e7;
+		--input: #e4e4e7;
+
+		--primary: #09090b;
+		--primary-foreground: #fafafa;
+
+		--secondary: #f4f4f5;
+		--secondary-foreground: #18181b;
+
+		--accent: #f4f4f5;
+		--accent-foreground: #18181b;
+
+		--ring: #09090b;
+
+		--selection: #09090b;
+		--selection-foreground: #ffffff;
+	}
+
+	.dark {
+		--background: #050505;
+		--foreground: #fafafa;
+
+		--muted: #18181b;
+		--muted-foreground: #a1a1aa;
+
+		--popover: #050505;
+		--popover-foreground: #fafafa;
+
+		--border: #27272a;
+		--input: #27272a;
+
+		--primary: #fafafa;
+		--primary-foreground: #09090b;
+
+		--secondary: #27272a;
+		--secondary-foreground: #fafafa;
+
+		--accent: #27272a;
+		--accent-foreground: #fafafa;
+
+		--ring: #d4d4d8;
+
+		--selection: #ffffff;
+		--selection-foreground: #000000;
+	}
+}
+
 mark {
-	@apply bg-zinc-100 dark:bg-zinc-800 text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-zinc-300 dark:border-zinc-700;
+	@apply bg-muted text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-border;
 }
 
 @theme {
@@ -18,27 +76,40 @@ mark {
 	--font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
 	--font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
-	/* Keyframes */
+	/* Semantic Colors mapping to CSS variables */
+	--color-background: var(--background);
+	--color-foreground: var(--foreground);
+	--color-muted: var(--muted);
+	--color-muted-foreground: var(--muted-foreground);
+	--color-popover: var(--popover);
+	--color-popover-foreground: var(--popover-foreground);
+	--color-border: var(--border);
+	--color-input: var(--input);
+	--color-primary: var(--primary);
+	--color-primary-foreground: var(--primary-foreground);
+	--color-secondary: var(--secondary);
+	--color-secondary-foreground: var(--secondary-foreground);
+	--color-accent: var(--accent);
+	--color-accent-foreground: var(--accent-foreground);
+	--color-ring: var(--ring);
 }
 
 @layer base {
 	body {
-		@apply bg-white text-zinc-900 overflow-x-hidden font-sans selection:bg-zinc-950 selection:text-white antialiased;
-		transition: background-color 0.5s ease-in-out;
+		@apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
+		transition:
+			background-color 0.5s ease-in-out,
+			color 0.5s ease-in-out;
 		line-height: 1.6;
+	}
+
+	::selection {
+		background-color: var(--selection);
+		color: var(--selection-foreground);
 	}
 
 	p {
 		@apply leading-relaxed;
-	}
-
-	.dark body {
-		@apply bg-[#050505] text-zinc-100 selection:bg-white selection:text-black;
-	}
-
-	/* Admin Content Area Specifics */
-	.admin-content {
-		@apply bg-white dark:bg-[#050505] text-zinc-900 dark:text-zinc-50;
 	}
 
 	button:not(:disabled),
@@ -65,11 +136,11 @@ mark {
 	}
 
 	::-webkit-scrollbar-thumb {
-		@apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+		@apply bg-muted rounded-full transition-colors;
 	}
 
 	::-webkit-scrollbar-thumb:hover {
-		@apply bg-zinc-300 dark:bg-zinc-700;
+		@apply bg-accent;
 	}
 }
 
@@ -89,7 +160,7 @@ pre.shiki {
 
 /* Tiptap Placeholder */
 .tiptap p.is-editor-empty:first-child::before {
-	@apply text-zinc-300 dark:text-zinc-700 font-serif italic float-left h-0 pointer-events-none;
+	@apply text-muted-foreground font-serif italic float-left h-0 pointer-events-none;
 	content: attr(data-placeholder);
 }
 
@@ -104,10 +175,10 @@ pre.shiki {
 	}
 
 	.custom-scrollbar::-webkit-scrollbar-thumb {
-		@apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+		@apply bg-muted rounded-full transition-colors;
 	}
 
 	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-		@apply bg-zinc-300 dark:bg-zinc-700;
+		@apply bg-accent;
 	}
 }

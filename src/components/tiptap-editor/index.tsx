@@ -65,20 +65,18 @@ export const extensions = [
 		blockquote: false,
 		code: {
 			HTMLAttributes: {
-				class:
-					"bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-1.5 py-0.5 rounded font-mono text-sm",
+				class: "bg-muted px-1.5 py-0.5 rounded font-mono text-sm",
 				spellCheck: false,
 			},
 		},
 		underline: {
 			HTMLAttributes: {
-				class:
-					"decoration-zinc-400 dark:decoration-zinc-500 underline-offset-4",
+				class: "decoration-muted-foreground underline-offset-4",
 			},
 		},
 		strike: {
 			HTMLAttributes: {
-				class: "text-zinc-400 dark:text-zinc-500 line-through opacity-60",
+				class: "text-muted-foreground line-through opacity-60",
 			},
 		},
 		link: {
@@ -86,7 +84,7 @@ export const extensions = [
 			openOnClick: false,
 			HTMLAttributes: {
 				class:
-					"text-zinc-900 dark:!text-zinc-100 font-medium underline underline-offset-4 decoration-zinc-300 dark:decoration-zinc-700 hover:decoration-current transition-all duration-300 cursor-pointer",
+					"font-medium underline underline-offset-4 decoration-border hover:decoration-current transition-all duration-300 cursor-pointer",
 				target: "_blank",
 			},
 		},
@@ -139,7 +137,7 @@ export function Editor({ content, onChange }: EditorProps) {
 		editorProps: {
 			attributes: {
 				class:
-					"prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg text-zinc-700 dark:text-zinc-300 font-body leading-relaxed min-h-[500px] selection:bg-zinc-100 dark:selection:bg-zinc-800",
+					"prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg font-body leading-relaxed min-h-[500px]",
 			},
 		},
 	});

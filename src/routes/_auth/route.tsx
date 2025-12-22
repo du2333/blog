@@ -32,17 +32,17 @@ export const Route = createFileRoute("/_auth")({
 
 function RouteComponent() {
 	return (
-		<div className="min-h-screen w-full bg-zinc-50 dark:bg-[#050505] flex flex-col relative overflow-hidden transition-colors duration-500">
+		<div className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-500">
 			{/* --- Background Decorative Elements --- */}
-			<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 dark:opacity-100">
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
+			<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 [.dark_&]:opacity-100">
+				<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] [.dark_&]:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
 			</div>
 
 			{/* --- Header --- */}
 			<header className="relative z-50 h-24 flex items-center px-6 md:px-12">
 				<Link
 					to="/"
-					className="group flex items-center gap-3 text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors"
+					className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors"
 				>
 					<ArrowLeft
 						size={18}
@@ -61,7 +61,7 @@ function RouteComponent() {
 					{/* Shared Logo */}
 					<div className="flex justify-center">
 						<Link to="/" className="group">
-							<div className="w-12 h-12 text-zinc-900 dark:text-zinc-100">
+							<div className="w-12 h-12">
 								<div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
 									<div className="w-full h-full bg-current rounded-full"></div>
 								</div>

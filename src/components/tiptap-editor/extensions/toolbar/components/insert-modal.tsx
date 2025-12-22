@@ -41,17 +41,17 @@ const MediaItem = memo(
 			<div
 				onClick={() => onSelect(media)}
 				className={`
-                relative aspect-square border cursor-pointer transition-all duration-500 bg-zinc-50 dark:bg-white/2 group overflow-hidden rounded-sm
+                relative aspect-square border cursor-pointer transition-all duration-500 bg-muted/30 group overflow-hidden rounded-sm
                 ${
 									isSelected
-										? "border-zinc-900 dark:border-zinc-100 opacity-100 shadow-lg"
-										: "border-zinc-100 dark:border-white/5 opacity-60 hover:opacity-100 hover:border-zinc-300 dark:hover:border-white/20"
+										? "border-primary opacity-100 shadow-lg"
+										: "border-border opacity-60 hover:opacity-100 hover:border-foreground"
 								}
             `}
 			>
 				{!isLoaded && (
-					<div className="absolute inset-0 bg-zinc-100 dark:bg-zinc-800 animate-pulse flex items-center justify-center">
-						<ImageIcon size={18} className="text-zinc-300 dark:text-zinc-700" />
+					<div className="absolute inset-0 bg-muted animate-pulse flex items-center justify-center">
+						<ImageIcon size={18} className="text-muted-foreground/30" />
 					</div>
 				)}
 
@@ -66,8 +66,8 @@ const MediaItem = memo(
 				/>
 
 				{isSelected && (
-					<div className="absolute inset-0 bg-zinc-900/10 dark:bg-white/10 flex items-center justify-center backdrop-blur-[1px]">
-						<div className="bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded-full p-1.5 shadow-xl animate-in zoom-in-50 duration-300">
+					<div className="absolute inset-0 bg-primary/10 flex items-center justify-center backdrop-blur-[1px]">
+						<div className="bg-primary text-primary-foreground rounded-full p-1.5 shadow-xl animate-in zoom-in-50 duration-300">
 							<Check size={14} strokeWidth={3} />
 						</div>
 					</div>
@@ -151,14 +151,14 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 		>
 			{/* Backdrop */}
 			<div
-				className="absolute inset-0 bg-white/95 dark:bg-[#050505]/98 backdrop-blur-2xl"
+				className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
 				onClick={onClose}
 			/>
 
 			{/* Modal Content */}
 			<div
 				className={`
-            relative w-full max-w-4xl bg-white dark:bg-[#0c0c0c] border border-zinc-100 dark:border-zinc-900 shadow-2xl 
+            relative w-full max-w-4xl bg-background border border-border shadow-2xl 
             flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
             ${
 							isMounted
@@ -170,7 +170,7 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 				{/* Header */}
 				<div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
 					<div className="space-y-2">
-						<div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-zinc-400">
+						<div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground">
 							{activeType === "LINK" ? (
 								<LinkIcon size={14} />
 							) : (
@@ -178,13 +178,13 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 							)}
 							<span>{activeType === "LINK" ? "超链接" : "媒体资产"}</span>
 						</div>
-						<h2 className="text-3xl font-serif font-medium text-zinc-950 dark:text-zinc-50">
+						<h2 className="text-3xl font-serif font-medium text-foreground">
 							{activeType === "LINK" ? "插入超链接" : "选择媒体资产"}
 						</h2>
 					</div>
 					<button
 						onClick={onClose}
-						className="p-2 -mr-2 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+						className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
 					>
 						<X size={24} strokeWidth={1} />
 					</button>
@@ -196,7 +196,7 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 							{/* Search Bar */}
 							<div className="relative shrink-0 group">
 								<Search
-									className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-300 group-focus-within:text-zinc-900 dark:group-focus-within:text-zinc-100 transition-colors"
+									className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-foreground transition-colors"
 									size={16}
 									strokeWidth={1.5}
 								/>
@@ -205,23 +205,23 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 									placeholder="搜索媒体库内容..."
 									value={searchQuery}
 									onChange={(e) => setSearchQuery(e.target.value)}
-									className="w-full bg-zinc-50 dark:bg-white/3 border-none text-zinc-900 dark:text-zinc-100 text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-zinc-900 dark:focus:ring-zinc-100 rounded-sm transition-all font-light"
+									className="w-full bg-muted/30 border-none text-foreground text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-primary rounded-sm transition-all font-light"
 								/>
 							</div>
 
 							{/* Media Grid */}
-							<div className="flex-1 overflow-y-auto custom-scrollbar border border-zinc-100 dark:border-white/5 bg-zinc-50/30 dark:bg-white/1 p-4 rounded-sm">
+							<div className="flex-1 overflow-y-auto custom-scrollbar border border-border bg-muted/20 p-4 rounded-sm">
 								{isPending ? (
 									<div className="grid grid-cols-3 gap-4">
 										{[1, 2, 3, 4, 5, 6].map((i) => (
 											<div
 												key={i}
-												className="aspect-square bg-zinc-100 dark:bg-zinc-800 animate-pulse rounded-sm"
+												className="aspect-square bg-muted animate-pulse rounded-sm"
 											/>
 										))}
 									</div>
 								) : mediaItems.length === 0 ? (
-									<div className="h-48 flex items-center justify-center text-zinc-400 font-serif italic text-sm">
+									<div className="h-48 flex items-center justify-center text-muted-foreground font-serif italic text-sm">
 										未找到相关资产
 									</div>
 								) : (
@@ -270,23 +270,23 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 							}}
 							onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
 							placeholder="https://example.com/..."
-							className="w-full bg-transparent border-b border-zinc-100 dark:border-white/10 text-zinc-900 dark:text-zinc-100 text-sm py-4 focus:border-zinc-950 dark:focus:border-zinc-100 focus:outline-none transition-all"
+							className="w-full bg-transparent border-b border-border text-foreground text-sm py-4 focus:border-foreground focus:outline-none transition-all"
 						/>
 					</div>
 				</div>
 
 				{/* Actions */}
-				<div className="p-8 md:p-12 py-8 border-t border-zinc-100 dark:border-white/5 flex flex-col sm:flex-row justify-end gap-4 shrink-0">
+				<div className="p-8 md:p-12 py-8 border-t border-border flex flex-col sm:flex-row justify-end gap-4 shrink-0">
 					<button
 						onClick={onClose}
-						className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
+						className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
 					>
 						取消
 					</button>
 					<button
 						onClick={handleSubmit}
 						disabled={!inputUrl.trim()}
-						className="px-10 py-4 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all shadow-xl shadow-black/10 disabled:opacity-20 disabled:cursor-not-allowed"
+						className="px-10 py-4 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all shadow-xl shadow-black/10 disabled:opacity-20 disabled:cursor-not-allowed"
 					>
 						确认插入
 					</button>

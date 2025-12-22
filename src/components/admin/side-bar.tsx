@@ -84,16 +84,15 @@ export function SideBar({
 		},
 	];
 
-	const activeClass =
-		"text-zinc-950 dark:text-zinc-50 bg-zinc-100 dark:bg-white/5 font-bold";
+	const activeClass = "bg-accent font-bold";
 	const inactiveClass =
-		"text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 hover:bg-zinc-50 dark:hover:bg-white/[0.02]";
+		"text-muted-foreground hover:text-foreground hover:bg-accent/50";
 
 	return (
 		<>
 			{isMobileSidebarOpen && (
 				<div
-					className="fixed inset-0 bg-white/80 dark:bg-black/80 z-60 md:hidden backdrop-blur-sm animate-in fade-in duration-500"
+					className="fixed inset-0 bg-background/80 z-60 md:hidden backdrop-blur-sm animate-in fade-in duration-500"
 					onClick={closeMobileSidebar}
 				/>
 			)}
@@ -101,7 +100,7 @@ export function SideBar({
 			{/* Sidebar */}
 			<aside
 				className={`
-        fixed inset-y-0 left-0 z-70 w-72 md:w-20 lg:w-64 border-r border-zinc-100 dark:border-white/5 flex flex-col bg-white dark:bg-[#050505]
+        fixed inset-y-0 left-0 z-70 w-72 md:w-20 lg:w-64 border-r border-border flex flex-col
         transform transition-all duration-500 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
         ${
 					isMobileSidebarOpen
@@ -111,10 +110,10 @@ export function SideBar({
       `}
 			>
 				{/* Logo Area */}
-				<div className="h-24 flex items-center justify-between px-6 shrink-0 border-b border-zinc-50 dark:border-white/[0.02]">
+				<div className="h-24 flex items-center justify-between px-6 shrink-0 border-b border-border/50">
 					<Link to="/admin" className="flex items-center gap-3">
 						<div className="w-9 h-9 relative">
-							<Logo className="w-full h-full text-zinc-950 dark:text-zinc-50" />
+							<Logo className="w-full h-full" />
 						</div>
 						<span className="font-serif text-xl tracking-tight md:hidden lg:block">
 							控制台
@@ -122,7 +121,7 @@ export function SideBar({
 					</Link>
 					<button
 						onClick={closeMobileSidebar}
-						className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-zinc-50 dark:bg-white/5 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50"
+						className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-accent text-muted-foreground hover:text-foreground"
 					>
 						<X size={20} />
 					</button>
@@ -158,14 +157,14 @@ export function SideBar({
 				</nav>
 
 				{/* User Profile / Logout */}
-				<div className="p-4 md:p-2 lg:p-6 border-t border-zinc-100 dark:border-white/5 shrink-0 space-y-4">
+				<div className="p-4 md:p-2 lg:p-6 border-t border-border shrink-0 space-y-4">
 					<div className="flex items-center justify-between md:flex-col lg:flex-row gap-2 px-1">
-						<span className="text-[10px] uppercase tracking-[0.3em] text-zinc-300 dark:text-zinc-700 font-bold md:hidden lg:block">
+						<span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold md:hidden lg:block">
 							主题模式
 						</span>
 						<button
 							onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
-							className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-zinc-50 dark:bg-white/5 text-zinc-400 hover:text-zinc-950 dark:hover:text-zinc-50 transition-all"
+							className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-accent text-muted-foreground hover:text-foreground transition-all"
 						>
 							{appTheme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
 						</button>
@@ -173,7 +172,7 @@ export function SideBar({
 
 					<div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
 						<div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
-							<div className="w-10 h-10 rounded-full overflow-hidden border border-zinc-100 dark:border-zinc-900 shrink-0">
+							<div className="w-10 h-10 rounded-full overflow-hidden border border-border shrink-0">
 								{user?.image ? (
 									<img
 										src={user.image}
@@ -181,16 +180,16 @@ export function SideBar({
 										className="w-full h-full object-cover"
 									/>
 								) : (
-									<div className="w-full h-full bg-zinc-50 dark:bg-zinc-900 flex items-center justify-center text-zinc-300">
+									<div className="w-full h-full bg-muted flex items-center justify-center text-zinc-300">
 										<User size={16} />
 									</div>
 								)}
 							</div>
 							<div className="flex flex-col min-w-0">
-								<span className="text-xs font-bold text-zinc-900 dark:text-zinc-50 truncate">
+								<span className="text-xs font-bold truncate">
 									{user?.name || "管理员"}
 								</span>
-								<span className="text-[9px] uppercase tracking-widest text-zinc-400 truncate">
+								<span className="text-[9px] uppercase tracking-widest text-muted-foreground truncate">
 									{user?.role === "admin" ? "Admin" : "User"}
 								</span>
 							</div>
@@ -198,7 +197,7 @@ export function SideBar({
 
 						<button
 							onClick={handleSignOutClick}
-							className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-zinc-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/5 rounded-full transition-all shrink-0"
+							className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-full transition-all shrink-0"
 							title="退出登录"
 						>
 							<LogOut size={18} strokeWidth={1.5} />

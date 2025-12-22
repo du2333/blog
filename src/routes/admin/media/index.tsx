@@ -88,7 +88,7 @@ function MediaLibrary() {
 				</div>
 				<button
 					onClick={() => setIsUploadOpen(true)}
-					className="flex items-center gap-2 px-6 py-3 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
+					className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
 				>
 					<Plus size={14} />
 					上传文件
@@ -96,7 +96,7 @@ function MediaLibrary() {
 			</header>
 
 			{/* Stats Bar */}
-			<div className="flex flex-wrap gap-x-12 gap-y-4 pt-6 border-t border-zinc-100 dark:border-white/5 animate-in fade-in duration-1000 delay-100 fill-mode-both">
+			<div className="flex flex-wrap gap-x-12 gap-y-4 pt-6 border-t border-border animate-in fade-in duration-1000 delay-100 fill-mode-both">
 				<div className="space-y-1">
 					<div className="text-[9px] uppercase tracking-[0.2em] text-zinc-400 font-bold">
 						总容量
@@ -110,7 +110,7 @@ function MediaLibrary() {
 						已选
 					</div>
 					<div
-						className={`text-xl font-serif transition-colors ${selectedIds.size > 0 ? "text-zinc-900 dark:text-zinc-100" : "text-zinc-300 dark:text-zinc-700"}`}
+						className={`text-xl font-serif transition-colors ${selectedIds.size > 0 ? "text-foreground" : "text-muted-foreground"}`}
 					>
 						{selectedIds.size}
 					</div>
