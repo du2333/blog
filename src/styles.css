@@ -6,85 +6,86 @@
 @custom-variant system (&:is(.system *));
 
 body {
-  @apply m-0;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	@apply m-0;
+	font-family:
+		"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+		"Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+		sans-serif;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
-    monospace;
+	font-family:
+		source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 
 mark {
-  @apply bg-zinc-100 dark:bg-zinc-800 text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-zinc-300 dark:border-zinc-700;
+	@apply bg-zinc-100 dark:bg-zinc-800 text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-zinc-300 dark:border-zinc-700;
 }
 
 @theme {
-  --tw-transition-duration: 0.3s;
+	--tw-transition-duration: 0.3s;
 
-  /* Awwwards Style Font Families */
-  --font-serif: "Playfair Display", "Noto Serif SC", serif;
-  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
-  --font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+	/* Awwwards Style Font Families */
+	--font-serif: "Playfair Display", "Noto Serif SC", serif;
+	--font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+	--font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
+	--font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
-  /* Keyframes */
+	/* Keyframes */
 }
 
 @layer base {
-  body {
-    @apply bg-white text-zinc-900 overflow-x-hidden font-sans selection:bg-zinc-950 selection:text-white antialiased;
-    transition: background-color 0.5s ease-in-out;
-    line-height: 1.6;
-  }
+	body {
+		@apply bg-white text-zinc-900 overflow-x-hidden font-sans selection:bg-zinc-950 selection:text-white antialiased;
+		transition: background-color 0.5s ease-in-out;
+		line-height: 1.6;
+	}
 
-  p {
-    @apply leading-relaxed;
-  }
+	p {
+		@apply leading-relaxed;
+	}
 
-  .dark body {
-    @apply bg-[#050505] text-zinc-100 selection:bg-white selection:text-black;
-  }
+	.dark body {
+		@apply bg-[#050505] text-zinc-100 selection:bg-white selection:text-black;
+	}
 
-  /* Admin Content Area Specifics */
-  .admin-content {
-    @apply bg-white dark:bg-[#050505] text-zinc-900 dark:text-zinc-50;
-  }
+	/* Admin Content Area Specifics */
+	.admin-content {
+		@apply bg-white dark:bg-[#050505] text-zinc-900 dark:text-zinc-50;
+	}
 
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
-    cursor: pointer;
-  }
+	button:not(:disabled),
+	[role="button"]:not(:disabled) {
+		cursor: pointer;
+	}
 
-  /* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
-  h1,
-  h2,
-  h3,
-  h4 {
-    scroll-margin-top: 8rem;
-  }
+	/* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
+	h1,
+	h2,
+	h3,
+	h4 {
+		scroll-margin-top: 8rem;
+	}
 
-  /* Minimalist Custom Scrollbar */
-  ::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
-  }
+	/* Minimalist Custom Scrollbar */
+	::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
 
-  ::-webkit-scrollbar-track {
-    background: transparent;
-  }
+	::-webkit-scrollbar-track {
+		background: transparent;
+	}
 
-  ::-webkit-scrollbar-thumb {
-    @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
-  }
+	::-webkit-scrollbar-thumb {
+		@apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+	}
 
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-300 dark:bg-zinc-700;
-  }
+	::-webkit-scrollbar-thumb:hover {
+		@apply bg-zinc-300 dark:bg-zinc-700;
+	}
 }
 
 /* Disable native browser UI on password inputs */
@@ -92,53 +93,53 @@ input::-ms-reveal,
 input::-ms-clear,
 input::-webkit-contacts-auto-fill-button,
 input::-webkit-credentials-auto-fill-button {
-  display: none !important;
+	display: none !important;
 }
 
 pre.shiki {
-  background-color: transparent !important;
-  margin: 0;
-  padding: 0;
+	background-color: transparent !important;
+	margin: 0;
+	padding: 0;
 }
 
 /* Tiptap Placeholder */
 .tiptap p.is-editor-empty:first-child::before {
-  @apply text-zinc-300 dark:text-zinc-700 font-serif italic float-left h-0 pointer-events-none;
-  content: attr(data-placeholder);
+	@apply text-zinc-300 dark:text-zinc-700 font-serif italic float-left h-0 pointer-events-none;
+	content: attr(data-placeholder);
 }
 
 @layer utilities {
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-    height: 4px;
-  }
+	.custom-scrollbar::-webkit-scrollbar {
+		width: 4px;
+		height: 4px;
+	}
 
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: transparent;
-  }
+	.custom-scrollbar::-webkit-scrollbar-track {
+		background: transparent;
+	}
 
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
-  }
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		@apply bg-zinc-200 dark:bg-zinc-800 rounded-full transition-colors;
+	}
 
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    @apply bg-zinc-300 dark:bg-zinc-700;
-  }
+	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+		@apply bg-zinc-300 dark:bg-zinc-700;
+	}
 }
 
 @keyframes scan {
-  0% {
-    top: 0%;
-    opacity: 0;
-  }
-  10% {
-    opacity: 1;
-  }
-  90% {
-    opacity: 1;
-  }
-  100% {
-    top: 100%;
-    opacity: 0;
-  }
+	0% {
+		top: 0%;
+		opacity: 0;
+	}
+	10% {
+		opacity: 1;
+	}
+	90% {
+		opacity: 1;
+	}
+	100% {
+		top: 100%;
+		opacity: 0;
+	}
 }

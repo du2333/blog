@@ -12,7 +12,7 @@
 		"db:studio": "drizzle-kit studio",
 		"db:push": "drizzle-kit push",
 		"auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts",
-		"lint-format": "biome check --write"
+		"format": "biome check --write"
 	},
 	"dependencies": {
 		"@ai-sdk/deepseek": "^1.0.32",
