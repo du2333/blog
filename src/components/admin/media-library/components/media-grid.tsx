@@ -1,226 +1,243 @@
+import { Check, Film, Image as ImageIcon, Link2, Loader2 } from "lucide-react";
+import { memo, useEffect, useRef, useState } from "react";
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 import { formatBytes } from "@/lib/utils";
-import { Check, Film, Link2, Loader2, Image as ImageIcon } from "lucide-react";
-import { useEffect, useRef, useState, memo } from "react";
 import { useLongPress } from "../hooks";
-import { MediaAsset } from "../types";
+import type { MediaAsset } from "../types";
 
 interface MediaGridProps {
-  media: MediaAsset[];
-  selectedIds: Set<string>;
-  onToggleSelect: (key: string) => void;
-  onPreview: (asset: MediaAsset) => void;
-  onLoadMore?: () => void;
-  hasMore?: boolean;
-  isLoadingMore?: boolean;
-  linkedMediaIds: Set<string>;
+	media: MediaAsset[];
+	selectedIds: Set<string>;
+	onToggleSelect: (key: string) => void;
+	onPreview: (asset: MediaAsset) => void;
+	onLoadMore?: () => void;
+	hasMore?: boolean;
+	isLoadingMore?: boolean;
+	linkedMediaIds: Set<string>;
 }
 
-const MediaCard = memo(({
-  asset,
-  isSelected,
-  isLinked,
-  isImage,
-  onToggleSelect,
-  onPreview,
-  selectionModeActive,
-}: {
-  asset: MediaAsset;
-  isSelected: boolean;
-  isLinked: boolean;
-  isImage: boolean;
-  onToggleSelect: (key: string) => void;
-  onPreview: (asset: MediaAsset) => void;
-  selectionModeActive: boolean;
-}) => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const thumbnailUrl = getOptimizedImageUrl(asset.key);
+const MediaCard = memo(
+	({
+		asset,
+		isSelected,
+		isLinked,
+		isImage,
+		onToggleSelect,
+		onPreview,
+		selectionModeActive,
+	}: {
+		asset: MediaAsset;
+		isSelected: boolean;
+		isLinked: boolean;
+		isImage: boolean;
+		onToggleSelect: (key: string) => void;
+		onPreview: (asset: MediaAsset) => void;
+		selectionModeActive: boolean;
+	}) => {
+		const [isLoaded, setIsLoaded] = useState(false);
+		const thumbnailUrl = getOptimizedImageUrl(asset.key);
 
-  const handleStandardClick = () => {
-    if (selectionModeActive) {
-      onToggleSelect(asset.key);
-    } else {
-      onPreview(asset);
-    }
-  };
+		const handleStandardClick = () => {
+			if (selectionModeActive) {
+				onToggleSelect(asset.key);
+			} else {
+				onPreview(asset);
+			}
+		};
 
-  const handleLongPress = () => {
-    onToggleSelect(asset.key);
-  };
+		const handleLongPress = () => {
+			onToggleSelect(asset.key);
+		};
 
-  const longPressHandlers = useLongPress(handleLongPress, handleStandardClick, {
-    delay: 500,
-  });
+		const longPressHandlers = useLongPress(
+			handleLongPress,
+			handleStandardClick,
+			{
+				delay: 500,
+			},
+		);
 
-  return (
-    <div
-      {...longPressHandlers}
-      className={`
+		return (
+			<div
+				{...longPressHandlers}
+				className={`
         group relative flex flex-col cursor-pointer transition-all duration-500 touch-manipulation select-none overflow-hidden rounded-sm border
         ${
-          isSelected
-            ? "border-zinc-900 dark:border-zinc-100 ring-4 ring-zinc-900/5 dark:ring-zinc-100/5 scale-[0.98]"
-            : isLinked
-            ? "border-zinc-200 dark:border-white/10"
-            : "border-zinc-100 dark:border-white/5 hover:border-zinc-300 dark:hover:border-white/20"
-        }
+					isSelected
+						? "border-zinc-900 dark:border-zinc-100 ring-4 ring-zinc-900/5 dark:ring-zinc-100/5 scale-[0.98]"
+						: isLinked
+							? "border-zinc-200 dark:border-white/10"
+							: "border-zinc-100 dark:border-white/5 hover:border-zinc-300 dark:hover:border-white/20"
+				}
       `}
-    >
-      {/* Selection Overlay */}
-      <div 
-        className={`absolute top-3 left-3 z-30 w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-500 ${
-          isSelected 
-            ? "bg-zinc-900 dark:bg-zinc-100 border-transparent scale-110" 
-            : "bg-white/40 dark:bg-black/40 border-white/20 dark:border-white/10 opacity-0 group-hover:opacity-100"
-        }`}
-        onMouseDown={(e) => e.stopPropagation()}
-        onMouseUp={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.stopPropagation();
-          onToggleSelect(asset.key);
-        }}
-      >
-        {isSelected && <Check size={12} className="text-white dark:text-zinc-900" strokeWidth={3} />}
-      </div>
+			>
+				{/* Selection Overlay */}
+				<div
+					className={`absolute top-3 left-3 z-30 w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-500 ${
+						isSelected
+							? "bg-zinc-900 dark:bg-zinc-100 border-transparent scale-110"
+							: "bg-white/40 dark:bg-black/40 border-white/20 dark:border-white/10 opacity-0 group-hover:opacity-100"
+					}`}
+					onMouseDown={(e) => e.stopPropagation()}
+					onMouseUp={(e) => e.stopPropagation()}
+					onClick={(e) => {
+						e.stopPropagation();
+						onToggleSelect(asset.key);
+					}}
+				>
+					{isSelected && (
+						<Check
+							size={12}
+							className="text-white dark:text-zinc-900"
+							strokeWidth={3}
+						/>
+					)}
+				</div>
 
-      {/* Linked Indicator */}
-      {isLinked && !isSelected && (
-        <div className="absolute top-3 right-3 z-20 text-zinc-400">
-          <Link2 size={12} strokeWidth={1.5} />
-        </div>
-      )}
+				{/* Linked Indicator */}
+				{isLinked && !isSelected && (
+					<div className="absolute top-3 right-3 z-20 text-zinc-400">
+						<Link2 size={12} strokeWidth={1.5} />
+					</div>
+				)}
 
-      {/* Preview */}
-      <div className="aspect-square relative overflow-hidden bg-zinc-50 dark:bg-[#0c0c0c]">
-        {isImage ? (
-          <>
-            {!isLoaded && (
-              <div className="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 animate-pulse">
-                <ImageIcon size={24} className="text-zinc-300 dark:text-zinc-700" />
-              </div>
-            )}
-            <img
-              src={thumbnailUrl}
-              alt={asset.fileName}
-              className={`w-full h-full object-cover transition-all duration-1000 ${
-                isLoaded ? "opacity-100" : "opacity-0"
-              } ${
-                isSelected ? "scale-110 blur-[2px] opacity-40" : "group-hover:scale-105"
-              }`}
-              onLoad={() => setIsLoaded(true)}
-            />
-          </>
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-zinc-300 dark:text-zinc-700">
-            <Film size={32} strokeWidth={1} />
-          </div>
-        )}
-      </div>
+				{/* Preview */}
+				<div className="aspect-square relative overflow-hidden bg-zinc-50 dark:bg-[#0c0c0c]">
+					{isImage ? (
+						<>
+							{!isLoaded && (
+								<div className="absolute inset-0 flex items-center justify-center bg-zinc-100 dark:bg-zinc-900 animate-pulse">
+									<ImageIcon
+										size={24}
+										className="text-zinc-300 dark:text-zinc-700"
+									/>
+								</div>
+							)}
+							<img
+								src={thumbnailUrl}
+								alt={asset.fileName}
+								className={`w-full h-full object-cover transition-all duration-1000 ${
+									isLoaded ? "opacity-100" : "opacity-0"
+								} ${
+									isSelected
+										? "scale-110 blur-[2px] opacity-40"
+										: "group-hover:scale-105"
+								}`}
+								onLoad={() => setIsLoaded(true)}
+							/>
+						</>
+					) : (
+						<div className="w-full h-full flex items-center justify-center text-zinc-300 dark:text-zinc-700">
+							<Film size={32} strokeWidth={1} />
+						</div>
+					)}
+				</div>
 
-      {/* Info */}
-      <div className="p-4 space-y-1 bg-white dark:bg-[#0c0c0c]">
-        <div className="text-[11px] font-medium text-zinc-900 dark:text-zinc-100 truncate">
-          {asset.fileName}
-        </div>
-        <div className="flex justify-between text-[9px] text-zinc-400 dark:text-zinc-600 font-mono tracking-wider uppercase">
-          <span>{formatBytes(asset.sizeInBytes)}</span>
-          <span>{asset.mimeType.split('/')[1]}</span>
-        </div>
-      </div>
-    </div>
-  );
-});
+				{/* Info */}
+				<div className="p-4 space-y-1 bg-white dark:bg-[#0c0c0c]">
+					<div className="text-[11px] font-medium text-zinc-900 dark:text-zinc-100 truncate">
+						{asset.fileName}
+					</div>
+					<div className="flex justify-between text-[9px] text-zinc-400 dark:text-zinc-600 font-mono tracking-wider uppercase">
+						<span>{formatBytes(asset.sizeInBytes)}</span>
+						<span>{asset.mimeType.split("/")[1]}</span>
+					</div>
+				</div>
+			</div>
+		);
+	},
+);
 
 MediaCard.displayName = "MediaCard";
 
 export function MediaGrid({
-  media,
-  selectedIds,
-  onToggleSelect,
-  onPreview,
-  onLoadMore,
-  hasMore,
-  isLoadingMore,
-  linkedMediaIds,
+	media,
+	selectedIds,
+	onToggleSelect,
+	onPreview,
+	onLoadMore,
+	hasMore,
+	isLoadingMore,
+	linkedMediaIds,
 }: MediaGridProps) {
-  const observerTarget = useRef(null);
+	const observerTarget = useRef(null);
 
-  useEffect(() => {
-    const target = observerTarget.current;
-    if (!target) return;
+	useEffect(() => {
+		const target = observerTarget.current;
+		if (!target) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (
-          entries[0].isIntersecting &&
-          hasMore &&
-          !isLoadingMore &&
-          onLoadMore
-        ) {
-          onLoadMore();
-        }
-      },
-      { threshold: 0.1 }
-    );
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (
+					entries[0].isIntersecting &&
+					hasMore &&
+					!isLoadingMore &&
+					onLoadMore
+				) {
+					onLoadMore();
+				}
+			},
+			{ threshold: 0.1 },
+		);
 
-    observer.observe(target);
+		observer.observe(target);
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [hasMore, isLoadingMore, onLoadMore]);
+		return () => {
+			observer.disconnect();
+		};
+	}, [hasMore, isLoadingMore, onLoadMore]);
 
-  if (media.length === 0) {
-    return (
-      <div className="py-32 text-center font-serif italic text-zinc-400 border border-dashed border-zinc-100 dark:border-white/5 rounded-sm">
-        媒体库中暂无资产
-      </div>
-    );
-  }
+	if (media.length === 0) {
+		return (
+			<div className="py-32 text-center font-serif italic text-zinc-400 border border-dashed border-zinc-100 dark:border-white/5 rounded-sm">
+				媒体库中暂无资产
+			</div>
+		);
+	}
 
-  const selectionModeActive = selectedIds.size > 0;
+	const selectionModeActive = selectedIds.size > 0;
 
-  return (
-    <div className="space-y-12">
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
-        {media.map((asset) => {
-          const isSelected = selectedIds.has(asset.key);
-          const isLinked = linkedMediaIds.has(asset.key);
-          const isImage = asset.mimeType.startsWith("image/");
+	return (
+		<div className="space-y-12">
+			<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-6">
+				{media.map((asset) => {
+					const isSelected = selectedIds.has(asset.key);
+					const isLinked = linkedMediaIds.has(asset.key);
+					const isImage = asset.mimeType.startsWith("image/");
 
-          return (
-            <MediaCard
-              key={asset.key}
-              asset={asset}
-              isSelected={isSelected}
-              isLinked={isLinked}
-              isImage={isImage}
-              onToggleSelect={onToggleSelect}
-              onPreview={onPreview}
-              selectionModeActive={selectionModeActive}
-            />
-          );
-        })}
-      </div>
+					return (
+						<MediaCard
+							key={asset.key}
+							asset={asset}
+							isSelected={isSelected}
+							isLinked={isLinked}
+							isImage={isImage}
+							onToggleSelect={onToggleSelect}
+							onPreview={onPreview}
+							selectionModeActive={selectionModeActive}
+						/>
+					);
+				})}
+			</div>
 
-      {/* Loading / Sentinel */}
-      <div
-        ref={observerTarget}
-        className="py-12 flex flex-col items-center justify-center gap-4"
-      >
-        {isLoadingMore ? (
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 rounded-full border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
-              <Loader2 size={16} className="text-zinc-400 animate-spin" />
-            </div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400 animate-pulse">
-              Syncing
-            </span>
-          </div>
-        ) : !hasMore && media.length > 0 ? (
-          <div className="h-px w-24 bg-zinc-100 dark:bg-white/5" />
-        ) : null}
-      </div>
-    </div>
-  );
+			{/* Loading / Sentinel */}
+			<div
+				ref={observerTarget}
+				className="py-12 flex flex-col items-center justify-center gap-4"
+			>
+				{isLoadingMore ? (
+					<div className="flex flex-col items-center gap-4">
+						<div className="w-10 h-10 rounded-full border border-zinc-100 dark:border-zinc-800 flex items-center justify-center">
+							<Loader2 size={16} className="text-zinc-400 animate-spin" />
+						</div>
+						<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-zinc-400 animate-pulse">
+							Syncing
+						</span>
+					</div>
+				) : !hasMore && media.length > 0 ? (
+					<div className="h-px w-24 bg-zinc-100 dark:bg-white/5" />
+				) : null}
+			</div>
+		</div>
+	);
 }

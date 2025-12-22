@@ -1,18 +1,3 @@
-import { CodeBlockExtension } from "@/components/tiptap-editor/extensions/code-block";
-import { ImageExtension } from "@/components/tiptap-editor/extensions/images";
-import InsertModal, {
-  ModalType,
-} from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
-import EditorToolbar from "@/components/tiptap-editor/extensions/toolbar/editor-toolbar";
-import { BlockQuoteExtension } from "@/components/tiptap-editor/extensions/typography/block-quote";
-import { HeadingExtension } from "@/components/tiptap-editor/extensions/typography/heading";
-import {
-  BulletListExtension,
-  ListItemExtension,
-  OrderedListExtension,
-} from "@/components/tiptap-editor/extensions/typography/list";
-import { ImageUpload } from "@/components/tiptap-editor/extensions/upload-image";
-import { uploadImageFn } from "@/features/media/images.api";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
 import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
@@ -20,183 +5,198 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import { CodeBlockExtension } from "@/components/tiptap-editor/extensions/code-block";
+import { ImageExtension } from "@/components/tiptap-editor/extensions/images";
+import InsertModal, {
+	type ModalType,
+} from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
+import EditorToolbar from "@/components/tiptap-editor/extensions/toolbar/editor-toolbar";
+import { BlockQuoteExtension } from "@/components/tiptap-editor/extensions/typography/block-quote";
+import { HeadingExtension } from "@/components/tiptap-editor/extensions/typography/heading";
+import {
+	BulletListExtension,
+	ListItemExtension,
+	OrderedListExtension,
+} from "@/components/tiptap-editor/extensions/typography/list";
+import { ImageUpload } from "@/components/tiptap-editor/extensions/upload-image";
+import { uploadImageFn } from "@/features/media/images.api";
 
 const ALLOWED_IMAGE_MIME_TYPES = [
-  "image/png",
-  "image/jpeg",
-  "image/jpg",
-  "image/gif",
-  "image/webp",
+	"image/png",
+	"image/jpeg",
+	"image/jpg",
+	"image/gif",
+	"image/webp",
 ];
 
 async function handleImageUpload(file: File): Promise<string> {
-  const formData = new FormData();
-  formData.append("image", file);
-  const result = await uploadImageFn({ data: formData });
-  toast.success("图片上传成功", {
-    description: `${file.name} 已归档保存`,
-  });
-  return result.url;
+	const formData = new FormData();
+	formData.append("image", file);
+	const result = await uploadImageFn({ data: formData });
+	toast.success("图片上传成功", {
+		description: `${file.name} 已归档保存`,
+	});
+	return result.url;
 }
 
 function handleFileDrop(editor: TiptapEditor, files: File[], pos: number) {
-  files.forEach((file) => {
-    if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
-      editor.commands.uploadImage(file, pos);
-    }
-  });
+	files.forEach((file) => {
+		if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
+			editor.commands.uploadImage(file, pos);
+		}
+	});
 }
 
 function handleFilePaste(editor: TiptapEditor, files: File[]) {
-  files.forEach((file) => {
-    if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
-      editor.commands.uploadImage(file);
-    }
-  });
+	files.forEach((file) => {
+		if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
+			editor.commands.uploadImage(file);
+		}
+	});
 }
 
 export const extensions = [
-  StarterKit.configure({
-    orderedList: false,
-    bulletList: false,
-    listItem: false,
-    heading: false,
-    codeBlock: false,
-    blockquote: false,
-    code: {
-      HTMLAttributes: {
-        class:
-          "bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-1.5 py-0.5 rounded font-mono text-sm",
-        spellCheck: false,
-      },
-    },
-    underline: {
-      HTMLAttributes: {
-        class:
-          "decoration-zinc-400 dark:decoration-zinc-500 underline-offset-4",
-      },
-    },
-    strike: {
-      HTMLAttributes: {
-        class: "text-zinc-400 dark:text-zinc-500 line-through opacity-60",
-      },
-    },
-    link: {
-      autolink: true,
-      openOnClick: false,
-      HTMLAttributes: {
-        class:
-          "text-zinc-900 dark:!text-zinc-100 font-medium underline underline-offset-4 decoration-zinc-300 dark:decoration-zinc-700 hover:decoration-current transition-all duration-300 cursor-pointer",
-        target: "_blank",
-      },
-    },
-  }),
-  BulletListExtension,
-  OrderedListExtension,
-  ListItemExtension,
-  HeadingExtension.configure({
-    levels: [1, 2, 3, 4],
-  }),
-  BlockQuoteExtension,
-  CodeBlockExtension.configure({
-    defaultTheme: "vitesse-dark",
-  }),
-  ImageExtension,
-  ImageUpload.configure({
-    onUpload: handleImageUpload,
-    onError: (error) => {
-      toast.error("图片上传失败", {
-        description: error.message,
-      });
-    },
-  }),
-  FileHandler.configure({
-    allowedMimeTypes: ALLOWED_IMAGE_MIME_TYPES,
-    onDrop: handleFileDrop,
-    onPaste: handleFilePaste,
-  }),
-  Placeholder.configure({
-    placeholder: "开始记录...",
-    emptyEditorClass: "is-editor-empty",
-  }),
+	StarterKit.configure({
+		orderedList: false,
+		bulletList: false,
+		listItem: false,
+		heading: false,
+		codeBlock: false,
+		blockquote: false,
+		code: {
+			HTMLAttributes: {
+				class:
+					"bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 px-1.5 py-0.5 rounded font-mono text-sm",
+				spellCheck: false,
+			},
+		},
+		underline: {
+			HTMLAttributes: {
+				class:
+					"decoration-zinc-400 dark:decoration-zinc-500 underline-offset-4",
+			},
+		},
+		strike: {
+			HTMLAttributes: {
+				class: "text-zinc-400 dark:text-zinc-500 line-through opacity-60",
+			},
+		},
+		link: {
+			autolink: true,
+			openOnClick: false,
+			HTMLAttributes: {
+				class:
+					"text-zinc-900 dark:!text-zinc-100 font-medium underline underline-offset-4 decoration-zinc-300 dark:decoration-zinc-700 hover:decoration-current transition-all duration-300 cursor-pointer",
+				target: "_blank",
+			},
+		},
+	}),
+	BulletListExtension,
+	OrderedListExtension,
+	ListItemExtension,
+	HeadingExtension.configure({
+		levels: [1, 2, 3, 4],
+	}),
+	BlockQuoteExtension,
+	CodeBlockExtension.configure({
+		defaultTheme: "vitesse-dark",
+	}),
+	ImageExtension,
+	ImageUpload.configure({
+		onUpload: handleImageUpload,
+		onError: (error) => {
+			toast.error("图片上传失败", {
+				description: error.message,
+			});
+		},
+	}),
+	FileHandler.configure({
+		allowedMimeTypes: ALLOWED_IMAGE_MIME_TYPES,
+		onDrop: handleFileDrop,
+		onPaste: handleFilePaste,
+	}),
+	Placeholder.configure({
+		placeholder: "开始记录...",
+		emptyEditorClass: "is-editor-empty",
+	}),
 ];
 
 interface EditorProps {
-  content?: JSONContent | string;
-  onChange?: (json: JSONContent) => void;
+	content?: JSONContent | string;
+	onChange?: (json: JSONContent) => void;
 }
 
 export function Editor({ content, onChange }: EditorProps) {
-  const [modalOpen, setModalOpen] = useState<ModalType>(null);
-  const [modalInitialUrl, setModalInitialUrl] = useState("");
+	const [modalOpen, setModalOpen] = useState<ModalType>(null);
+	const [modalInitialUrl, setModalInitialUrl] = useState("");
 
-  const editor = useEditor({
-    extensions,
-    content,
-    onUpdate: ({ editor }) => {
-      onChange?.(editor.getJSON());
-    },
-    editorProps: {
-      attributes: {
-        class:
-          "prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg text-zinc-700 dark:text-zinc-300 font-body leading-relaxed min-h-[500px] selection:bg-zinc-100 dark:selection:bg-zinc-800",
-      },
-    },
-  });
+	const editor = useEditor({
+		extensions,
+		content,
+		onUpdate: ({ editor }) => {
+			onChange?.(editor.getJSON());
+		},
+		editorProps: {
+			attributes: {
+				class:
+					"prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg text-zinc-700 dark:text-zinc-300 font-body leading-relaxed min-h-[500px] selection:bg-zinc-100 dark:selection:bg-zinc-800",
+			},
+		},
+	});
 
-  const openLinkModal = useCallback(() => {
-    if (!editor) return;
-    const previousUrl = editor.getAttributes("link").href;
-    setModalInitialUrl(previousUrl || "");
-    setModalOpen("LINK");
-  }, [editor]);
+	const openLinkModal = useCallback(() => {
+		if (!editor) return;
+		const previousUrl = editor.getAttributes("link").href;
+		setModalInitialUrl(previousUrl || "");
+		setModalOpen("LINK");
+	}, [editor]);
 
-  const openImageModal = useCallback(() => {
-    setModalInitialUrl("");
-    setModalOpen("IMAGE");
-  }, []);
+	const openImageModal = useCallback(() => {
+		setModalInitialUrl("");
+		setModalOpen("IMAGE");
+	}, []);
 
-  const handleModalSubmit = (url: string) => {
-    if (!editor) return;
+	const handleModalSubmit = (url: string) => {
+		if (!editor) return;
 
-    if (modalOpen === "LINK") {
-      if (url === "") {
-        editor.chain().focus().extendMarkRange("link").unsetLink().run();
-      } else {
-        editor
-          .chain()
-          .focus()
-          .extendMarkRange("link")
-          .setLink({ href: url })
-          .run();
-      }
-    } else if (modalOpen === "IMAGE") {
-      if (url) {
-        editor.chain().focus().setImage({ src: url }).run();
-      }
-    }
+		if (modalOpen === "LINK") {
+			if (url === "") {
+				editor.chain().focus().extendMarkRange("link").unsetLink().run();
+			} else {
+				editor
+					.chain()
+					.focus()
+					.extendMarkRange("link")
+					.setLink({ href: url })
+					.run();
+			}
+		} else if (modalOpen === "IMAGE") {
+			if (url) {
+				editor.chain().focus().setImage({ src: url }).run();
+			}
+		}
 
-    setModalOpen(null);
-  };
+		setModalOpen(null);
+	};
 
-  return (
-    <div className="flex flex-col relative group">
-      <EditorToolbar
-        editor={editor}
-        onLinkClick={openLinkModal}
-        onImageClick={openImageModal}
-      />
+	return (
+		<div className="flex flex-col relative group">
+			<EditorToolbar
+				editor={editor}
+				onLinkClick={openLinkModal}
+				onImageClick={openImageModal}
+			/>
 
-      <div className="relative min-h-[500px]">
-        <EditorContent editor={editor} />
-      </div>
+			<div className="relative min-h-[500px]">
+				<EditorContent editor={editor} />
+			</div>
 
-      <InsertModal
-        type={modalOpen}
-        initialUrl={modalInitialUrl}
-        onClose={() => setModalOpen(null)}
-        onSubmit={handleModalSubmit}
-      />
-    </div>
-  );
+			<InsertModal
+				type={modalOpen}
+				initialUrl={modalInitialUrl}
+				onClose={() => setModalOpen(null)}
+				onSubmit={handleModalSubmit}
+			/>
+		</div>
+	);
 }

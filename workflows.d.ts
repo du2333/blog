@@ -1,7 +1,7 @@
 interface PostProcessWorkflowParams {
-  postId: number;
+	postId: number;
 }
 
 interface Env extends Cloudflare.Env {
-  POST_PROCESS_WORKFLOW: Workflow<PostProcessWorkflowParams>;
+	POST_PROCESS_WORKFLOW: Workflow<PostProcessWorkflowParams>;
 }

@@ -1,219 +1,219 @@
+import { z } from "zod";
 import { syncPostMedia } from "@/features/posts/data/post-media.data";
 import {
-  deletePost,
-  findPostById,
-  findPostBySlug,
-  getPosts,
-  getPostsCount,
-  insertPost,
-  slugExists,
-  updatePost,
+	deletePost,
+	findPostById,
+	findPostBySlug,
+	getPosts,
+	getPostsCount,
+	insertPost,
+	slugExists,
+	updatePost,
 } from "@/features/posts/data/posts.data";
 import { summarizeText } from "@/lib/ai/summarizer";
 import { bumpCacheVersion, deleteCachedData } from "@/lib/cache/cache.data";
 import { purgePostCDNCache } from "@/lib/cache/revalidate";
 import {
-  POST_STATUSES,
-  PostCategory,
-  PostSelectSchema,
-  PostStatus,
-  PostUpdateSchema,
+	POST_STATUSES,
+	type PostCategory,
+	PostSelectSchema,
+	type PostStatus,
+	PostUpdateSchema,
 } from "@/lib/db/schema";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { convertToPlainText, slugify } from "@/lib/editor/utils";
 import { createAdminFn } from "@/lib/middlewares";
 import { deleteSearchDoc } from "@/lib/search/ops";
-import { z } from "zod";
 
 export const createEmptyPostFn = createAdminFn({
-  method: "POST",
+	method: "POST",
 }).handler(async ({ context }) => {
-  const { slug } = await generateSlugFn({
-    data: {
-      title: "",
-    },
-  });
+	const { slug } = await generateSlugFn({
+		data: {
+			title: "",
+		},
+	});
 
-  const post = await insertPost(context.db, {
-    title: "",
-    slug,
-    summary: "",
-    status: "draft",
-    readTimeInMinutes: 1,
-    contentJson: null,
-  });
+	const post = await insertPost(context.db, {
+		title: "",
+		slug,
+		summary: "",
+		status: "draft",
+		readTimeInMinutes: 1,
+		contentJson: null,
+	});
 
-  // No cache/index operations for drafts
+	// No cache/index operations for drafts
 
-  return { id: post.id };
+	return { id: post.id };
 });
 
 const SORT_DIRECTIONS = ["ASC", "DESC"] as const;
 
 export const getPostsFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      offset: z.number().optional(),
-      limit: z.number().optional(),
-      category: z.custom<PostCategory>().optional(),
-      status: z.custom<PostStatus>().optional(),
-      publicOnly: z.boolean().optional(),
-      search: z.string().optional(),
-      sortDir: z.enum(SORT_DIRECTIONS).optional(),
-    })
-  )
-  .handler(async ({ data, context }) => {
-    return await getPosts(context.db, {
-      offset: data.offset ?? 0,
-      limit: data.limit ?? 10,
-      category: data.category,
-      status: data.status,
-      publicOnly: data.publicOnly,
-      search: data.search,
-      sortDir: data.sortDir,
-    });
-  });
+	.inputValidator(
+		z.object({
+			offset: z.number().optional(),
+			limit: z.number().optional(),
+			category: z.custom<PostCategory>().optional(),
+			status: z.custom<PostStatus>().optional(),
+			publicOnly: z.boolean().optional(),
+			search: z.string().optional(),
+			sortDir: z.enum(SORT_DIRECTIONS).optional(),
+		}),
+	)
+	.handler(async ({ data, context }) => {
+		return await getPosts(context.db, {
+			offset: data.offset ?? 0,
+			limit: data.limit ?? 10,
+			category: data.category,
+			status: data.status,
+			publicOnly: data.publicOnly,
+			search: data.search,
+			sortDir: data.sortDir,
+		});
+	});
 
 export const getPostsCountFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      category: z.custom<PostCategory>().optional(),
-      status: z.custom<PostStatus>().optional(),
-      publicOnly: z.boolean().optional(),
-      search: z.string().optional(),
-    })
-  )
-  .handler(async ({ data, context }) => {
-    return await getPostsCount(context.db, {
-      category: data.category,
-      status: data.status,
-      publicOnly: data.publicOnly,
-      search: data.search,
-    });
-  });
+	.inputValidator(
+		z.object({
+			category: z.custom<PostCategory>().optional(),
+			status: z.custom<PostStatus>().optional(),
+			publicOnly: z.boolean().optional(),
+			search: z.string().optional(),
+		}),
+	)
+	.handler(async ({ data, context }) => {
+		return await getPostsCount(context.db, {
+			category: data.category,
+			status: data.status,
+			publicOnly: data.publicOnly,
+			search: data.search,
+		});
+	});
 
 export const findPostBySlugFn = createAdminFn()
-  .inputValidator(z.object({ slug: z.string() }))
-  .handler(async ({ data, context }) => {
-    const post = await findPostBySlug(context.db, data.slug, {
-      publicOnly: false,
-    });
-    if (!post) return null;
-    return {
-      ...post,
-      toc: generateTableOfContents(post.contentJson),
-    };
-  });
+	.inputValidator(z.object({ slug: z.string() }))
+	.handler(async ({ data, context }) => {
+		const post = await findPostBySlug(context.db, data.slug, {
+			publicOnly: false,
+		});
+		if (!post) return null;
+		return {
+			...post,
+			toc: generateTableOfContents(post.contentJson),
+		};
+	});
 
 export const findPostByIdFn = createAdminFn()
-  .inputValidator(z.object({ id: z.number() }))
-  .handler(async ({ data, context }) => {
-    return await findPostById(context.db, data.id);
-  });
+	.inputValidator(z.object({ id: z.number() }))
+	.handler(async ({ data, context }) => {
+		return await findPostById(context.db, data.id);
+	});
 
 export const updatePostFn = createAdminFn({
-  method: "POST",
+	method: "POST",
 })
-  .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
-  .handler(async ({ data: { id, data }, context }) => {
-    const post = await updatePost(context.db, id, data);
-    if (data.contentJson !== undefined) {
-      context.executionCtx.waitUntil(
-        syncPostMedia(context.db, post.id, data.contentJson)
-      );
-    }
+	.inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
+	.handler(async ({ data: { id, data }, context }) => {
+		const post = await updatePost(context.db, id, data);
+		if (data.contentJson !== undefined) {
+			context.executionCtx.waitUntil(
+				syncPostMedia(context.db, post.id, data.contentJson),
+			);
+		}
 
-    return post;
-  });
+		return post;
+	});
 
 export const deletePostFn = createAdminFn({
-  method: "POST",
+	method: "POST",
 })
-  .inputValidator(z.object({ id: z.number() }))
-  .handler(async ({ data, context }) => {
-    const post = await findPostById(context.db, data.id);
-    if (!post) return;
+	.inputValidator(z.object({ id: z.number() }))
+	.handler(async ({ data, context }) => {
+		const post = await findPostById(context.db, data.id);
+		if (!post) return;
 
-    await deletePost(context.db, data.id);
+		await deletePost(context.db, data.id);
 
-    // Only clear cache/index for published posts
-    if (post.status === "published") {
-      const tasks = [];
-      tasks.push(deleteCachedData(context, ["post", post.slug]));
-      tasks.push(bumpCacheVersion(context, "posts:list"));
-      tasks.push(deleteSearchDoc(context.env, data.id));
-      tasks.push(purgePostCDNCache(context.env, post.slug));
+		// Only clear cache/index for published posts
+		if (post.status === "published") {
+			const tasks = [];
+			tasks.push(deleteCachedData(context, ["post", post.slug]));
+			tasks.push(bumpCacheVersion(context, "posts:list"));
+			tasks.push(deleteSearchDoc(context.env, data.id));
+			tasks.push(purgePostCDNCache(context.env, post.slug));
 
-      context.executionCtx.waitUntil(Promise.all(tasks));
-    }
-  });
+			context.executionCtx.waitUntil(Promise.all(tasks));
+		}
+	});
 
 export const generateSlugFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      title: z.string().optional(),
-      excludeId: z.number().optional(), // For editing existing posts
-    })
-  )
-  .handler(async ({ data, context }) => {
-    const baseSlug = slugify(data.title);
+	.inputValidator(
+		z.object({
+			title: z.string().optional(),
+			excludeId: z.number().optional(), // For editing existing posts
+		}),
+	)
+	.handler(async ({ data, context }) => {
+		const baseSlug = slugify(data.title);
 
-    // Check if base slug is available
-    const baseExists = await slugExists(context.db, baseSlug, {
-      excludeId: data.excludeId,
-    });
-    if (!baseExists) {
-      return { slug: baseSlug };
-    }
+		// Check if base slug is available
+		const baseExists = await slugExists(context.db, baseSlug, {
+			excludeId: data.excludeId,
+		});
+		if (!baseExists) {
+			return { slug: baseSlug };
+		}
 
-    // Try numbered suffixes until we find a unique one
-    const MAX_ATTEMPTS = 100;
-    for (let i = 1; i <= MAX_ATTEMPTS; i++) {
-      const candidateSlug = `${baseSlug}-${i}`;
-      const exists = await slugExists(context.db, candidateSlug, {
-        excludeId: data.excludeId,
-      });
-      if (!exists) {
-        return { slug: candidateSlug };
-      }
-    }
+		// Try numbered suffixes until we find a unique one
+		const MAX_ATTEMPTS = 100;
+		for (let i = 1; i <= MAX_ATTEMPTS; i++) {
+			const candidateSlug = `${baseSlug}-${i}`;
+			const exists = await slugExists(context.db, candidateSlug, {
+				excludeId: data.excludeId,
+			});
+			if (!exists) {
+				return { slug: candidateSlug };
+			}
+		}
 
-    // Fallback: use timestamp
-    const fallbackSlug = `${baseSlug}-${Date.now()}`;
-    return { slug: fallbackSlug };
-  });
+		// Fallback: use timestamp
+		const fallbackSlug = `${baseSlug}-${Date.now()}`;
+		return { slug: fallbackSlug };
+	});
 
 export const previewSummaryFn = createAdminFn({
-  method: "POST",
+	method: "POST",
 })
-  .inputValidator(PostSelectSchema.pick({ contentJson: true }))
-  .handler(async ({ data, context }) => {
-    const plainText = convertToPlainText(data.contentJson);
-    try {
-      const { summary } = await summarizeText(context.db, plainText);
-      return { summary };
-    } catch (error) {
-      if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
-        return { error: "AI 服务未配置" };
-      }
-      throw error;
-    }
-  });
+	.inputValidator(PostSelectSchema.pick({ contentJson: true }))
+	.handler(async ({ data, context }) => {
+		const plainText = convertToPlainText(data.contentJson);
+		try {
+			const { summary } = await summarizeText(context.db, plainText);
+			return { summary };
+		} catch (error) {
+			if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
+				return { error: "AI 服务未配置" };
+			}
+			throw error;
+		}
+	});
 
 export const startPostProcessWorkflowFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      id: z.number(),
-      status: z.enum(POST_STATUSES),
-    })
-  )
-  .handler(async ({ data: { id, status }, context }) => {
-    if (status !== "published") return;
+	.inputValidator(
+		z.object({
+			id: z.number(),
+			status: z.enum(POST_STATUSES),
+		}),
+	)
+	.handler(async ({ data: { id, status }, context }) => {
+		if (status !== "published") return;
 
-    // 生成摘要， 更新搜索索引
-    await context.env.POST_PROCESS_WORKFLOW.create({
-      params: {
-        postId: id,
-      },
-    });
-  });
+		// 生成摘要， 更新搜索索引
+		await context.env.POST_PROCESS_WORKFLOW.create({
+			params: {
+				postId: id,
+			},
+		});
+	});

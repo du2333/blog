@@ -1,4 +1,4 @@
-import { load, save, type RawData } from "@orama/orama";
+import { load, type RawData, save } from "@orama/orama";
 import { createMyDb, type MyOramaDB } from "@/lib/search/schema";
 
 const KV_KEY = "search:index:v3";
@@ -7,88 +7,88 @@ const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
 
 async function compressRaw(raw: RawData): Promise<Uint8Array> {
-  // Prefer built-in compression to avoid extra deps; fall back to plain bytes if unsupported
-  const json = JSON.stringify(raw);
-  const encoded = textEncoder.encode(json);
+	// Prefer built-in compression to avoid extra deps; fall back to plain bytes if unsupported
+	const json = JSON.stringify(raw);
+	const encoded = textEncoder.encode(json);
 
-  if (typeof CompressionStream === "undefined") {
-    return encoded;
-  }
+	if (typeof CompressionStream === "undefined") {
+		return encoded;
+	}
 
-  const stream = new CompressionStream("gzip");
-  const writer = stream.writable.getWriter();
-  await writer.write(encoded);
-  await writer.close();
-  const compressed = await new Response(stream.readable).arrayBuffer();
-  return new Uint8Array(compressed);
+	const stream = new CompressionStream("gzip");
+	const writer = stream.writable.getWriter();
+	await writer.write(encoded);
+	await writer.close();
+	const compressed = await new Response(stream.readable).arrayBuffer();
+	return new Uint8Array(compressed);
 }
 
 async function decompressToRaw(buffer: ArrayBuffer): Promise<RawData> {
-  // Attempt gzip first; if it fails, treat as plain JSON string (back-compat)
-  const tryGzip = async () => {
-    if (typeof DecompressionStream === "undefined") {
-      throw new Error("DecompressionStream unavailable");
-    }
+	// Attempt gzip first; if it fails, treat as plain JSON string (back-compat)
+	const tryGzip = async () => {
+		if (typeof DecompressionStream === "undefined") {
+			throw new Error("DecompressionStream unavailable");
+		}
 
-    const stream = new DecompressionStream("gzip");
-    const writer = stream.writable.getWriter();
-    await writer.write(new Uint8Array(buffer));
-    await writer.close();
-    const decompressed = await new Response(stream.readable).arrayBuffer();
-    const json = textDecoder.decode(decompressed);
-    return JSON.parse(json) as RawData;
-  };
+		const stream = new DecompressionStream("gzip");
+		const writer = stream.writable.getWriter();
+		await writer.write(new Uint8Array(buffer));
+		await writer.close();
+		const decompressed = await new Response(stream.readable).arrayBuffer();
+		const json = textDecoder.decode(decompressed);
+		return JSON.parse(json) as RawData;
+	};
 
-  try {
-    return await tryGzip();
-  } catch {
-    const json = textDecoder.decode(new Uint8Array(buffer));
-    return JSON.parse(json) as RawData;
-  }
+	try {
+		return await tryGzip();
+	} catch {
+		const json = textDecoder.decode(new Uint8Array(buffer));
+		return JSON.parse(json) as RawData;
+	}
 }
 
 let cachedDb: MyOramaDB | null = null;
 let inflight: Promise<MyOramaDB> | null = null;
 
 async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
-  if (!env.KV) return null;
-  const buf = await env.KV.get(KV_KEY, "arrayBuffer");
-  if (!buf) return null;
+	if (!env.KV) return null;
+	const buf = await env.KV.get(KV_KEY, "arrayBuffer");
+	if (!buf) return null;
 
-  try {
-    const raw = await decompressToRaw(buf);
-    const db = await createMyDb();
-    await load(db, raw);
-    return db;
-  } catch (error) {
-    console.error("Failed to load Orama index from KV", error);
-    return null;
-  }
+	try {
+		const raw = await decompressToRaw(buf);
+		const db = await createMyDb();
+		await load(db, raw);
+		return db;
+	} catch (error) {
+		console.error("Failed to load Orama index from KV", error);
+		return null;
+	}
 }
 
 export async function getOramaDb(env: Env): Promise<MyOramaDB> {
-  if (cachedDb) return cachedDb;
-  if (inflight) return inflight;
+	if (cachedDb) return cachedDb;
+	if (inflight) return inflight;
 
-  inflight = (async () => {
-    const fromKv = await loadFromKv(env);
-    if (fromKv) return fromKv;
-    return await createMyDb();
-  })().finally(() => {
-    inflight = null;
-  });
+	inflight = (async () => {
+		const fromKv = await loadFromKv(env);
+		if (fromKv) return fromKv;
+		return await createMyDb();
+	})().finally(() => {
+		inflight = null;
+	});
 
-  cachedDb = await inflight;
-  return cachedDb;
+	cachedDb = await inflight;
+	return cachedDb;
 }
 
 export async function persistOramaDb(env: Env, db: MyOramaDB) {
-  if (!env.KV) return;
-  const raw = save(db);
-  const compressed = await compressRaw(raw);
-  await env.KV.put(KV_KEY, compressed);
+	if (!env.KV) return;
+	const raw = save(db);
+	const compressed = await compressRaw(raw);
+	await env.KV.put(KV_KEY, compressed);
 }
 
 export function setOramaDb(db: MyOramaDB) {
-  cachedDb = db;
+	cachedDb = db;
 }

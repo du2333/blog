@@ -1,27 +1,27 @@
-import { slugify } from "@/lib/editor/utils";
 import Heading from "@tiptap/extension-heading";
 import { mergeAttributes } from "@tiptap/react";
+import { slugify } from "@/lib/editor/utils";
 
 export const HeadingExtension = Heading.extend({
-  renderHTML({ HTMLAttributes, node }) {
-    const level = node.attrs.level as 1 | 2 | 3 | 4;
-    const textContent = node.textContent;
-    const id = slugify(textContent);
+	renderHTML({ HTMLAttributes, node }) {
+		const level = node.attrs.level as 1 | 2 | 3 | 4;
+		const textContent = node.textContent;
+		const id = slugify(textContent);
 
-    const styles: Record<number, string> = {
-      1: "text-4xl md:text-6xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-10 mt-16 leading-[1.1] tracking-tight",
-      2: "text-3xl md:text-5xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-8 mt-14 leading-[1.1] tracking-tight",
-      3: "text-2xl md:text-3xl font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-6 mt-12",
-      4: "text-xl font-sans font-bold text-zinc-800 dark:text-zinc-200 mb-4 mt-8 uppercase tracking-widest",
-    };
+		const styles: Record<number, string> = {
+			1: "text-4xl md:text-6xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-10 mt-16 leading-[1.1] tracking-tight",
+			2: "text-3xl md:text-5xl font-serif font-medium text-zinc-900 dark:text-zinc-100 mb-8 mt-14 leading-[1.1] tracking-tight",
+			3: "text-2xl md:text-3xl font-serif font-medium text-zinc-800 dark:text-zinc-200 mb-6 mt-12",
+			4: "text-xl font-sans font-bold text-zinc-800 dark:text-zinc-200 mb-4 mt-8 uppercase tracking-widest",
+		};
 
-    return [
-      `h${level}`,
-      mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        class: styles[level],
-        id,
-      }),
-      0,
-    ];
-  },
+		return [
+			`h${level}`,
+			mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
+				class: styles[level],
+				id,
+			}),
+			0,
+		];
+	},
 });

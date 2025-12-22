@@ -2,9 +2,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "my-blog",
 	"compatibility_date": "2025-10-11",
-	"compatibility_flags": [
-		"nodejs_compat"
-	],
+	"compatibility_flags": ["nodejs_compat"],
 	"main": "./src/server.ts",
 	"observability": {
 		"enabled": true
@@ -41,7 +39,7 @@
 		{
 			"name": "post-process-workflow",
 			"binding": "POST_PROCESS_WORKFLOW",
-			"class_name": "PostProcessWorkflow",
+			"class_name": "PostProcessWorkflow"
 		}
-	],
+	]
 }

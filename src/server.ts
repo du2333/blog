@@ -5,20 +5,20 @@ import { app } from "@/lib/hono";
 export { PostProcessWorkflow } from "@/features/posts/workflows/post-process";
 
 declare module "@tanstack/react-start" {
-  interface Register {
-    server: {
-      requestContext: {
-        db: DB;
-        env: Env;
-        executionCtx: ExecutionContext;
-        auth: Auth;
-      };
-    };
-  }
+	interface Register {
+		server: {
+			requestContext: {
+				db: DB;
+				env: Env;
+				executionCtx: ExecutionContext;
+				auth: Auth;
+			};
+		};
+	}
 }
 
 export default {
-  fetch(request, env, ctx) {
-    return app.fetch(request, env, ctx);
-  },
+	fetch(request, env, ctx) {
+		return app.fetch(request, env, ctx);
+	},
 } satisfies ExportedHandler<Env>;
