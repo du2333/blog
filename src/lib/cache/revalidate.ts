@@ -3,7 +3,7 @@ import { serverEnv } from "@/lib/env/server.env";
 /**
  * Purge CDN cache for specific paths
  * @param env - Environment variables
- * @param paths - Array of paths to purge (e.g., ["/post/my-slug", "/database", "/"])
+ * @param paths - Array of paths to purge (e.g., ["/post/my-slug", "/blog", "/"])
  * @returns Promise that resolves when purge is complete
  */
 export async function purgeCDNCache(env: Env, paths: string[]) {
@@ -52,7 +52,7 @@ export async function purgePostCDNCache(env: Env, slug: string) {
 
 	return purgeCDNCache(env, [
 		`/post/${slug}`, // 文章详情页
-		`/database`, // 数据库页
+		`/blog`, // 文章页
 		`/`, // 首页
 	]);
 }

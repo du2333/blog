@@ -34,7 +34,7 @@ export function Footer() {
 								</li>
 								<li>
 									<a
-										href="/database"
+										href="/blog"
 										className="hover:text-zinc-950 dark:hover:text-zinc-100 transition-colors"
 									>
 										文章

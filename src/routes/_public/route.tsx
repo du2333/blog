@@ -24,7 +24,7 @@ function PublicLayout() {
 
 	const navOptions = [
 		{ label: "主页", to: "/", id: "transmission", color: "zzz-lime" },
-		{ label: "文章", to: "/database", id: "database", color: "zzz-lime" },
+		{ label: "文章", to: "/blog", id: "blog", color: "zzz-lime" },
 	];
 
 	const { data: session, isPending: isSessionPending } =
