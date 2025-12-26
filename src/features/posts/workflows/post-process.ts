@@ -25,7 +25,7 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
 				},
 			},
 			async () => {
-				const db = getDb(this.env);
+				const db = getDb(this.env.DB);
 				return await generateSummaryByPostId({
 					db,
 					postId: event.payload.postId,
