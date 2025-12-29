@@ -3,7 +3,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
-import { buttonVariants } from "@/components/ui/button";
 import { featuredPostsQuery } from "@/features/posts/posts.query";
 import { cn } from "@/lib/utils";
 
@@ -56,21 +55,27 @@ function App() {
 			</section>
 
 			{/* Latest Stories - Clean List */}
-			<section className="py-24 md:py-32">
-				<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-16">
-					<div className="space-y-2">
-						<h2 className="text-4xl md:text-5xl font-serif font-medium text-foreground">
+			<section className="py-24 md:py-40">
+				<div className="flex flex-col md:flex-row md:items-end justify-between gap-12 mb-20 md:mb-32">
+					<div className="space-y-6">
+						<div className="flex items-center gap-4">
+							<span className="h-px w-10 bg-foreground/20"></span>
+							<span className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground font-bold font-mono">
+								Recent Publication
+							</span>
+						</div>
+						<h2 className="text-6xl md:text-8xl font-serif font-medium text-foreground tracking-tighter leading-none">
 							最新发布
 						</h2>
 					</div>
 					<Link
 						to="/blog"
-						className={cn(
-							buttonVariants({ variant: "link" }),
-							"text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground p-0 h-auto border-b border-border hover:border-foreground rounded-none",
-						)}
+						className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] font-bold text-muted-foreground hover:text-foreground transition-all duration-700 md:pb-2"
 					>
-						浏览全部内容
+						<span className="border-b border-border group-hover:border-foreground transition-colors pb-1">
+							浏览全部内容
+						</span>
+						<ArrowRight size={14} className="group-hover:translate-x-2 transition-transform duration-500" />
 					</Link>
 				</div>
 
