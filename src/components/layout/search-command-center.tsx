@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { CornerDownLeft, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Badge } from "@/components/ui/badge";
 import { searchDocsFn } from "@/features/search/search.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
@@ -173,14 +174,16 @@ export function SearchCommandCenter({
 												className={`
                   group p-6 transition-all duration-500 rounded-sm relative cursor-pointer
                   ${
-											index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
+											index === selectedIndex ? "bg-accent shadow-xs" : "hover:bg-accent/50"
 											}
                 `}
 											>
 												<div className="flex justify-between items-start gap-8">
 													<div className="flex-1 min-w-0 space-y-2">
 														<div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest opacity-40">
-															<span>{result.post.category}</span>
+															<Badge variant="outline" className="font-mono text-[9px] uppercase tracking-widest px-1.5 py-0 rounded-sm border-current/20">
+																{result.post.category}
+															</Badge>
 														</div>
 
 														<h4

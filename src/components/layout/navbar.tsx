@@ -2,6 +2,9 @@ import { Link } from "@tanstack/react-router";
 import { LayoutDashboard, Moon, Search, Sun, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/components/common/theme-provider";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface NavbarProps {
 	navOptions: {
@@ -90,9 +93,11 @@ export function Navbar({
 					{/* Right: Actions */}
 					<div className="flex items-center gap-6">
 						<div className="flex items-center gap-2">
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
-								className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+								className="text-muted-foreground hover:text-foreground h-10 w-10 bg-transparent hover:bg-transparent"
 								title="Theme"
 							>
 								{appTheme === "dark"
@@ -102,14 +107,16 @@ export function Navbar({
 									: (
 											<Moon size={16} strokeWidth={1.2} />
 										)}
-							</button>
-							<button
+							</Button>
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={onSearchClick}
-								className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+								className="text-muted-foreground hover:text-foreground h-10 w-10 bg-transparent hover:bg-transparent"
 								title="Search"
 							>
 								<Search size={16} strokeWidth={1.2} />
-							</button>
+							</Button>
 						</div>
 
 						<div className="h-4 w-px bg-border hidden md:block" />
@@ -119,7 +126,7 @@ export function Navbar({
 							<div className="hidden md:flex items-center gap-4">
 								{isLoading
 									? (
-											<div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+											<Skeleton className="w-8 h-8 rounded-full" />
 										)
 									: (
 											<div className="flex items-center gap-4 animate-in fade-in duration-700 fill-mode-both">
@@ -129,7 +136,10 @@ export function Navbar({
 																{user.role === "admin" && (
 																	<Link
 																		to="/admin"
-																		className="p-2.5 hover:bg-accent rounded-full transition-all duration-500 text-muted-foreground hover:text-foreground"
+																		className={cn(
+																			buttonVariants({ variant: "ghost", size: "icon" }),
+																			"p-2.5 h-auto w-auto hover:bg-accent rounded-full transition-all duration-500 text-muted-foreground hover:text-foreground",
+																		)}
 																		title="进入后台"
 																	>
 																		<LayoutDashboard size={18} strokeWidth={1.5} />
@@ -162,10 +172,14 @@ export function Navbar({
 															</>
 														)
 													: (
-															<Link to="/login">
-																<span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-colors font-medium">
-																	Login
-																</span>
+															<Link
+																to="/login"
+																className={cn(
+																	buttonVariants({ variant: "link" }),
+																	"text-[10px] uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-colors font-medium h-auto p-0",
+																)}
+															>
+																Login
 															</Link>
 														)}
 											</div>

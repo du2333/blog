@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, UserIcon, X } from "lucide-react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
 	navOptions: {
@@ -53,12 +55,14 @@ export function MobileMenu({
 							菜单
 						</span>
 					</div>
-					<button
+					<Button
+						variant="outline"
+						size="icon"
 						onClick={onClose}
-						className="w-12 h-12 flex items-center justify-center rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
+						className="w-12 h-12 rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
 					>
 						<X size={24} strokeWidth={1.5} />
-					</button>
+					</Button>
 				</div>
 
 				{/* Links */}
@@ -145,7 +149,7 @@ export function MobileMenu({
 				>
 					{user
 						? (
-								<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-border">
+								<div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-8 pt-12 border-t border-border">
 									<button
 										onClick={() => {
 											onOpenProfile();
@@ -178,16 +182,17 @@ export function MobileMenu({
 										</div>
 									</button>
 
-									<button
+									<Button
+										variant="ghost"
 										onClick={() => {
 											logout();
 											onClose();
 										}}
-										className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4"
+										className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4 h-auto p-0 bg-transparent hover:bg-transparent"
 									>
 										<LogOut size={14} />
 										<span>退出登录</span>
-									</button>
+									</Button>
 								</div>
 							)
 						: (
@@ -196,7 +201,12 @@ export function MobileMenu({
 									onClick={onClose}
 									className="inline-block pt-12 border-t border-border w-full"
 								>
-									<span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
+									<span className={cn(
+										"text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all block",
+										buttonVariants({ variant: "link" }),
+										"h-auto p-0 text-foreground",
+									)}
+									>
 										登录 / Login
 									</span>
 								</Link>

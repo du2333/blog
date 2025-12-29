@@ -12,6 +12,8 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { userHasPasswordFn } from "@/features/auth/auth.api";
 import { authClient } from "@/lib/auth/auth.client";
 
@@ -145,12 +147,14 @@ export function UserProfileModal({
         `}
 			>
 				{/* Close Button */}
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={onClose}
-					className="absolute top-8 right-8 z-50 p-2 text-muted-foreground hover:text-foreground transition-colors"
+					className="absolute top-8 right-8 z-50 p-2 text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
 				>
 					<X size={24} strokeWidth={1.5} />
-				</button>
+				</Button>
 
 				{/* Left: Identity Summary */}
 				<div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-border bg-muted/30">
@@ -203,19 +207,20 @@ export function UserProfileModal({
 					</div>
 
 					<div className="mt-auto pt-20">
-						<button
+						<Button
+							variant="ghost"
 							onClick={() => {
 								logout();
 								onClose();
 							}}
-							className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-zinc-400 hover:text-red-500 transition-colors"
+							className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-zinc-400 hover:text-red-500 transition-colors h-auto p-0 bg-transparent hover:bg-transparent"
 						>
 							<span>退出登录</span>
 							<LogOut
 								size={14}
 								className="group-hover:translate-x-1 transition-transform"
 							/>
-						</button>
+						</Button>
 					</div>
 				</div>
 
@@ -238,10 +243,10 @@ export function UserProfileModal({
 									用户昵称
 								</label>
 								<div className="relative group">
-									<input
+									<Input
 										type="text"
 										{...registerProfile("name")}
-										className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+										className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
 									/>
 									{profileErrors.name && (
 										<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -256,14 +261,16 @@ export function UserProfileModal({
 									头像链接
 								</label>
 								<div className="flex gap-4 md:gap-8 items-end">
-									<input
+									<Input
 										type="text"
 										{...registerProfile("image")}
-										className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+										className="flex-1 min-w-0 bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
 									/>
-									<button
+									<Button
 										type="submit"
 										disabled={isProfileSubmitting}
+										size="icon"
+										variant="outline"
 										className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
 									>
 										{isProfileSubmitting
@@ -273,7 +280,7 @@ export function UserProfileModal({
 											: (
 													<Check size={18} />
 												)}
-									</button>
+									</Button>
 								</div>
 								{profileErrors.image && (
 									<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -303,10 +310,10 @@ export function UserProfileModal({
 												<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
 													当前密码
 												</label>
-												<input
+												<Input
 													type="password"
 													{...registerPassword("currentPassword")}
-													className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+													className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
 												/>
 												{passwordErrors.currentPassword && (
 													<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -320,10 +327,10 @@ export function UserProfileModal({
 													<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
 														新密码
 													</label>
-													<input
+													<Input
 														type="password"
 														{...registerPassword("newPassword")}
-														className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+														className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
 													/>
 													{passwordErrors.newPassword && (
 														<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
@@ -336,14 +343,16 @@ export function UserProfileModal({
 														确认新密码
 													</label>
 													<div className="flex gap-4 items-end">
-														<input
+														<Input
 															type="password"
 															{...registerPassword("confirmPassword")}
-															className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+															className="flex-1 min-w-0 bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
 														/>
-														<button
+														<Button
 															type="submit"
 															disabled={isPasswordSubmitting}
+															size="icon"
+															variant="outline"
 															className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
 														>
 															{isPasswordSubmitting
@@ -353,7 +362,7 @@ export function UserProfileModal({
 																: (
 																		<Check size={18} />
 																	)}
-														</button>
+														</Button>
 													</div>
 													{passwordErrors.confirmPassword && (
 														<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">

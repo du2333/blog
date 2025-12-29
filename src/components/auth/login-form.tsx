@@ -6,6 +6,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 
@@ -113,10 +115,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
 						邮箱地址
 					</label>
-					<input
+					<Input
 						type="email"
 						{...register("email")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 						placeholder="example@mail.com"
 						autoComplete="username"
 						disabled={isSubmitting || loginStep !== "IDLE"}
@@ -143,10 +145,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 							</Link>
 						)}
 					</div>
-					<input
+					<Input
 						type="password"
 						{...register("password")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 						placeholder="••••••••"
 						autoComplete="current-password"
 						disabled={isSubmitting || loginStep !== "IDLE"}
@@ -159,10 +161,10 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 				</div>
 			</div>
 
-			<button
+			<Button
 				type="submit"
 				disabled={isSubmitting || loginStep !== "IDLE"}
-				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group rounded-sm"
 			>
 				{loginStep === "VERIFYING"
 					? (
@@ -177,7 +179,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 								/>
 							</>
 						)}
-			</button>
+			</Button>
 		</form>
 	);
 }

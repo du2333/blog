@@ -6,12 +6,14 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
 
 const registerSchema = z
 	.object({
-		name: z.string().min(2, "代号至少 2 位"),
+		name: z.string().min(2, "昵称至少 2 位"),
 		email: z.string().email("无效的邮箱格式"),
 		password: z.string().min(8, "密码至少 8 位"),
 		confirmPassword: z.string(),
@@ -83,12 +85,13 @@ export function RegisterForm() {
 						一封验证邮件已发送至您的邮箱。请点击邮件中的链接以激活账户。
 					</p>
 				</div>
-				<button
+				<Button
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+					variant="outline"
+					className="w-full h-14 text-[11px] uppercase tracking-[0.4em] font-medium"
 				>
 					返回登录
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -98,14 +101,14 @@ export function RegisterForm() {
 			<div className="space-y-6">
 				{/* Name */}
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
-						代理人代号
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
+						用户昵称
 					</label>
-					<input
+					<Input
 						type="text"
 						{...register("name")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
-						placeholder="输入您的代号"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+						placeholder="输入您的昵称"
 					/>
 					{errors.name && (
 						<span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
@@ -116,13 +119,13 @@ export function RegisterForm() {
 
 				{/* Email */}
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
 						邮箱地址
 					</label>
-					<input
+					<Input
 						type="email"
 						{...register("email")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 						placeholder="example@mail.com"
 					/>
 					{errors.email && (
@@ -135,13 +138,13 @@ export function RegisterForm() {
 				{/* Passwords */}
 				<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 					<div className="space-y-2 group">
-						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
 							密码
 						</label>
-						<input
+						<Input
 							type="password"
 							{...register("password")}
-							className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+							className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 							placeholder="••••••••"
 						/>
 						{errors.password && (
@@ -151,13 +154,13 @@ export function RegisterForm() {
 						)}
 					</div>
 					<div className="space-y-2 group">
-						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+						<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
 							确认密码
 						</label>
-						<input
+						<Input
 							type="password"
 							{...register("confirmPassword")}
-							className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+							className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 							placeholder="••••••••"
 						/>
 						{errors.confirmPassword && (
@@ -169,10 +172,10 @@ export function RegisterForm() {
 				</div>
 			</div>
 
-			<button
+			<Button
 				type="submit"
 				disabled={isSubmitting}
-				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group rounded-sm"
 			>
 				{isSubmitting
 					? (
@@ -187,7 +190,7 @@ export function RegisterForm() {
 								/>
 							</>
 						)}
-			</button>
+			</Button>
 		</form>
 	);
 }
