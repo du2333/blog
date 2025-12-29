@@ -8,7 +8,7 @@ import { ArrowUpRight, Menu } from "lucide-react";
 import { useState } from "react";
 import { SideBar } from "@/components/admin/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
+import { CACHE_CONTROL } from "@/lib/constants";
 
 export const Route = createFileRoute("/admin")({
 	beforeLoad: async ({ context }) => {

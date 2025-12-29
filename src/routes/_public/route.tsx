@@ -8,7 +8,7 @@ import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/components/layout/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
+import { CACHE_CONTROL } from "@/lib/constants";
 
 export const Route = createFileRoute("/_public")({
 	component: PublicLayout,

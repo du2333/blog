@@ -1,6 +1,6 @@
 import { createMiddleware, createServerFn, json } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
+import { CACHE_CONTROL } from "@/lib/constants";
 
 export const authMiddleware = createMiddleware().server(
 	async ({ next, context, request }) => {

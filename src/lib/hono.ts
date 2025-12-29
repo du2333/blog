@@ -1,7 +1,7 @@
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
 import { getAuth } from "@/lib/auth/auth.server";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
+import { CACHE_CONTROL } from "@/lib/constants";
 import { getDb } from "@/lib/db";
 import { handleImageRequest } from "@/lib/images/server";
 

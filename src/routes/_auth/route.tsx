@@ -9,7 +9,7 @@ import {
 	emailVerficationRequiredQuery,
 	sessionQuery,
 } from "@/features/auth/auth.query";
-import { CACHE_CONTROL } from "@/lib/cache/cache-control";
+import { CACHE_CONTROL } from "@/lib/constants";
 
 export const Route = createFileRoute("/_auth")({
 	beforeLoad: async ({ context, location }) => {
