@@ -67,7 +67,7 @@ const MediaCard = memo(
 			isSelected
 				? "border-foreground ring-4 ring-foreground/5 scale-[0.98]"
 				: isLinked
-					? "border-border"
+					? "border-primary/30 bg-primary/5 shadow-sm"
 					: "border-border hover:border-border"
 			}
       `}
@@ -97,8 +97,9 @@ const MediaCard = memo(
 
 				{/* Linked Indicator */}
 				{isLinked && !isSelected && (
-					<div className="absolute top-3 right-3 z-20 text-muted-foreground">
-						<Link2 size={12} strokeWidth={1.5} />
+					<div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2 py-0.5 bg-primary/90 text-primary-foreground rounded-full shadow-lg backdrop-blur-sm transition-all duration-300">
+						<Link2 size={10} strokeWidth={3} />
+						<span className="text-[10px] font-bold tracking-tight">已引用</span>
 					</div>
 				)}
 
@@ -135,8 +136,11 @@ const MediaCard = memo(
 
 				{/* Info */}
 				<div className="p-4 space-y-1 bg-popover">
-					<div className="text-[11px] font-medium truncate">
-						{asset.fileName}
+					<div className="text-[11px] font-medium truncate flex items-center gap-2">
+						{isLinked && (
+							<div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" title="已引用" />
+						)}
+						<span className="truncate">{asset.fileName}</span>
 					</div>
 					<div className="flex justify-between text-[9px] text-muted-foreground font-mono tracking-wider uppercase">
 						<span>{formatBytes(asset.sizeInBytes)}</span>
