@@ -3,7 +3,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
+import { buttonVariants } from "@/components/ui/button";
 import { featuredPostsQuery } from "@/features/posts/posts.query";
+import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public/")({
 	component: App,
@@ -63,7 +65,10 @@ function App() {
 					</div>
 					<Link
 						to="/blog"
-						className="text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors pb-1 border-b border-border hover:border-foreground"
+						className={cn(
+							buttonVariants({ variant: "link" }),
+							"text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground p-0 h-auto border-b border-border hover:border-foreground rounded-none",
+						)}
 					>
 						浏览全部内容
 					</Link>

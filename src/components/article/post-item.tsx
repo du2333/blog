@@ -2,6 +2,7 @@ import type { PostListItem } from "@/lib/db/schema";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Clock } from "lucide-react";
 import { memo } from "react";
+import { Badge } from "@/components/ui/badge";
 
 interface PostItemProps {
 	post: PostListItem;
@@ -32,9 +33,9 @@ export const PostItem = memo(({ post, index }: PostItemProps) => (
 		{/* Meta Info */}
 		<div className="md:col-span-4 flex flex-col md:items-end justify-between py-2">
 			<div className="flex items-center gap-4 text-[10px] font-mono tracking-widest uppercase text-muted-foreground">
-				<span className="px-2 py-0.5 border border-border rounded-sm">
+				<Badge variant="outline" className="font-mono tracking-widest uppercase rounded-sm border-border/50 text-muted-foreground px-2 py-0.5">
 					{post.category}
-				</span>
+				</Badge>
 				<span className="flex items-center gap-1.5">
 					<Clock size={12} strokeWidth={1.5} />
 					{" "}

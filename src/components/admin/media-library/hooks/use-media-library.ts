@@ -27,7 +27,7 @@ export function useMediaLibrary() {
 	const [prevSearchQuery, setPrevSearchQuery] = useState("");
 
 	// Selection & Deletion State (使用 key 作为唯一标识)
-	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() =>new Set());
+	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set());
 	const [deleteTarget, setDeleteTarget] = useState<string[] | null>(null);
 
 	// Infinite Query for media list

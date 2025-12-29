@@ -10,6 +10,8 @@ import { useEffect, useState } from "react";
 import { ContentRenderer } from "@/components/article/content-renderer";
 import TableOfContents from "@/components/article/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
 
@@ -64,16 +66,17 @@ function RouteComponent() {
 		<div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
 			{/* Back Link */}
 			<nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
-				<button
+				<Button
+					variant="ghost"
 					onClick={() => router.history.back()}
-					className="group flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
+					className="group h-auto p-0 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
 				>
 					<ArrowLeft
 						size={14}
 						className="group-hover:-translate-x-1 transition-transform"
 					/>
 					<span>返回列表</span>
-				</button>
+				</Button>
 			</nav>
 
 			<article className="space-y-16">
@@ -81,9 +84,9 @@ function RouteComponent() {
 				<header className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both max-w-4xl">
 					<div className="space-y-6">
 						<div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground">
-							<span className="px-2 py-0.5 border border-border rounded-sm">
+							<Badge variant="outline" className="font-mono tracking-[0.2em] uppercase rounded-sm border-border px-2 py-0.5 text-muted-foreground">
 								{post.category}
-							</span>
+							</Badge>
 							<span className="flex items-center gap-1.5">
 								<Calendar size={12} strokeWidth={1.5} />
 								<ClientOnly fallback={<span>-</span>}>
@@ -114,10 +117,13 @@ function RouteComponent() {
 						<ContentRenderer content={post.contentJson} />
 
 						<footer className="mt-32 pt-12 border-t border-border flex justify-end items-center">
-							<button className="group flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors">
+							<Button
+								variant="ghost"
+								className="group h-auto p-0 flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
+							>
 								<Share2 size={14} strokeWidth={1.5} />
 								<span>分享文章</span>
-							</button>
+							</Button>
 						</footer>
 					</main>
 
@@ -138,7 +144,9 @@ function RouteComponent() {
 						: "opacity-0 translate-y-10 pointer-events-none"
 				}`}
 			>
-				<button
+				<Button
+					size="icon"
+					variant="outline"
 					onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
 					className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-500 group"
 				>
@@ -146,7 +154,7 @@ function RouteComponent() {
 						size={20}
 						className="group-hover:-translate-y-1 transition-transform"
 					/>
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
+import { Skeleton } from "@/components/ui/skeleton";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
 
 const searchSchema = z.object({
@@ -150,7 +151,7 @@ function RouteComponent() {
 											className="text-muted-foreground animate-spin"
 										/>
 									</div>
-									<div className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary animate-[spin_1.5s_linear_infinite]"></div>
+									<Skeleton className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary bg-transparent animate-[spin_1.5s_linear_infinite]" />
 								</div>
 								<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground">
 									Loading
