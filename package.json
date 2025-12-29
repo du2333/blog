@@ -5,7 +5,7 @@
 	"scripts": {
 		"dev": "vite dev --port 3000",
 		"build": "vite build",
-		"deploy": "pnpm run build && wrangler deploy",
+		"deploy": "wrangler deploy",
 		"serve": "vite preview",
 		"test": "vitest run",
 		"lint": "eslint .",
@@ -13,6 +13,8 @@
 		"cf-typegen": "wrangler types --env-interface Env",
 		"db:studio": "drizzle-kit studio",
 		"db:push": "drizzle-kit push",
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "wrangler d1 migrations apply DB --remote",
 		"auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
 	},
 	"dependencies": {

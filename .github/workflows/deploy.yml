@@ -59,4 +59,5 @@ jobs:
       - name: Deploy to Cloudflare Workers
         run: |
           npx wrangler secret bulk secrets.json
+          pnpm build
           pnpm run deploy
