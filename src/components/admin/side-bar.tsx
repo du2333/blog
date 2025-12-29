@@ -5,16 +5,14 @@ import {
 	Image as ImageIcon,
 	LayoutDashboard,
 	LogOut,
-	Moon,
 	Settings,
-	Sun,
 	User,
 	X,
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Logo } from "@/components/common/logo";
-import { useTheme } from "@/components/common/theme-provider";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
 
@@ -28,7 +26,6 @@ export function SideBar({
 	const navigate = useNavigate();
 	const queryClient = useQueryClient();
 	const { data: session } = authClient.useSession();
-	const { appTheme, setTheme } = useTheme();
 	const user = session?.user;
 
 	const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
@@ -162,12 +159,7 @@ export function SideBar({
 						<span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold md:hidden lg:block">
 							主题模式
 						</span>
-						<button
-							onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
-							className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 flex items-center justify-center rounded-full bg-accent text-muted-foreground hover:text-foreground transition-all"
-						>
-							{appTheme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-						</button>
+						<ThemeToggle className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 rounded-full bg-accent" />
 					</div>
 
 					<div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">

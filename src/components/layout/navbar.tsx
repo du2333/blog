@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, Moon, Search, Sun, UserIcon } from "lucide-react";
+import { LayoutDashboard, Search, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTheme } from "@/components/common/theme-provider";
+import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
@@ -31,7 +31,6 @@ export function Navbar({
 	onOpenProfile,
 	isLoading,
 }: NavbarProps) {
-	const { appTheme, setTheme } = useTheme();
 	const [isScrolled, setIsScrolled] = useState(false);
 
 	useEffect(() => {
@@ -93,21 +92,7 @@ export function Navbar({
 					{/* Right: Actions */}
 					<div className="flex items-center gap-6">
 						<div className="flex items-center gap-2">
-							<Button
-								variant="ghost"
-								size="icon"
-								onClick={() => setTheme(appTheme === "dark" ? "light" : "dark")}
-								className="text-muted-foreground hover:text-foreground h-10 w-10 bg-transparent hover:bg-transparent"
-								title="Theme"
-							>
-								{appTheme === "dark"
-									? (
-											<Sun size={16} strokeWidth={1.2} />
-										)
-									: (
-											<Moon size={16} strokeWidth={1.2} />
-										)}
-							</Button>
+							<ThemeToggle />
 							<Button
 								variant="ghost"
 								size="icon"
