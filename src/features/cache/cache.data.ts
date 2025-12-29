@@ -17,7 +17,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
 	const { env, executionCtx } = context;
 	const serializedKey = serializeKey(key);
 
-	const kvData = await env.KV.get(serializedKey, "json");
+	const kvData = await env.KV.get(serializedKey, "json").catch(err => console.error(`[Cache] Failed to get key ${serializedKey}:`, err));
 
 	if (kvData !== null && kvData !== undefined) {
 		const result = schema.safeParse(kvData);
@@ -36,7 +36,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
 	executionCtx.waitUntil(
 		env.KV.put(serializedKey, JSON.stringify(data), {
 			expirationTtl: ttl,
-		}),
+		}).catch(err => console.error(`[Cache] Failed to put key ${serializedKey}:`, err)),
 	);
 
 	return data;
@@ -48,7 +48,7 @@ export async function deleteCachedData(
 ): Promise<void> {
 	const serializedKeys = keys.map(serializeKey);
 
-	await Promise.all(serializedKeys.map(key => context.env.KV.delete(key)));
+	await Promise.all(serializedKeys.map(key => context.env.KV.delete(key).catch(err => console.error(`[Cache] Failed to delete key ${key}:`, err))));
 }
 
 /**
@@ -61,7 +61,7 @@ export async function getCacheVersion(
 ): Promise<string> {
 	// 统一前缀 ver:，保持视觉整洁
 	const key = `ver:${namespace}`;
-	const v = await context.env.KV.get(key);
+	const v = await context.env.KV.get(key).catch(err => console.error(`[Cache] Failed to get version ${key}:`, err));
 	// 返回 "v1", "v2" 这种格式，方便直接拼到 Key 数组里
 	if (v && !Number.isNaN(Number.parseInt(v))) {
 		return `v${v}`;
@@ -77,7 +77,7 @@ export async function bumpCacheVersion(
 	namespace: CacheNamespace,
 ): Promise<void> {
 	const key = `ver:${namespace}`;
-	const current = await context.env.KV.get(key);
+	const current = await context.env.KV.get(key).catch(err => console.error(`[Cache] Failed to get version ${key}:`, err));
 
 	let next = 1;
 	if (current) {
@@ -87,6 +87,6 @@ export async function bumpCacheVersion(
 		}
 	}
 
-	await context.env.KV.put(key, next.toString());
+	await context.env.KV.put(key, next.toString()).catch(err => console.error(`[Cache] Failed to bump version ${key}:`, err));
 	console.log(`[Cache] Bumped version ${key} to ${next}`);
 }
