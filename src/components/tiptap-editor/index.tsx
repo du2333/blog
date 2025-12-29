@@ -83,7 +83,7 @@ export const extensions = [
 			openOnClick: false,
 			HTMLAttributes: {
 				class:
-					"font-medium underline underline-offset-4 decoration-border hover:decoration-current transition-all duration-300 cursor-pointer",
+          "font-medium underline underline-offset-4 decoration-border hover:decoration-current transition-all duration-300 cursor-pointer",
 				target: "_blank",
 			},
 		},
@@ -136,7 +136,7 @@ export function Editor({ content, onChange }: EditorProps) {
 		editorProps: {
 			attributes: {
 				class:
-					"prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg font-body leading-relaxed min-h-[500px]",
+          "prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg font-body leading-relaxed min-h-[500px]",
 			},
 		},
 	});
