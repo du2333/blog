@@ -171,7 +171,7 @@ export function SearchCommandCenter({
 												onClick={() => handleSelect(result.post.slug)}
 												onMouseEnter={() => setSelectedIndex(index)}
 												className={`
-                  group p-6 transition-all duration-500 rounded-sm relative
+                  group p-6 transition-all duration-500 rounded-sm relative cursor-pointer
                   ${
 											index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
 											}
