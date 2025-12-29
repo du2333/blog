@@ -13,6 +13,7 @@ import {
 	useMediaUpload,
 } from "@/components/admin/media-library/hooks";
 import { MediaLibrarySkeleton } from "@/components/skeletons/media-skeleton";
+import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { formatBytes } from "@/lib/utils";
 
@@ -45,10 +46,12 @@ function MediaLibrary() {
 		hasMore,
 		isLoadingMore,
 		isPending,
-		linkedMediaIds,
 		totalMediaSize,
 		updateAsset,
+		linkedMediaIds,
 	} = useMediaLibrary();
+
+	const isInitialPending = isPending && !mediaItems.length;
 
 	const {
 		isOpen: isUploadOpen,
@@ -75,7 +78,7 @@ function MediaLibrary() {
 		}
 	};
 
-	if (isPending) {
+	if (isInitialPending && !searchQuery) {
 		return <MediaLibrarySkeleton />;
 	}
 
@@ -87,13 +90,13 @@ function MediaLibrary() {
 						媒体库
 					</h1>
 				</div>
-				<button
+				<Button
 					onClick={() => setIsUploadOpen(true)}
-					className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95"
+					className="h-12 px-8 text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm gap-2"
 				>
 					<Plus size={14} />
 					上传文件
-				</button>
+				</Button>
 			</header>
 
 			{/* Stats Bar */}
@@ -129,17 +132,36 @@ function MediaLibrary() {
 					onDelete={handleDeleteRequest}
 				/>
 
-				{/* Media Grid */}
-				<MediaGrid
-					media={mediaItems}
-					selectedIds={selectedIds}
-					onToggleSelect={toggleSelection}
-					onPreview={setPreviewAsset}
-					onLoadMore={loadMore}
-					hasMore={hasMore}
-					isLoadingMore={isLoadingMore}
-					linkedMediaIds={linkedMediaIds}
-				/>
+				{/* Media Grid / Partial Skeleton */}
+				{isPending
+					? (
+							<div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-8">
+								{Array.from({ length: 12 }).map((_, i) => (
+									<div key={i} className="flex flex-col space-y-4 animate-pulse">
+										<div className="aspect-square bg-muted rounded-sm" />
+										<div className="space-y-2 px-1">
+											<div className="h-3 w-3/4 bg-muted rounded" />
+											<div className="flex justify-between">
+												<div className="h-2 w-1/4 bg-muted rounded opacity-50" />
+												<div className="h-2 w-1/4 bg-muted rounded opacity-50" />
+											</div>
+										</div>
+									</div>
+								))}
+							</div>
+						)
+					: (
+							<MediaGrid
+								media={mediaItems}
+								selectedIds={selectedIds}
+								onToggleSelect={toggleSelection}
+								onPreview={setPreviewAsset}
+								onLoadMore={loadMore}
+								hasMore={hasMore}
+								isLoadingMore={isLoadingMore}
+								linkedMediaIds={linkedMediaIds}
+							/>
+						)}
 			</div>
 
 			{/* --- Upload Modal --- */}

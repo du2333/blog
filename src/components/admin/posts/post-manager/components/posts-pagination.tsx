@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
+import { Button } from "@/components/ui/button";
 
 interface PostsPaginationProps {
 	currentPage: number;
@@ -79,13 +80,15 @@ export function PostsPagination({
 
 			<div className="flex items-center gap-1">
 				{/* Previous Button */}
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={() => onPageChange(currentPage - 1)}
 					disabled={currentPage === 1}
-					className="h-10 w-10 flex items-center justify-center text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors"
+					className="h-10 w-10 text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors rounded-sm"
 				>
 					<ChevronLeft size={18} strokeWidth={1.5} />
-				</button>
+				</Button>
 
 				{/* Page Numbers */}
 				<div className="flex items-center gap-1 px-4">
@@ -98,29 +101,33 @@ export function PostsPagination({
 										</div>
 									)
 								: (
-										<button
+										<Button
+											variant="ghost"
+											size="sm"
 											onClick={() => onPageChange(pageNumber)}
-											className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 ${
+											className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none ${
 												currentPage === pageNumber
-													? "text-foreground font-bold border-b border-foreground"
-													: "text-muted-foreground hover:text-foreground border-b border-transparent"
+													? "text-foreground font-bold border-b-2 border-foreground bg-transparent hover:bg-transparent"
+													: "text-muted-foreground hover:text-foreground border-b-2 border-transparent bg-transparent hover:bg-transparent"
 											}`}
 										>
 											{pageNumber.toString().padStart(2, "0")}
-										</button>
+										</Button>
 									)}
 						</React.Fragment>
 					))}
 				</div>
 
 				{/* Next Button */}
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={() => onPageChange(currentPage + 1)}
 					disabled={currentPage === totalPages}
-					className="h-10 w-10 flex items-center justify-center text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors"
+					className="h-10 w-10 text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors rounded-sm"
 				>
 					<ChevronRight size={18} strokeWidth={1.5} />
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

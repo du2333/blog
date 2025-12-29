@@ -2,6 +2,7 @@ import type React from "react";
 import { ClientOnly } from "@tanstack/react-router";
 import { AlertTriangle, Check, Loader2, Trash2, X } from "lucide-react";
 import { createPortal } from "react-dom";
+import { Button } from "./button";
 
 interface ConfirmationModalProps {
 	isOpen: boolean;
@@ -89,22 +90,24 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 
 				{/* Footer */}
 				<div className="px-8 pb-10 flex flex-col sm:flex-row justify-end gap-4">
-					<button
+					<Button
+						variant="ghost"
 						onClick={onClose}
 						disabled={isLoading}
-						className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 border border-transparent hover:bg-accent"
+						className="px-8 h-14 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 border border-transparent hover:bg-accent"
 					>
 						取消
-					</button>
-					<button
+					</Button>
+					<Button
 						onClick={onConfirm}
 						disabled={isLoading}
+						variant={isDanger ? "destructive" : "default"}
 						className={`
-              flex items-center justify-center gap-3 px-10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500
+              flex items-center justify-center gap-3 px-10 h-14 text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500
               ${
 					isDanger
-						? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
-						: "bg-primary text-primary-foreground hover:opacity-90 shadow-lg shadow-black/10"
+						? "shadow-lg shadow-red-500/20"
+						: "shadow-lg shadow-black/10"
 				}
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
@@ -121,7 +124,7 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 										<Check size={14} />
 									)}
 						<span>{isLoading ? "处理中..." : confirmLabel}</span>
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>,

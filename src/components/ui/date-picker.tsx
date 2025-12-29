@@ -162,13 +162,13 @@ const DatePicker: React.FC<DatePickerProps> = ({
 						<div className="flex items-center gap-1">
 							<button
 								onClick={() => changeMonth(-1)}
-								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-full"
+								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-sm"
 							>
 								<ChevronLeft size={18} strokeWidth={1.5} />
 							</button>
 							<button
 								onClick={() => changeMonth(1)}
-								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-full"
+								className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-sm"
 							>
 								<ChevronRight size={18} strokeWidth={1.5} />
 							</button>

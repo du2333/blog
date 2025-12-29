@@ -118,7 +118,7 @@ export function SideBar({
 					</Link>
 					<button
 						onClick={closeMobileSidebar}
-						className="md:hidden w-10 h-10 flex items-center justify-center rounded-full bg-accent text-muted-foreground hover:text-foreground"
+						className="md:hidden w-10 h-10 flex items-center justify-center rounded-sm bg-accent text-muted-foreground hover:text-foreground"
 					>
 						<X size={20} />
 					</button>
@@ -159,7 +159,7 @@ export function SideBar({
 						<span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold md:hidden lg:block">
 							主题模式
 						</span>
-						<ThemeToggle className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 rounded-full bg-accent" />
+						<ThemeToggle className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 rounded-sm" />
 					</div>
 
 					<div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
@@ -191,7 +191,7 @@ export function SideBar({
 
 						<button
 							onClick={handleSignOutClick}
-							className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-full transition-all shrink-0"
+							className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-sm transition-all shrink-0"
 							title="退出登录"
 						>
 							<LogOut size={18} strokeWidth={1.5} />

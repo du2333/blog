@@ -47,7 +47,7 @@ function AdminLayout() {
 					<div className="flex items-center gap-4">
 						<button
 							onClick={() => setIsMobileSidebarOpen(true)}
-							className="md:hidden p-2 hover:bg-accent rounded-full transition-colors"
+							className="md:hidden p-2 hover:bg-accent rounded-sm transition-colors"
 						>
 							<Menu size={20} />
 						</button>

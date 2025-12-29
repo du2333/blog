@@ -8,9 +8,9 @@ import { EmailServiceSection } from "@/components/admin/settings/email-service-s
 import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";
 import { useSystemSetting } from "@/components/admin/settings/use-system-setting";
 import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
+import { Button } from "@/components/ui/button";
 import {
 	DEFAULT_CONFIG,
-
 } from "@/features/config/config.schema";
 
 export const Route = createFileRoute("/admin/settings/")({
@@ -196,10 +196,11 @@ function RouteComponent() {
 
 			{/* Mobile Save Button */}
 			<div className="lg:hidden fixed bottom-10 right-10 z-40">
-				<button
+				<Button
 					onClick={handleSaveConfig}
 					disabled={isSaving}
-					className={`flex items-center gap-3 px-10 py-5 rounded-full shadow-2xl transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] font-bold ${
+					size="lg"
+					className={`flex items-center gap-3 px-10 h-16 rounded-sm shadow-2xl transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] font-bold ${
 						isSaving
 							? "bg-muted text-muted-foreground cursor-wait"
 							: "bg-primary text-primary-foreground"
@@ -213,7 +214,7 @@ function RouteComponent() {
 								<Check size={14} />
 							)}
 					{isSaving ? "正在保存" : "保存"}
-				</button>
+				</Button>
 			</div>
 		</div>
 	);

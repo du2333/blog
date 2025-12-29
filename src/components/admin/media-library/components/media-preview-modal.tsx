@@ -15,9 +15,11 @@ import {
 	X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { getLinkedPostsFn } from "@/features/media/images.api";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
-import { formatBytes } from "@/lib/utils";
+import { cn, formatBytes } from "@/lib/utils";
 
 interface MediaPreviewModalProps {
 	asset: MediaAsset | null;
@@ -83,8 +85,8 @@ export function MediaPreviewModal({
 
 	return (
 		<div
-			className={`fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-8 ${
-				isMounted ? "pointer-events-auto" : "pointer-events-none"
+			className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-8 ${
+				isMounted ? "pointer-events-auto" : "opacity-0 pointer-events-none"
 			}`}
 		>
 			{/* Backdrop */}
@@ -96,14 +98,16 @@ export function MediaPreviewModal({
 			/>
 
 			{/* Close Button */}
-			<button
+			<Button
+				variant="ghost"
+				size="icon"
 				onClick={onClose}
-				className={`absolute top-8 right-8 z-[110] text-muted-foreground hover:text-foreground transition-all duration-500 ${
+				className={`absolute top-8 right-8 z-110 text-muted-foreground hover:text-foreground transition-all duration-500 rounded-sm h-12 w-12 ${
 					isMounted ? "opacity-100 scale-100" : "opacity-0 scale-90"
 				}`}
 			>
 				<X size={32} strokeWidth={1} />
-			</button>
+			</Button>
 
 			<div
 				className={`
@@ -135,17 +139,19 @@ export function MediaPreviewModal({
 						{isEditing
 							? (
 									<div className="flex items-center gap-3">
-										<input
+										<Input
 											type="text"
 											value={editName}
 											onChange={e => setEditName(e.target.value)}
-											className="flex-1 bg-muted border-none text-sm font-medium p-3 focus:ring-1 focus:ring-foreground rounded-sm"
+											className="flex-1 h-10 text-sm font-medium bg-muted border-none rounded-sm px-3 focus-visible:ring-1 focus-visible:ring-foreground"
 											autoFocus
 										/>
-										<button
+										<Button
 											onClick={handleSaveName}
 											disabled={isSaving}
-											className="p-2 text-green-500 hover:bg-green-500/5 rounded-full"
+											variant="default"
+											size="icon"
+											className="h-10 w-10 shrink-0"
 										>
 											{isSaving
 												? (
@@ -154,14 +160,16 @@ export function MediaPreviewModal({
 												: (
 														<Check size={18} strokeWidth={2.5} />
 													)}
-										</button>
-										<button
+										</Button>
+										<Button
 											onClick={() => setIsEditing(false)}
 											disabled={isSaving}
-											className="p-2 text-muted-foreground hover:text-red-500 rounded-full"
+											variant="ghost"
+											size="icon"
+											className="h-10 w-10 shrink-0 text-muted-foreground hover:text-red-500 rounded-sm"
 										>
 											<X size={18} strokeWidth={2.5} />
-										</button>
+										</Button>
 									</div>
 								)
 							: (
@@ -169,12 +177,14 @@ export function MediaPreviewModal({
 										<h2 className="text-2xl font-serif font-medium tracking-tight break-all leading-[1.1]">
 											{activeAsset.fileName}
 										</h2>
-										<button
+										<Button
+											variant="ghost"
+											size="icon"
 											onClick={() => setIsEditing(true)}
-											className="mt-1 text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover/edit:opacity-100"
+											className="mt-1 h-8 w-8 text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover/edit:opacity-100 rounded-sm"
 										>
 											<Pencil size={16} strokeWidth={1.5} />
-										</button>
+										</Button>
 									</div>
 								)}
 					</div>
@@ -289,10 +299,13 @@ export function MediaPreviewModal({
 							download={activeAsset.fileName}
 							target="_blank"
 							rel="noreferrer"
-							className="flex items-center justify-center gap-3 py-4 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all"
+							className={cn(
+								buttonVariants({ variant: "default" }),
+								"w-full h-14 text-[11px] uppercase tracking-[0.2em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all rounded-sm gap-4 flex items-center justify-center whitespace-nowrap",
+							)}
 						>
-							<Download size={16} strokeWidth={1.5} />
-							下载原始文件
+							<Download size={16} strokeWidth={1.5} className="shrink-0" />
+							<span>下载原始文件</span>
 						</a>
 					</div>
 				</div>

@@ -11,6 +11,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ErrorPage } from "@/components/common/error-page";
 import { PostManagerSkeleton } from "@/components/skeletons/post-manager-skeleton";
+import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -128,14 +129,14 @@ export function PostManager({
 						文章管理
 					</h1>
 				</div>
-				<button
+				<Button
 					onClick={() => createMutation.mutate()}
 					disabled={createMutation.isPending}
-					className="flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.2em] font-medium hover:scale-105 transition-all active:scale-95 disabled:opacity-50"
+					className="h-12 px-8 text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm gap-2"
 				>
 					<Plus size={14} />
 					{createMutation.isPending ? "创建中..." : "新建文章"}
-				</button>
+				</Button>
 			</div>
 
 			<div className="animate-in fade-in duration-1000 delay-100 fill-mode-both space-y-12">

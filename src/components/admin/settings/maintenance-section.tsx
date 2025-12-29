@@ -1,6 +1,7 @@
 import { Database, RefreshCw } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { buildSearchIndexFn } from "@/features/search/search.api";
 
@@ -42,9 +43,6 @@ export function MaintenanceSection() {
 						<span className="text-[11px] uppercase tracking-[0.25em] font-bold text-muted-foreground">
 							搜索索引
 						</span>
-						<div className="w-fit text-[8px] font-bold text-amber-500 uppercase tracking-widest bg-amber-500/5 px-2 py-0.5 rounded-full border border-amber-500/10">
-							ADMIN_ONLY
-						</div>
 					</div>
 					<div className="flex-1 space-y-8">
 						<div className="max-w-xl">
@@ -55,10 +53,10 @@ export function MaintenanceSection() {
 								全量同步数据库记录至搜索映射表。建议在手动修改数据库或执行大批量数据录入后运行此操作，以确保全局检索的准确性。
 							</p>
 						</div>
-						<button
+						<Button
 							onClick={() => setIsModalOpen(true)}
 							disabled={isIndexing}
-							className="flex items-center gap-4 py-3.5 px-10 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-black/10 rounded-sm"
+							className="h-12 px-10 text-[10px] uppercase tracking-[0.25em] font-bold shadow-xl shadow-black/10 rounded-sm gap-4"
 						>
 							{isIndexing
 								? (
@@ -68,7 +66,7 @@ export function MaintenanceSection() {
 										<Database size={14} />
 									)}
 							启动索引重建
-						</button>
+						</Button>
 					</div>
 				</div>
 
@@ -91,12 +89,13 @@ export function MaintenanceSection() {
 								清除全站分布式缓存及边缘节点镜像。此操作将导致短时间内的页面加载速度下降，仅建议在系统架构调整后使用。
 							</p>
 						</div>
-						<button
+						<Button
 							disabled
-							className="py-3.5 px-10 border border-border text-[10px] uppercase tracking-[0.25em] font-bold text-muted-foreground rounded-sm"
+							variant="outline"
+							className="h-12 px-10 text-[10px] uppercase tracking-[0.25em] font-bold text-muted-foreground rounded-sm"
 						>
 							服务暂不可用
-						</button>
+						</Button>
 					</div>
 				</div>
 			</div>

@@ -4,6 +4,7 @@ import { ClientOnly } from "@tanstack/react-router";
 import { AlertCircle, Check, Loader2, Upload, X } from "lucide-react";
 import { useRef } from "react";
 import { createPortal } from "react-dom";
+import { Button } from "@/components/ui/button";
 
 interface UploadModalProps {
 	isOpen: boolean;
@@ -79,12 +80,14 @@ function UploadModalInternal({
 							上传媒体资产
 						</span>
 					</div>
-					<button
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={onClose}
-						className="p-2 text-muted-foreground hover:text-foreground transition-colors"
+						className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-sm"
 					>
 						<X size={20} strokeWidth={1.5} />
-					</button>
+					</Button>
 				</div>
 
 				<input
@@ -112,7 +115,7 @@ function UploadModalInternal({
             `}
 					>
 						<div
-							className={`p-4 rounded-full border border-current transition-all duration-700 ${
+							className={`p-4 rounded-sm border border-current transition-all duration-700 ${
 								isDragging ? "animate-bounce" : "text-muted-foreground"
 							}`}
 						>
@@ -181,7 +184,7 @@ function UploadModalInternal({
 									</div>
 
 									{/* Progress Bar */}
-									<div className="h-0.5 bg-muted w-full overflow-hidden rounded-full">
+									<div className="h-0.5 bg-muted w-full overflow-hidden rounded-sm">
 										<div
 											className={`h-full transition-all duration-500 ease-out ${
 												item.status === "COMPLETE"
@@ -216,25 +219,23 @@ function UploadModalInternal({
 				<div className="p-8 border-t border-border flex justify-end gap-4 shrink-0">
 					{isAllComplete
 						? (
-								<button
+								<Button
 									onClick={onClose}
-									className={`flex-1 flex items-center justify-center gap-2 py-4 text-[11px] uppercase tracking-[0.2em] font-bold transition-all ${
-										hasErrors
-											? "bg-red-500 text-white hover:bg-red-600"
-											: "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
-									}`}
+									variant={hasErrors ? "destructive" : "default"}
+									className="flex-1 h-14 text-[11px] uppercase tracking-[0.2em] font-bold rounded-sm gap-2"
 								>
 									<Check size={16} strokeWidth={2.5} />
 									{hasErrors ? "任务存在错误 - 确认" : "上传任务已完成"}
-								</button>
+								</Button>
 							)
 						: (
-								<button
+								<Button
 									onClick={onClose}
-									className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
+									variant="ghost"
+									className="px-8 h-14 text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
 								>
 									取消
-								</button>
+								</Button>
 							)}
 				</div>
 			</div>

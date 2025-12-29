@@ -186,7 +186,7 @@ export function useMediaLibrary() {
 
 		if (blockedKeys.length > 0) {
 			toast.warning("检测到受保护的资源", {
-				description: `${blockedKeys.length} 个项目当前正在被日志使用，无法删除。`,
+				description: `${blockedKeys.length} 个项目当前正在被文章使用，无法删除。`,
 			});
 		}
 

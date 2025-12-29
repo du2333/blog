@@ -2,6 +2,8 @@ import type { PostListItem } from "../types";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { Calendar, Edit3, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { formatDate } from "@/lib/utils";
 import { isPostPubliclyViewable } from "../types";
@@ -35,7 +37,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 	};
 
 	return (
-		<div className="group px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-accent transition-all duration-500 relative">
+		<div className="group px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-accent/50 transition-all duration-500 relative">
 			{/* ID & Status (Combined for mobile) */}
 			<div className="md:col-span-1 flex items-center justify-between w-full md:block">
 				<span className="font-mono text-muted-foreground text-[10px] tracking-widest">
@@ -44,12 +46,14 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 				</span>
 				<div className="md:hidden flex items-center gap-3">
 					<StatusBadge status={post.status} />
-					<button
+					<Button
+						variant="ghost"
+						size="icon"
 						onClick={() => setShowMobileActions(!showMobileActions)}
-						className="p-2 text-zinc-400"
+						className="h-9 w-9 text-zinc-400"
 					>
 						<MoreVertical size={18} />
-					</button>
+					</Button>
 				</div>
 			</div>
 
@@ -75,9 +79,12 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 			<div className="md:col-span-4 flex md:grid md:grid-cols-2 items-center gap-6 w-full text-zinc-400">
 				<div className="flex items-center gap-2">
 					<div className="w-1 h-1 rounded-full bg-current opacity-40 md:hidden" />
-					<span className="text-[10px] uppercase tracking-[0.3em] font-medium">
+					<Badge
+						variant="outline"
+						className="text-[9px] uppercase tracking-[0.2em] font-medium border-border/50 text-muted-foreground bg-transparent"
+					>
 						{post.category}
-					</span>
+					</Badge>
 				</div>
 				<div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
 					<Calendar size={10} strokeWidth={1.5} className="opacity-40" />
@@ -90,33 +97,39 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 			{/* Actions (Desktop: Hover, Mobile: Expandable) */}
 			<div
 				className={`
-        md:col-span-1 flex items-center justify-end gap-1 w-full md:w-auto
+        md:col-span-1 flex items-center justify-end gap-3 w-full md:w-auto
         ${showMobileActions ? "flex mt-4 pt-4 border-t border-border" : "hidden md:flex"}
         md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 transition-all duration-500
       `}
 			>
-				<button
+				<Button
+					variant="ghost"
+					size="icon"
 					disabled={!isPostPubliclyViewable(post)}
 					onClick={handleView}
-					className="p-3 md:p-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-10"
+					className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-10"
 					title={viewTitle}
 				>
 					<Eye size={18} strokeWidth={1.5} />
-				</button>
-				<button
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
 					onClick={handleEdit}
-					className="p-3 md:p-2 text-muted-foreground hover:text-foreground transition-colors"
+					className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors"
 					title="编辑"
 				>
 					<Edit3 size={18} strokeWidth={1.5} />
-				</button>
-				<button
-					className="p-3 md:p-2 text-zinc-400 hover:text-red-500 transition-colors"
+				</Button>
+				<Button
+					variant="ghost"
+					size="icon"
+					className="h-9 w-9 text-zinc-400 hover:text-red-500 transition-colors"
 					title="删除"
 					onClick={() => onDelete(post)}
 				>
 					<Trash2 size={18} strokeWidth={1.5} />
-				</button>
+				</Button>
 			</div>
 		</div>
 	);
@@ -124,20 +137,24 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 
 function StatusBadge({ status }: { status: string }) {
 	return (
-		<span
-			className={`text-[9px] px-2 py-0.5 uppercase tracking-[0.2em] font-bold rounded-full border ${
-				status === "published"
-					? "border-green-500/20 text-green-500 bg-green-500/5"
-					: status === "draft"
-						? "border-zinc-400/20 text-zinc-400 bg-zinc-400/5"
-						: "border-amber-500/20 text-amber-500 bg-amber-500/5"
-			}`}
+		<Badge
+			variant={status === "published" ? "default" : status === "draft" ? "secondary" : "outline"}
+			className={`
+        text-[9px] px-2.5 py-0.5 uppercase tracking-[0.2em] font-bold rounded-sm border shadow-none
+        ${
+		status === "published"
+			? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10"
+			: status === "draft"
+				? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20 hover:bg-zinc-500/10"
+				: "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/10"
+		}
+      `}
 		>
 			{status === "published"
 				? "已发布"
 				: status === "draft"
 					? "草稿"
 					: "计划中"}
-		</span>
+		</Badge>
 	);
 }

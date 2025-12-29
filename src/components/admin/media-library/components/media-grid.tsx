@@ -97,7 +97,7 @@ const MediaCard = memo(
 
 				{/* Linked Indicator */}
 				{isLinked && !isSelected && (
-					<div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2 py-0.5 bg-primary/90 text-primary-foreground rounded-full shadow-lg backdrop-blur-sm transition-all duration-300">
+					<div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2 py-0.5 bg-primary/90 text-primary-foreground rounded-sm shadow-lg backdrop-blur-sm transition-all duration-300">
 						<Link2 size={10} strokeWidth={3} />
 						<span className="text-[10px] font-bold tracking-tight">已引用</span>
 					</div>

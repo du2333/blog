@@ -8,7 +8,10 @@ import {
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
 import { DeepSeekModels, GoogleModels } from "@/lib/ai";
 
 type AiProvider = "GOOGLE" | "DEEPSEEK";
@@ -90,13 +93,14 @@ export function AiProviderSection({
 					</p>
 				</div>
 				{status !== "IDLE" && (
-					<div
-						className={`flex items-center gap-2 px-4 py-1.5 rounded-full border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 ${
+					<Badge
+						variant={status === "SUCCESS" ? "default" : status === "ERROR" ? "destructive" : "secondary"}
+						className={`flex items-center gap-2 px-4 py-1.5 rounded-sm border text-[9px] font-bold uppercase tracking-widest animate-in fade-in zoom-in-95 duration-500 h-auto ${
 							status === "SUCCESS"
-								? "bg-emerald-50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/5 dark:border-emerald-500/20 dark:text-emerald-500"
+								? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500 shadow-none hover:bg-emerald-500/10"
 								: status === "ERROR"
-									? "bg-rose-50 border-rose-100 text-rose-600 dark:bg-rose-500/5 dark:border-rose-500/20 dark:text-rose-500"
-									: "bg-muted border-border text-muted-foreground"
+									? "bg-rose-500/10 border-rose-500/20 text-rose-500 shadow-none hover:bg-rose-500/10"
+									: "bg-muted border-border text-muted-foreground shadow-none"
 						}`}
 					>
 						{status === "TESTING"
@@ -115,7 +119,7 @@ export function AiProviderSection({
 							: status === "SUCCESS"
 								? "Connected"
 								: "Connection Failed"}
-					</div>
+					</Badge>
 				)}
 			</div>
 
@@ -127,20 +131,22 @@ export function AiProviderSection({
 					</div>
 					<div className="flex-1 flex gap-2.5">
 						{(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map(p => (
-							<button
+							<Button
 								key={p}
+								variant={provider === p ? "default" : "outline"}
+								size="sm"
 								onClick={() => {
 									onChange({ ...value, activeProvider: p });
 									setStatus("IDLE");
 								}}
-								className={`px-5 py-2.5 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all border ${
+								className={`px-5 h-9 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all ${
 									provider === p
-										? "bg-primary text-primary-foreground border-transparent shadow-lg shadow-black/5"
-										: "border-border text-muted-foreground hover:border-foreground"
+										? "shadow-lg shadow-black/5"
+										: "text-muted-foreground hover:border-foreground"
 								}`}
 							>
 								{p}
-							</button>
+							</Button>
 						))}
 					</div>
 				</div>
@@ -152,7 +158,7 @@ export function AiProviderSection({
 					</div>
 					<div className="flex-1 flex items-center gap-4">
 						<div className="flex-1 relative">
-							<input
+							<Input
 								type={showKey ? "text" : "password"}
 								value={currentProviderConfig?.apiKey || ""}
 								placeholder="Enter your API Key..."
@@ -169,11 +175,13 @@ export function AiProviderSection({
 									});
 									setStatus("IDLE");
 								}}
-								className="w-full bg-transparent text-sm font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30 pr-10"
+								className="w-full bg-transparent border-none shadow-none text-sm font-mono text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/30 pr-10 h-auto"
 							/>
-							<button
+							<Button
+								variant="ghost"
+								size="icon"
 								onClick={() => setShowKey(!showKey)}
-								className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
+								className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors h-8 w-8 rounded-sm"
 							>
 								{showKey
 									? (
@@ -182,7 +190,7 @@ export function AiProviderSection({
 									: (
 											<Eye size={18} strokeWidth={1.5} />
 										)}
-							</button>
+							</Button>
 						</div>
 					</div>
 				</div>
@@ -220,15 +228,16 @@ export function AiProviderSection({
 				<div className="group flex flex-col sm:flex-row sm:items-center py-8 gap-4 sm:gap-0">
 					<div className="w-48 shrink-0" />
 					<div className="flex-1 flex items-center gap-6">
-						<button
+						<Button
+							variant={status === "TESTING" ? "default" : "outline"}
 							onClick={handleTest}
 							disabled={status === "TESTING" || !isConfigured}
-							className={`flex items-center gap-3 px-6 py-3 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all ${
+							className={`flex items-center gap-3 px-6 h-12 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all ${
 								!isConfigured
-									? "bg-muted text-muted-foreground/50 cursor-not-allowed"
+									? "bg-muted text-muted-foreground/50 cursor-not-allowed border-none"
 									: status === "TESTING"
-										? "bg-primary text-primary-foreground animate-pulse"
-										: "border border-border text-muted-foreground hover:bg-primary hover:text-primary-foreground"
+										? "animate-pulse"
+										: "text-muted-foreground hover:bg-primary hover:text-primary-foreground hover:border-transparent"
 							}`}
 						>
 							{status === "TESTING"
@@ -239,7 +248,7 @@ export function AiProviderSection({
 										<Wifi size={14} />
 									)}
 							验证服务连通性
-						</button>
+						</Button>
 						{statusMsg && (
 							<p
 								className={`text-[10px] font-medium transition-all duration-500 animate-in fade-in slide-in-from-left-2 ${

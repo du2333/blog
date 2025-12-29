@@ -21,10 +21,12 @@ import {
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { Editor } from "@/components/tiptap-editor";
+import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import DatePicker from "@/components/ui/date-picker";
-
 import DropdownMenu from "@/components/ui/dropdown-menu";
+
+import { Input } from "@/components/ui/input";
 import {
 	POST_CATEGORIES,
 	POST_STATUSES,
@@ -96,41 +98,43 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 
 			{/* Control Header */}
 			<header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
-				<button
+				<Button
+					variant="ghost"
 					onClick={() => router.history.back()}
-					className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all"
+					className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all hover:bg-transparent"
 				>
-					<div className="p-2 bg-accent border border-border/50 rounded-full group-hover:scale-105 active:scale-95 transition-all shadow-sm">
+					<div className="p-2 bg-accent border border-border/50 rounded-sm group-hover:scale-105 active:scale-95 transition-all shadow-sm">
 						<ChevronLeft size={18} />
 					</div>
 					<span className="text-[10px] uppercase tracking-[0.2em] font-bold">
 						返回
 					</span>
-				</button>
+				</Button>
 
 				<div className="flex items-center gap-3">
-					<button
+					<Button
+						variant="outline"
 						onClick={() => {
 							if (post.slug)
 								window.open(`/post/${post.slug}`, "_blank");
 						}}
-						className="px-6 py-2.5 bg-accent border border-border/50 rounded-full text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all flex items-center gap-2 group"
+						className="px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group"
 					>
 						<Eye
 							size={14}
 							className="group-hover:scale-110 transition-transform"
 						/>
 						<span>预览</span>
-					</button>
+					</Button>
 
-					<button
+					<Button
 						onClick={handleProcessData}
 						disabled={processState !== "IDLE"}
 						className={`
-              px-6 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold transition-all flex items-center gap-2 shadow-lg shadow-black/5
+              px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold transition-all gap-2 shadow-lg shadow-black/5
               ${
 		processState === "SUCCESS"
-			? "bg-green-500/10 border border-green-500/20 text-green-600"
+			? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/10"
 			: "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
 		}
             `}
@@ -153,7 +157,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									? "已发布"
 									: "发布"}
 						</span>
-					</button>
+					</Button>
 				</div>
 			</header>
 
@@ -184,15 +188,17 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							</div>
 							<div className="flex-1 flex gap-2">
 								{POST_STATUSES.map(s => (
-									<button
+									<Button
 										key={s}
+										variant={post.status === s ? "default" : "ghost"}
+										size="sm"
 										onClick={() => handlePostChange({ status: s })}
 										className={`
-                      px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
+                      px-3 h-7 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
                       ${
 									post.status === s
-										? "bg-primary text-primary-foreground"
-										: "text-muted-foreground hover:text-foreground"
+										? ""
+										: "text-muted-foreground hover:text-foreground hover:bg-accent"
 									}
                     `}
 									>
@@ -201,7 +207,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 											: s === "draft"
 												? "草稿"
 												: "归档"}
-									</button>
+									</Button>
 								))}
 							</div>
 						</div>
@@ -215,17 +221,19 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 								</span>
 							</div>
 							<div className="flex-1 flex items-center gap-2">
-								<input
+								<Input
 									type="text"
 									value={post.slug || ""}
 									onChange={e => handlePostChange({ slug: e.target.value })}
 									placeholder="文章链接..."
-									className="flex-1 bg-transparent text-xs font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30"
+									className="flex-1 bg-transparent border-none shadow-none text-xs font-mono text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/30 px-0 h-auto"
 								/>
-								<button
+								<Button
+									variant="ghost"
+									size="icon"
 									onClick={handleGenerateSlug}
 									disabled={isGeneratingSlug}
-									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
+									className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all rounded-sm"
 									title="自动生成"
 								>
 									{isGeneratingSlug
@@ -235,7 +243,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 										: (
 												<Sparkles size={12} />
 											)}
-								</button>
+								</Button>
 							</div>
 						</div>
 
@@ -293,22 +301,24 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 								</span>
 							</div>
 							<div className="flex-1 flex items-center gap-2">
-								<input
+								<Input
 									type="number"
 									value={post.readTimeInMinutes}
 									onChange={e =>
 										handlePostChange({
 											readTimeInMinutes: Number.parseInt(e.target.value) || 0,
 										})}
-									className="w-12 bg-transparent text-xs text-foreground focus:outline-none"
+									className="w-16 bg-transparent border-none shadow-none text-xs text-foreground focus-visible:ring-0 px-0 h-auto"
 								/>
 								<span className="text-[10px] text-muted-foreground/50 uppercase tracking-widest font-bold">
 									分钟
 								</span>
-								<button
+								<Button
+									variant="ghost"
+									size="icon"
 									onClick={handleCalculateReadTime}
 									disabled={isCalculatingReadTime}
-									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
+									className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all rounded-sm"
 									title="自动计算"
 								>
 									{isCalculatingReadTime
@@ -318,7 +328,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 										: (
 												<Sparkles size={12} />
 											)}
-								</button>
+								</Button>
 							</div>
 						</div>
 
@@ -338,10 +348,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									placeholder="简单介绍一下内容..."
 									className="w-full bg-transparent text-xs leading-relaxed text-foreground focus:outline-none resize-none placeholder:text-muted-foreground/30"
 								/>
-								<button
+								<Button
+									variant="secondary"
+									size="sm"
 									onClick={handleGenerateSummary}
 									disabled={isGeneratingSummary}
-									className="w-fit flex items-center gap-2 px-2 py-1 bg-accent text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground rounded-sm transition-all"
+									className="w-fit h-7 px-3 bg-accent text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground rounded-sm transition-all gap-2"
 								>
 									{isGeneratingSummary
 										? (
@@ -353,7 +365,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									<span>
 										{isGeneratingSummary ? "生成中..." : "AI 生成摘要"}
 									</span>
-								</button>
+								</Button>
 							</div>
 						</div>
 					</div>
@@ -369,7 +381,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 			</div>
 
 			{/* Floating Status Bar (Bottom Right) */}
-			<div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-background/80 backdrop-blur-md border border-border/50 rounded-full shadow-2xl">
+			<div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-background/80 backdrop-blur-md border border-border/50 rounded-sm shadow-2xl">
 				<div className="flex items-center gap-4 border-r border-border/50 pr-4 text-[10px] font-medium text-muted-foreground">
 					<div className="flex items-center gap-1">
 						<span className="text-foreground">
