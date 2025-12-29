@@ -85,8 +85,8 @@ export function SideBar({
 	];
 
 	const activeClass = "bg-accent font-bold";
-	const inactiveClass =
-		"text-muted-foreground hover:text-foreground hover:bg-accent/50";
+	const inactiveClass
+		= "text-muted-foreground hover:text-foreground hover:bg-accent/50";
 
 	return (
 		<>
@@ -103,10 +103,10 @@ export function SideBar({
         fixed inset-y-0 left-0 z-70 w-72 md:w-20 lg:w-64 border-r border-border flex flex-col
         transform transition-all duration-500 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
         ${
-					isMobileSidebarOpen
-						? "translate-x-0 shadow-2xl"
-						: "-translate-x-full md:translate-x-0"
-				}
+		isMobileSidebarOpen
+			? "translate-x-0 shadow-2xl"
+			: "-translate-x-full md:translate-x-0"
+		}
       `}
 			>
 				{/* Logo Area */}
@@ -129,7 +129,7 @@ export function SideBar({
 
 				{/* Navigation */}
 				<nav className="flex-1 px-4 py-8 space-y-1.5 overflow-y-auto custom-scrollbar">
-					{navItems.map((item) => (
+					{navItems.map(item => (
 						<Link
 							key={item.path}
 							to={item.path}
@@ -173,17 +173,19 @@ export function SideBar({
 					<div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
 						<div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
 							<div className="w-10 h-10 rounded-full overflow-hidden border border-border shrink-0">
-								{user?.image ? (
-									<img
-										src={user.image}
-										alt={user.name}
-										className="w-full h-full object-cover"
-									/>
-								) : (
-									<div className="w-full h-full bg-muted flex items-center justify-center text-zinc-300">
-										<User size={16} />
-									</div>
-								)}
+								{user?.image
+									? (
+											<img
+												src={user.image}
+												alt={user.name}
+												className="w-full h-full object-cover"
+											/>
+										)
+									: (
+											<div className="w-full h-full bg-muted flex items-center justify-center text-zinc-300">
+												<User size={16} />
+											</div>
+										)}
 							</div>
 							<div className="flex flex-col min-w-0">
 								<span className="text-xs font-bold truncate">

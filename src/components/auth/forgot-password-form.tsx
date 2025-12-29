@@ -55,8 +55,10 @@ export function ForgotPasswordForm() {
 						查收您的邮件
 					</h3>
 					<p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
-						重置密码链接已发送至{" "}
-						<span className="font-medium">{sentEmail}</span>。
+						重置密码链接已发送至
+						{" "}
+						<span className="font-medium">{sentEmail}</span>
+						。
 					</p>
 				</div>
 				<button
@@ -102,11 +104,13 @@ export function ForgotPasswordForm() {
 					disabled={isSubmitting}
 					className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
 				>
-					{isSubmitting ? (
-						<Loader2 className="animate-spin" size={16} />
-					) : (
-						<span>发送重置链接</span>
-					)}
+					{isSubmitting
+						? (
+								<Loader2 className="animate-spin" size={16} />
+							)
+						: (
+								<span>发送重置链接</span>
+							)}
 				</button>
 
 				<button

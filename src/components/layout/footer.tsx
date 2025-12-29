@@ -64,7 +64,11 @@ export function Footer() {
 
 				<div className="mt-20 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
 					<div className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
-						© {new Date().getFullYear()} Chronicle Archive. 版权所有
+						©
+						{" "}
+						{new Date().getFullYear()}
+						{" "}
+						Chronicle Archive. 版权所有
 					</div>
 				</div>
 			</div>

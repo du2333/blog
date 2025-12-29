@@ -149,7 +149,8 @@ function DashboardOverview() {
 												? "bg-amber-500"
 												: "bg-muted-foreground/30"
 									}`}
-								></div>
+								>
+								</div>
 								<div className="space-y-1">
 									<p className="text-xs font-light leading-snug group-hover:text-foreground transition-colors">
 										{log.text}

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
 import type { TableOfContentsItem } from "@/lib/editor/toc";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 export function useActiveTOC(headers: TableOfContentsItem[]) {
 	const [activeId, setActiveId] = useState<string>("");
@@ -54,7 +54,8 @@ export function useActiveTOC(headers: TableOfContentsItem[]) {
 
 		return () => {
 			window.removeEventListener("scroll", handleScroll);
-			if (rafId) cancelAnimationFrame(rafId);
+			if (rafId)
+				cancelAnimationFrame(rafId);
 			cancelAnimationFrame(initialRafId);
 		};
 	}, [detectActiveHeader]);

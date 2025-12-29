@@ -20,7 +20,8 @@ app.use("*", async (c, next) => {
 	);
 
 	// 只处理 GET 请求
-	if (c.req.method !== "GET") return;
+	if (c.req.method !== "GET")
+		return;
 
 	const status = c.res.status;
 	const path = c.req.path;
@@ -31,9 +32,11 @@ app.use("*", async (c, next) => {
 	}
 
 	const isHtml = contentType.includes("text/html");
-	if (!isHtml) return;
+	if (!isHtml)
+		return;
 
-	if (status !== 404 && status < 500) return;
+	if (status !== 404 && status < 500)
+		return;
 
 	const newHeaders = new Headers(c.res.headers);
 
@@ -41,7 +44,8 @@ app.use("*", async (c, next) => {
 		Object.entries(CACHE_CONTROL.notFound).forEach(([k, v]) =>
 			newHeaders.set(k, v),
 		);
-	} else if (status >= 500) {
+	}
+	else if (status >= 500) {
 		Object.entries(CACHE_CONTROL.serverError).forEach(([k, v]) =>
 			newHeaders.set(k, v),
 		);
@@ -57,7 +61,8 @@ app.use("*", async (c, next) => {
 app.get("/images/:key", async (c) => {
 	const key = c.req.param("key");
 
-	if (!key) return c.text("Image key is required", 400);
+	if (!key)
+		return c.text("Image key is required", 400);
 
 	try {
 		const response = await handleImageRequest(c.env, key, c.req.raw);
@@ -65,7 +70,8 @@ app.get("/images/:key", async (c) => {
 			response.headers.set(k, v),
 		);
 		return response;
-	} catch (error) {
+	}
+	catch (error) {
 		console.error("Error fetching image from R2:", error);
 		return c.text("Internal server error", 500);
 	}

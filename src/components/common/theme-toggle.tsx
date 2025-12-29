@@ -1,5 +1,7 @@
-import { type LucideIcon as Icon, Monitor, Moon, Sun } from "lucide-react";
-import { type UserTheme, useTheme } from "@/components/common/theme-provider";
+import type { LucideIcon as Icon } from "lucide-react";
+import type { UserTheme } from "@/components/common/theme-provider";
+import { Monitor, Moon, Sun } from "lucide-react";
+import { useTheme } from "@/components/common/theme-provider";
 import { cn } from "@/lib/utils";
 
 const themeConfig: Record<UserTheme, { icon: Icon; label: string }> = {
@@ -10,10 +12,10 @@ const themeConfig: Record<UserTheme, { icon: Icon; label: string }> = {
 
 const themes: UserTheme[] = ["system", "light", "dark"];
 
-type ThemeButtonProps = {
+interface ThemeButtonProps {
 	theme: UserTheme;
 	onClick: () => void;
-};
+}
 
 const buttonClasses: Record<UserTheme, string> = {
 	system: "system:bg-gray-300 system:dark:bg-gray-600",
@@ -53,7 +55,7 @@ export function ThemeToggle() {
 
 	return (
 		<div className="inline-flex items-center gap-0.5 rounded-full bg-gray-100 p-1 dark:bg-gray-800">
-			{themes.map((theme) => (
+			{themes.map(theme => (
 				<ThemeButton
 					key={theme}
 					theme={theme}

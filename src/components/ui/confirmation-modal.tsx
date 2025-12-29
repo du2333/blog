@@ -1,6 +1,6 @@
+import type React from "react";
 import { ClientOnly } from "@tanstack/react-router";
 import { AlertTriangle, Check, Loader2, Trash2, X } from "lucide-react";
-import type React from "react";
 import { createPortal } from "react-dom";
 
 interface ConfirmationModalProps {
@@ -44,10 +44,10 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
           relative w-full max-w-lg bg-background border border-border
           flex flex-col shadow-2xl transform transition-all duration-500 ease-in-out rounded-sm
           ${
-						isOpen
-							? "translate-y-0 scale-100 opacity-100"
-							: "translate-y-8 scale-[0.99] opacity-0"
-					}
+				isOpen
+					? "translate-y-0 scale-100 opacity-100"
+					: "translate-y-8 scale-[0.99] opacity-0"
+			}
         `}
 			>
 				{/* Header */}
@@ -102,20 +102,24 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 						className={`
               flex items-center justify-center gap-3 px-10 py-4 text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500
               ${
-								isDanger
-									? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
-									: "bg-primary text-primary-foreground hover:opacity-90 shadow-lg shadow-black/10"
-							}
+					isDanger
+						? "bg-red-500 text-white hover:bg-red-600 shadow-lg shadow-red-500/20"
+						: "bg-primary text-primary-foreground hover:opacity-90 shadow-lg shadow-black/10"
+				}
               disabled:opacity-50 disabled:cursor-not-allowed
             `}
 					>
-						{isLoading ? (
-							<Loader2 size={14} className="animate-spin" />
-						) : isDanger ? (
-							<Trash2 size={14} />
-						) : (
-							<Check size={14} />
-						)}
+						{isLoading
+							? (
+									<Loader2 size={14} className="animate-spin" />
+								)
+							: isDanger
+								? (
+										<Trash2 size={14} />
+									)
+								: (
+										<Check size={14} />
+									)}
 						<span>{isLoading ? "处理中..." : confirmLabel}</span>
 					</button>
 				</div>

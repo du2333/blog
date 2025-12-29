@@ -60,11 +60,13 @@ export function MaintenanceSection() {
 							disabled={isIndexing}
 							className="flex items-center gap-4 py-3.5 px-10 bg-primary text-primary-foreground text-[10px] uppercase tracking-[0.25em] font-bold hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl shadow-black/10 rounded-sm"
 						>
-							{isIndexing ? (
-								<RefreshCw size={14} className="animate-spin" />
-							) : (
-								<Database size={14} />
-							)}
+							{isIndexing
+								? (
+										<RefreshCw size={14} className="animate-spin" />
+									)
+								: (
+										<Database size={14} />
+									)}
 							启动索引重建
 						</button>
 					</div>

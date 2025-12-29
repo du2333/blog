@@ -1,3 +1,4 @@
+import type { SystemConfig } from "@/features/config/config.schema";
 import {
 	AlertCircle,
 	CheckCircle2,
@@ -7,7 +8,6 @@ import {
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";
-import type { SystemConfig } from "@/features/config/config.schema";
 
 type ConnectionStatus = "IDLE" | "TESTING" | "SUCCESS" | "ERROR";
 
@@ -35,7 +35,8 @@ export function EmailServiceSection({
 	const isConfigured = !!value.apiKey?.trim() && !!value.senderAddress?.trim();
 
 	const handleTest = async () => {
-		if (!isConfigured) return;
+		if (!isConfigured)
+			return;
 		setStatus("TESTING");
 		setStatusMsg("正在尝试建立邮件服务握手...");
 
@@ -51,11 +52,13 @@ export function EmailServiceSection({
 			if (result.success) {
 				setStatus("SUCCESS");
 				setStatusMsg("测试邮件已成功进入队列，服务节点可用");
-			} else {
+			}
+			else {
 				setStatus("ERROR");
 				setStatusMsg(result.error || "服务配置错误，无法完成推送");
 			}
-		} catch (error) {
+		}
+		catch {
 			setStatus("ERROR");
 			setStatusMsg("节点连接失败，请检查网络环境");
 		}
@@ -83,13 +86,17 @@ export function EmailServiceSection({
 									: "bg-muted border-border text-muted-foreground"
 						}`}
 					>
-						{status === "TESTING" ? (
-							<Loader2 size={10} className="animate-spin" />
-						) : status === "SUCCESS" ? (
-							<CheckCircle2 size={10} />
-						) : (
-							<AlertCircle size={10} />
-						)}
+						{status === "TESTING"
+							? (
+									<Loader2 size={10} className="animate-spin" />
+								)
+							: status === "SUCCESS"
+								? (
+										<CheckCircle2 size={10} />
+									)
+								: (
+										<AlertCircle size={10} />
+									)}
 						{status === "TESTING"
 							? "Syncing"
 							: status === "SUCCESS"
@@ -121,11 +128,13 @@ export function EmailServiceSection({
 								onClick={() => setShowKey(!showKey)}
 								className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
 							>
-								{showKey ? (
-									<EyeOff size={18} strokeWidth={1.5} />
-								) : (
-									<Eye size={18} strokeWidth={1.5} />
-								)}
+								{showKey
+									? (
+											<EyeOff size={18} strokeWidth={1.5} />
+										)
+									: (
+											<Eye size={18} strokeWidth={1.5} />
+										)}
 							</button>
 						</div>
 					</div>
@@ -139,9 +148,8 @@ export function EmailServiceSection({
 					<div className="flex-1">
 						<input
 							value={value.senderName || ""}
-							onChange={(e) =>
-								onChange({ ...value, senderName: e.target.value })
-							}
+							onChange={e =>
+								onChange({ ...value, senderName: e.target.value })}
 							className="w-full bg-transparent text-sm text-foreground focus:outline-none placeholder:text-muted-foreground/30"
 							placeholder="e.g. System Administrator"
 						/>
@@ -156,9 +164,8 @@ export function EmailServiceSection({
 					<div className="flex-1">
 						<input
 							value={value.senderAddress || ""}
-							onChange={(e) =>
-								onChange({ ...value, senderAddress: e.target.value })
-							}
+							onChange={e =>
+								onChange({ ...value, senderAddress: e.target.value })}
 							className="w-full bg-transparent text-sm font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30"
 							placeholder="noreply@yourdomain.com"
 						/>
@@ -180,11 +187,13 @@ export function EmailServiceSection({
 										: "border border-border text-muted-foreground hover:bg-primary hover:text-primary-foreground"
 							}`}
 						>
-							{status === "TESTING" ? (
-								<Loader2 size={14} className="animate-spin" />
-							) : (
-								<Wifi size={14} />
-							)}
+							{status === "TESTING"
+								? (
+										<Loader2 size={14} className="animate-spin" />
+									)
+								: (
+										<Wifi size={14} />
+									)}
 							测试邮件推送
 						</button>
 						{statusMsg && (

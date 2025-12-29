@@ -53,7 +53,8 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 			if (error.status === 403) {
 				setError("root", { message: "邮箱尚未验证" });
 				setIsUnverifiedEmail(true);
-			} else {
+			}
+			else {
 				setError("root", { message: "无效的账号或密码" });
 			}
 			toast.error("登录失败", { description: error.message });
@@ -70,7 +71,8 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 	};
 
 	const handleResendVerification = async () => {
-		if (!emailValue) return;
+		if (!emailValue)
+			return;
 		toast.promise(
 			authClient.sendVerificationEmail({
 				email: emailValue,
@@ -162,17 +164,19 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 				disabled={isSubmitting || loginStep !== "IDLE"}
 				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
 			>
-				{loginStep === "VERIFYING" ? (
-					<Loader2 className="animate-spin" size={16} />
-				) : (
-					<>
-						<span>登录</span>
-						<ArrowRight
-							size={14}
-							className="group-hover:translate-x-1 transition-transform"
-						/>
-					</>
-				)}
+				{loginStep === "VERIFYING"
+					? (
+							<Loader2 className="animate-spin" size={16} />
+						)
+					: (
+							<>
+								<span>登录</span>
+								<ArrowRight
+									size={14}
+									className="group-hover:translate-x-1 transition-transform"
+								/>
+							</>
+						)}
 			</button>
 		</form>
 	);

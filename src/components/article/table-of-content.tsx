@@ -1,8 +1,8 @@
+import type { TableOfContentsItem } from "@/lib/editor/toc";
 import { useNavigate } from "@tanstack/react-router";
 import { AlignLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useActiveTOC } from "@/hooks/use-active-toc";
-import type { TableOfContentsItem } from "@/lib/editor/toc";
 
 export default function TableOfContents({
 	headers,
@@ -30,7 +30,8 @@ export default function TableOfContents({
 		}
 	}, [activeId]);
 
-	if (headers.length === 0) return null;
+	if (headers.length === 0)
+		return null;
 
 	return (
 		<nav
@@ -46,7 +47,7 @@ export default function TableOfContents({
 			{/* Root List Container */}
 			<div className="relative toc-root">
 				<ul className="space-y-4">
-					{headers.map((node) => (
+					{headers.map(node => (
 						<li key={node.id}>
 							<a
 								href={`#${node.id}`}
@@ -67,10 +68,10 @@ export default function TableOfContents({
 								className={`
                             block text-xs transition-all duration-300 leading-relaxed relative border-l-2
                             ${
-															activeId === node.id
-																? "text-foreground border-foreground pl-4 font-medium"
-																: "text-muted-foreground border-transparent pl-4 hover:text-foreground"
-														}
+						activeId === node.id
+							? "text-foreground border-foreground pl-4 font-medium"
+							: "text-muted-foreground border-transparent pl-4 hover:text-foreground"
+						}
                         `}
 								style={{ marginLeft: `${(node.level - 2) * 1}rem` }}
 							>

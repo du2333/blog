@@ -47,13 +47,14 @@ export function PostManagerSkeleton() {
 					<div
 						key={i}
 						className={`col-span-${span} h-2 bg-muted rounded opacity-30`}
-					></div>
+					>
+					</div>
 				))}
 			</div>
 
 			{/* Rows Skeletons */}
 			<div>
-				{[1, 2, 3, 4, 5].map((i) => (
+				{[1, 2, 3, 4, 5].map(i => (
 					<PostRowSkeleton key={i} />
 				))}
 			</div>

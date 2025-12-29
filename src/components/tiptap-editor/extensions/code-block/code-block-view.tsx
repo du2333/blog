@@ -25,8 +25,8 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 					<div className="flex items-center gap-3">
 						<DropdownMenu
 							value={language}
-							onChange={(val) => updateAttributes({ language: val })}
-							options={LANGUAGES.map((lang) => ({
+							onChange={val => updateAttributes({ language: val })}
+							options={LANGUAGES.map(lang => ({
 								label: lang.label,
 								value: lang.value,
 							}))}
@@ -38,15 +38,17 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 						contentEditable={false}
 						className="flex items-center gap-2 text-[10px] font-mono font-medium text-muted-foreground hover:text-foreground transition-all duration-300"
 					>
-						{copied ? (
-							<span className="animate-in fade-in slide-in-from-right-2">
-								已复制
-							</span>
-						) : (
-							<span className="opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
-								Copy
-							</span>
-						)}
+						{copied
+							? (
+									<span className="animate-in fade-in slide-in-from-right-2">
+										已复制
+									</span>
+								)
+							: (
+									<span className="opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+										Copy
+									</span>
+								)}
 						{copied ? <Check size={12} /> : <Copy size={12} />}
 					</button>
 				</div>

@@ -1,3 +1,4 @@
+import type { MediaAsset } from "@/components/admin/media-library/types";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -11,7 +12,6 @@ import {
 	useMediaLibrary,
 	useMediaUpload,
 } from "@/components/admin/media-library/hooks";
-import type { MediaAsset } from "@/components/admin/media-library/types";
 import { MediaLibrarySkeleton } from "@/components/skeletons/media-skeleton";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { formatBytes } from "@/lib/utils";
@@ -68,7 +68,8 @@ function MediaLibrary() {
 	const handleDeleteRequest = async () => {
 		try {
 			await requestDelete(Array.from(selectedIds));
-		} catch (error) {
+		}
+		catch (error) {
 			// Error is already handled in requestDelete via toast
 			console.error("Delete request failed:", error);
 		}

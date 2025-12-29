@@ -1,7 +1,7 @@
 import type { JSONContent } from "@tiptap/react";
-import { eq, inArray } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
+import { eq, inArray } from "drizzle-orm";
 import { MediaTable, PostMediaTable, PostsTable } from "@/lib/db/schema";
 import { extractAllImageKeys } from "@/lib/editor/utils";
 
@@ -29,7 +29,7 @@ export async function syncPostMedia(
 			.where(inArray(MediaTable.key, usedKeys));
 
 		if (mediaRecords.length > 0) {
-			const newRelations = mediaRecords.map((media) => ({
+			const newRelations = mediaRecords.map(media => ({
 				postId,
 				mediaId: media.id,
 			}));
@@ -81,7 +81,8 @@ export async function getLinkedMediaKeys(
 	db: DB,
 	keys: string[],
 ): Promise<string[]> {
-	if (keys.length === 0) return [];
+	if (keys.length === 0)
+		return [];
 
 	// 查询哪些 keys 存在于中间表中
 	const results = await db
@@ -90,5 +91,5 @@ export async function getLinkedMediaKeys(
 		.innerJoin(PostMediaTable, eq(MediaTable.id, PostMediaTable.mediaId))
 		.where(inArray(MediaTable.key, keys));
 
-	return results.map((r) => r.key);
+	return results.map(r => r.key);
 }

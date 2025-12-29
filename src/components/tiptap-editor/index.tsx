@@ -1,15 +1,14 @@
+import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
+import type { ModalType } from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
-import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
 import { CodeBlockExtension } from "@/components/tiptap-editor/extensions/code-block";
 import { ImageExtension } from "@/components/tiptap-editor/extensions/images";
-import InsertModal, {
-	type ModalType,
-} from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
+import InsertModal from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
 import EditorToolbar from "@/components/tiptap-editor/extensions/toolbar/editor-toolbar";
 import { BlockQuoteExtension } from "@/components/tiptap-editor/extensions/typography/block-quote";
 import { HeadingExtension } from "@/components/tiptap-editor/extensions/typography/heading";
@@ -143,7 +142,8 @@ export function Editor({ content, onChange }: EditorProps) {
 	});
 
 	const openLinkModal = useCallback(() => {
-		if (!editor) return;
+		if (!editor)
+			return;
 		const previousUrl = editor.getAttributes("link").href;
 		setModalInitialUrl(previousUrl || "");
 		setModalOpen("LINK");
@@ -155,12 +155,14 @@ export function Editor({ content, onChange }: EditorProps) {
 	}, []);
 
 	const handleModalSubmit = (url: string) => {
-		if (!editor) return;
+		if (!editor)
+			return;
 
 		if (modalOpen === "LINK") {
 			if (url === "") {
 				editor.chain().focus().extendMarkRange("link").unsetLink().run();
-			} else {
+			}
+			else {
 				editor
 					.chain()
 					.focus()
@@ -168,7 +170,8 @@ export function Editor({ content, onChange }: EditorProps) {
 					.setLink({ href: url })
 					.run();
 			}
-		} else if (modalOpen === "IMAGE") {
+		}
+		else if (modalOpen === "IMAGE") {
 			if (url) {
 				editor.chain().focus().setImage({ src: url }).run();
 			}

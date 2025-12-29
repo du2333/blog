@@ -1,7 +1,7 @@
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { PostEditor } from "@/components/admin/posts/post-editor";
-import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { ErrorPage } from "@/components/common/error-page";
 import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import { updatePostFn } from "@/features/posts/api/posts.admin.api";
@@ -41,7 +41,11 @@ function EditPost() {
 				<div className="text-center space-y-4">
 					<h2 className="text-4xl font-serif font-medium">未找到文章</h2>
 					<p className="text-zinc-400 font-light text-sm">
-						ID 为 {id} 的文章记录不存在或已被移除。
+						ID 为
+						{" "}
+						{id}
+						{" "}
+						的文章记录不存在或已被移除。
 					</p>
 				</div>
 			</div>
@@ -66,7 +70,7 @@ function EditPost() {
 		queryClient.invalidateQueries({ queryKey: ["post", postId] });
 		queryClient.invalidateQueries({ queryKey: ["posts"] });
 		queryClient.invalidateQueries({
-			predicate: (q) => q.queryKey[0] === "linkedMediaKeys",
+			predicate: q => q.queryKey[0] === "linkedMediaKeys",
 		});
 	};
 

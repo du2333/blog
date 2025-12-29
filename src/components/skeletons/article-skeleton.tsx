@@ -44,7 +44,7 @@ export function ArticleSkeleton() {
 					<main className="space-y-12 max-w-3xl">
 						{/* Content Blocks */}
 						<div className="space-y-8">
-							{[1, 2, 3].map((i) => (
+							{[1, 2, 3].map(i => (
 								<div key={i} className="space-y-4">
 									<div className="h-4 w-full bg-muted animate-pulse rounded-sm"></div>
 									<div className="h-4 w-full bg-muted animate-pulse rounded-sm"></div>

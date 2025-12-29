@@ -1,3 +1,4 @@
+import type { MediaAsset } from "@/components/admin/media-library/types";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
@@ -14,7 +15,6 @@ import {
 	X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import type { MediaAsset } from "@/components/admin/media-library/types";
 import { getLinkedPostsFn } from "@/features/media/images.api";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { formatBytes } from "@/lib/utils";
@@ -50,16 +50,19 @@ export function MediaPreviewModal({
 	}, [asset]);
 
 	const handleSaveName = async () => {
-		if (!activeAsset || !editName.trim()) return;
+		if (!activeAsset || !editName.trim())
+			return;
 
 		setIsSaving(true);
 		try {
 			await onUpdateName(activeAsset.key, editName);
-			setActiveAsset((prev) => (prev ? { ...prev, fileName: editName } : null));
+			setActiveAsset(prev => (prev ? { ...prev, fileName: editName } : null));
 			setIsEditing(false);
-		} catch (error) {
+		}
+		catch (error) {
 			console.error("Failed to update name:", error);
-		} finally {
+		}
+		finally {
 			setIsSaving(false);
 		}
 	};
@@ -68,13 +71,15 @@ export function MediaPreviewModal({
 	const { data: linkedPosts = [] } = useQuery({
 		queryKey: ["linkedPosts", activeAsset?.key],
 		queryFn: async () => {
-			if (!activeAsset?.key) return [];
+			if (!activeAsset?.key)
+				return [];
 			return getLinkedPostsFn({ data: { key: activeAsset.key } });
 		},
 		enabled: !!activeAsset?.key,
 	});
 
-	if (!shouldRender || !activeAsset) return null;
+	if (!shouldRender || !activeAsset)
+		return null;
 
 	return (
 		<div
@@ -104,10 +109,10 @@ export function MediaPreviewModal({
 				className={`
         w-full max-w-7xl h-full flex flex-col md:flex-row bg-popover border border-border shadow-2xl relative overflow-hidden z-10 rounded-sm
         ${
-					isMounted
-						? "animate-in fade-in zoom-in-95"
-						: "animate-out fade-out zoom-out-95"
-				} duration-500
+		isMounted
+			? "animate-in fade-in zoom-in-95"
+			: "animate-out fade-out zoom-out-95"
+		} duration-500
       `}
 			>
 				{/* --- Image Viewport (Left/Top) --- */}
@@ -127,47 +132,51 @@ export function MediaPreviewModal({
 							Asset Details
 						</div>
 
-						{isEditing ? (
-							<div className="flex items-center gap-3">
-								<input
-									type="text"
-									value={editName}
-									onChange={(e) => setEditName(e.target.value)}
-									className="flex-1 bg-muted border-none text-sm font-medium p-3 focus:ring-1 focus:ring-foreground rounded-sm"
-									autoFocus
-								/>
-								<button
-									onClick={handleSaveName}
-									disabled={isSaving}
-									className="p-2 text-green-500 hover:bg-green-500/5 rounded-full"
-								>
-									{isSaving ? (
-										<Loader2 size={18} className="animate-spin" />
-									) : (
-										<Check size={18} strokeWidth={2.5} />
-									)}
-								</button>
-								<button
-									onClick={() => setIsEditing(false)}
-									disabled={isSaving}
-									className="p-2 text-muted-foreground hover:text-red-500 rounded-full"
-								>
-									<X size={18} strokeWidth={2.5} />
-								</button>
-							</div>
-						) : (
-							<div className="flex justify-between items-start gap-4 group/edit">
-								<h2 className="text-2xl font-serif font-medium tracking-tight break-all leading-[1.1]">
-									{activeAsset.fileName}
-								</h2>
-								<button
-									onClick={() => setIsEditing(true)}
-									className="mt-1 text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover/edit:opacity-100"
-								>
-									<Pencil size={16} strokeWidth={1.5} />
-								</button>
-							</div>
-						)}
+						{isEditing
+							? (
+									<div className="flex items-center gap-3">
+										<input
+											type="text"
+											value={editName}
+											onChange={e => setEditName(e.target.value)}
+											className="flex-1 bg-muted border-none text-sm font-medium p-3 focus:ring-1 focus:ring-foreground rounded-sm"
+											autoFocus
+										/>
+										<button
+											onClick={handleSaveName}
+											disabled={isSaving}
+											className="p-2 text-green-500 hover:bg-green-500/5 rounded-full"
+										>
+											{isSaving
+												? (
+														<Loader2 size={18} className="animate-spin" />
+													)
+												: (
+														<Check size={18} strokeWidth={2.5} />
+													)}
+										</button>
+										<button
+											onClick={() => setIsEditing(false)}
+											disabled={isSaving}
+											className="p-2 text-muted-foreground hover:text-red-500 rounded-full"
+										>
+											<X size={18} strokeWidth={2.5} />
+										</button>
+									</div>
+								)
+							: (
+									<div className="flex justify-between items-start gap-4 group/edit">
+										<h2 className="text-2xl font-serif font-medium tracking-tight break-all leading-[1.1]">
+											{activeAsset.fileName}
+										</h2>
+										<button
+											onClick={() => setIsEditing(true)}
+											className="mt-1 text-muted-foreground hover:text-foreground transition-colors opacity-0 group-hover/edit:opacity-100"
+										>
+											<Pencil size={16} strokeWidth={1.5} />
+										</button>
+									</div>
+								)}
 					</div>
 
 					{/* Details List */}
@@ -175,7 +184,9 @@ export function MediaPreviewModal({
 						<div className="grid grid-cols-2 gap-8">
 							<div className="space-y-2">
 								<div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									<HardDrive size={12} strokeWidth={1.5} /> 大小
+									<HardDrive size={12} strokeWidth={1.5} />
+									{" "}
+									大小
 								</div>
 								<div className="text-sm font-medium font-mono uppercase">
 									{formatBytes(activeAsset.sizeInBytes)}
@@ -184,7 +195,9 @@ export function MediaPreviewModal({
 
 							<div className="space-y-2">
 								<div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									<FileText size={12} strokeWidth={1.5} /> 格式
+									<FileText size={12} strokeWidth={1.5} />
+									{" "}
+									格式
 								</div>
 								<div className="text-sm font-medium font-mono uppercase">
 									{activeAsset.mimeType.split("/")[1]}
@@ -193,7 +206,9 @@ export function MediaPreviewModal({
 
 							<div className="space-y-2">
 								<div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									<Layout size={12} strokeWidth={1.5} /> 尺寸
+									<Layout size={12} strokeWidth={1.5} />
+									{" "}
+									尺寸
 								</div>
 								<div className="text-sm font-medium font-mono uppercase">
 									{activeAsset.width && activeAsset.height
@@ -204,7 +219,9 @@ export function MediaPreviewModal({
 
 							<div className="space-y-2">
 								<div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-widest">
-									<Calendar size={12} strokeWidth={1.5} /> 日期
+									<Calendar size={12} strokeWidth={1.5} />
+									{" "}
+									日期
 								</div>
 								<div className="text-sm font-medium font-mono uppercase">
 									{activeAsset.createdAt
@@ -217,36 +234,42 @@ export function MediaPreviewModal({
 						{/* Linked Posts Section */}
 						<div className="pt-8 border-t border-border">
 							<div className="flex items-center gap-2 text-[10px] font-bold text-muted-foreground uppercase tracking-[0.2em] mb-6">
-								<Link2 size={12} strokeWidth={1.5} /> 关联文章 (
-								{linkedPosts.length})
+								<Link2 size={12} strokeWidth={1.5} />
+								{" "}
+								关联文章 (
+								{linkedPosts.length}
+								)
 							</div>
-							{linkedPosts.length === 0 ? (
-								<div className="text-[11px] font-serif italic text-muted-foreground">
-									未关联任何文章
-								</div>
-							) : (
-								<div className="space-y-3">
-									{linkedPosts.map((post) => (
-										<Link
-											key={post.id}
-											to={"/admin/posts/edit/$id"}
-											params={{ id: String(post.id) }}
-											className="block p-4 bg-muted hover:bg-accent transition-all rounded-sm group"
-										>
-											<div className="text-[11px] font-medium truncate mb-1 flex items-center justify-between">
-												{post.title}
-												<ExternalLink
-													size={10}
-													className="opacity-0 group-hover:opacity-100 transition-opacity"
-												/>
-											</div>
-											<div className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
-												/{post.slug}
-											</div>
-										</Link>
-									))}
-								</div>
-							)}
+							{linkedPosts.length === 0
+								? (
+										<div className="text-[11px] font-serif italic text-muted-foreground">
+											未关联任何文章
+										</div>
+									)
+								: (
+										<div className="space-y-3">
+											{linkedPosts.map(post => (
+												<Link
+													key={post.id}
+													to="/admin/posts/edit/$id"
+													params={{ id: String(post.id) }}
+													className="block p-4 bg-muted hover:bg-accent transition-all rounded-sm group"
+												>
+													<div className="text-[11px] font-medium truncate mb-1 flex items-center justify-between">
+														{post.title}
+														<ExternalLink
+															size={10}
+															className="opacity-0 group-hover:opacity-100 transition-opacity"
+														/>
+													</div>
+													<div className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
+														/
+														{post.slug}
+													</div>
+												</Link>
+											))}
+										</div>
+									)}
 						</div>
 
 						<div className="space-y-3 pt-8 border-t border-border">

@@ -1,13 +1,14 @@
+import type { ReactNode } from "react";
 import { ScriptOnce } from "@tanstack/react-router";
 import { createClientOnlyFn, createIsomorphicFn } from "@tanstack/react-start";
-import { createContext, type ReactNode, use, useEffect, useState } from "react";
+import { createContext, use, useEffect, useState } from "react";
 import { z } from "zod";
 
 const UserThemeSchema = z.enum(["light", "dark", "system"]).catch("system");
-const AppThemeSchema = z.enum(["light", "dark"]).catch("light");
+const _AppThemeSchema = z.enum(["light", "dark"]).catch("light");
 
 export type UserTheme = z.infer<typeof UserThemeSchema>;
-export type AppTheme = z.infer<typeof AppThemeSchema>;
+export type AppTheme = z.infer<typeof _AppThemeSchema>;
 
 const themeStorageKey = "ui-theme";
 
@@ -40,7 +41,8 @@ const handleThemeChange = createClientOnlyFn((userTheme: UserTheme) => {
 	if (validatedTheme === "system") {
 		const systemTheme = getSystemTheme();
 		root.classList.add(systemTheme, "system");
-	} else {
+	}
+	else {
 		root.classList.add(validatedTheme);
 	}
 });
@@ -66,10 +68,12 @@ const themeScript = (() => {
 					? "dark"
 					: "light";
 				document.documentElement.classList.add(systemTheme, "system");
-			} else {
+			}
+			else {
 				document.documentElement.classList.add(validTheme);
 			}
-		} catch (e) {
+		}
+		catch {
 			const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
 				.matches
 				? "dark"
@@ -80,21 +84,22 @@ const themeScript = (() => {
 	return `(${themeFn.toString()})();`;
 })();
 
-type ThemeContextProps = {
+interface ThemeContextProps {
 	userTheme: UserTheme;
 	appTheme: AppTheme;
 	setTheme: (theme: UserTheme) => void;
-};
+}
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-type ThemeProviderProps = {
+interface ThemeProviderProps {
 	children: ReactNode;
-};
+}
 export function ThemeProvider({ children }: ThemeProviderProps) {
 	const [userTheme, setUserTheme] = useState<UserTheme>(getStoredUserTheme);
 
 	useEffect(() => {
-		if (userTheme !== "system") return;
+		if (userTheme !== "system")
+			return;
 		return setupPreferredListener();
 	}, [userTheme]);
 
@@ -116,10 +121,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 	);
 }
 
-export const useTheme = () => {
+export function useTheme() {
 	const context = use(ThemeContext);
 	if (!context) {
 		throw new Error("useTheme must be used within a ThemeProvider");
 	}
 	return context;
-};
+}

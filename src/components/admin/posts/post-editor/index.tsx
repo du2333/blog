@@ -1,5 +1,7 @@
-import { useBlocker, useRouter } from "@tanstack/react-router";
 import type { JSONContent } from "@tiptap/react";
+import type { PostEditorData, PostEditorProps } from "./types";
+import type { PostCategory } from "@/lib/db/schema";
+import { useBlocker, useRouter } from "@tanstack/react-router";
 import {
 	Calendar,
 	Check,
@@ -18,22 +20,19 @@ import {
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
-import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
 import { Editor } from "@/components/tiptap-editor";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import DatePicker from "@/components/ui/date-picker";
+
 import DropdownMenu from "@/components/ui/dropdown-menu";
 import {
 	POST_CATEGORIES,
 	POST_STATUSES,
-	type PostCategory,
-} from "@/lib/db/schema";
 
+} from "@/lib/db/schema";
 import { useAutoSave, usePostActions } from "./hooks";
-import type { PostEditorData, PostEditorProps } from "./types";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
-	if (!initialData) return <PostEditorSkeleton />;
 	const router = useRouter();
 
 	// Initialize post state from initialData (always provided)
@@ -77,11 +76,11 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 	});
 
 	const handleContentChange = useCallback((json: JSONContent) => {
-		setPost((prev) => ({ ...prev, contentJson: json }));
+		setPost(prev => ({ ...prev, contentJson: json }));
 	}, []);
 
 	const handlePostChange = useCallback((updates: Partial<PostEditorData>) => {
-		setPost((prev) => ({ ...prev, ...updates }));
+		setPost(prev => ({ ...prev, ...updates }));
 	}, []);
 
 	return (
@@ -112,7 +111,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 				<div className="flex items-center gap-3">
 					<button
 						onClick={() => {
-							if (post.slug) window.open(`/post/${post.slug}`, "_blank");
+							if (post.slug)
+								window.open(`/post/${post.slug}`, "_blank");
 						}}
 						className="px-6 py-2.5 bg-accent border border-border/50 rounded-full text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all flex items-center gap-2 group"
 					>
@@ -129,19 +129,23 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 						className={`
               px-6 py-2.5 rounded-full text-[10px] uppercase tracking-widest font-bold transition-all flex items-center gap-2 shadow-lg shadow-black/5
               ${
-								processState === "SUCCESS"
-									? "bg-green-500/10 border border-green-500/20 text-green-600"
-									: "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
-							}
+		processState === "SUCCESS"
+			? "bg-green-500/10 border border-green-500/20 text-green-600"
+			: "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
+		}
             `}
 					>
-						{processState === "PROCESSING" ? (
-							<Loader2 size={14} className="animate-spin" />
-						) : processState === "SUCCESS" ? (
-							<Check size={14} strokeWidth={3} />
-						) : (
-							<Cpu size={14} />
-						)}
+						{processState === "PROCESSING"
+							? (
+									<Loader2 size={14} className="animate-spin" />
+								)
+							: processState === "SUCCESS"
+								? (
+										<Check size={14} strokeWidth={3} />
+									)
+								: (
+										<Cpu size={14} />
+									)}
 						<span>
 							{processState === "PROCESSING"
 								? "发布中"
@@ -160,9 +164,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 					<div className="mb-12">
 						<TextareaAutosize
 							value={post.title}
-							onChange={(e) =>
-								setPost((prev) => ({ ...prev, title: e.target.value }))
-							}
+							onChange={e =>
+								setPost(prev => ({ ...prev, title: e.target.value }))}
 							minRows={1}
 							placeholder="文章标题..."
 							className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-foreground placeholder:text-muted/50 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
@@ -180,17 +183,17 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 								</span>
 							</div>
 							<div className="flex-1 flex gap-2">
-								{POST_STATUSES.map((s) => (
+								{POST_STATUSES.map(s => (
 									<button
 										key={s}
 										onClick={() => handlePostChange({ status: s })}
 										className={`
                       px-2.5 py-1 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
                       ${
-												post.status === s
-													? "bg-primary text-primary-foreground"
-													: "text-muted-foreground hover:text-foreground"
-											}
+									post.status === s
+										? "bg-primary text-primary-foreground"
+										: "text-muted-foreground hover:text-foreground"
+									}
                     `}
 									>
 										{s === "published"
@@ -215,7 +218,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 								<input
 									type="text"
 									value={post.slug || ""}
-									onChange={(e) => handlePostChange({ slug: e.target.value })}
+									onChange={e => handlePostChange({ slug: e.target.value })}
 									placeholder="文章链接..."
 									className="flex-1 bg-transparent text-xs font-mono text-foreground focus:outline-none placeholder:text-muted-foreground/30"
 								/>
@@ -225,11 +228,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
 									title="自动生成"
 								>
-									{isGeneratingSlug ? (
-										<Loader2 size={12} className="animate-spin" />
-									) : (
-										<Sparkles size={12} />
-									)}
+									{isGeneratingSlug
+										? (
+												<Loader2 size={12} className="animate-spin" />
+											)
+										: (
+												<Sparkles size={12} />
+											)}
 								</button>
 							</div>
 						</div>
@@ -245,10 +250,9 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							<div className="flex-1">
 								<DropdownMenu
 									value={post.category}
-									onChange={(val) =>
-										handlePostChange({ category: val as PostCategory })
-									}
-									options={POST_CATEGORIES.map((c) => ({
+									onChange={val =>
+										handlePostChange({ category: val as PostCategory })}
+									options={POST_CATEGORIES.map(c => ({
 										label: c,
 										value: c,
 									}))}
@@ -271,11 +275,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 											? post.publishedAt.toISOString().split("T")[0]
 											: ""
 									}
-									onChange={(dateStr) =>
+									onChange={dateStr =>
 										handlePostChange({
 											publishedAt: dateStr ? new Date(dateStr) : null,
-										})
-									}
+										})}
 									className="p-0! border-none! bg-transparent! text-xs text-foreground"
 								/>
 							</div>
@@ -293,11 +296,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 								<input
 									type="number"
 									value={post.readTimeInMinutes}
-									onChange={(e) =>
+									onChange={e =>
 										handlePostChange({
-											readTimeInMinutes: parseInt(e.target.value) || 0,
-										})
-									}
+											readTimeInMinutes: Number.parseInt(e.target.value) || 0,
+										})}
 									className="w-12 bg-transparent text-xs text-foreground focus:outline-none"
 								/>
 								<span className="text-[10px] text-muted-foreground/50 uppercase tracking-widest font-bold">
@@ -309,11 +311,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									className="p-1.5 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all"
 									title="自动计算"
 								>
-									{isCalculatingReadTime ? (
-										<Loader2 size={12} className="animate-spin" />
-									) : (
-										<Sparkles size={12} />
-									)}
+									{isCalculatingReadTime
+										? (
+												<Loader2 size={12} className="animate-spin" />
+											)
+										: (
+												<Sparkles size={12} />
+											)}
 								</button>
 							</div>
 						</div>
@@ -329,9 +333,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 							<div className="flex-1 flex flex-col gap-2">
 								<TextareaAutosize
 									value={post.summary || ""}
-									onChange={(e) =>
-										handlePostChange({ summary: e.target.value })
-									}
+									onChange={e =>
+										handlePostChange({ summary: e.target.value })}
 									placeholder="简单介绍一下内容..."
 									className="w-full bg-transparent text-xs leading-relaxed text-foreground focus:outline-none resize-none placeholder:text-muted-foreground/30"
 								/>
@@ -340,11 +343,13 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 									disabled={isGeneratingSummary}
 									className="w-fit flex items-center gap-2 px-2 py-1 bg-accent text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground rounded-sm transition-all"
 								>
-									{isGeneratingSummary ? (
-										<Loader2 size={10} className="animate-spin" />
-									) : (
-										<Sparkles size={10} />
-									)}
+									{isGeneratingSummary
+										? (
+												<Loader2 size={10} className="animate-spin" />
+											)
+										: (
+												<Sparkles size={10} />
+											)}
 									<span>
 										{isGeneratingSummary ? "生成中..." : "AI 生成摘要"}
 									</span>
@@ -381,34 +386,40 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 				</div>
 
 				<div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-					{saveStatus === "ERROR" ? (
-						<div className="flex items-center gap-2 text-red-500">
-							<X size={14} />
-							<span>错误</span>
-						</div>
-					) : saveStatus === "SAVING" ? (
-						<div className="flex items-center gap-2 text-muted-foreground">
-							<RefreshCw size={14} className="animate-spin" />
-							<span>正在保存</span>
-						</div>
-					) : saveStatus === "PENDING" ? (
-						<div className="flex items-center gap-2 text-amber-500">
-							<div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-							<span>已修改</span>
-						</div>
-					) : (
-						<div className="flex items-center gap-2 text-muted-foreground/30">
-							<Check size={14} strokeWidth={3} />
-							<span className="opacity-50">
-								{lastSaved
-									? lastSaved.toLocaleTimeString([], {
-											hour: "2-digit",
-											minute: "2-digit",
-										})
-									: "已同步"}
-							</span>
-						</div>
-					)}
+					{saveStatus === "ERROR"
+						? (
+								<div className="flex items-center gap-2 text-red-500">
+									<X size={14} />
+									<span>错误</span>
+								</div>
+							)
+						: saveStatus === "SAVING"
+							? (
+									<div className="flex items-center gap-2 text-muted-foreground">
+										<RefreshCw size={14} className="animate-spin" />
+										<span>正在保存</span>
+									</div>
+								)
+							: saveStatus === "PENDING"
+								? (
+										<div className="flex items-center gap-2 text-amber-500">
+											<div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
+											<span>已修改</span>
+										</div>
+									)
+								: (
+										<div className="flex items-center gap-2 text-muted-foreground/30">
+											<Check size={14} strokeWidth={3} />
+											<span className="opacity-50">
+												{lastSaved
+													? lastSaved.toLocaleTimeString([], {
+															hour: "2-digit",
+															minute: "2-digit",
+														})
+													: "已同步"}
+											</span>
+										</div>
+									)}
 				</div>
 			</div>
 		</div>

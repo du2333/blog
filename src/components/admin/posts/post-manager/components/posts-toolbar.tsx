@@ -1,12 +1,12 @@
+import type { CategoryFilter, SortDirection, StatusFilter } from "../types";
 import { ArrowUpDown, ChevronDown, Filter, Search, Tag, X } from "lucide-react";
-import { useState } from "react";
 
+import { useState } from "react";
 import {
 	CATEGORY_FILTERS,
-	type CategoryFilter,
-	type SortDirection,
+
 	STATUS_FILTERS,
-	type StatusFilter,
+
 } from "../types";
 
 type DropdownType = "CATEGORY" | "STATUS" | "SORT" | null;
@@ -36,11 +36,11 @@ export function PostsToolbar({
 }: PostsToolbarProps) {
 	const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
 
-	const hasActiveFilters =
-		category !== "ALL" ||
-		status !== "ALL" ||
-		sortDir !== "DESC" ||
-		searchTerm !== "";
+	const hasActiveFilters
+		= category !== "ALL"
+			|| status !== "ALL"
+			|| sortDir !== "DESC"
+			|| searchTerm !== "";
 
 	return (
 		<div className="flex flex-col lg:flex-row gap-6 mb-12 items-start lg:items-center">
@@ -55,7 +55,7 @@ export function PostsToolbar({
 					type="text"
 					placeholder="检索文章标题..."
 					value={searchTerm}
-					onChange={(e) => onSearchChange(e.target.value)}
+					onChange={e => onSearchChange(e.target.value)}
 					className="w-full bg-transparent border-b border-border text-sm font-serif italic pl-8 pr-8 py-3 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 				/>
 				{searchTerm && (
@@ -76,15 +76,14 @@ export function PostsToolbar({
 						onClick={() =>
 							setActiveDropdown(
 								activeDropdown === "CATEGORY" ? null : "CATEGORY",
-							)
-						}
+							)}
 						className={`
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
-									category !== "ALL"
-										? ""
-										: "text-muted-foreground hover:text-foreground"
-								}
+		category !== "ALL"
+			? ""
+			: "text-muted-foreground hover:text-foreground"
+		}
             `}
 					>
 						<Tag size={12} strokeWidth={1.5} />
@@ -98,7 +97,7 @@ export function PostsToolbar({
 					</button>
 					{activeDropdown === "CATEGORY" && (
 						<div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
-							{CATEGORY_FILTERS.map((cat) => (
+							{CATEGORY_FILTERS.map(cat => (
 								<button
 									key={cat}
 									onClick={() => {
@@ -122,15 +121,14 @@ export function PostsToolbar({
 				<div className="relative">
 					<button
 						onClick={() =>
-							setActiveDropdown(activeDropdown === "STATUS" ? null : "STATUS")
-						}
+							setActiveDropdown(activeDropdown === "STATUS" ? null : "STATUS")}
 						className={`
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
-									status !== "ALL"
-										? ""
-										: "text-muted-foreground hover:text-foreground"
-								}
+		status !== "ALL"
+			? ""
+			: "text-muted-foreground hover:text-foreground"
+		}
             `}
 					>
 						<Filter size={12} strokeWidth={1.5} />
@@ -144,7 +142,7 @@ export function PostsToolbar({
 					</button>
 					{activeDropdown === "STATUS" && (
 						<div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
-							{STATUS_FILTERS.map((s) => (
+							{STATUS_FILTERS.map(s => (
 								<button
 									key={s}
 									onClick={() => {
@@ -168,15 +166,14 @@ export function PostsToolbar({
 				<div className="relative">
 					<button
 						onClick={() =>
-							setActiveDropdown(activeDropdown === "SORT" ? null : "SORT")
-						}
+							setActiveDropdown(activeDropdown === "SORT" ? null : "SORT")}
 						className={`
                 h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all group
                 ${
-									sortDir !== "DESC"
-										? ""
-										: "text-muted-foreground hover:text-foreground"
-								}
+		sortDir !== "DESC"
+			? ""
+			: "text-muted-foreground hover:text-foreground"
+		}
             `}
 					>
 						<ArrowUpDown size={12} strokeWidth={1.5} />
@@ -193,7 +190,7 @@ export function PostsToolbar({
 							{[
 								{ label: "最新发布", dir: "DESC" as SortDirection },
 								{ label: "最早发布", dir: "ASC" as SortDirection },
-							].map((opt) => (
+							].map(opt => (
 								<button
 									key={opt.label}
 									onClick={() => {

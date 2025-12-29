@@ -24,7 +24,7 @@ export function PostEditorSkeleton() {
 
 					{/* Properties Placeholder */}
 					<div className="py-8 border-y border-border/50 space-y-4">
-						{[1, 2, 3, 4, 5].map((i) => (
+						{[1, 2, 3, 4, 5].map(i => (
 							<div key={i} className="flex items-center gap-8 px-2">
 								<div className="w-32 h-4 bg-accent rounded-sm" />
 								<div className="flex-1 h-4 bg-accent rounded-sm opacity-40" />
@@ -34,7 +34,7 @@ export function PostEditorSkeleton() {
 
 					{/* Content Area Placeholder */}
 					<div className="space-y-10">
-						{[1, 2, 3].map((i) => (
+						{[1, 2, 3].map(i => (
 							<div key={i} className="space-y-4">
 								<div className="h-4 w-full bg-accent rounded-sm opacity-40" />
 								<div className="h-4 w-[95%] bg-accent rounded-sm opacity-30" />

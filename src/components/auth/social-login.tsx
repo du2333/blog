@@ -9,7 +9,8 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
 	const previousLocation = usePreviousLocation();
 
 	const handleGithubLogin = async () => {
-		if (isLoading) return;
+		if (isLoading)
+			return;
 
 		setIsLoading(true);
 
@@ -46,11 +47,13 @@ export function SocialLogin({ redirectTo }: { redirectTo?: string }) {
 				disabled={isLoading}
 				className="group w-full h-14 border border-border flex items-center justify-center gap-3 transition-all hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
 			>
-				{isLoading ? (
-					<Loader2 size={18} className="text-zinc-400 animate-spin" />
-				) : (
-					<Github size={18} />
-				)}
+				{isLoading
+					? (
+							<Loader2 size={18} className="text-zinc-400 animate-spin" />
+						)
+					: (
+							<Github size={18} />
+						)}
 
 				<span className="text-[11px] uppercase tracking-[0.4em] font-medium">
 					{isLoading ? "正在连接..." : "Github 账号"}

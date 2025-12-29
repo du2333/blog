@@ -1,8 +1,8 @@
+import type { DB } from "@/lib/db";
 import { generateObject } from "ai";
 import { z } from "zod";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createModel } from "@/lib/ai";
-import type { DB } from "@/lib/db";
 
 export async function summarizeText(db: DB, text: string) {
 	const config = await getSystemConfig(db);

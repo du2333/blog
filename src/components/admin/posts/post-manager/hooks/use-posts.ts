@@ -1,3 +1,4 @@
+import type { CategoryFilter, PostListItem, SortDirection, StatusFilter } from "../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import {
@@ -5,14 +6,12 @@ import {
 	getPostsCountFn,
 	getPostsFn,
 } from "@/features/posts/api/posts.admin.api";
-import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 
+import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import {
-	type CategoryFilter,
+
 	categoryFilterToApi,
-	type PostListItem,
-	type SortDirection,
-	type StatusFilter,
+
 	statusFilterToApi,
 } from "../types";
 

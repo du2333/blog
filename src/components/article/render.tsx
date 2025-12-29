@@ -16,16 +16,16 @@ export function renderReact(content: JSONContent) {
 						alt?: string | null;
 					};
 
-					const alt =
-						(attrs.alt && attrs.alt !== "null" ? attrs.alt : null) ||
-						"blog image";
+					const alt
+						= (attrs.alt && attrs.alt !== "null" ? attrs.alt : null)
+							|| "blog image";
 
 					return <ImageDisplay src={attrs.src} alt={alt} />;
 				},
 				codeBlock: ({ node }) => {
 					const code = node.textContent || "";
-					const language =
-						(node.attrs as { language?: string | null }).language || null;
+					const language
+						= (node.attrs as { language?: string | null }).language || null;
 
 					return <CodeBlock code={code} language={language} />;
 				},

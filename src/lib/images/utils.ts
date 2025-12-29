@@ -26,7 +26,8 @@ export function generateKey(fileName: string): string {
  * - https://domain.com/images/${key}?quality=80
  */
 export function extractImageKey(src: string): string | undefined {
-	if (!src) return undefined;
+	if (!src)
+		return undefined;
 
 	const prefix = "/images/";
 	let pathname = "";
@@ -35,7 +36,8 @@ export function extractImageKey(src: string): string | undefined {
 		// 尝试解析为 URL
 		const url = new URL(src, "http://dummy.com"); // 传入 base 确保相对路径也能被解析
 		pathname = url.pathname;
-	} catch (e) {
+	}
+	catch {
 		// 极少数情况解析失败，手动截断 query
 		pathname = src.split("?")[0];
 	}

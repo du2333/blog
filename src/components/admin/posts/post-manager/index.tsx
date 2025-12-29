@@ -1,3 +1,9 @@
+import type {
+	CategoryFilter,
+	PostListItem,
+	SortDirection,
+	StatusFilter,
+} from "./types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { ListFilter, Plus } from "lucide-react";
@@ -8,16 +14,10 @@ import { PostManagerSkeleton } from "@/components/skeletons/post-manager-skeleto
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
-import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 
+import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 import { PostRow, PostsPagination, PostsToolbar } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
-import type {
-	CategoryFilter,
-	PostListItem,
-	SortDirection,
-	StatusFilter,
-} from "./types";
 
 // Re-export types for external use
 export {
@@ -156,49 +156,52 @@ export function PostManager({
 				/>
 
 				{/* List Content */}
-				{error ? (
-					<ErrorPage error={error} />
-				) : isPending ? (
-					<PostManagerSkeleton />
-				) : (
-					<div className="space-y-0 border-t border-border">
-						{posts.length === 0 ? (
-							<div className="py-24 flex flex-col items-center justify-center text-muted-foreground font-serif italic gap-4">
-								<ListFilter size={40} strokeWidth={1} className="opacity-20" />
-								<div className="text-center">
-									未找到匹配的文章
-									<button
-										className="mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
-										onClick={onResetFilters}
-									>
-										[清除所有筛选]
-									</button>
-								</div>
-							</div>
-						) : (
-							<>
-								{/* Desktop Header (Simplified) */}
-								<div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border">
-									<div className="col-span-1">ID</div>
-									<div className="col-span-6">文章摘要</div>
-									<div className="col-span-2">分类</div>
-									<div className="col-span-2">日期</div>
-									<div className="col-span-1 text-right">操作</div>
-								</div>
+				{error
+					? (
+							<ErrorPage error={error} />)
+					: isPending
+						? (<PostManagerSkeleton />)
+						: (
+								<div className="space-y-0 border-t border-border">
+									{posts.length === 0
+										? (
+												<div className="py-24 flex flex-col items-center justify-center text-muted-foreground font-serif italic gap-4">
+													<ListFilter size={40} strokeWidth={1} className="opacity-20" />
+													<div className="text-center">
+														未找到匹配的文章
+														<button
+															className="mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
+															onClick={onResetFilters}
+														>
+															[清除所有筛选]
+														</button>
+													</div>
+												</div>
+											)
+										: (
+												<>
+													{/* Desktop Header (Simplified) */}
+													<div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border">
+														<div className="col-span-1">ID</div>
+														<div className="col-span-6">文章摘要</div>
+														<div className="col-span-2">分类</div>
+														<div className="col-span-2">日期</div>
+														<div className="col-span-1 text-right">操作</div>
+													</div>
 
-								<div className="divide-y divide-border">
-									{posts.map((post) => (
-										<PostRow
-											key={post.id}
-											post={post}
-											onDelete={handleDelete}
-										/>
-									))}
+													<div className="divide-y divide-border">
+														{posts.map(post => (
+															<PostRow
+																key={post.id}
+																post={post}
+																onDelete={handleDelete}
+															/>
+														))}
+													</div>
+												</>
+											)}
 								</div>
-							</>
-						)}
-					</div>
-				)}
+							)}
 
 				{/* Pagination */}
 				<PostsPagination

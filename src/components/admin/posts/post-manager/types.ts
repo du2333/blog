@@ -26,8 +26,10 @@ export function isPostPubliclyViewable(post: {
 	status: PostStatus;
 	publishedAt: Date | null;
 }): boolean {
-	if (post.status !== "published") return false;
-	if (!post.publishedAt) return false;
+	if (post.status !== "published")
+		return false;
+	if (!post.publishedAt)
+		return false;
 	return post.publishedAt <= new Date();
 }
 
@@ -35,7 +37,8 @@ export function isPostPubliclyViewable(post: {
 export function statusFilterToApi(
 	filter: StatusFilter,
 ): "published" | "draft" | undefined {
-	if (filter === "ALL") return undefined;
+	if (filter === "ALL")
+		return undefined;
 	return filter === "PUBLISHED" ? "published" : "draft";
 }
 
@@ -43,6 +46,7 @@ export function statusFilterToApi(
 export function categoryFilterToApi(
 	filter: CategoryFilter,
 ): PostCategory | undefined {
-	if (filter === "ALL") return undefined;
+	if (filter === "ALL")
+		return undefined;
 	return filter as PostCategory;
 }

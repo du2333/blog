@@ -54,7 +54,8 @@ export function PostsPagination({
 	currentPageItemCount,
 	onPageChange,
 }: PostsPaginationProps) {
-	if (totalPages <= 1) return null;
+	if (totalPages <= 1)
+		return null;
 
 	const pageNumbers = getPageNumbers(currentPage, totalPages);
 	const startItem = Math.min((currentPage - 1) * itemsPerPage + 1, totalItems);
@@ -63,7 +64,17 @@ export function PostsPagination({
 	return (
 		<div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-border mt-12">
 			<div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
-				Displaying {startItem} — {endItem} of {totalItems}
+				Displaying
+				{" "}
+				{startItem}
+				{" "}
+				—
+				{" "}
+				{endItem}
+				{" "}
+				of
+				{" "}
+				{totalItems}
 			</div>
 
 			<div className="flex items-center gap-1">
@@ -80,22 +91,24 @@ export function PostsPagination({
 				<div className="flex items-center gap-1 px-4">
 					{pageNumbers.map((pageNumber, index) => (
 						<React.Fragment key={index}>
-							{pageNumber === "..." ? (
-								<div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter">
-									...
-								</div>
-							) : (
-								<button
-									onClick={() => onPageChange(pageNumber)}
-									className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 ${
-										currentPage === pageNumber
-											? "text-foreground font-bold border-b border-foreground"
-											: "text-muted-foreground hover:text-foreground border-b border-transparent"
-									}`}
-								>
-									{pageNumber.toString().padStart(2, "0")}
-								</button>
-							)}
+							{pageNumber === "..."
+								? (
+										<div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter">
+											...
+										</div>
+									)
+								: (
+										<button
+											onClick={() => onPageChange(pageNumber)}
+											className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 ${
+												currentPage === pageNumber
+													? "text-foreground font-bold border-b border-foreground"
+													: "text-muted-foreground hover:text-foreground border-b border-transparent"
+											}`}
+										>
+											{pageNumber.toString().padStart(2, "0")}
+										</button>
+									)}
 						</React.Fragment>
 					))}
 				</div>

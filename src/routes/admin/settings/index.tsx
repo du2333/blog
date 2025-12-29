@@ -1,3 +1,4 @@
+import type { SystemConfig } from "@/features/config/config.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -9,7 +10,7 @@ import { useSystemSetting } from "@/components/admin/settings/use-system-setting
 import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
 import {
 	DEFAULT_CONFIG,
-	type SystemConfig,
+
 } from "@/features/config/config.schema";
 
 export const Route = createFileRoute("/admin/settings/")({
@@ -52,9 +53,11 @@ function RouteComponent() {
 		try {
 			await saveSettings({ data: config });
 			toast.success("系统配置已生效");
-		} catch (error) {
+		}
+		catch {
 			toast.error("保存失败，请重试");
-		} finally {
+		}
+		finally {
 			setIsSaving(false);
 		}
 	};
@@ -91,7 +94,7 @@ function RouteComponent() {
 				</div>
 
 				<nav className="space-y-16">
-					{navGroups.map((group) => (
+					{navGroups.map(group => (
 						<div key={group.label} className="space-y-8">
 							<div className="flex items-center gap-4">
 								<span className="text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground/30">
@@ -100,7 +103,7 @@ function RouteComponent() {
 								<div className="h-px flex-1 bg-border/50"></div>
 							</div>
 							<div className="flex flex-col gap-2">
-								{group.items.map((item) => (
+								{group.items.map(item => (
 									<button
 										key={item.id}
 										onClick={() => setActiveSection(item.id)}
@@ -145,11 +148,13 @@ function RouteComponent() {
 								: "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
 						}`}
 					>
-						{isSaving ? (
-							<Loader2 size={14} className="animate-spin" />
-						) : (
-							<Check size={14} />
-						)}
+						{isSaving
+							? (
+									<Loader2 size={14} className="animate-spin" />
+								)
+							: (
+									<Check size={14} />
+								)}
 						{isSaving ? "正在保存..." : "保存当前更改"}
 					</button>
 				</div>
@@ -161,31 +166,31 @@ function RouteComponent() {
 					key={activeSection}
 					className="animate-in fade-in slide-in-from-right-4 duration-700 fill-mode-both"
 				>
-					{isLoading ? (
-						<SectionSkeleton />
-					) : (
-						<>
-							{activeSection === "ai" && (
-								<AiProviderSection
-									value={config.ai || DEFAULT_CONFIG.ai!}
-									onChange={(aiConfig) =>
-										setConfig({ ...config, ai: aiConfig })
-									}
-									testAiConnection={testAiConnection}
-								/>
+					{isLoading
+						? (
+								<SectionSkeleton />
+							)
+						: (
+								<>
+									{activeSection === "ai" && (
+										<AiProviderSection
+											value={config.ai || DEFAULT_CONFIG.ai!}
+											onChange={aiConfig =>
+												setConfig({ ...config, ai: aiConfig })}
+											testAiConnection={testAiConnection}
+										/>
+									)}
+									{activeSection === "email" && (
+										<EmailServiceSection
+											value={config.email || DEFAULT_CONFIG.email!}
+											onChange={emailConfig =>
+												setConfig({ ...config, email: emailConfig })}
+											testEmailConnection={testEmailConnection}
+										/>
+									)}
+									{activeSection === "maintenance" && <MaintenanceSection />}
+								</>
 							)}
-							{activeSection === "email" && (
-								<EmailServiceSection
-									value={config.email || DEFAULT_CONFIG.email!}
-									onChange={(emailConfig) =>
-										setConfig({ ...config, email: emailConfig })
-									}
-									testEmailConnection={testEmailConnection}
-								/>
-							)}
-							{activeSection === "maintenance" && <MaintenanceSection />}
-						</>
-					)}
 				</div>
 			</div>
 
@@ -200,11 +205,13 @@ function RouteComponent() {
 							: "bg-primary text-primary-foreground"
 					}`}
 				>
-					{isSaving ? (
-						<Loader2 size={14} className="animate-spin" />
-					) : (
-						<Check size={14} />
-					)}
+					{isSaving
+						? (
+								<Loader2 size={14} className="animate-spin" />
+							)
+						: (
+								<Check size={14} />
+							)}
 					{isSaving ? "正在保存" : "保存"}
 				</button>
 			</div>

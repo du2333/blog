@@ -1,8 +1,8 @@
-import { insert, remove, search } from "@orama/orama";
 import type { JSONContent } from "@tiptap/react";
+import type { MyOramaDB } from "@/lib/search/schema";
+import { insert, remove, search } from "@orama/orama";
 import { convertToPlainText } from "@/lib/editor/utils";
 import { getOramaDb, persistOramaDb } from "@/lib/search/loader";
-import type { MyOramaDB } from "@/lib/search/schema";
 
 const CONTENT_SLICE = 10000;
 const SNIPPET_SLICE = 200;
@@ -10,22 +10,22 @@ const SNIPPET_CONTEXT = 60;
 const SCAN_LIMIT = CONTENT_SLICE; // scan up to the same slice that gets indexed to avoid ghost hits
 const FUZZY_MAX_DISTANCE = 1;
 
-type UpsertInput = {
+interface UpsertInput {
 	id: number | string;
 	slug: string;
 	title: string;
 	summary?: string | null;
 	contentJson?: JSONContent | null;
-};
+}
 
 export async function addOrUpdateSearchDoc(env: Env, input: UpsertInput) {
 	const db = await getOramaDb(env);
 	await removeById(db, input.id);
 	const plain = convertToPlainText(input.contentJson ?? null);
-	const content =
-		plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
-	const summary =
-		input.summary && input.summary.trim().length > 0
+	const content
+		= plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
+	const summary
+		= input.summary && input.summary.trim().length > 0
 			? input.summary
 			: content.slice(0, SNIPPET_SLICE);
 
@@ -83,7 +83,7 @@ export async function searchDocs(env: Env, query: string, limit = 10) {
 				summary: document.summary,
 				category: document.category,
 			},
-			score: score,
+			score,
 			matches: {
 				title: titleHighlight,
 				summary: summaryHighlight,
@@ -103,19 +103,20 @@ function buildSnippet({
 	fallbackTerm: string;
 }) {
 	const source = text?.trim() ?? "";
-	if (source.length === 0) return null;
+	if (source.length === 0)
+		return null;
 
-	const activeTerms =
-		terms.length > 0 ? terms : fallbackTerm ? [fallbackTerm] : [];
+	const activeTerms
+		= terms.length > 0 ? terms : fallbackTerm ? [fallbackTerm] : [];
 
 	if (activeTerms.length === 0) {
 		return source.slice(0, SNIPPET_SLICE);
 	}
 
 	const lowerSource = source.toLowerCase();
-	const match =
-		findExactMatch(source, lowerSource, activeTerms) ??
-		findApproxMatch(source, activeTerms, SCAN_LIMIT, FUZZY_MAX_DISTANCE);
+	const match
+		= findExactMatch(source, lowerSource, activeTerms)
+			?? findApproxMatch(source, activeTerms, SCAN_LIMIT, FUZZY_MAX_DISTANCE);
 
 	if (!match) {
 		return source.slice(0, SNIPPET_SLICE);
@@ -124,8 +125,8 @@ function buildSnippet({
 	const { idx, len, token } = match;
 
 	const start = idx === -1 ? 0 : Math.max(0, idx - SNIPPET_CONTEXT);
-	const end =
-		idx === -1
+	const end
+		= idx === -1
 			? Math.min(source.length, SNIPPET_SLICE)
 			: Math.min(source.length, idx + len + SNIPPET_CONTEXT);
 
@@ -133,14 +134,14 @@ function buildSnippet({
 	const safeSlice = escapeHtml(slice);
 
 	const highlightTerms = [token, ...activeTerms]
-		.filter((t) => t && t.length > 0)
-		.map((t) => escapeRegExp(escapeHtml(t)));
+		.filter(t => t && t.length > 0)
+		.map(t => escapeRegExp(escapeHtml(t)));
 
-	const highlightRegex = new RegExp(highlightTerms.join("|"), "ig");
+	const highlightRegex = new RegExp(highlightTerms.join("|"), "gi");
 
 	const highlighted = safeSlice.replace(
 		highlightRegex,
-		(match) => `<mark>${match}</mark>`,
+		match => `<mark>${match}</mark>`,
 	);
 
 	return highlighted;
@@ -166,11 +167,13 @@ function getMatchedTerms(
 	const maybeMatches = (
 		hit as { matches?: Record<string, { term?: string }[]> }
 	).matches;
-	if (!maybeMatches) return [];
+	if (!maybeMatches)
+		return [];
 	const fieldMatches = maybeMatches[field];
-	if (!Array.isArray(fieldMatches)) return [];
+	if (!Array.isArray(fieldMatches))
+		return [];
 	return fieldMatches
-		.map((m) => m.term)
+		.map(m => m.term)
 		.filter((t): t is string => typeof t === "string" && t.length > 0);
 }
 
@@ -202,15 +205,17 @@ function findApproxMatch(
 	for (const term of terms) {
 		const lowerTerm = term.toLowerCase();
 		const baseLen = lowerTerm.length;
-		const lens = [baseLen - 1, baseLen, baseLen + 1].filter((l) => l > 0);
+		const lens = [baseLen - 1, baseLen, baseLen + 1].filter(l => l > 0);
 
 		for (const winLen of lens) {
 			const limit = lowerChunk.length - winLen;
-			if (limit < 0) continue;
+			if (limit < 0)
+				continue;
 
 			for (let i = 0; i <= limit; i++) {
 				// quick filter: first char should match to reduce cost
-				if (lowerChunk[i] !== lowerTerm[0]) continue;
+				if (lowerChunk[i] !== lowerTerm[0])
+					continue;
 				const candidate = lowerChunk.slice(i, i + winLen);
 				if (
 					levenshteinWithCutoff(candidate, lowerTerm, maxDistance) > maxDistance
@@ -242,9 +247,10 @@ function expandToWordBounds(
 function levenshteinWithCutoff(a: string, b: string, max: number): number {
 	const aLen = a.length;
 	const bLen = b.length;
-	if (Math.abs(aLen - bLen) > max) return max + 1;
-	const prev = new Array(bLen + 1).fill(0);
-	const curr = new Array(bLen + 1).fill(0);
+	if (Math.abs(aLen - bLen) > max)
+		return max + 1;
+	const prev = Array.from({ length: bLen + 1 }, () => 0);
+	const curr = Array.from({ length: bLen + 1 }, () => 0);
 	for (let j = 0; j <= bLen; j++) prev[j] = j;
 	for (let i = 1; i <= aLen; i++) {
 		curr[0] = i;
@@ -258,7 +264,8 @@ function levenshteinWithCutoff(a: string, b: string, max: number): number {
 			);
 			rowMin = Math.min(rowMin, curr[j]);
 		}
-		if (rowMin > max) return max + 1;
+		if (rowMin > max)
+			return max + 1;
 		for (let j = 0; j <= bLen; j++) prev[j] = curr[j];
 	}
 	return curr[bLen];
@@ -267,7 +274,8 @@ function levenshteinWithCutoff(a: string, b: string, max: number): number {
 async function removeById(db: MyOramaDB, id: number | string) {
 	try {
 		await remove(db, id.toString());
-	} catch {
+	}
+	catch {
 		// ignore missing
 	}
 }

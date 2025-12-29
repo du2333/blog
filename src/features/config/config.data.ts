@@ -1,7 +1,7 @@
-import { eq } from "drizzle-orm";
-import type { DB } from "@/lib/db";
-import { SystemConfigTable } from "@/lib/db/schema";
 import type { SystemConfig } from "./config.schema";
+import type { DB } from "@/lib/db";
+import { eq } from "drizzle-orm";
+import { SystemConfigTable } from "@/lib/db/schema";
 
 export async function getSystemConfig(db: DB): Promise<SystemConfig | null> {
 	const row = await db.query.SystemConfigTable.findFirst();
@@ -19,7 +19,8 @@ export async function upsertSystemConfig(
 			.update(SystemConfigTable)
 			.set({ configJson: data })
 			.where(eq(SystemConfigTable.id, existing.id));
-	} else {
+	}
+	else {
 		await db.insert(SystemConfigTable).values({ configJson: data });
 	}
 }

@@ -16,7 +16,7 @@ import {
 } from "@/features/media/images.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
-export const useMediaLibrary = () => {
+export function useMediaLibrary() {
 	const queryClient = useQueryClient();
 
 	// Search State
@@ -47,17 +47,17 @@ export const useMediaLibrary = () => {
 					search: debouncedSearch || undefined,
 				},
 			}),
-		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+		getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
 		initialPageParam: undefined as number | undefined,
 	});
 
 	// Flatten all pages into a single array
 	const mediaItems = useMemo(() => {
-		return data?.pages.flatMap((page) => page.items) ?? [];
+		return data?.pages.flatMap(page => page.items) ?? [];
 	}, [data]);
 
 	// Get all visible media keys
-	const mediaKeys = useMemo(() => mediaItems.map((m) => m.key), [mediaItems]);
+	const mediaKeys = useMemo(() => mediaItems.map(m => m.key), [mediaItems]);
 
 	// Stable query key for linked media; use joined keys to avoid referential changes
 	const linkedQueryKey = useMemo(
@@ -107,7 +107,7 @@ export const useMediaLibrary = () => {
 			// 清除选择
 			setSelectedKeys((prev) => {
 				const next = new Set(prev);
-				deletedKeys.forEach((key) => next.delete(key));
+				deletedKeys.forEach(key => next.delete(key));
 				return next;
 			});
 			setDeleteTarget(null);
@@ -151,7 +151,8 @@ export const useMediaLibrary = () => {
 			const next = new Set(prev);
 			if (next.has(key)) {
 				next.delete(key);
-			} else {
+			}
+			else {
 				next.add(key);
 			}
 			return next;
@@ -161,8 +162,9 @@ export const useMediaLibrary = () => {
 	const selectAll = () => {
 		if (selectedKeys.size === mediaItems.length) {
 			setSelectedKeys(new Set());
-		} else {
-			setSelectedKeys(new Set(mediaItems.map((m) => m.key)));
+		}
+		else {
+			setSelectedKeys(new Set(mediaItems.map(m => m.key)));
 		}
 	};
 
@@ -176,7 +178,8 @@ export const useMediaLibrary = () => {
 			const inUse = await checkMediaInUseFn({ data: { key } });
 			if (inUse) {
 				blockedKeys.push(key);
-			} else {
+			}
+			else {
 				allowedKeys.push(key);
 			}
 		}
@@ -189,7 +192,8 @@ export const useMediaLibrary = () => {
 
 		if (allowedKeys.length > 0) {
 			setDeleteTarget(allowedKeys);
-		} else {
+		}
+		else {
 			// Clear any stale deleteTarget when all keys are blocked
 			setDeleteTarget(null);
 		}
@@ -197,7 +201,8 @@ export const useMediaLibrary = () => {
 
 	// Confirm delete
 	const confirmDelete = () => {
-		if (!deleteTarget) return;
+		if (!deleteTarget)
+			return;
 		deleteMutation.mutate(deleteTarget);
 	};
 
@@ -228,4 +233,4 @@ export const useMediaLibrary = () => {
 		totalMediaSize,
 		updateAsset,
 	};
-};
+}

@@ -30,7 +30,8 @@ export const uploadImageFn = createAdminFn({
 	.inputValidator(
 		z.instanceof(FormData).transform((formData) => {
 			const file = formData.get("image");
-			if (!(file instanceof File)) throw new Error("Image file is required");
+			if (!(file instanceof File))
+				throw new Error("Image file is required");
 			if (file.size > MAX_FILE_SIZE)
 				throw new Error("File size must be less than 10MB");
 			if (!ACCEPTED_IMAGE_TYPES.includes(file.type))
@@ -50,7 +51,8 @@ export const uploadImageFn = createAdminFn({
 				sizeInBytes: uploadedResult.sizeInBytes,
 			});
 			return mediaRecord;
-		} catch (error) {
+		}
+		catch (error) {
 			console.error("DB Insert Failed, rolling back R2 upload:", error);
 			context.executionCtx.waitUntil(
 				deleteImage(context.env, uploadedResult.key).catch(console.error),
@@ -73,7 +75,7 @@ export const deleteImageFn = createAdminFn({
 		await deleteMedia(context.db, key);
 
 		context.executionCtx.waitUntil(
-			deleteImage(context.env, key).catch((err) =>
+			deleteImage(context.env, key).catch(err =>
 				console.error("Failed to delete image from R2:", err),
 			),
 		);

@@ -17,10 +17,10 @@ export function ImageBlock({
 				className={`
             relative overflow-hidden transition-all duration-700 rounded-sm border
             ${
-							selected
-								? "border-foreground shadow-2xl scale-[1.01]"
-								: "border-border hover:border-border"
-						}
+		selected
+			? "border-foreground shadow-2xl scale-[1.01]"
+			: "border-border hover:border-border"
+		}
             ${isUploading ? "border-dashed opacity-50" : ""}
         `}
 			>
@@ -39,7 +39,9 @@ export function ImageBlock({
 							<div className="bg-popover/80 backdrop-blur-xl p-6 rounded-sm flex flex-col items-center gap-4 shadow-2xl border border-border">
 								<Loader2 className="animate-spin" size={24} />
 								<div className="text-[10px] font-bold uppercase tracking-[0.3em] flex items-center gap-3">
-									<UploadCloud size={14} /> Processing Asset
+									<UploadCloud size={14} />
+									{" "}
+									Processing Asset
 								</div>
 							</div>
 						</div>
@@ -52,7 +54,7 @@ export function ImageBlock({
 				<input
 					type="text"
 					value={node.attrs.alt || ""}
-					onChange={(e) => updateAttributes({ alt: e.target.value })}
+					onChange={e => updateAttributes({ alt: e.target.value })}
 					placeholder={isUploading ? "Processing..." : "Describe this image..."}
 					disabled={isUploading}
 					className="bg-transparent text-[10px] font-medium uppercase tracking-[0.2em] text-muted-foreground focus:text-foreground focus:outline-none w-48 md:w-64 placeholder:text-muted-foreground text-right transition-colors disabled:opacity-50"

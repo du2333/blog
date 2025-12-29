@@ -14,10 +14,10 @@ export async function handleImageRequest(
 			return new Response("Image not found", { status: 404 });
 		}
 
-		const contentType =
-			object.httpMetadata?.contentType ||
-			getContentTypeFromKey(key) ||
-			"application/octet-stream";
+		const contentType
+			= object.httpMetadata?.contentType
+				|| getContentTypeFromKey(key)
+				|| "application/octet-stream";
 
 		const headers = new Headers();
 		object.writeHttpMetadata(headers);
@@ -75,7 +75,8 @@ export async function handleImageRequest(
 			status: response.status,
 			headers: newHeaders,
 		});
-	} catch (e) {
+	}
+	catch (e) {
 		console.error("Image transform failed:", e);
 		return await serveOriginal();
 	}
@@ -84,18 +85,19 @@ function buildTransformOptions(searchParams: URLSearchParams, accept: string) {
 	const transformOptions: Record<string, unknown> = { quality: 80 };
 
 	if (searchParams.has("width"))
-		transformOptions.width = parseInt(searchParams.get("width")!, 10);
+		transformOptions.width = Number.parseInt(searchParams.get("width")!, 10);
 	if (searchParams.has("height"))
-		transformOptions.height = parseInt(searchParams.get("height")!, 10);
+		transformOptions.height = Number.parseInt(searchParams.get("height")!, 10);
 	if (searchParams.has("quality"))
-		transformOptions.quality = parseInt(searchParams.get("quality")!, 10);
-	if (searchParams.has("fit")) transformOptions.fit = searchParams.get("fit");
+		transformOptions.quality = Number.parseInt(searchParams.get("quality")!, 10);
+	if (searchParams.has("fit"))
+		transformOptions.fit = searchParams.get("fit");
 
 	if (/image\/avif/.test(accept)) {
 		transformOptions.format = "avif";
-	} else if (/image\/webp/.test(accept)) {
+	}
+	else if (/image\/webp/.test(accept)) {
 		transformOptions.format = "webp";
-	} else {
 	}
 
 	return transformOptions;

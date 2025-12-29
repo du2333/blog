@@ -1,3 +1,5 @@
+import type React from "react";
+import type { MediaAsset } from "@/components/admin/media-library/types";
 import { ClientOnly } from "@tanstack/react-router";
 import {
 	Check,
@@ -8,11 +10,9 @@ import {
 	Search,
 	X,
 } from "lucide-react";
-import type React from "react";
 import { memo, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { useMediaPicker } from "@/components/admin/media-library/hooks";
-import type { MediaAsset } from "@/components/admin/media-library/types";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 
@@ -43,10 +43,10 @@ const MediaItem = memo(
 				className={`
                 relative aspect-square border cursor-pointer transition-all duration-500 bg-muted/30 group overflow-hidden rounded-sm
                 ${
-									isSelected
-										? "border-primary opacity-100 shadow-lg"
-										: "border-border opacity-60 hover:opacity-100 hover:border-foreground"
-								}
+			isSelected
+				? "border-primary opacity-100 shadow-lg"
+				: "border-border opacity-60 hover:opacity-100 hover:border-foreground"
+			}
             `}
 			>
 				{!isLoaded && (
@@ -90,7 +90,8 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 	const [activeType, setActiveType] = useState<ModalType>(type);
 
 	useEffect(() => {
-		if (type) setActiveType(type);
+		if (type)
+			setActiveType(type);
 	}, [type]);
 
 	const [inputUrl, setInputUrl] = useState(initialUrl);
@@ -110,7 +111,8 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 
 	useEffect(() => {
 		const target = observerTarget.current;
-		if (!target) return;
+		if (!target)
+			return;
 
 		const observer = new IntersectionObserver(
 			(entries) => {
@@ -139,7 +141,8 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 		}
 	};
 
-	if (!shouldRender) return null;
+	if (!shouldRender)
+		return null;
 
 	return createPortal(
 		<div
@@ -161,21 +164,23 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
             relative w-full max-w-4xl bg-background border border-border shadow-2xl 
             flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
             ${
-							isMounted
-								? "translate-y-0 scale-100 opacity-100"
-								: "translate-y-8 scale-[0.99] opacity-0"
-						}
+				isMounted
+					? "translate-y-0 scale-100 opacity-100"
+					: "translate-y-8 scale-[0.99] opacity-0"
+			}
        `}
 			>
 				{/* Header */}
 				<div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
 					<div className="space-y-2">
 						<div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground">
-							{activeType === "LINK" ? (
-								<LinkIcon size={14} />
-							) : (
-								<ImageIcon size={14} />
-							)}
+							{activeType === "LINK"
+								? (
+										<LinkIcon size={14} />
+									)
+								: (
+										<ImageIcon size={14} />
+									)}
 							<span>{activeType === "LINK" ? "超链接" : "媒体资产"}</span>
 						</div>
 						<h2 className="text-3xl font-serif font-medium text-foreground">
@@ -204,52 +209,56 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 									type="text"
 									placeholder="搜索媒体库内容..."
 									value={searchQuery}
-									onChange={(e) => setSearchQuery(e.target.value)}
+									onChange={e => setSearchQuery(e.target.value)}
 									className="w-full bg-muted/30 border-none text-foreground text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-primary rounded-sm transition-all font-light"
 								/>
 							</div>
 
 							{/* Media Grid */}
 							<div className="flex-1 overflow-y-auto custom-scrollbar border border-border bg-muted/20 p-4 rounded-sm">
-								{isPending ? (
-									<div className="grid grid-cols-3 gap-4">
-										{[1, 2, 3, 4, 5, 6].map((i) => (
-											<div
-												key={i}
-												className="aspect-square bg-muted animate-pulse rounded-sm"
-											/>
-										))}
-									</div>
-								) : mediaItems.length === 0 ? (
-									<div className="h-48 flex items-center justify-center text-muted-foreground font-serif italic text-sm">
-										未找到相关资产
-									</div>
-								) : (
-									<div className="grid grid-cols-3 sm:grid-cols-4 gap-4 content-start pb-4">
-										{mediaItems.map((media) => (
-											<MediaItem
-												key={media.key}
-												media={media}
-												isSelected={selectedMediaKey === media.key}
-												onSelect={(m) => {
-													setSelectedMediaKey(m.key);
-													setInputUrl(m.url);
-												}}
-											/>
-										))}
-										<div
-											ref={observerTarget}
-											className="col-span-full h-8 flex items-center justify-center"
-										>
-											{isLoadingMore && (
-												<Loader2
-													size={16}
-													className="animate-spin text-zinc-400"
-												/>
+								{isPending
+									? (
+											<div className="grid grid-cols-3 gap-4">
+												{[1, 2, 3, 4, 5, 6].map(i => (
+													<div
+														key={i}
+														className="aspect-square bg-muted animate-pulse rounded-sm"
+													/>
+												))}
+											</div>
+										)
+									: mediaItems.length === 0
+										? (
+												<div className="h-48 flex items-center justify-center text-muted-foreground font-serif italic text-sm">
+													未找到相关资产
+												</div>
+											)
+										: (
+												<div className="grid grid-cols-3 sm:grid-cols-4 gap-4 content-start pb-4">
+													{mediaItems.map(media => (
+														<MediaItem
+															key={media.key}
+															media={media}
+															isSelected={selectedMediaKey === media.key}
+															onSelect={(m) => {
+																setSelectedMediaKey(m.key);
+																setInputUrl(m.url);
+															}}
+														/>
+													))}
+													<div
+														ref={observerTarget}
+														className="col-span-full h-8 flex items-center justify-center"
+													>
+														{isLoadingMore && (
+															<Loader2
+																size={16}
+																className="animate-spin text-zinc-400"
+															/>
+														)}
+													</div>
+												</div>
 											)}
-										</div>
-									</div>
-								)}
 							</div>
 						</div>
 					)}
@@ -266,9 +275,10 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 							value={inputUrl}
 							onChange={(e) => {
 								setInputUrl(e.target.value);
-								if (selectedMediaKey) setSelectedMediaKey(null);
+								if (selectedMediaKey)
+									setSelectedMediaKey(null);
 							}}
-							onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+							onKeyDown={e => e.key === "Enter" && handleSubmit()}
 							placeholder="https://example.com/..."
 							className="w-full bg-transparent border-b border-border text-foreground text-sm py-4 focus:border-foreground focus:outline-none transition-all"
 						/>

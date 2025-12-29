@@ -1,5 +1,7 @@
-import { load, type RawData, save } from "@orama/orama";
-import { createMyDb, type MyOramaDB } from "@/lib/search/schema";
+import type { RawData } from "@orama/orama";
+import type { MyOramaDB } from "@/lib/search/schema";
+import { load, save } from "@orama/orama";
+import { createMyDb } from "@/lib/search/schema";
 
 const KV_KEY = "search:index:v3";
 
@@ -27,7 +29,7 @@ async function decompressToRaw(buffer: ArrayBuffer): Promise<RawData> {
 	// Attempt gzip first; if it fails, treat as plain JSON string (back-compat)
 	const tryGzip = async () => {
 		if (typeof DecompressionStream === "undefined") {
-			throw new Error("DecompressionStream unavailable");
+			throw new TypeError("DecompressionStream unavailable");
 		}
 
 		const stream = new DecompressionStream("gzip");
@@ -41,7 +43,8 @@ async function decompressToRaw(buffer: ArrayBuffer): Promise<RawData> {
 
 	try {
 		return await tryGzip();
-	} catch {
+	}
+	catch {
 		const json = textDecoder.decode(new Uint8Array(buffer));
 		return JSON.parse(json) as RawData;
 	}
@@ -51,28 +54,34 @@ let cachedDb: MyOramaDB | null = null;
 let inflight: Promise<MyOramaDB> | null = null;
 
 async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
-	if (!env.KV) return null;
+	if (!env.KV)
+		return null;
 	const buf = await env.KV.get(KV_KEY, "arrayBuffer");
-	if (!buf) return null;
+	if (!buf)
+		return null;
 
 	try {
 		const raw = await decompressToRaw(buf);
 		const db = await createMyDb();
 		await load(db, raw);
 		return db;
-	} catch (error) {
+	}
+	catch (error) {
 		console.error("Failed to load Orama index from KV", error);
 		return null;
 	}
 }
 
 export async function getOramaDb(env: Env): Promise<MyOramaDB> {
-	if (cachedDb) return cachedDb;
-	if (inflight) return inflight;
+	if (cachedDb)
+		return cachedDb;
+	if (inflight)
+		return inflight;
 
 	inflight = (async () => {
 		const fromKv = await loadFromKv(env);
-		if (fromKv) return fromKv;
+		if (fromKv)
+			return fromKv;
 		return await createMyDb();
 	})().finally(() => {
 		inflight = null;
@@ -83,7 +92,8 @@ export async function getOramaDb(env: Env): Promise<MyOramaDB> {
 }
 
 export async function persistOramaDb(env: Env, db: MyOramaDB) {
-	if (!env.KV) return;
+	if (!env.KV)
+		return;
 	const raw = save(db);
 	const compressed = await compressRaw(raw);
 	await env.KV.put(KV_KEY, compressed);

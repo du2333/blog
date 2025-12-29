@@ -1,9 +1,9 @@
+import type { MediaAsset } from "../types";
 import { Check, Film, Image as ImageIcon, Link2, Loader2 } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 import { formatBytes } from "@/lib/utils";
 import { useLongPress } from "../hooks";
-import type { MediaAsset } from "../types";
 
 interface MediaGridProps {
 	media: MediaAsset[];
@@ -40,7 +40,8 @@ const MediaCard = memo(
 		const handleStandardClick = () => {
 			if (selectionModeActive) {
 				onToggleSelect(asset.key);
-			} else {
+			}
+			else {
 				onPreview(asset);
 			}
 		};
@@ -63,12 +64,12 @@ const MediaCard = memo(
 				className={`
         group relative flex flex-col cursor-pointer transition-all duration-500 touch-manipulation select-none overflow-hidden rounded-sm border
         ${
-					isSelected
-						? "border-foreground ring-4 ring-foreground/5 scale-[0.98]"
-						: isLinked
-							? "border-border"
-							: "border-border hover:border-border"
-				}
+			isSelected
+				? "border-foreground ring-4 ring-foreground/5 scale-[0.98]"
+				: isLinked
+					? "border-border"
+					: "border-border hover:border-border"
+			}
       `}
 			>
 				{/* Selection Overlay */}
@@ -78,8 +79,8 @@ const MediaCard = memo(
 							? "bg-primary border-transparent scale-110"
 							: "bg-background/40 border-border/20 opacity-0 group-hover:opacity-100"
 					}`}
-					onMouseDown={(e) => e.stopPropagation()}
-					onMouseUp={(e) => e.stopPropagation()}
+					onMouseDown={e => e.stopPropagation()}
+					onMouseUp={e => e.stopPropagation()}
 					onClick={(e) => {
 						e.stopPropagation();
 						onToggleSelect(asset.key);
@@ -103,31 +104,33 @@ const MediaCard = memo(
 
 				{/* Preview */}
 				<div className="aspect-square relative overflow-hidden bg-muted">
-					{isImage ? (
-						<>
-							{!isLoaded && (
-								<div className="absolute inset-0 flex items-center justify-center bg-muted animate-pulse">
-									<ImageIcon size={24} className="text-muted-foreground" />
+					{isImage
+						? (
+								<>
+									{!isLoaded && (
+										<div className="absolute inset-0 flex items-center justify-center bg-muted animate-pulse">
+											<ImageIcon size={24} className="text-muted-foreground" />
+										</div>
+									)}
+									<img
+										src={thumbnailUrl}
+										alt={asset.fileName}
+										className={`w-full h-full object-cover transition-all duration-1000 ${
+											isLoaded ? "opacity-100" : "opacity-0"
+										} ${
+											isSelected
+												? "scale-110 blur-[2px] opacity-40"
+												: "group-hover:scale-105"
+										}`}
+										onLoad={() => setIsLoaded(true)}
+									/>
+								</>
+							)
+						: (
+								<div className="w-full h-full flex items-center justify-center text-muted-foreground">
+									<Film size={32} strokeWidth={1} />
 								</div>
 							)}
-							<img
-								src={thumbnailUrl}
-								alt={asset.fileName}
-								className={`w-full h-full object-cover transition-all duration-1000 ${
-									isLoaded ? "opacity-100" : "opacity-0"
-								} ${
-									isSelected
-										? "scale-110 blur-[2px] opacity-40"
-										: "group-hover:scale-105"
-								}`}
-								onLoad={() => setIsLoaded(true)}
-							/>
-						</>
-					) : (
-						<div className="w-full h-full flex items-center justify-center text-muted-foreground">
-							<Film size={32} strokeWidth={1} />
-						</div>
-					)}
 				</div>
 
 				{/* Info */}
@@ -161,15 +164,16 @@ export function MediaGrid({
 
 	useEffect(() => {
 		const target = observerTarget.current;
-		if (!target) return;
+		if (!target)
+			return;
 
 		const observer = new IntersectionObserver(
 			(entries) => {
 				if (
-					entries[0].isIntersecting &&
-					hasMore &&
-					!isLoadingMore &&
-					onLoadMore
+					entries[0].isIntersecting
+					&& hasMore
+					&& !isLoadingMore
+					&& onLoadMore
 				) {
 					onLoadMore();
 				}
@@ -222,21 +226,25 @@ export function MediaGrid({
 				ref={observerTarget}
 				className="py-12 flex flex-col items-center justify-center gap-4"
 			>
-				{isLoadingMore ? (
-					<div className="flex flex-col items-center gap-4">
-						<div className="w-10 h-10 rounded-full border border-border flex items-center justify-center">
-							<Loader2
-								size={16}
-								className="text-muted-foreground animate-spin"
-							/>
-						</div>
-						<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground animate-pulse">
-							Syncing
-						</span>
-					</div>
-				) : !hasMore && media.length > 0 ? (
-					<div className="h-px w-24 bg-border" />
-				) : null}
+				{isLoadingMore
+					? (
+							<div className="flex flex-col items-center gap-4">
+								<div className="w-10 h-10 rounded-full border border-border flex items-center justify-center">
+									<Loader2
+										size={16}
+										className="text-muted-foreground animate-spin"
+									/>
+								</div>
+								<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground animate-pulse">
+									Syncing
+								</span>
+							</div>
+						)
+					: !hasMore && media.length > 0
+							? (
+									<div className="h-px w-24 bg-border" />
+								)
+							: null}
 			</div>
 		</div>
 	);

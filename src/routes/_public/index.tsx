@@ -26,7 +26,9 @@ function App() {
 							<span className="h-0.5 w-12 bg-foreground"></span>
 						</div>
 						<h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-foreground">
-							数字 <br />
+							数字
+							{" "}
+							<br />
 							<span className="text-muted-foreground/50">生活</span>
 						</h1>
 					</header>

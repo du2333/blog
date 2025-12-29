@@ -1,9 +1,10 @@
+import type { PostListItem } from "../types";
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
 import { Calendar, Edit3, Eye, MoreVertical, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { formatDate } from "@/lib/utils";
 
-import { isPostPubliclyViewable, type PostListItem } from "../types";
+import { formatDate } from "@/lib/utils";
+import { isPostPubliclyViewable } from "../types";
 
 interface PostRowProps {
 	post: PostListItem;
@@ -38,7 +39,8 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 			{/* ID & Status (Combined for mobile) */}
 			<div className="md:col-span-1 flex items-center justify-between w-full md:block">
 				<span className="font-mono text-muted-foreground text-[10px] tracking-widest">
-					#{post.id}
+					#
+					{post.id}
 				</span>
 				<div className="md:hidden flex items-center gap-3">
 					<StatusBadge status={post.status} />

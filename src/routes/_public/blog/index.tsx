@@ -1,3 +1,4 @@
+import type { PostCategory } from "@/lib/db/schema";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
@@ -6,7 +7,6 @@ import { z } from "zod";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
-import type { PostCategory } from "@/lib/db/schema";
 
 const searchSchema = z.object({
 	category: z.custom<PostCategory>().optional().catch(undefined),
@@ -53,11 +53,11 @@ function RouteComponent() {
 		[navigate],
 	);
 
-	const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-		useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage }
+		= useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
 
 	const posts = useMemo(() => {
-		return data?.pages.flatMap((page) => page.items) ?? [];
+		return data?.pages.flatMap(page => page.items) ?? [];
 	}, [data]);
 
 	// Infinite scroll observer
@@ -104,7 +104,7 @@ function RouteComponent() {
 
 				{/* Categories Filter */}
 				<nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-border pb-8 animate-in fade-in duration-700 delay-200 fill-mode-both">
-					{categories.map((cat) => (
+					{categories.map(cat => (
 						<button
 							key={cat.value}
 							onClick={() => handleCategoryChange(cat.value)}
@@ -121,7 +121,8 @@ function RouteComponent() {
 										? "w-full"
 										: "w-0 group-hover:w-full"
 								}`}
-							></span>
+							>
+							</span>
 						</button>
 					))}
 				</nav>
@@ -139,28 +140,34 @@ function RouteComponent() {
 				ref={observerRef}
 				className="py-20 flex flex-col items-center justify-center gap-6"
 			>
-				{isFetchingNextPage ? (
-					<div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
-						<div className="relative">
-							<div className="w-12 h-12 rounded-full border border-border flex items-center justify-center">
-								<RefreshCw
-									size={16}
-									className="text-muted-foreground animate-spin"
-								/>
+				{isFetchingNextPage
+					? (
+							<div className="flex flex-col items-center gap-4 animate-in fade-in duration-500">
+								<div className="relative">
+									<div className="w-12 h-12 rounded-full border border-border flex items-center justify-center">
+										<RefreshCw
+											size={16}
+											className="text-muted-foreground animate-spin"
+										/>
+									</div>
+									<div className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary animate-[spin_1.5s_linear_infinite]"></div>
+								</div>
+								<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground">
+									Loading
+								</span>
 							</div>
-							<div className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary animate-[spin_1.5s_linear_infinite]"></div>
-						</div>
-						<span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground">
-							Loading
-						</span>
-					</div>
-				) : hasNextPage ? (
-					<div className="h-px w-24 bg-border"></div>
-				) : posts.length > 0 ? (
-					<div className="flex flex-col items-center gap-3 opacity-20">
-						<div className="h-px w-32 bg-current"></div>
-					</div>
-				) : null}
+						)
+					: hasNextPage
+						? (
+								<div className="h-px w-24 bg-border"></div>
+							)
+						: posts.length > 0
+							? (
+									<div className="flex flex-col items-center gap-3 opacity-20">
+										<div className="h-px w-32 bg-current"></div>
+									</div>
+								)
+							: null}
 			</div>
 		</div>
 	);

@@ -11,7 +11,7 @@ export function SectionSkeleton() {
 			</div>
 
 			<div className="space-y-px">
-				{[1, 2, 3].map((i) => (
+				{[1, 2, 3].map(i => (
 					<div
 						key={i}
 						className="flex flex-col sm:flex-row py-10 gap-4 sm:gap-0 border-b border-border"

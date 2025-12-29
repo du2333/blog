@@ -1,9 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
 import type { JSONContent } from "@tiptap/react";
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
+import { useMutation } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import {
 	generateSlugFn,
 	previewSummaryFn,
@@ -42,8 +42,13 @@ export function usePostActions({
 	const debouncedTitle = useDebounce(post.title, 500);
 	const debouncedContentJson = useDebounce(post.contentJson, 800);
 
+	const processDataMutation = useMutation({
+		mutationFn: startPostProcessWorkflowFn,
+	});
+
 	const handleProcessData = () => {
-		if (processState !== "IDLE") return;
+		if (processState !== "IDLE")
+			return;
 
 		setProcessState("PROCESSING");
 
@@ -79,7 +84,7 @@ export function usePostActions({
 				},
 			}),
 		onSuccess: (result) => {
-			setPost((prev) => ({ ...prev, slug: result.slug }));
+			setPost(prev => ({ ...prev, slug: result.slug }));
 			if (slugGenerationMode.current === "manual") {
 				toast.success("URL slug 已设置", {
 					description: `URL slug 已设置为 "${result.slug}"`,
@@ -90,12 +95,8 @@ export function usePostActions({
 			console.error("Slug generation failed:", error);
 			setError("SLUG_GENERATION_FAILED");
 			const fallbackSlug = slugify(post.title) || "untitled-log";
-			setPost((prev) => ({ ...prev, slug: fallbackSlug }));
+			setPost(prev => ({ ...prev, slug: fallbackSlug }));
 		},
-	});
-
-	const processDataMutation = useMutation({
-		mutationFn: startPostProcessWorkflowFn,
 	});
 
 	const previewSummaryMutation = useMutation({
@@ -112,7 +113,7 @@ export function usePostActions({
 				});
 				return;
 			}
-			setPost((prev) => ({ ...prev, summary: result.summary }));
+			setPost(prev => ({ ...prev, summary: result.summary }));
 		},
 		onError: (error) => {
 			toast.error("摘要生成失败", {
@@ -139,10 +140,70 @@ export function usePostActions({
 		if (!debouncedTitle.trim()) {
 			return;
 		}
-		if (slugMutation.isPending) return;
+		if (slugMutation.isPending)
+			return;
 		slugGenerationMode.current = "auto";
 		slugMutation.mutate(debouncedTitle);
 	}, [debouncedTitle]);
+
+	const runReadTimeCalculation = (options?: { silent?: boolean }) => {
+		const silent = options?.silent ?? false;
+		if (!post.contentJson) {
+			if (!silent) {
+				toast.error("没有内容", {
+					description: "需要先写一些内容才能计算阅读时间。",
+				});
+			}
+			return;
+		}
+		setIsCalculatingReadTime(true);
+
+		setTimeout(() => {
+			const extractText = (node: JSONContent): string => {
+				let text = "";
+				if (node.text)
+					text += node.text;
+				if (node.content) {
+					for (const child of node.content) {
+						text += `${extractText(child)} `;
+					}
+				}
+				return text;
+			};
+
+			const text = extractText(post.contentJson!);
+
+			// Count CJK characters (Chinese, Japanese, Korean)
+			const cjkChars = (
+				text.match(
+					/[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/g,
+				) || []
+			).length;
+
+			// Count English words (remove CJK chars first, then split by whitespace)
+			const textWithoutCjk = text.replace(
+				/[\u4E00-\u9FFF\u3400-\u4DBF\u3040-\u309F\u30A0-\u30FF\uAC00-\uD7AF]/g,
+				" ",
+			);
+			const englishWords = textWithoutCjk.split(/\s+/).filter(Boolean).length;
+
+			// Reading speed: ~400 CJK chars/min, ~200 English words/min
+			const cjkMinutes = cjkChars / 400;
+			const englishMinutes = englishWords / 200;
+			const mins = Math.max(1, Math.ceil(cjkMinutes + englishMinutes));
+
+			setPost(prev => ({ ...prev, readTimeInMinutes: mins }));
+			setIsCalculatingReadTime(false);
+
+			if (!silent) {
+				toast.success("阅读时间计算完成", {
+					description: `预计阅读时间 ${mins} 分钟 (${
+						cjkChars + englishWords
+					} 字)`,
+				});
+			}
+		}, 400);
+	};
 
 	// Auto-calculate read time on content changes (debounced)
 	useEffect(() => {
@@ -172,64 +233,6 @@ export function usePostActions({
 		}
 		slugGenerationMode.current = "manual";
 		slugMutation.mutate(post.title);
-	};
-
-	const runReadTimeCalculation = (options?: { silent?: boolean }) => {
-		const silent = options?.silent ?? false;
-		if (!post.contentJson) {
-			if (!silent) {
-				toast.error("没有内容", {
-					description: "需要先写一些内容才能计算阅读时间。",
-				});
-			}
-			return;
-		}
-		setIsCalculatingReadTime(true);
-
-		setTimeout(() => {
-			const extractText = (node: JSONContent): string => {
-				let text = "";
-				if (node.text) text += node.text;
-				if (node.content) {
-					for (const child of node.content) {
-						text += extractText(child) + " ";
-					}
-				}
-				return text;
-			};
-
-			const text = extractText(post.contentJson!);
-
-			// Count CJK characters (Chinese, Japanese, Korean)
-			const cjkChars = (
-				text.match(
-					/[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g,
-				) || []
-			).length;
-
-			// Count English words (remove CJK chars first, then split by whitespace)
-			const textWithoutCjk = text.replace(
-				/[\u4e00-\u9fff\u3400-\u4dbf\u3040-\u309f\u30a0-\u30ff\uac00-\ud7af]/g,
-				" ",
-			);
-			const englishWords = textWithoutCjk.split(/\s+/).filter(Boolean).length;
-
-			// Reading speed: ~400 CJK chars/min, ~200 English words/min
-			const cjkMinutes = cjkChars / 400;
-			const englishMinutes = englishWords / 200;
-			const mins = Math.max(1, Math.ceil(cjkMinutes + englishMinutes));
-
-			setPost((prev) => ({ ...prev, readTimeInMinutes: mins }));
-			setIsCalculatingReadTime(false);
-
-			if (!silent) {
-				toast.success("阅读时间计算完成", {
-					description: `预计阅读时间 ${mins} 分钟 (${
-						cjkChars + englishWords
-					} 字)`,
-				});
-			}
-		}, 400);
 	};
 
 	const handleCalculateReadTime = () => {

@@ -12,7 +12,7 @@ const resetPasswordSchema = z
 		password: z.string().min(8, "密码至少 8 位"),
 		confirmPassword: z.string(),
 	})
-	.refine((data) => data.password === data.confirmPassword, {
+	.refine(data => data.password === data.confirmPassword, {
 		message: "密码输入不一致",
 		path: ["confirmPassword"],
 	});
@@ -44,7 +44,7 @@ export function ResetPasswordForm({
 
 		const { error } = await authClient.resetPassword({
 			newPassword: data.password,
-			token: token,
+			token,
 		});
 
 		if (error) {
@@ -82,7 +82,9 @@ export function ResetPasswordForm({
 		return (
 			<div className="text-center space-y-6">
 				<p className="text-sm font-light text-red-500 italic">
-					错误：无效的链接 ({error})
+					错误：无效的链接 (
+					{error}
+					)
 				</p>
 				<button
 					onClick={() => navigate({ to: "/forgot-password" })}
@@ -143,14 +145,16 @@ export function ResetPasswordForm({
 				disabled={isSubmitting}
 				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
 			>
-				{isSubmitting ? (
-					<Loader2 className="animate-spin" size={16} />
-				) : (
-					<>
-						<span>更新密码</span>
-						<Check size={14} />
-					</>
-				)}
+				{isSubmitting
+					? (
+							<Loader2 className="animate-spin" size={16} />
+						)
+					: (
+							<>
+								<span>更新密码</span>
+								<Check size={14} />
+							</>
+						)}
 			</button>
 		</form>
 	);

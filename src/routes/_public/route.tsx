@@ -27,8 +27,8 @@ function PublicLayout() {
 		{ label: "文章", to: "/blog", id: "blog" },
 	];
 
-	const { data: session, isPending: isSessionPending } =
-		authClient.useSession();
+	const { data: session, isPending: isSessionPending }
+		= authClient.useSession();
 	const queryClient = useQueryClient();
 	const logout = async () => {
 		const { error } = await authClient.signOut();
@@ -51,7 +51,7 @@ function PublicLayout() {
 			const isToggle = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
 			if (isToggle) {
 				e.preventDefault();
-				setIsSearchOpen((prev) => !prev);
+				setIsSearchOpen(prev => !prev);
 				setIsMenuOpen(false);
 			}
 		};

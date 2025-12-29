@@ -13,7 +13,8 @@ interface ContentRendererProps {
  */
 export function ContentRenderer({ content, className }: ContentRendererProps) {
 	const renderedContent = useMemo(() => {
-		if (!content) return null;
+		if (!content)
+			return null;
 		return renderReact(content);
 	}, [content]);
 

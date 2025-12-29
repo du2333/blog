@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
 import type { PostEditorData, SaveStatus } from "../types";
+import { useEffect, useRef, useState } from "react";
 
 interface UseAutoSaveOptions {
 	post: PostEditorData;
@@ -57,16 +57,17 @@ export function useAutoSave({
 
 	const isDirty = (curr: ReturnType<typeof toComparable>) => {
 		const prev = lastSavedSnapshot.current;
-		if (!prev) return true;
+		if (!prev)
+			return true;
 		return (
-			prev.title !== curr.title ||
-			prev.summary !== curr.summary ||
-			prev.slug !== curr.slug ||
-			prev.category !== curr.category ||
-			prev.status !== curr.status ||
-			prev.readTimeInMinutes !== curr.readTimeInMinutes ||
-			prev.publishedAt !== curr.publishedAt ||
-			prev.contentRef !== curr.contentRef
+			prev.title !== curr.title
+			|| prev.summary !== curr.summary
+			|| prev.slug !== curr.slug
+			|| prev.category !== curr.category
+			|| prev.status !== curr.status
+			|| prev.readTimeInMinutes !== curr.readTimeInMinutes
+			|| prev.publishedAt !== curr.publishedAt
+			|| prev.contentRef !== curr.contentRef
 		);
 	};
 
@@ -101,7 +102,8 @@ export function useAutoSave({
 		setSaveStatus("SAVING");
 
 		const attemptSave = async () => {
-			if (isSaving.current) return;
+			if (isSaving.current)
+				return;
 			isSaving.current = true;
 
 			try {
@@ -110,7 +112,8 @@ export function useAutoSave({
 				await onSaveRef.current(latestPost);
 				const latestComparable = toComparable(latestPost);
 				lastSavedSnapshot.current = latestComparable;
-				if (!isMounted.current) return;
+				if (!isMounted.current)
+					return;
 				setLastSaved(new Date());
 
 				// After saving, if new changes arrived during the request, schedule another save (debounced)
@@ -120,19 +123,23 @@ export function useAutoSave({
 						clearTimeout(retryTimerRef.current);
 					}
 					retryTimerRef.current = setTimeout(() => {
-						if (!isMounted.current) return;
+						if (!isMounted.current)
+							return;
 						// respect debounce and avoid overlapping saves
 						attemptSave();
 					}, debounceMs);
 					setSaveStatus("SAVING");
-				} else {
+				}
+				else {
 					setSaveStatus("SYNCED");
 				}
-			} catch (err) {
+			}
+			catch (err) {
 				console.error("Auto-save failed:", err);
 				setSaveStatus("ERROR");
 				setError("AUTO_SAVE_FAILED");
-			} finally {
+			}
+			finally {
 				isSaving.current = false;
 			}
 		};

@@ -20,7 +20,8 @@ function RouteComponent() {
 
 				<div className="text-center pt-6">
 					<p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">
-						没有账户?{" "}
+						没有账户?
+						{" "}
 						<Link
 							to="/register"
 							className="text-foreground font-medium hover:underline underline-offset-4 ml-2"

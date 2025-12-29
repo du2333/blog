@@ -1,11 +1,11 @@
+import type { UploadItem } from "../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import { uploadImageFn } from "@/features/media/images.api";
 import { formatBytes } from "@/lib/utils";
-import type { UploadItem } from "../types";
 
-export const useMediaUpload = () => {
+export function useMediaUpload() {
 	const queryClient = useQueryClient();
 	const [isOpen, setIsOpen] = useState(false);
 	const [queue, setQueue] = useState<UploadItem[]>([]);
@@ -35,7 +35,7 @@ export const useMediaUpload = () => {
 	// Process upload queue
 	useEffect(() => {
 		const processQueue = async () => {
-			const waitingIndex = queue.findIndex((item) => item.status === "WAITING");
+			const waitingIndex = queue.findIndex(item => item.status === "WAITING");
 			const item = queue[waitingIndex];
 
 			if (waitingIndex === -1 || processingRef.current) {
@@ -46,7 +46,7 @@ export const useMediaUpload = () => {
 			processingRef.current = true;
 
 			if (!item.file) {
-				setQueue((prev) =>
+				setQueue(prev =>
 					prev.map((q, i) =>
 						i === waitingIndex
 							? { ...q, status: "ERROR", log: "> ERROR: 没有数据包" }
@@ -58,7 +58,7 @@ export const useMediaUpload = () => {
 			}
 
 			// Update to UPLOADING
-			setQueue((prev) =>
+			setQueue(prev =>
 				prev.map((q, i) =>
 					i === waitingIndex
 						? {
@@ -75,7 +75,7 @@ export const useMediaUpload = () => {
 				await uploadMutation.mutateAsync(item.file);
 
 				if (isMountedRef.current) {
-					setQueue((prev) =>
+					setQueue(prev =>
 						prev.map((q, i) =>
 							i === waitingIndex
 								? {
@@ -90,11 +90,11 @@ export const useMediaUpload = () => {
 
 					toast.success(`上传完成: ${item.name}`);
 					queryClient.invalidateQueries({ queryKey: ["media"] });
-				} else {
 				}
-			} catch (error) {
+			}
+			catch (error) {
 				if (isMountedRef.current) {
-					setQueue((prev) =>
+					setQueue(prev =>
 						prev.map((q, i) =>
 							i === waitingIndex
 								? {
@@ -110,7 +110,8 @@ export const useMediaUpload = () => {
 					);
 					toast.error(`上传失败: ${item.name}`);
 				}
-			} finally {
+			}
+			finally {
 				// 关键修复：使用 finally 确保锁一定会被释放
 				processingRef.current = false;
 			}
@@ -120,16 +121,16 @@ export const useMediaUpload = () => {
 	}, [queue, uploadMutation, queryClient]);
 
 	const processFiles = (files: File[]) => {
-		const newItems: UploadItem[] = files.map((file) => ({
+		const newItems: UploadItem[] = files.map(file => ({
 			id: Math.random().toString(36).substr(2, 9),
 			name: file.name,
 			size: formatBytes(file.size),
 			progress: 0,
 			status: "WAITING" as const,
 			log: "> 初始化上传握手...",
-			file: file,
+			file,
 		}));
-		setQueue((prev) => [...prev, ...newItems]);
+		setQueue(prev => [...prev, ...newItems]);
 	};
 
 	const handleDragOver = (e: React.DragEvent) => {
@@ -167,4 +168,4 @@ export const useMediaUpload = () => {
 		processFiles,
 		reset,
 	};
-};
+}

@@ -1,5 +1,5 @@
-import { ChevronDown } from "lucide-react";
 import type React from "react";
+import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface DropdownOption {
@@ -23,14 +23,14 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 	const [isOpen, setIsOpen] = useState(false);
 	const dropdownRef = useRef<HTMLDivElement>(null);
 
-	const selectedOption =
-		options.find((opt) => opt.value === value) || options[0];
+	const selectedOption
+		= options.find(opt => opt.value === value) || options[0];
 
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
-				dropdownRef.current &&
-				!dropdownRef.current.contains(event.target as Node)
+				dropdownRef.current
+				&& !dropdownRef.current.contains(event.target as Node)
 			) {
 				setIsOpen(false);
 			}
@@ -55,7 +55,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
 
 			{isOpen && (
 				<div className="absolute top-full left-0 mt-2 w-48 bg-popover/95 backdrop-blur-xl border border-border rounded-sm shadow-2xl z-50 py-1 animate-in fade-in slide-in-from-top-1 duration-200 max-h-64 overflow-y-auto custom-scrollbar">
-					{options.map((option) => (
+					{options.map(option => (
 						<button
 							key={option.value}
 							onClick={() => {

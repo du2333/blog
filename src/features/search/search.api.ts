@@ -1,5 +1,5 @@
-import { createServerFn } from "@tanstack/react-start";
 import type { JSONContent } from "@tiptap/react";
+import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { backfillSearchIndex } from "@/lib/search/backfill";
 import {

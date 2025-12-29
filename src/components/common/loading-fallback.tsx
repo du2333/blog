@@ -14,7 +14,7 @@ export function LoadingFallback() {
 
 			{/* List Skeleton */}
 			<div className="flex flex-col border-t border-border">
-				{[1, 2, 3, 4].map((i) => (
+				{[1, 2, 3, 4].map(i => (
 					<div
 						key={i}
 						className="grid grid-cols-1 md:grid-cols-12 gap-6 py-12 border-b border-border"

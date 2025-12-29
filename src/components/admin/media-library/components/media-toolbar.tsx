@@ -30,7 +30,7 @@ export function MediaToolbar({
 					type="text"
 					placeholder="检索媒体文件..."
 					value={searchQuery}
-					onChange={(e) => onSearchChange(e.target.value)}
+					onChange={e => onSearchChange(e.target.value)}
 					className="w-full bg-transparent border-b border-border text-sm font-serif italic pl-8 pr-8 py-3 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
 				/>
 				{searchQuery && (
@@ -52,11 +52,13 @@ export function MediaToolbar({
 							: "text-muted-foreground hover:text-foreground"
 					}`}
 				>
-					{selectedCount > 0 && selectedCount === totalCount ? (
-						<CheckSquare size={14} strokeWidth={1.5} />
-					) : (
-						<Square size={14} strokeWidth={1.5} />
-					)}
+					{selectedCount > 0 && selectedCount === totalCount
+						? (
+								<CheckSquare size={14} strokeWidth={1.5} />
+							)
+						: (
+								<Square size={14} strokeWidth={1.5} />
+							)}
 					{selectedCount > 0 && selectedCount === totalCount
 						? "取消全选"
 						: "全选"}
@@ -68,7 +70,9 @@ export function MediaToolbar({
 						className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-red-500 hover:text-red-600 transition-colors animate-in fade-in slide-in-from-left-2 duration-500"
 					>
 						<Trash2 size={14} strokeWidth={1.5} />
-						删除选中 ({selectedCount})
+						删除选中 (
+						{selectedCount}
+						)
 					</button>
 				)}
 			</div>

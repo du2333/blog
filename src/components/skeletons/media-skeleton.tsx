@@ -29,7 +29,7 @@ export function MediaLibrarySkeleton() {
 
 			{/* Stats Skeleton */}
 			<div className="flex gap-12 pt-6 border-t border-border">
-				{[1, 2].map((i) => (
+				{[1, 2].map(i => (
 					<div key={i} className="space-y-2">
 						<div className="h-2 w-12 bg-muted rounded opacity-30"></div>
 						<div className="h-6 w-20 bg-muted rounded"></div>

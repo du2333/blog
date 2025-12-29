@@ -11,13 +11,13 @@ const serverEnvSchema = z.object({
 	DOMAIN: z
 		.string()
 		.regex(
-			/^([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}$/,
+			/^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i,
 			"Must be a valid domain (e.g., www.example.com)",
 		),
 	ENVIRONMENT: z.enum(["dev", "prod"]).optional(),
 });
 
-export const serverEnv = (env: Env) => {
+export function serverEnv(env: Env) {
 	const result = serverEnvSchema.safeParse(env);
 
 	if (!result.success) {
@@ -29,4 +29,4 @@ export const serverEnv = (env: Env) => {
 	}
 
 	return result.data;
-};
+}

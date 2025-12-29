@@ -16,7 +16,7 @@ const registerSchema = z
 		password: z.string().min(8, "密码至少 8 位"),
 		confirmPassword: z.string(),
 	})
-	.refine((data) => data.password === data.confirmPassword, {
+	.refine(data => data.password === data.confirmPassword, {
 		message: "密码输入不一致",
 		path: ["confirmPassword"],
 	});
@@ -60,7 +60,8 @@ export function RegisterForm() {
 			toast.success("账号已创建", {
 				description: "验证邮件已发送，请检查您的收件箱。",
 			});
-		} else {
+		}
+		else {
 			toast.success("注册成功", {
 				description: "账号已激活。",
 			});
@@ -173,17 +174,19 @@ export function RegisterForm() {
 				disabled={isSubmitting}
 				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group"
 			>
-				{isSubmitting ? (
-					<Loader2 className="animate-spin" size={16} />
-				) : (
-					<>
-						<span>创建账户</span>
-						<ArrowRight
-							size={14}
-							className="group-hover:translate-x-1 transition-transform"
-						/>
-					</>
-				)}
+				{isSubmitting
+					? (
+							<Loader2 className="animate-spin" size={16} />
+						)
+					: (
+							<>
+								<span>创建账户</span>
+								<ArrowRight
+									size={14}
+									className="group-hover:translate-x-1 transition-transform"
+								/>
+							</>
+						)}
 			</button>
 		</form>
 	);

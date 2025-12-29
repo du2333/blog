@@ -1,6 +1,6 @@
 import type { z } from "zod";
-import { serializeKey } from "./cache.utils";
 import type { CacheKey, CacheNamespace, Context } from "./types";
+import { serializeKey } from "./cache.utils";
 
 /**
  * 缓存数据
@@ -30,7 +30,8 @@ export async function cachedData<T extends z.ZodTypeAny>(
 	console.log(`[Cache] MISS: ${serializedKey}`);
 	const data = await fetcher();
 
-	if (data === null || data === undefined) return data;
+	if (data === null || data === undefined)
+		return data;
 
 	executionCtx.waitUntil(
 		env.KV.put(serializedKey, JSON.stringify(data), {
@@ -47,7 +48,7 @@ export async function deleteCachedData(
 ): Promise<void> {
 	const serializedKeys = keys.map(serializeKey);
 
-	await Promise.all(serializedKeys.map((key) => context.env.KV.delete(key)));
+	await Promise.all(serializedKeys.map(key => context.env.KV.delete(key)));
 }
 
 /**
@@ -62,7 +63,7 @@ export async function getCacheVersion(
 	const key = `ver:${namespace}`;
 	const v = await context.env.KV.get(key);
 	// 返回 "v1", "v2" 这种格式，方便直接拼到 Key 数组里
-	if (v && !Number.isNaN(parseInt(v))) {
+	if (v && !Number.isNaN(Number.parseInt(v))) {
 		return `v${v}`;
 	}
 	return "v1";
@@ -80,7 +81,7 @@ export async function bumpCacheVersion(
 
 	let next = 1;
 	if (current) {
-		const parsed = parseInt(current);
+		const parsed = Number.parseInt(current);
 		if (!Number.isNaN(parsed)) {
 			next = parsed + 1;
 		}

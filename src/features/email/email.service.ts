@@ -1,5 +1,5 @@
-import { getSystemConfig } from "@/features/config/config.data";
 import type { DB } from "@/lib/db";
+import { getSystemConfig } from "@/features/config/config.data";
 import { createEmailClient } from "@/lib/email";
 import { serverEnv } from "@/lib/env/server.env";
 
@@ -28,7 +28,8 @@ export async function testEmailConnection(
 		}
 
 		return { success: true };
-	} catch (error) {
+	}
+	catch (error) {
 		const errorMessage = error instanceof Error ? error.message : "未知错误";
 		return { success: false, error: errorMessage };
 	}

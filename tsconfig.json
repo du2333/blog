@@ -1,26 +1,26 @@
 {
-	"include": ["**/*.ts", "**/*.tsx"],
 	"compilerOptions": {
 		"target": "ES2022",
 		"jsx": "react-jsx",
-		"module": "ESNext",
 		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"types": ["vite/client", "./worker-configuration.d.ts"],
+		"baseUrl": ".",
+		"module": "ESNext",
 		/* Bundler mode */
 		"moduleResolution": "bundler",
-		"allowImportingTsExtensions": true,
-		"verbatimModuleSyntax": false,
-		"noEmit": true,
-		/* Linting */
-		"skipLibCheck": true,
-		"strict": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUncheckedSideEffectImports": true,
-		"baseUrl": ".",
 		"paths": {
 			"@/*": ["./src/*"]
-		}
-	}
+		},
+		"types": ["vite/client", "./worker-configuration.d.ts"],
+		"allowImportingTsExtensions": true,
+		"strict": true,
+		"noFallthroughCasesInSwitch": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noEmit": true,
+		"verbatimModuleSyntax": false,
+		/* Linting */
+		"skipLibCheck": true,
+		"noUncheckedSideEffectImports": true
+	},
+	"include": ["**/*.ts", "**/*.tsx"]
 }

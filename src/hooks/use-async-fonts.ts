@@ -9,7 +9,8 @@ export function useAsyncFonts(fontUrls: string[]) {
 		fontUrls.forEach((url) => {
 			// 检查是否已经加载过
 			const existing = document.querySelector(`link[href="${url}"]`);
-			if (existing) return;
+			if (existing)
+				return;
 
 			const link = document.createElement("link");
 			link.rel = "stylesheet";

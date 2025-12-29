@@ -1,7 +1,8 @@
-import { and, asc, desc, eq, like, lte, type SQL } from "drizzle-orm";
+import type { SQL } from "drizzle-orm";
+import type { PostCategory, PostStatus } from "@/lib/db/schema";
+import { and, asc, desc, eq, like, lte } from "drizzle-orm";
 import {
-	type PostCategory,
-	type PostStatus,
+
 	PostsTable,
 } from "@/lib/db/schema";
 
@@ -17,8 +18,10 @@ export function isPostPubliclyViewable(post: {
 	status: PostStatus;
 	publishedAt: Date | null;
 }): boolean {
-	if (post.status !== "published") return false;
-	if (!post.publishedAt) return false;
+	if (post.status !== "published")
+		return false;
+	if (!post.publishedAt)
+		return false;
 	return post.publishedAt <= new Date();
 }
 

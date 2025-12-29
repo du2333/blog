@@ -1,16 +1,17 @@
+import type { DB } from "@/lib/db";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
 import { updateUser } from "@/features/auth/auth.data";
 import { sendEmail } from "@/features/email/email.service";
 import { authConfig } from "@/lib/auth/auth.config";
-import type { DB } from "@/lib/db";
 import * as authSchema from "@/lib/db/schema/auth.schema";
 import { serverEnv } from "@/lib/env/server.env";
 
 let auth: Auth | null = null;
 
 export function getAuth({ db, env }: { db: DB; env: Env }) {
-	if (auth) return auth;
+	if (auth)
+		return auth;
 
 	auth = createAuth({ db, env });
 	return auth;

@@ -11,10 +11,10 @@ interface CodeBlockProps {
 	language: string | null;
 }
 
-export const CodeBlock = memo(function CodeBlock({
+export const CodeBlock = memo(({
 	code,
 	language,
-}: CodeBlockProps) {
+}: CodeBlockProps) => {
 	const { appTheme } = useTheme();
 	const cacheKey = `${appTheme}-${language}-${code}`;
 	const [html, setHtml] = useState<string>(highlightCache.get(cacheKey) || "");
@@ -45,7 +45,8 @@ export const CodeBlock = memo(function CodeBlock({
 					setHtml(highlighted);
 					setIsLoaded(true);
 				}
-			} catch (e) {
+			}
+			catch (e) {
 				console.error("Shiki failed to load:", e);
 				if (mounted) {
 					const fallback = `<pre class="font-mono text-sm whitespace-pre-wrap">${code}</pre>`;
@@ -83,15 +84,17 @@ export const CodeBlock = memo(function CodeBlock({
 						onClick={handleCopy}
 						className="flex items-center gap-2 text-[10px] font-mono font-medium text-muted-foreground hover:text-foreground transition-all duration-500"
 					>
-						{copied ? (
-							<span className="animate-in fade-in slide-in-from-right-2 tracking-widest">
-								已复制
-							</span>
-						) : (
-							<span className="opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
-								Copy
-							</span>
-						)}
+						{copied
+							? (
+									<span className="animate-in fade-in slide-in-from-right-2 tracking-widest">
+										已复制
+									</span>
+								)
+							: (
+									<span className="opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
+										Copy
+									</span>
+								)}
 						<div className="p-1 rounded-full transition-colors">
 							{copied ? <Check size={12} /> : <Copy size={12} />}
 						</div>

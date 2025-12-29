@@ -1,7 +1,7 @@
+import type { SystemConfig } from "@/features/config/config.schema";
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
-import type { SystemConfig } from "@/features/config/config.schema";
 
 export function createModel(config: SystemConfig["ai"]) {
 	if (!config?.activeProvider || !config?.providers) {
@@ -74,7 +74,8 @@ export async function testAiConnection(
 		});
 
 		return { success: true };
-	} catch (error) {
+	}
+	catch (error) {
 		const errorMessage = error instanceof Error ? error.message : "未知错误";
 		return { success: false, error: errorMessage };
 	}

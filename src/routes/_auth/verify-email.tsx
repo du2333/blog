@@ -27,11 +27,12 @@ function RouteComponent() {
 	useEffect(() => {
 		const analyzeSignal = async () => {
 			// Small artificial delay for smooth transition
-			await new Promise((r) => setTimeout(r, 1500));
+			await new Promise(r => setTimeout(r, 1500));
 
 			if (error) {
 				setStatus("ERROR");
-			} else {
+			}
+			else {
 				setStatus("SUCCESS");
 			}
 		};

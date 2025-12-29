@@ -1,3 +1,4 @@
+import type { SystemConfig } from "@/features/config/config.schema";
 import {
 	AlertCircle,
 	CheckCircle2,
@@ -8,7 +9,6 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import DropdownMenu from "@/components/ui/dropdown-menu";
-import type { SystemConfig } from "@/features/config/config.schema";
 import { DeepSeekModels, GoogleModels } from "@/lib/ai";
 
 type AiProvider = "GOOGLE" | "DEEPSEEK";
@@ -48,7 +48,8 @@ export function AiProviderSection({
 	const currentConfig = PROVIDER_CONFIG[provider];
 
 	const handleTest = async () => {
-		if (!isConfigured) return;
+		if (!isConfigured)
+			return;
 		setStatus("TESTING");
 		setStatusMsg("正在验证服务连通性...");
 
@@ -64,11 +65,13 @@ export function AiProviderSection({
 			if (result.success) {
 				setStatus("SUCCESS");
 				setStatusMsg("服务连接正常，模型响应就绪");
-			} else {
+			}
+			else {
 				setStatus("ERROR");
 				setStatusMsg(result.error || "授权验证失败，请检查密钥");
 			}
-		} catch (error) {
+		}
+		catch {
 			setStatus("ERROR");
 			setStatusMsg("网络异常或服务暂时不可用");
 		}
@@ -96,13 +99,17 @@ export function AiProviderSection({
 									: "bg-muted border-border text-muted-foreground"
 						}`}
 					>
-						{status === "TESTING" ? (
-							<Loader2 size={10} className="animate-spin" />
-						) : status === "SUCCESS" ? (
-							<CheckCircle2 size={10} />
-						) : (
-							<AlertCircle size={10} />
-						)}
+						{status === "TESTING"
+							? (
+									<Loader2 size={10} className="animate-spin" />
+								)
+							: status === "SUCCESS"
+								? (
+										<CheckCircle2 size={10} />
+									)
+								: (
+										<AlertCircle size={10} />
+									)}
 						{status === "TESTING"
 							? "Validating"
 							: status === "SUCCESS"
@@ -119,7 +126,7 @@ export function AiProviderSection({
 						服务平台
 					</div>
 					<div className="flex-1 flex gap-2.5">
-						{(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map((p) => (
+						{(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map(p => (
 							<button
 								key={p}
 								onClick={() => {
@@ -168,11 +175,13 @@ export function AiProviderSection({
 								onClick={() => setShowKey(!showKey)}
 								className="absolute right-0 top-1/2 -translate-y-1/2 text-muted-foreground/50 hover:text-foreground transition-colors"
 							>
-								{showKey ? (
-									<EyeOff size={18} strokeWidth={1.5} />
-								) : (
-									<Eye size={18} strokeWidth={1.5} />
-								)}
+								{showKey
+									? (
+											<EyeOff size={18} strokeWidth={1.5} />
+										)
+									: (
+											<Eye size={18} strokeWidth={1.5} />
+										)}
 							</button>
 						</div>
 					</div>
@@ -198,7 +207,7 @@ export function AiProviderSection({
 									},
 								});
 							}}
-							options={currentConfig.models.map((m) => ({
+							options={currentConfig.models.map(m => ({
 								label: m,
 								value: m,
 							}))}
@@ -222,11 +231,13 @@ export function AiProviderSection({
 										: "border border-border text-muted-foreground hover:bg-primary hover:text-primary-foreground"
 							}`}
 						>
-							{status === "TESTING" ? (
-								<Loader2 size={14} className="animate-spin" />
-							) : (
-								<Wifi size={14} />
-							)}
+							{status === "TESTING"
+								? (
+										<Loader2 size={14} className="animate-spin" />
+									)
+								: (
+										<Wifi size={14} />
+									)}
 							验证服务连通性
 						</button>
 						{statusMsg && (

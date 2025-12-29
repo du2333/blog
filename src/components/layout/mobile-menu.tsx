@@ -81,10 +81,11 @@ export function MobileMenu({
 									<span
 										className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}
 									>
-										0{idx + 1}
+										0
+										{idx + 1}
 									</span>
 									<span
-										className={`text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative`}
+										className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative"
 									>
 										{item.label}
 										{isActive && (
@@ -117,10 +118,11 @@ export function MobileMenu({
 									<span
 										className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}
 									>
-										0{navOptions.length + 1}
+										0
+										{navOptions.length + 1}
 									</span>
 									<span
-										className={`text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative`}
+										className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative"
 									>
 										控制台
 										{isActive && (
@@ -141,60 +143,64 @@ export function MobileMenu({
 							: "opacity-0 translate-y-4"
 					}`}
 				>
-					{user ? (
-						<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-border">
-							<button
-								onClick={() => {
-									onOpenProfile();
-									onClose();
-								}}
-								className="flex items-center gap-6 group"
-							>
-								<div className="w-16 h-16 rounded-full overflow-hidden border border-border p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
-									{user.image ? (
-										<img
-											src={user.image}
-											alt={user.name}
-											className="w-full h-full rounded-full object-cover"
-										/>
-									) : (
-										<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-zinc-300">
-											<UserIcon size={24} strokeWidth={1} />
+					{user
+						? (
+								<div className="flex flex-col md:flex-row md:items-end justify-between gap-8 pt-12 border-t border-border">
+									<button
+										onClick={() => {
+											onOpenProfile();
+											onClose();
+										}}
+										className="flex items-center gap-6 group"
+									>
+										<div className="w-16 h-16 rounded-full overflow-hidden border border-border p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
+											{user.image
+												? (
+														<img
+															src={user.image}
+															alt={user.name}
+															className="w-full h-full rounded-full object-cover"
+														/>
+													)
+												: (
+														<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-zinc-300">
+															<UserIcon size={24} strokeWidth={1} />
+														</div>
+													)}
 										</div>
-									)}
-								</div>
-								<div className="text-left">
-									<div className="text-2xl font-serif font-medium text-foreground">
-										{user.name}
-									</div>
-									<div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
-										个人资料
-									</div>
-								</div>
-							</button>
+										<div className="text-left">
+											<div className="text-2xl font-serif font-medium text-foreground">
+												{user.name}
+											</div>
+											<div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
+												个人资料
+											</div>
+										</div>
+									</button>
 
-							<button
-								onClick={() => {
-									logout();
-									onClose();
-								}}
-								className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4"
-							>
-								<LogOut size={14} />
-								<span>退出登录</span>
-							</button>
-						</div>
-					) : (
-						<Link
-							to="/login"
-							onClick={onClose}
-							className="inline-block pt-12 border-t border-border w-full"
-						>
-							<span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
-								登录 / Login
-							</span>
-						</Link>
-					)}
+									<button
+										onClick={() => {
+											logout();
+											onClose();
+										}}
+										className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4"
+									>
+										<LogOut size={14} />
+										<span>退出登录</span>
+									</button>
+								</div>
+							)
+						: (
+								<Link
+									to="/login"
+									onClick={onClose}
+									className="inline-block pt-12 border-t border-border w-full"
+								>
+									<span className="text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all">
+										登录 / Login
+									</span>
+								</Link>
+							)}
 				</div>
 			</div>
 		</div>

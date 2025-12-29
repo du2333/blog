@@ -6,14 +6,14 @@ import { useDebounce } from "@/hooks/use-debounce";
 /**
  * Simplified media hook for the insert modal (no delete/selection logic)
  */
-export const useMediaPicker = () => {
+export function useMediaPicker() {
 	// Search State
 	const [searchQuery, setSearchQuery] = useState("");
 	const debouncedSearch = useDebounce(searchQuery, 300);
 
 	// Infinite Query for media list (images only)
-	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
-		useInfiniteQuery({
+	const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending }
+		= useInfiniteQuery({
 			queryKey: ["media", debouncedSearch],
 			queryFn: ({ pageParam }) =>
 				getMediaFn({
@@ -22,14 +22,14 @@ export const useMediaPicker = () => {
 						search: debouncedSearch || undefined,
 					},
 				}),
-			getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+			getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
 			initialPageParam: undefined as number | undefined,
 		});
 
 	// Flatten all pages and filter to images only
 	const mediaItems = useMemo(() => {
-		const items = data?.pages.flatMap((page) => page.items) ?? [];
-		return items.filter((m) => m.mimeType.startsWith("image/"));
+		const items = data?.pages.flatMap(page => page.items) ?? [];
+		return items.filter(m => m.mimeType.startsWith("image/"));
 	}, [data]);
 
 	// Load more handler - memoized to prevent IntersectionObserver recreation
@@ -48,4 +48,4 @@ export const useMediaPicker = () => {
 		isLoadingMore: isFetchingNextPage,
 		isPending,
 	};
-};
+}

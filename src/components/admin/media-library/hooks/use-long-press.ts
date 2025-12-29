@@ -5,11 +5,7 @@ interface UseLongPressOptions {
 	delay?: number;
 }
 
-export const useLongPress = (
-	onLongPress: (e: React.MouseEvent | React.TouchEvent) => void,
-	onClick: (e: React.MouseEvent | React.TouchEvent) => void,
-	{ delay = 500 }: UseLongPressOptions = {},
-) => {
+export function useLongPress(onLongPress: (e: React.MouseEvent | React.TouchEvent) => void,	onClick: (e: React.MouseEvent | React.TouchEvent) => void,	{ delay = 500 }: UseLongPressOptions = {}) {
 	const timeout = useRef<number | null>(null);
 	const isLongPress = useRef(false);
 
@@ -84,4 +80,4 @@ export const useLongPress = (
 		onTouchEnd: (e: React.TouchEvent) => clear(e),
 		onTouchMove: handleMove,
 	};
-};
+}

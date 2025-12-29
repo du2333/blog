@@ -1,4 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
+import type { SystemConfig } from "@/features/config/config.schema";
 import { sql } from "drizzle-orm";
 import {
 	index,
@@ -12,7 +13,6 @@ import {
 	createSelectSchema,
 	createUpdateSchema,
 } from "drizzle-zod";
-import type { SystemConfig } from "@/features/config/config.schema";
 
 export * from "./auth.schema";
 
@@ -41,7 +41,7 @@ export const PostsTable = sqliteTable(
 			.default(sql`(unixepoch())`)
 			.$onUpdate(() => new Date()),
 	},
-	(table) => [
+	table => [
 		index("published_at_idx").on(table.publishedAt, table.status),
 		index("created_at_idx").on(table.createdAt),
 	],
@@ -62,7 +62,7 @@ export const MediaTable = sqliteTable(
 			.notNull()
 			.default(sql`(unixepoch())`),
 	},
-	(table) => [index("created_at_idx_media").on(table.createdAt)],
+	table => [index("created_at_idx_media").on(table.createdAt)],
 );
 
 export const PostMediaTable = sqliteTable(
@@ -75,7 +75,7 @@ export const PostMediaTable = sqliteTable(
 			.notNull()
 			.references(() => MediaTable.id, { onDelete: "cascade" }),
 	},
-	(table) => [primaryKey({ columns: [table.postId, table.mediaId] })],
+	table => [primaryKey({ columns: [table.postId, table.mediaId] })],
 );
 
 export const SystemConfigTable = sqliteTable("system_config", {

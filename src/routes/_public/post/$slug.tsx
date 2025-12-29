@@ -57,7 +57,8 @@ function RouteComponent() {
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, []);
 
-	if (!post) throw notFound();
+	if (!post)
+		throw notFound();
 
 	return (
 		<div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
@@ -91,7 +92,9 @@ function RouteComponent() {
 							</span>
 							<span className="flex items-center gap-1.5">
 								<Clock size={12} strokeWidth={1.5} />
-								{post.readTimeInMinutes} min
+								{post.readTimeInMinutes}
+								{" "}
+								min
 							</span>
 						</div>
 

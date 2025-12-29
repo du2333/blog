@@ -62,7 +62,7 @@ export function Navbar({
 
 					{/* Center: Main Nav (Absolute center for true minimalist feel) */}
 					<nav className="hidden lg:flex items-center gap-16">
-						{navOptions.map((option) => (
+						{navOptions.map(option => (
 							<Link
 								key={option.id}
 								to={option.to}
@@ -95,11 +95,13 @@ export function Navbar({
 								className="w-10 h-10 flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
 								title="Theme"
 							>
-								{appTheme === "dark" ? (
-									<Sun size={16} strokeWidth={1.2} />
-								) : (
-									<Moon size={16} strokeWidth={1.2} />
-								)}
+								{appTheme === "dark"
+									? (
+											<Sun size={16} strokeWidth={1.2} />
+										)
+									: (
+											<Moon size={16} strokeWidth={1.2} />
+										)}
 							</button>
 							<button
 								onClick={onSearchClick}
@@ -115,53 +117,59 @@ export function Navbar({
 						{/* Profile / Menu Toggle */}
 						<div className="flex items-center gap-4">
 							<div className="hidden md:flex items-center gap-4">
-								{isLoading ? (
-									<div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
-								) : (
-									<div className="flex items-center gap-4 animate-in fade-in duration-700 fill-mode-both">
-										{user ? (
-											<>
-												{user.role === "admin" && (
-													<Link
-														to="/admin"
-														className="p-2.5 hover:bg-accent rounded-full transition-all duration-500 text-muted-foreground hover:text-foreground"
-														title="进入后台"
-													>
-														<LayoutDashboard size={18} strokeWidth={1.5} />
-													</Link>
-												)}
-												<button
-													onClick={onOpenProfile}
-													className="group flex items-center p-0.5 rounded-full border border-transparent hover:border-border transition-all duration-500"
-												>
-													<div className="w-8 h-8 rounded-full overflow-hidden border border-border/50 p-0.5 transition-all duration-700">
-														{user.image ? (
-															<img
-																src={user.image}
-																alt={user.name}
-																className="w-full h-full rounded-full object-cover"
-															/>
-														) : (
-															<div className="w-full h-full bg-muted flex items-center justify-center">
-																<UserIcon
-																	size={14}
-																	className="text-zinc-300"
-																	strokeWidth={1}
-																/>
-															</div>
+								{isLoading
+									? (
+											<div className="w-8 h-8 rounded-full bg-muted animate-pulse" />
+										)
+									: (
+											<div className="flex items-center gap-4 animate-in fade-in duration-700 fill-mode-both">
+												{user
+													? (
+															<>
+																{user.role === "admin" && (
+																	<Link
+																		to="/admin"
+																		className="p-2.5 hover:bg-accent rounded-full transition-all duration-500 text-muted-foreground hover:text-foreground"
+																		title="进入后台"
+																	>
+																		<LayoutDashboard size={18} strokeWidth={1.5} />
+																	</Link>
+																)}
+																<button
+																	onClick={onOpenProfile}
+																	className="group flex items-center p-0.5 rounded-full border border-transparent hover:border-border transition-all duration-500"
+																>
+																	<div className="w-8 h-8 rounded-full overflow-hidden border border-border/50 p-0.5 transition-all duration-700">
+																		{user.image
+																			? (
+																					<img
+																						src={user.image}
+																						alt={user.name}
+																						className="w-full h-full rounded-full object-cover"
+																					/>
+																				)
+																			: (
+																					<div className="w-full h-full bg-muted flex items-center justify-center">
+																						<UserIcon
+																							size={14}
+																							className="text-zinc-300"
+																							strokeWidth={1}
+																						/>
+																					</div>
+																				)}
+																	</div>
+																</button>
+															</>
+														)
+													: (
+															<Link to="/login">
+																<span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-colors font-medium">
+																	Login
+																</span>
+															</Link>
 														)}
-													</div>
-												</button>
-											</>
-										) : (
-											<Link to="/login">
-												<span className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-colors font-medium">
-													Login
-												</span>
-											</Link>
+											</div>
 										)}
-									</div>
-								)}
 							</div>
 
 							<button

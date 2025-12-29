@@ -2,7 +2,8 @@ import type { JSONContent } from "@tiptap/react";
 import { extractImageKey } from "@/lib/images/utils";
 
 export function slugify(text: string | null | undefined) {
-	if (!text) return "untitled-log";
+	if (!text)
+		return "untitled-log";
 
 	const cleaned = text
 		.toString()
@@ -16,10 +17,10 @@ export function slugify(text: string | null | undefined) {
 		// a-z0-9 : 英文和数字
 		// \-     : 横杠
 		// \u4e00-\u9fa5 : 汉字的标准 Unicode 范围 (基本覆盖所有常用字)
-		.replace(/[^a-z0-9\-\u4e00-\u9fa5]+/g, "")
+		.replace(/[^a-z0-9\-\u4E00-\u9FA5]+/g, "")
 
 		// 3. 处理连续的横杠 (比如 "Hello... World" 会变成 "hello---world"，这里修正为 "hello-world")
-		.replace(/--+/g, "-")
+		.replace(/-{2,}/g, "-")
 
 		// 4. 去除开头和结尾的横杠
 		.replace(/^-+/, "")
@@ -34,17 +35,21 @@ export function extractAllImageKeys(doc: JSONContent | null): string[] {
 	function traverse(node: JSONContent) {
 		if (node.type === "image" && node.attrs?.src) {
 			const key = extractImageKey(node.attrs.src);
-			if (key) keys.push(key);
+			if (key)
+				keys.push(key);
 		}
-		if (node.content) node.content.forEach(traverse);
+		if (node.content)
+			node.content.forEach(traverse);
 	}
 
-	if (doc) traverse(doc);
+	if (doc)
+		traverse(doc);
 	return Array.from(new Set(keys)); // 去重
 }
 
 export function convertToPlainText(doc: JSONContent | null): string {
-	if (!doc) return "";
+	if (!doc)
+		return "";
 	const textParts: string[] = [];
 
 	function traverse(node: JSONContent) {
@@ -55,7 +60,7 @@ export function convertToPlainText(doc: JSONContent | null): string {
 		// 2. 处理图片 (提取 Alt 文本，这很重要！)
 		else if (node.type === "image" && node.attrs?.alt) {
 			// 给图片文本加个空格，防止和前后文粘连
-			textParts.push(" " + node.attrs.alt + " ");
+			textParts.push(` ${node.attrs.alt} `);
 		}
 
 		// 3. 递归遍历子节点 (处理 Heading, Blockquote, List 等容器)

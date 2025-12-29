@@ -1,9 +1,9 @@
+import type React from "react";
+import type { UploadItem } from "../types";
 import { ClientOnly } from "@tanstack/react-router";
 import { AlertCircle, Check, Loader2, Upload, X } from "lucide-react";
-import type React from "react";
 import { useRef } from "react";
 import { createPortal } from "react-dom";
-import type { UploadItem } from "../types";
 
 interface UploadModalProps {
 	isOpen: boolean;
@@ -32,14 +32,15 @@ function UploadModalInternal({
 		if (event.target.files && event.target.files.length > 0) {
 			onFileSelect(Array.from(event.target.files));
 		}
-		if (fileInputRef.current) fileInputRef.current.value = "";
+		if (fileInputRef.current)
+			fileInputRef.current.value = "";
 	};
 
-	const isAllComplete =
-		queue.length > 0 &&
-		queue.every((i) => i.status === "COMPLETE" || i.status === "ERROR");
+	const isAllComplete
+		= queue.length > 0
+			&& queue.every(i => i.status === "COMPLETE" || i.status === "ERROR");
 
-	const hasErrors = queue.some((i) => i.status === "ERROR");
+	const hasErrors = queue.some(i => i.status === "ERROR");
 
 	return createPortal(
 		<div
@@ -60,10 +61,10 @@ function UploadModalInternal({
           relative w-full max-w-3xl bg-popover border border-border shadow-2xl 
           flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
           ${
-						isOpen
-							? "translate-y-0 scale-100 opacity-100"
-							: "translate-y-8 scale-[0.99] opacity-0"
-					}
+				isOpen
+					? "translate-y-0 scale-100 opacity-100"
+					: "translate-y-8 scale-[0.99] opacity-0"
+			}
         `}
 			>
 				{/* Header */}
@@ -104,10 +105,10 @@ function UploadModalInternal({
 						className={`
               relative border-2 border-dashed aspect-21/9 min-h-[200px] flex flex-col items-center justify-center cursor-pointer transition-all duration-700 gap-4 rounded-sm
               ${
-								isDragging
-									? "border-foreground bg-muted scale-[0.99]"
-									: "border-border bg-muted/50 hover:bg-muted hover:border-border"
-							}
+					isDragging
+						? "border-foreground bg-muted scale-[0.99]"
+						: "border-border bg-muted/50 hover:bg-muted hover:border-border"
+				}
             `}
 					>
 						<div
@@ -131,12 +132,14 @@ function UploadModalInternal({
 					<div className="space-y-4">
 						{queue.length > 0 && (
 							<div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold border-b border-border pb-4">
-								上传队列 ({queue.length})
+								上传队列 (
+								{queue.length}
+								)
 							</div>
 						)}
 
 						<div className="space-y-3">
-							{queue.map((item) => (
+							{queue.map(item => (
 								<div
 									key={item.id}
 									className="group bg-muted p-4 flex flex-col gap-3 rounded-sm border border-transparent hover:border-border transition-all"
@@ -144,25 +147,29 @@ function UploadModalInternal({
 									<div className="flex justify-between items-center">
 										<div className="flex items-center gap-3 min-w-0">
 											<div className="shrink-0 text-muted-foreground">
-												{item.status === "COMPLETE" ? (
-													<Check
-														size={16}
-														strokeWidth={3}
-														className="text-green-500"
-													/>
-												) : item.status === "ERROR" ? (
-													<AlertCircle
-														size={16}
-														strokeWidth={2}
-														className="text-red-500"
-													/>
-												) : (
-													<Loader2
-														size={16}
-														strokeWidth={2}
-														className="animate-spin text-muted-foreground"
-													/>
-												)}
+												{item.status === "COMPLETE"
+													? (
+															<Check
+																size={16}
+																strokeWidth={3}
+																className="text-green-500"
+															/>
+														)
+													: item.status === "ERROR"
+														? (
+																<AlertCircle
+																	size={16}
+																	strokeWidth={2}
+																	className="text-red-500"
+																/>
+															)
+														: (
+																<Loader2
+																	size={16}
+																	strokeWidth={2}
+																	className="animate-spin text-muted-foreground"
+																/>
+															)}
 											</div>
 											<span className="text-xs font-medium truncate">
 												{item.name}
@@ -184,7 +191,8 @@ function UploadModalInternal({
 														: "bg-primary"
 											}`}
 											style={{ width: `${item.progress}%` }}
-										></div>
+										>
+										</div>
 									</div>
 
 									{item.log && (
@@ -206,26 +214,28 @@ function UploadModalInternal({
 
 				{/* Footer */}
 				<div className="p-8 border-t border-border flex justify-end gap-4 shrink-0">
-					{isAllComplete ? (
-						<button
-							onClick={onClose}
-							className={`flex-1 flex items-center justify-center gap-2 py-4 text-[11px] uppercase tracking-[0.2em] font-bold transition-all ${
-								hasErrors
-									? "bg-red-500 text-white hover:bg-red-600"
-									: "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
-							}`}
-						>
-							<Check size={16} strokeWidth={2.5} />
-							{hasErrors ? "任务存在错误 - 确认" : "上传任务已完成"}
-						</button>
-					) : (
-						<button
-							onClick={onClose}
-							className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
-						>
-							取消
-						</button>
-					)}
+					{isAllComplete
+						? (
+								<button
+									onClick={onClose}
+									className={`flex-1 flex items-center justify-center gap-2 py-4 text-[11px] uppercase tracking-[0.2em] font-bold transition-all ${
+										hasErrors
+											? "bg-red-500 text-white hover:bg-red-600"
+											: "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
+									}`}
+								>
+									<Check size={16} strokeWidth={2.5} />
+									{hasErrors ? "任务存在错误 - 确认" : "上传任务已完成"}
+								</button>
+							)
+						: (
+								<button
+									onClick={onClose}
+									className="px-8 py-4 text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
+								>
+									取消
+								</button>
+							)}
 				</div>
 			</div>
 		</div>,

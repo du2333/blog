@@ -27,7 +27,8 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
 	useEffect(() => {
 		if (isOpen) {
 			document.body.style.overflow = "hidden";
-		} else {
+		}
+		else {
 			document.body.style.overflow = "";
 		}
 		return () => {
@@ -37,32 +38,38 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
 
 	useEffect(() => {
 		const handleEsc = (e: KeyboardEvent) => {
-			if (e.key === "Escape") handleClose();
+			if (e.key === "Escape")
+				handleClose();
 		};
 		window.addEventListener("keydown", handleEsc);
 		return () => window.removeEventListener("keydown", handleEsc);
 	}, []);
 
-	if (!src) return null;
-
 	const originalSrc = React.useMemo(() => {
+		if (!src)
+			return undefined;
+
 		try {
-			const base =
-				typeof window !== "undefined" ? window.location.origin : undefined;
+			const base
+				= typeof window !== "undefined" ? window.location.origin : undefined;
 			const url = base ? new URL(src, base) : new URL(src);
 			url.searchParams.set("original", "true");
 			return url.toString();
-		} catch {
+		}
+		catch {
 			return src.includes("?")
 				? `${src}&original=true`
 				: `${src}?original=true`;
 		}
 	}, [src]);
 
+	if (!src)
+		return null;
+
 	return (
 		<>
 			<div
-				className={`relative group cursor-zoom-in block w-full h-auto`}
+				className="relative group cursor-zoom-in block w-full h-auto"
 				onClick={() => setIsOpen(true)}
 			>
 				<img

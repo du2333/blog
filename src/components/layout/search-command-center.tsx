@@ -33,7 +33,8 @@ export function SearchCommandCenter({
 		if (isOpen) {
 			setTimeout(() => inputRef.current?.focus(), 100);
 			document.body.style.overflow = "hidden";
-		} else {
+		}
+		else {
 			document.body.style.overflow = "";
 			setQuery("");
 		}
@@ -49,21 +50,27 @@ export function SearchCommandCenter({
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (!isOpen) return;
+			if (!isOpen)
+				return;
 
 			const len = searchResults.length;
 
 			if (e.key === "Escape") {
 				onClose();
-			} else if (e.key === "ArrowDown") {
+			}
+			else if (e.key === "ArrowDown") {
 				e.preventDefault();
-				if (len === 0) return;
-				setSelectedIndex((prev) => (prev + 1) % len);
-			} else if (e.key === "ArrowUp") {
+				if (len === 0)
+					return;
+				setSelectedIndex(prev => (prev + 1) % len);
+			}
+			else if (e.key === "ArrowUp") {
 				e.preventDefault();
-				if (len === 0) return;
-				setSelectedIndex((prev) => (prev - 1 + len) % len);
-			} else if (e.key === "Enter") {
+				if (len === 0)
+					return;
+				setSelectedIndex(prev => (prev - 1 + len) % len);
+			}
+			else if (e.key === "Enter") {
 				e.preventDefault();
 				if (len > 0) {
 					handleSelect(searchResults[selectedIndex]?.post.slug);
@@ -108,10 +115,10 @@ export function SearchCommandCenter({
         relative w-full max-w-3xl flex flex-col max-h-[70vh]
         transition-all duration-500 ease-in-out transform fill-mode-both
         ${
-					isOpen
-						? "opacity-100 scale-100 translate-y-0"
-						: "opacity-0 scale-99 -translate-y-4"
-				}
+		isOpen
+			? "opacity-100 scale-100 translate-y-0"
+			: "opacity-0 scale-99 -translate-y-4"
+		}
       `}
 			>
 				{/* Header / Input */}
@@ -129,7 +136,7 @@ export function SearchCommandCenter({
 						ref={inputRef}
 						type="text"
 						value={query}
-						onChange={(e) => setQuery(e.target.value)}
+						onChange={e => setQuery(e.target.value)}
 						placeholder="搜索文章或想法..."
 						className="flex-1 bg-transparent text-3xl md:text-5xl font-serif text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
 					/>
@@ -145,72 +152,81 @@ export function SearchCommandCenter({
 					ref={listRef}
 					className="flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 space-y-2 scroll-smooth"
 				>
-					{query.trim() === "" ? (
-						<div className="h-64 flex flex-col items-center justify-center space-y-4"></div>
-					) : !isSearching && searchResults.length === 0 ? (
-						<div className="h-64 flex flex-col items-center justify-center">
-							<span className="text-lg font-light text-muted-foreground italic">
-								未找到相关结果
-							</span>
-						</div>
-					) : (
-						searchResults.map((result, index) => (
-							<div
-								key={result.post.id}
-								onClick={() => handleSelect(result.post.slug)}
-								onMouseEnter={() => setSelectedIndex(index)}
-								className={`
+					{query.trim() === ""
+						? (
+								<div className="h-64 flex flex-col items-center justify-center space-y-4"></div>
+							)
+						: !isSearching && searchResults.length === 0
+								? (
+										<div className="h-64 flex flex-col items-center justify-center">
+											<span className="text-lg font-light text-muted-foreground italic">
+												未找到相关结果
+											</span>
+										</div>
+									)
+								: (
+										searchResults.map((result, index) => (
+											<div
+												key={result.post.id}
+												onClick={() => handleSelect(result.post.slug)}
+												onMouseEnter={() => setSelectedIndex(index)}
+												className={`
                   group p-6 transition-all duration-500 rounded-sm relative
                   ${
-										index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
-									}
+											index === selectedIndex ? "bg-accent" : "hover:bg-accent/50"
+											}
                 `}
-							>
-								<div className="flex justify-between items-start gap-8">
-									<div className="flex-1 min-w-0 space-y-2">
-										<div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest opacity-40">
-											<span>{result.post.category}</span>
-										</div>
+											>
+												<div className="flex justify-between items-start gap-8">
+													<div className="flex-1 min-w-0 space-y-2">
+														<div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-widest opacity-40">
+															<span>{result.post.category}</span>
+														</div>
 
-										<h4
-											className="text-xl md:text-2xl font-serif text-foreground leading-tight"
-											dangerouslySetInnerHTML={{
-												__html: result.matches.title || result.post.title,
-											}}
-										/>
+														<h4
+															className="text-xl md:text-2xl font-serif text-foreground leading-tight"
+															dangerouslySetInnerHTML={{
+																__html: result.matches.title || result.post.title,
+															}}
+														/>
 
-										<div
-											className="text-sm font-light text-muted-foreground line-clamp-1 italic"
-											dangerouslySetInnerHTML={{
-												__html: result.matches.summary || result.post.summary,
-											}}
-										/>
-									</div>
+														<div
+															className="text-sm font-light text-muted-foreground line-clamp-1 italic"
+															dangerouslySetInnerHTML={{
+																__html: result.matches.summary || result.post.summary,
+															}}
+														/>
+													</div>
 
-									<div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-										<CornerDownLeft
-											size={16}
-											className="text-muted-foreground"
-										/>
-									</div>
-								</div>
-							</div>
-						))
-					)}
+													<div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+														<CornerDownLeft
+															size={16}
+															className="text-muted-foreground"
+														/>
+													</div>
+												</div>
+											</div>
+										))
+									)}
 				</div>
 
 				{/* Footer */}
 				<div className="pt-8 border-t border-border flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] opacity-30">
 					<div className="flex gap-8">
 						<div className="flex items-center gap-2">
-							<kbd className="px-1 border border-current rounded">↑↓</kbd> 导航
+							<kbd className="px-1 border border-current rounded">↑↓</kbd>
+							{" "}
+							导航
 						</div>
 						<div className="flex items-center gap-2">
-							<kbd className="px-1 border border-current rounded">Enter</kbd>{" "}
+							<kbd className="px-1 border border-current rounded">Enter</kbd>
+							{" "}
 							选择
 						</div>
 						<div className="flex items-center gap-2">
-							<kbd className="px-1 border border-current rounded">Esc</kbd> 关闭
+							<kbd className="px-1 border border-current rounded">Esc</kbd>
+							{" "}
+							关闭
 						</div>
 					</div>
 				</div>

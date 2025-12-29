@@ -1,7 +1,7 @@
+import type { PostListItem } from "@/lib/db/schema";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Clock } from "lucide-react";
 import { memo } from "react";
-import type { PostListItem } from "@/lib/db/schema";
 
 interface PostItemProps {
 	post: PostListItem;
@@ -36,12 +36,18 @@ export const PostItem = memo(({ post, index }: PostItemProps) => (
 					{post.category}
 				</span>
 				<span className="flex items-center gap-1.5">
-					<Clock size={12} strokeWidth={1.5} /> {post.readTimeInMinutes} min
+					<Clock size={12} strokeWidth={1.5} />
+					{" "}
+					{post.readTimeInMinutes}
+					{" "}
+					min
 				</span>
 			</div>
 
 			<div className="hidden md:flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase text-foreground opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
-				阅读全文 <ArrowRight size={14} />
+				阅读全文
+				{" "}
+				<ArrowRight size={14} />
 			</div>
 		</div>
 	</Link>

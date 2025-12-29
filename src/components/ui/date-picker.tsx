@@ -1,9 +1,9 @@
+import type React from "react";
 import {
 	Calendar as CalendarIcon,
 	ChevronLeft,
 	ChevronRight,
 } from "lucide-react";
-import type React from "react";
 import { useEffect, useRef, useState } from "react";
 
 interface DatePickerProps {
@@ -29,8 +29,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
 	useEffect(() => {
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
-				containerRef.current &&
-				!containerRef.current.contains(event.target as Node)
+				containerRef.current
+				&& !containerRef.current.contains(event.target as Node)
 			) {
 				setIsOpen(false);
 			}
@@ -71,7 +71,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
 	};
 
 	const isSelected = (day: number) => {
-		if (!value) return false;
+		if (!value)
+			return false;
 		const currentYear = viewDate.getFullYear();
 		const currentMonth = viewDate.getMonth();
 		const [vYear, vMonth, vDay] = value.split("-").map(Number);
@@ -81,9 +82,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
 	const isToday = (day: number) => {
 		const today = new Date();
 		return (
-			today.getDate() === day &&
-			today.getMonth() === viewDate.getMonth() &&
-			today.getFullYear() === viewDate.getFullYear()
+			today.getDate() === day
+			&& today.getMonth() === viewDate.getMonth()
+			&& today.getFullYear() === viewDate.getFullYear()
 		);
 	};
 
@@ -107,10 +108,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
 					className={`
             w-9 h-9 text-[11px] font-medium flex items-center justify-center transition-all duration-300 rounded-sm relative group
             ${
-							selected
-								? "bg-primary text-primary-foreground shadow-lg"
-								: "text-muted-foreground hover:text-foreground hover:bg-accent"
-						}
+				selected
+					? "bg-primary text-primary-foreground shadow-lg"
+					: "text-muted-foreground hover:text-foreground hover:bg-accent"
+			}
             ${today && !selected ? "text-foreground font-bold" : ""}
           `}
 				>
@@ -176,7 +177,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
 					{/* Grid Header (Days) */}
 					<div className="grid grid-cols-7 gap-1 mb-2">
-						{daysOfWeek.map((d) => (
+						{daysOfWeek.map(d => (
 							<div
 								key={d}
 								className="w-9 text-center text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest"

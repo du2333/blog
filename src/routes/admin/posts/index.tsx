@@ -1,13 +1,14 @@
+import type { CategoryFilter, SortDirection, StatusFilter } from "@/components/admin/posts/post-manager/types";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import { PostManager } from "@/components/admin/posts/post-manager";
 import {
 	CATEGORY_FILTERS,
-	type CategoryFilter,
+
 	SORT_DIRECTIONS,
-	type SortDirection,
+
 	STATUS_FILTERS,
-	type StatusFilter,
+
 } from "@/components/admin/posts/post-manager/types";
 
 const searchSchema = z.object({
@@ -39,7 +40,7 @@ function PostManagerPage() {
 	const updateSearch = (updates: Partial<PostsSearchParams>) => {
 		navigate({
 			to: "/admin/posts",
-			search: (prev) => ({
+			search: prev => ({
 				...prev,
 				...updates,
 				// Reset to page 1 when filters change (except for page changes)

@@ -34,7 +34,7 @@ const passwordSchema = z
 		newPassword: z.string().min(8, "新密钥至少 8 位"),
 		confirmPassword: z.string(),
 	})
-	.refine((data) => data.newPassword === data.confirmPassword, {
+	.refine(data => data.newPassword === data.confirmPassword, {
 		message: "密钥不匹配",
 		path: ["confirmPassword"],
 	});
@@ -114,7 +114,8 @@ export function UserProfileModal({
 		});
 	};
 
-	if (!user) return null;
+	if (!user)
+		return null;
 
 	return (
 		<div
@@ -137,10 +138,10 @@ export function UserProfileModal({
             flex flex-col md:flex-row overflow-hidden rounded-sm
             max-h-[90vh] transition-all duration-500 ease-in-out transform fill-mode-both
             ${
-							isOpen
-								? "translate-y-0 scale-100 opacity-100"
-								: "translate-y-8 scale-[0.99] opacity-0"
-						}
+		isOpen
+			? "translate-y-0 scale-100 opacity-100"
+			: "translate-y-8 scale-[0.99] opacity-0"
+		}
         `}
 			>
 				{/* Close Button */}
@@ -156,17 +157,19 @@ export function UserProfileModal({
 					<div className="space-y-12">
 						<div className="space-y-6">
 							<div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-border p-1">
-								{user.image ? (
-									<img
-										src={user.image}
-										alt={user.name}
-										className="w-full h-full rounded-full object-cover"
-									/>
-								) : (
-									<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-muted-foreground/30">
-										<UserIcon size={40} strokeWidth={1} />
-									</div>
-								)}
+								{user.image
+									? (
+											<img
+												src={user.image}
+												alt={user.name}
+												className="w-full h-full rounded-full object-cover"
+											/>
+										)
+									: (
+											<div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-muted-foreground/30">
+												<UserIcon size={40} strokeWidth={1} />
+											</div>
+										)}
 							</div>
 							<div className="space-y-2">
 								<h2 className="text-4xl font-serif font-medium tracking-tight">
@@ -263,11 +266,13 @@ export function UserProfileModal({
 										disabled={isProfileSubmitting}
 										className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
 									>
-										{isProfileSubmitting ? (
-											<Loader2 size={18} className="animate-spin" />
-										) : (
-											<Check size={18} />
-										)}
+										{isProfileSubmitting
+											? (
+													<Loader2 size={18} className="animate-spin" />
+												)
+											: (
+													<Check size={18} />
+												)}
 									</button>
 								</div>
 								{profileErrors.image && (
@@ -287,88 +292,92 @@ export function UserProfileModal({
 							</h3>
 						</header>
 
-						{hasPassword ? (
-							<form
-								onSubmit={handleSubmitPassword(onPasswordSubmit)}
-								className="space-y-10 max-w-2xl"
-							>
-								<div className="space-y-10">
-									<div className="space-y-3">
-										<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-											当前密码
-										</label>
-										<input
-											type="password"
-											{...registerPassword("currentPassword")}
-											className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
-										/>
-										{passwordErrors.currentPassword && (
-											<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
-												{passwordErrors.currentPassword.message}
-											</span>
-										)}
-									</div>
-
-									<div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-										<div className="space-y-3">
-											<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-												新密码
-											</label>
-											<input
-												type="password"
-												{...registerPassword("newPassword")}
-												className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
-											/>
-											{passwordErrors.newPassword && (
-												<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
-													{passwordErrors.newPassword.message}
-												</span>
-											)}
-										</div>
-										<div className="space-y-3">
-											<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-												确认新密码
-											</label>
-											<div className="flex gap-4 items-end">
+						{hasPassword
+							? (
+									<form
+										onSubmit={handleSubmitPassword(onPasswordSubmit)}
+										className="space-y-10 max-w-2xl"
+									>
+										<div className="space-y-10">
+											<div className="space-y-3">
+												<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
+													当前密码
+												</label>
 												<input
 													type="password"
-													{...registerPassword("confirmPassword")}
-													className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+													{...registerPassword("currentPassword")}
+													className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
 												/>
-												<button
-													type="submit"
-													disabled={isPasswordSubmitting}
-													className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
-												>
-													{isPasswordSubmitting ? (
-														<Loader2 size={18} className="animate-spin" />
-													) : (
-														<Check size={18} />
-													)}
-												</button>
+												{passwordErrors.currentPassword && (
+													<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+														{passwordErrors.currentPassword.message}
+													</span>
+												)}
 											</div>
-											{passwordErrors.confirmPassword && (
-												<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
-													{passwordErrors.confirmPassword.message}
-												</span>
-											)}
+
+											<div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+												<div className="space-y-3">
+													<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
+														新密码
+													</label>
+													<input
+														type="password"
+														{...registerPassword("newPassword")}
+														className="w-full bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+													/>
+													{passwordErrors.newPassword && (
+														<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+															{passwordErrors.newPassword.message}
+														</span>
+													)}
+												</div>
+												<div className="space-y-3">
+													<label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
+														确认新密码
+													</label>
+													<div className="flex gap-4 items-end">
+														<input
+															type="password"
+															{...registerPassword("confirmPassword")}
+															className="flex-1 min-w-0 bg-transparent border-b border-border py-4 text-xl font-light focus:border-foreground focus:outline-none transition-all"
+														/>
+														<button
+															type="submit"
+															disabled={isPasswordSubmitting}
+															className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
+														>
+															{isPasswordSubmitting
+																? (
+																		<Loader2 size={18} className="animate-spin" />
+																	)
+																: (
+																		<Check size={18} />
+																	)}
+														</button>
+													</div>
+													{passwordErrors.confirmPassword && (
+														<span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+															{passwordErrors.confirmPassword.message}
+														</span>
+													)}
+												</div>
+											</div>
 										</div>
+									</form>
+								)
+							: (
+									<div className="p-10 border border-border bg-muted/30 space-y-6 max-w-2xl">
+										<div className="flex items-center gap-4 text-muted-foreground">
+											<ShieldAlert size={24} strokeWidth={1.5} />
+											<span className="text-xs font-medium uppercase tracking-[0.2em]">
+												外部账户
+											</span>
+										</div>
+										<p className="text-sm font-light text-muted-foreground leading-relaxed italic">
+											此账户通过第三方提供商（如 Github）登录。
+										</p>
 									</div>
-								</div>
-							</form>
-						) : (
-							<div className="p-10 border border-border bg-muted/30 space-y-6 max-w-2xl">
-								<div className="flex items-center gap-4 text-muted-foreground">
-									<ShieldAlert size={24} strokeWidth={1.5} />
-									<span className="text-xs font-medium uppercase tracking-[0.2em]">
-										外部账户
-									</span>
-								</div>
-								<p className="text-sm font-light text-muted-foreground leading-relaxed italic">
-									此账户通过第三方提供商（如 Github）登录。
-								</p>
-							</div>
-						)}
+								)}
 					</section>
 				</div>
 			</div>

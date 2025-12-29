@@ -1,6 +1,6 @@
-import { Extension } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
+import { Extension } from "@tiptap/core";
 
 export interface ImageUploadOptions {
 	onUpload: (file: File) => Promise<string>;
@@ -34,112 +34,117 @@ export const ImageUpload = Extension.create<ImageUploadOptions>({
 		return {
 			uploadImage:
 				(file: File, pos?: number) =>
-				({ tr, dispatch, state, view }) => {
-					if (!view) return false;
+					({ tr, dispatch, state, view }) => {
+						if (!view)
+							return false;
 
-					const schema = state.schema;
+						const schema = state.schema;
 
-					// 1. Create a local preview URL
-					const blobUrl = URL.createObjectURL(file);
+						// 1. Create a local preview URL
+						const blobUrl = URL.createObjectURL(file);
 
-					// 2. Insert the image immediately (Optimistic UI)
-					if (dispatch) {
-						const node = schema.nodes.image.create({
-							src: blobUrl,
-							alt: file.name,
-						});
-						const insertPos = pos ?? tr.selection.from;
-						tr.insert(insertPos, node);
-					}
+						// 2. Insert the image immediately (Optimistic UI)
+						if (dispatch) {
+							const node = schema.nodes.image.create({
+								src: blobUrl,
+								alt: file.name,
+							});
+							const insertPos = pos ?? tr.selection.from;
+							tr.insert(insertPos, node);
+						}
 
-					// Helper function to find and remove the placeholder node
-					const removePlaceholder = (editorView: EditorView, url: string) => {
-						if (editorView.isDestroyed) return;
-
-						requestAnimationFrame(() => {
-							if (editorView.isDestroyed) return;
-
-							const currentTr = editorView.state.tr;
-							let found = false;
-
-							editorView.state.doc.descendants(
-								(descendant: ProseMirrorNode, nodePos: number) => {
-									if (found) return false;
-
-									if (
-										descendant.type.name === "image" &&
-										descendant.attrs.src === url
-									) {
-										currentTr.delete(nodePos, nodePos + descendant.nodeSize);
-										found = true;
-										return false;
-									}
-									return true;
-								},
-							);
-
-							if (found) {
-								editorView.dispatch(currentTr);
-							}
-
-							// Revoke the blob URL to free memory
-							URL.revokeObjectURL(url);
-						});
-					};
-
-					// 3. Trigger the actual upload asynchronously
-					this.options
-						.onUpload(file)
-						.then((remoteUrl) => {
-							if (view.isDestroyed) {
-								URL.revokeObjectURL(blobUrl);
+						// Helper function to find and remove the placeholder node
+						const removePlaceholder = (editorView: EditorView, url: string) => {
+							if (editorView.isDestroyed)
 								return;
-							}
 
-							// 4. Find the node again by its blob URL and replace it.
 							requestAnimationFrame(() => {
-								if (view.isDestroyed) {
-									URL.revokeObjectURL(blobUrl);
+								if (editorView.isDestroyed)
 									return;
-								}
 
-								const currentTr = view.state.tr;
-								let replaced = false;
+								const currentTr = editorView.state.tr;
+								let found = false;
 
-								view.state.doc.descendants(
+								editorView.state.doc.descendants(
 									(descendant: ProseMirrorNode, nodePos: number) => {
-										if (replaced) return false;
+										if (found)
+											return false;
 
 										if (
-											descendant.type.name === "image" &&
-											descendant.attrs.src === blobUrl
+											descendant.type.name === "image"
+											&& descendant.attrs.src === url
 										) {
-											const newAttrs = { ...descendant.attrs, src: remoteUrl };
-											currentTr.setNodeMarkup(nodePos, undefined, newAttrs);
-											replaced = true;
+											currentTr.delete(nodePos, nodePos + descendant.nodeSize);
+											found = true;
 											return false;
 										}
 										return true;
 									},
 								);
 
-								if (replaced) {
-									view.dispatch(currentTr);
+								if (found) {
+									editorView.dispatch(currentTr);
 								}
 
 								// Revoke the blob URL to free memory
-								URL.revokeObjectURL(blobUrl);
+								URL.revokeObjectURL(url);
 							});
-						})
-						.catch((error) => {
-							console.error("Upload failed", error);
-							this.options.onError?.(error);
-							// Remove the placeholder image on failure
-							removePlaceholder(view, blobUrl);
-						});
+						};
 
-					return true;
-				},
+						// 3. Trigger the actual upload asynchronously
+						this.options
+							.onUpload(file)
+							.then((remoteUrl) => {
+								if (view.isDestroyed) {
+									URL.revokeObjectURL(blobUrl);
+									return;
+								}
+
+								// 4. Find the node again by its blob URL and replace it.
+								requestAnimationFrame(() => {
+									if (view.isDestroyed) {
+										URL.revokeObjectURL(blobUrl);
+										return;
+									}
+
+									const currentTr = view.state.tr;
+									let replaced = false;
+
+									view.state.doc.descendants(
+										(descendant: ProseMirrorNode, nodePos: number) => {
+											if (replaced)
+												return false;
+
+											if (
+												descendant.type.name === "image"
+												&& descendant.attrs.src === blobUrl
+											) {
+												const newAttrs = { ...descendant.attrs, src: remoteUrl };
+												currentTr.setNodeMarkup(nodePos, undefined, newAttrs);
+												replaced = true;
+												return false;
+											}
+											return true;
+										},
+									);
+
+									if (replaced) {
+										view.dispatch(currentTr);
+									}
+
+									// Revoke the blob URL to free memory
+									URL.revokeObjectURL(blobUrl);
+								});
+							})
+							.catch((error) => {
+								console.error("Upload failed", error);
+								this.options.onError?.(error);
+								// Remove the placeholder image on failure
+								removePlaceholder(view, blobUrl);
+							});
+
+						return true;
+					},
 		};
 	},
 });

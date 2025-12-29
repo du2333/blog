@@ -1,9 +1,9 @@
+import type { PostCategory } from "@/lib/db/schema";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import {
 	findPostBySlugFn,
 	getPostsCursorFn,
 } from "@/features/posts/api/posts.public.api";
-import type { PostCategory } from "@/lib/db/schema";
 import { findPostByIdFn } from "./api/posts.admin.api";
 
 export const featuredPostsQuery = queryOptions({
@@ -16,29 +16,32 @@ export const featuredPostsQuery = queryOptions({
 	},
 });
 
-export const postsInfiniteQueryOptions = (category?: PostCategory) =>
-	infiniteQueryOptions({
+export function postsInfiniteQueryOptions(category?: PostCategory) {
+	return infiniteQueryOptions({
 		queryKey: ["posts", category],
 		queryFn: ({ pageParam }) =>
 			getPostsCursorFn({
 				data: {
 					cursor: pageParam,
-					category: category,
+					category,
 					limit: 12,
 				},
 			}),
-		getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+		getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
 		initialPageParam: undefined as number | undefined,
 	});
+}
 
-export const postBySlugQuery = (slug: string) =>
-	queryOptions({
+export function postBySlugQuery(slug: string) {
+	return queryOptions({
 		queryKey: ["post", slug],
 		queryFn: () => findPostBySlugFn({ data: { slug } }),
 	});
+}
 
-export const postByIdQuery = (id: number) =>
-	queryOptions({
+export function postByIdQuery(id: number) {
+	return queryOptions({
 		queryKey: ["post", id],
 		queryFn: () => findPostByIdFn({ data: { id } }),
 	});
+}

@@ -10,7 +10,8 @@ export interface TableOfContentsItem {
 export function generateTableOfContents(
 	content: JSONContent | undefined | null,
 ) {
-	if (!content || !content.content) return [];
+	if (!content || !content.content)
+		return [];
 
 	const headings: TableOfContentsItem[] = [];
 
@@ -30,7 +31,8 @@ export function generateTableOfContents(
 }
 
 function getNodeText(node: JSONContent): string {
-	if (node.text) return node.text;
+	if (node.text)
+		return node.text;
 	if (node.content) {
 		return node.content.map(getNodeText).join("");
 	}

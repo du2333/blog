@@ -4,7 +4,8 @@ import * as schema from "./schema";
 let db: DB | null = null;
 
 export function getDb(env: Env) {
-	if (db) return db;
+	if (db)
+		return db;
 	db = createDb(env);
 	return db;
 }

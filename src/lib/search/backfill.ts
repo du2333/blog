@@ -1,6 +1,6 @@
+import type { DB } from "@/lib/db";
 import { insert } from "@orama/orama";
 import { and, eq, lte } from "drizzle-orm";
-import type { DB } from "@/lib/db";
 import { PostsTable } from "@/lib/db/schema";
 import { convertToPlainText } from "@/lib/editor/utils";
 import { persistOramaDb, setOramaDb } from "@/lib/search/loader";
@@ -35,12 +35,13 @@ export async function backfillSearchIndex(env: Env, db: DB) {
 		);
 
 	for (const post of posts) {
-		if (!post.title || !post.slug) continue;
+		if (!post.title || !post.slug)
+			continue;
 		const plain = convertToPlainText(post.contentJson);
-		const content =
-			plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
-		const summary =
-			post.summary && post.summary.trim().length > 0
+		const content
+			= plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
+		const summary
+			= post.summary && post.summary.trim().length > 0
 				? post.summary
 				: content.slice(0, SNIPPET_SLICE);
 
