@@ -2,6 +2,7 @@ import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { AlertCircle, ArrowRight, Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_auth/verify-email")({
 	validateSearch: z.object({
@@ -83,16 +84,16 @@ function RouteComponent() {
 							<p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
 								您的邮箱已成功验证。
 							</p>
-							<button
+							<Button
 								onClick={() => navigate({ to: "/" })}
-								className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 group"
+								className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all flex items-center justify-center gap-3 group rounded-sm"
 							>
 								<span>返回主页</span>
 								<ArrowRight
 									size={14}
 									className="group-hover:translate-x-1 transition-transform"
 								/>
-							</button>
+							</Button>
 						</>
 					)}
 
@@ -104,18 +105,20 @@ function RouteComponent() {
 									: "验证过程中发生错误，请重试。"}
 							</p>
 							<div className="space-y-4">
-								<button
+								<Button
 									onClick={() => navigate({ to: "/login" })}
-									className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+									variant="outline"
+									className="w-full h-14 text-[11px] uppercase tracking-[0.4em] font-medium transition-all"
 								>
 									返回登录
-								</button>
-								<button
+								</Button>
+								<Button
 									onClick={() => navigate({ to: "/login" })}
-									className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+									variant="ghost"
+									className="w-full text-[10px] uppercase tracking-[0.2em] text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4 h-auto p-0 bg-transparent hover:bg-transparent"
 								>
 									重新发送验证邮件
-								</button>
+								</Button>
 							</div>
 						</>
 					)}

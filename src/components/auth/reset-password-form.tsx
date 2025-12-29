@@ -5,6 +5,8 @@ import { Check, Loader2 } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth.client";
 
 const resetPasswordSchema = z
@@ -68,12 +70,13 @@ export function ResetPasswordForm({
 				<p className="text-sm font-light text-red-500 italic">
 					错误：缺少授权令牌
 				</p>
-				<button
+				<Button
 					onClick={() => navigate({ to: "/login" })}
-					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+					variant="outline"
+					className="w-full h-14 text-[11px] uppercase tracking-[0.4em] font-medium"
 				>
 					返回登录
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -86,12 +89,13 @@ export function ResetPasswordForm({
 					{error}
 					)
 				</p>
-				<button
+				<Button
 					onClick={() => navigate({ to: "/forgot-password" })}
-					className="w-full h-14 border border-border text-[11px] uppercase tracking-[0.4em] font-medium hover:bg-primary hover:text-primary-foreground transition-all"
+					variant="outline"
+					className="w-full h-14 text-[11px] uppercase tracking-[0.4em] font-medium"
 				>
 					重新请求链接
-				</button>
+				</Button>
 			</div>
 		);
 	}
@@ -106,13 +110,13 @@ export function ResetPasswordForm({
 
 			<div className="space-y-6">
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
 						新密码
 					</label>
-					<input
+					<Input
 						type="password"
 						{...register("password")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 						placeholder="••••••••"
 					/>
 					{errors.password && (
@@ -123,13 +127,13 @@ export function ResetPasswordForm({
 				</div>
 
 				<div className="space-y-2 group">
-					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+					<label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
 						确认新密码
 					</label>
-					<input
+					<Input
 						type="password"
 						{...register("confirmPassword")}
-						className="w-full bg-transparent border-b border-border py-3 text-lg font-light focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground"
+						className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
 						placeholder="••••••••"
 					/>
 					{errors.confirmPassword && (
@@ -140,10 +144,10 @@ export function ResetPasswordForm({
 				</div>
 			</div>
 
-			<button
+			<Button
 				type="submit"
 				disabled={isSubmitting}
-				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
+				className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 rounded-sm"
 			>
 				{isSubmitting
 					? (
@@ -155,7 +159,7 @@ export function ResetPasswordForm({
 								<Check size={14} />
 							</>
 						)}
-			</button>
+			</Button>
 		</form>
 	);
 }
