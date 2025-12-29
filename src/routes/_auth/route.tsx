@@ -34,8 +34,8 @@ function RouteComponent() {
 	return (
 		<div className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-500">
 			{/* --- Background Decorative Elements --- */}
-			<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 [.dark_&]:opacity-100">
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] [.dark_&]:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
+			<div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 in-[.dark]:opacity-100">
+				<div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] in-[.dark]:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
 			</div>
 
 			{/* --- Header --- */}
