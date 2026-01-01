@@ -4,7 +4,6 @@ import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { featuredPostsQuery } from "@/features/posts/posts.query";
-import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_public/")({
   component: App,
