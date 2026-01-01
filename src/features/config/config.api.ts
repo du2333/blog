@@ -25,7 +25,7 @@ export const updateSystemConfigFn = createAdminFn({
   .inputValidator(SystemConfigSchema)
   .handler(async ({ context, data }) => {
     await upsertSystemConfig(context.db, data);
-    await deleteCachedData(context, ["system"]);
+    await deleteCachedData(context, ["system", "isEmailVerficationRequired"]);
 
     return { success: true };
   });
