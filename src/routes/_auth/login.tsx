@@ -4,6 +4,13 @@ import { SocialLogin } from "@/components/auth/social-login";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "登录",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

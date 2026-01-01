@@ -15,6 +15,13 @@ export const Route = createFileRoute("/_auth/verify-email")({
     }
   },
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "验证邮箱",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

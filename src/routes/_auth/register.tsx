@@ -3,6 +3,13 @@ import { RegisterForm } from "@/components/auth/register-form";
 
 export const Route = createFileRoute("/_auth/register")({
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "注册",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

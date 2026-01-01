@@ -8,6 +8,13 @@ export const Route = createFileRoute("/_auth/reset-link")({
     error: z.string().optional().catch(undefined),
   }),
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "重置密码",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {

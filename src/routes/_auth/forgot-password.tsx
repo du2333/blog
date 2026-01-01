@@ -8,6 +8,13 @@ export const Route = createFileRoute("/_auth/forgot-password")({
     }
   },
   component: RouteComponent,
+  head: () => ({
+    meta: [
+      {
+        title: "找回密码",
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {
