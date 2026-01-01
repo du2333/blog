@@ -1,7 +1,7 @@
-import type { PostListItem } from "@/lib/db/schema";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Clock } from "lucide-react";
 import { memo } from "react";
+import type { PostListItem } from "@/lib/db/schema";
 import { Badge } from "@/components/ui/badge";
 
 interface PostItemProps {

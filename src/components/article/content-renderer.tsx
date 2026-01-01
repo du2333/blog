@@ -1,5 +1,5 @@
-import type { JSONContent } from "@tiptap/react";
 import { useMemo } from "react";
+import type { JSONContent } from "@tiptap/react";
 import { renderReact } from "@/components/article/render";
 
 interface ContentRendererProps {

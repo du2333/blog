@@ -1,12 +1,12 @@
-import type { MediaAsset } from "../types";
 import { Check, Film, Image as ImageIcon, Link2, Loader2 } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
+import { useLongPress } from "../hooks";
+import type { MediaAsset } from "../types";
 import { getOptimizedImageUrl } from "@/lib/images/utils";
 import { formatBytes } from "@/lib/utils";
-import { useLongPress } from "../hooks";
 
 interface MediaGridProps {
-	media: MediaAsset[];
+	media: Array<MediaAsset>;
 	selectedIds: Set<string>;
 	onToggleSelect: (key: string) => void;
 	onPreview: (asset: MediaAsset) => void;
@@ -164,7 +164,7 @@ export function MediaGrid({
 	isLoadingMore,
 	linkedMediaIds,
 }: MediaGridProps) {
-	const observerTarget = useRef(null);
+	const observerTarget = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
 		const target = observerTarget.current;

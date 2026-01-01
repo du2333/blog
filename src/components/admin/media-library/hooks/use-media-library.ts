@@ -28,7 +28,7 @@ export function useMediaLibrary() {
 
 	// Selection & Deletion State (使用 key 作为唯一标识)
 	const [selectedKeys, setSelectedKeys] = useState<Set<string>>(() => new Set());
-	const [deleteTarget, setDeleteTarget] = useState<string[] | null>(null);
+	const [deleteTarget, setDeleteTarget] = useState<Array<string> | null>(null);
 
 	// Infinite Query for media list
 	const {
@@ -94,7 +94,7 @@ export function useMediaLibrary() {
 
 	// Delete mutation
 	const deleteMutation = useMutation({
-		mutationFn: async (keys: string[]) => {
+		mutationFn: async (keys: Array<string>) => {
 			// 逐个删除
 			for (const key of keys) {
 				await deleteImageFn({ data: { key } });
@@ -169,9 +169,9 @@ export function useMediaLibrary() {
 	};
 
 	// Request delete - check if any assets are in use
-	const requestDelete = async (keys: string[]) => {
-		const blockedKeys: string[] = [];
-		const allowedKeys: string[] = [];
+	const requestDelete = async (keys: Array<string>) => {
+		const blockedKeys: Array<string> = [];
+		const allowedKeys: Array<string> = [];
 
 		// 检查每个资源是否被使用
 		for (const key of keys) {
@@ -227,7 +227,7 @@ export function useMediaLibrary() {
 		refetch,
 		loadMore,
 		isLoadingMore: isFetchingNextPage,
-		hasMore: hasNextPage ?? false,
+		hasMore: hasNextPage,
 		isPending,
 		linkedMediaIds,
 		totalMediaSize,

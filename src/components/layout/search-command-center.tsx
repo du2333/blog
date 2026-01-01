@@ -86,9 +86,7 @@ export function SearchCommandCenter({
 	useEffect(() => {
 		if (listRef.current && searchResults.length > 0) {
 			const activeItem = listRef.current.children[selectedIndex] as HTMLElement;
-			if (activeItem) {
-				activeItem.scrollIntoView({ block: "nearest" });
-			}
+			activeItem.scrollIntoView({ block: "nearest" });
 		}
 	}, [selectedIndex, searchResults]);
 

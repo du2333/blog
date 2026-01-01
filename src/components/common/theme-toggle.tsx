@@ -1,10 +1,10 @@
-import type { UserTheme } from "@/components/common/theme-provider";
 import { Monitor, Moon, Sun } from "lucide-react";
+import type { UserTheme } from "@/components/common/theme-provider";
 import { useTheme } from "@/components/common/theme-provider";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const themes: UserTheme[] = ["light", "dark", "system"];
+const themes: Array<UserTheme> = ["light", "dark", "system"];
 
 export function ThemeToggle({ className }: { className?: string }) {
 	const { userTheme, setTheme } = useTheme();

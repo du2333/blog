@@ -1,9 +1,9 @@
-import type { PostCategory } from "@/lib/db/schema";
 import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
+import type { PostCategory } from "@/lib/db/schema";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -58,7 +58,7 @@ function RouteComponent() {
 		= useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
 
 	const posts = useMemo(() => {
-		return data?.pages.flatMap(page => page.items) ?? [];
+		return data.pages.flatMap(page => page.items);
 	}, [data]);
 
 	// Infinite scroll observer
@@ -80,7 +80,7 @@ function RouteComponent() {
 		return () => observer.disconnect();
 	}, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-	const categories: { label: string; value: string }[] = [
+	const categories: Array<{ label: string; value: string }> = [
 		{ label: "全部内容", value: "ALL" },
 		{ label: "开发日志", value: "DEV" },
 		{ label: "生活碎念", value: "LIFE" },

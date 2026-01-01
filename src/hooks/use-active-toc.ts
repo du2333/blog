@@ -1,7 +1,7 @@
-import type { TableOfContentsItem } from "@/lib/editor/toc";
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { TableOfContentsItem } from "@/lib/editor/toc";
 
-export function useActiveTOC(headers: TableOfContentsItem[]) {
+export function useActiveTOC(headers: Array<TableOfContentsItem>) {
 	const [activeId, setActiveId] = useState<string>("");
 	const headersRef = useRef(headers);
 	headersRef.current = headers;

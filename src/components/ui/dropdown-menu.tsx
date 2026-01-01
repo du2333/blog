@@ -1,6 +1,6 @@
-import type React from "react";
 import { ChevronDown } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type React from "react";
 
 interface DropdownOption {
 	label: string;
@@ -9,7 +9,7 @@ interface DropdownOption {
 
 interface DropdownMenuProps {
 	value: string;
-	options: DropdownOption[];
+	options: Array<DropdownOption>;
 	onChange: (value: string) => void;
 	className?: string;
 }

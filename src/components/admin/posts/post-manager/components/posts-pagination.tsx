@@ -15,7 +15,7 @@ interface PostsPaginationProps {
 function getPageNumbers(
 	currentPage: number,
 	totalPages: number,
-): (number | "...")[] {
+): Array<number | "..."> {
 	if (totalPages <= 7) {
 		return Array.from({ length: totalPages }, (_, i) => i + 1);
 	}

@@ -1,5 +1,5 @@
-import type { DB } from "@/lib/db";
 import { eq } from "drizzle-orm";
+import type { DB } from "@/lib/db";
 import { findPostById } from "@/features/posts/data/posts.data";
 import { summarizeText } from "@/lib/ai/summarizer";
 import { PostsTable } from "@/lib/db/schema";

@@ -1,8 +1,8 @@
-import type { ReactNode } from "react";
 import { ScriptOnce } from "@tanstack/react-router";
 import { createClientOnlyFn, createIsomorphicFn } from "@tanstack/react-start";
 import { createContext, use, useEffect, useState } from "react";
 import { z } from "zod";
+import type { ReactNode } from "react";
 
 const UserThemeSchema = z.enum(["light", "dark", "system"]).catch("system");
 const _AppThemeSchema = z.enum(["light", "dark"]).catch("light");

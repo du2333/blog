@@ -67,7 +67,7 @@ export function RegisterForm() {
 			toast.success("注册成功", {
 				description: "账号已激活。",
 			});
-			navigate({ to: previousLocation ?? "/" });
+			navigate({ to: previousLocation });
 		}
 	};
 

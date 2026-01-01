@@ -1,4 +1,3 @@
-import type { MediaAsset } from "@/components/admin/media-library/types";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import {
@@ -15,6 +14,7 @@ import {
 	X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { MediaAsset } from "@/components/admin/media-library/types";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { getLinkedPostsFn } from "@/features/media/images.api";
@@ -234,9 +234,7 @@ export function MediaPreviewModal({
 									日期
 								</div>
 								<div className="text-sm font-medium font-mono uppercase">
-									{activeAsset.createdAt
-										? new Date(activeAsset.createdAt).toLocaleDateString()
-										: "Unknown"}
+									{new Date(activeAsset.createdAt).toLocaleDateString()}
 								</div>
 							</div>
 						</div>

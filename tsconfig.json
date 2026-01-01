@@ -22,5 +22,5 @@
 		"skipLibCheck": true,
 		"noUncheckedSideEffectImports": true
 	},
-	"include": ["**/*.ts", "**/*.tsx"]
+	"include": ["**/*.ts", "**/*.tsx", "eslint.config.mjs"]
 }

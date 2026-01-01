@@ -1,7 +1,7 @@
 import {
-	createFileRoute,
 	Link,
 	Outlet,
+	createFileRoute,
 	redirect,
 } from "@tanstack/react-router";
 import { ArrowUpRight, Menu } from "lucide-react";
@@ -17,7 +17,7 @@ export const Route = createFileRoute("/admin")({
 		if (!session) {
 			throw redirect({ to: "/login" });
 		}
-		if (session.user?.role !== "admin") {
+		if (session.user.role !== "admin") {
 			throw redirect({ to: "/" });
 		}
 

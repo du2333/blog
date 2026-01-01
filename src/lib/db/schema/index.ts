@@ -1,5 +1,3 @@
-import type { JSONContent } from "@tiptap/react";
-import type { SystemConfig } from "@/features/config/config.schema";
 import { sql } from "drizzle-orm";
 import {
 	index,
@@ -13,6 +11,8 @@ import {
 	createSelectSchema,
 	createUpdateSchema,
 } from "drizzle-zod";
+import type { SystemConfig } from "@/features/config/config.schema";
+import type { JSONContent } from "@tiptap/react";
 
 export * from "./auth.schema";
 

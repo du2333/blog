@@ -1,13 +1,13 @@
-import type { TableOfContentsItem } from "@/lib/editor/toc";
 import { useNavigate } from "@tanstack/react-router";
 import { AlignLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import type { TableOfContentsItem } from "@/lib/editor/toc";
 import { useActiveTOC } from "@/hooks/use-active-toc";
 
 export default function TableOfContents({
 	headers,
 }: {
-	headers: TableOfContentsItem[];
+	headers: Array<TableOfContentsItem>;
 }) {
 	const activeId = useActiveTOC(headers);
 	const [, setIndicatorTop] = useState<number>(0);

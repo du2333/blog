@@ -1,8 +1,8 @@
-import type { SystemConfig } from "@/features/config/config.schema";
 import { createFileRoute } from "@tanstack/react-router";
 import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import type { SystemConfig } from "@/features/config/config.schema";
 import { AiProviderSection } from "@/components/admin/settings/ai-provider-section";
 import { EmailServiceSection } from "@/components/admin/settings/email-service-section";
 import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";

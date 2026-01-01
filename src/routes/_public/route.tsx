@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Outlet } from "@tanstack/react-router";
+import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { UserProfileModal } from "@/components/auth/user-profile-modal";

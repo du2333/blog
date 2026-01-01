@@ -1,8 +1,8 @@
+import { and, desc, eq, lt, sql, sum } from "drizzle-orm";
+import { escapeLikeString } from "./helper";
 import type { SQL } from "drizzle-orm";
 import type { DB } from "@/lib/db";
-import { and, desc, eq, lt, sql, sum } from "drizzle-orm";
 import { MediaTable } from "@/lib/db/schema";
-import { escapeLikeString } from "./helper";
 
 export type Media = typeof MediaTable.$inferSelect;
 
@@ -40,11 +40,11 @@ export async function getMediaList(
 		limit?: number;
 		search?: string;
 	},
-): Promise<{ items: Media[]; nextCursor: number | null }> {
+): Promise<{ items: Array<Media>; nextCursor: number | null }> {
 	const { cursor, limit = DEFAULT_PAGE_SIZE, search } = options ?? {};
 
 	// 构建条件
-	const conditions: SQL[] = [];
+	const conditions: Array<SQL> = [];
 	if (cursor) {
 		conditions.push(lt(MediaTable.id, cursor));
 	}
@@ -76,5 +76,5 @@ export async function getTotalMediaSize(db: DB) {
 		.select({ total: sum(MediaTable.sizeInBytes) })
 		.from(MediaTable);
 
-	return Number(result?.total ?? 0);
+	return Number(result.total ?? 0);
 }

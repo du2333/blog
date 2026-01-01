@@ -46,7 +46,7 @@ export async function sendEmail(
 	const config = await getSystemConfig(db);
 	const email = config?.email;
 
-	if (!email?.apiKey || !email?.senderAddress) {
+	if (!email?.apiKey || !email.senderAddress) {
 		console.warn(`[EMAIL_SERVICE] 未配置邮件服务，跳过发送至: ${options.to}`);
 		return { status: "DISABLED" as const };
 	}

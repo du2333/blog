@@ -13,7 +13,7 @@ export function generateTableOfContents(
 	if (!content || !content.content)
 		return [];
 
-	const headings: TableOfContentsItem[] = [];
+	const headings: Array<TableOfContentsItem> = [];
 
 	content.content.forEach((node) => {
 		if (node.type === "heading") {

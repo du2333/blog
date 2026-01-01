@@ -1,15 +1,15 @@
-import type { SystemConfig } from "@/features/config/config.schema";
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText } from "ai";
+import type { SystemConfig } from "@/features/config/config.schema";
 
 export function createModel(config: SystemConfig["ai"]) {
-	if (!config?.activeProvider || !config?.providers) {
+	if (!config?.activeProvider || !config.providers) {
 		throw new Error("AI_NOT_CONFIGURED");
 	}
 
 	const providerConfig = config.providers[config.activeProvider];
-	if (!providerConfig?.apiKey || !providerConfig?.model) {
+	if (!providerConfig?.apiKey || !providerConfig.model) {
 		throw new Error("AI_NOT_CONFIGURED");
 	}
 

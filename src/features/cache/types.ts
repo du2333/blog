@@ -5,7 +5,7 @@ export interface Context {
 
 export type CacheKey
 	= | string
-		| (string | number | boolean | null | undefined)[];
+		| Array<string | number | boolean | null | undefined>;
 
 export const CACHE_NAMESPACES = {
 	POSTS_LIST: "posts:list",

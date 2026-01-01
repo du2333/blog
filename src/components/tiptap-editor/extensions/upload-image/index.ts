@@ -1,6 +1,6 @@
+import { Extension } from "@tiptap/core";
 import type { Node as ProseMirrorNode } from "@tiptap/pm/model";
 import type { EditorView } from "@tiptap/pm/view";
-import { Extension } from "@tiptap/core";
 
 export interface ImageUploadOptions {
 	onUpload: (file: File) => Promise<string>;
@@ -8,6 +8,7 @@ export interface ImageUploadOptions {
 }
 
 declare module "@tiptap/core" {
+	// eslint-disable-next-line @typescript-eslint/naming-convention
 	interface Commands<ReturnType> {
 		imageUpload: {
 			/**
@@ -35,9 +36,6 @@ export const ImageUpload = Extension.create<ImageUploadOptions>({
 			uploadImage:
 				(file: File, pos?: number) =>
 					({ tr, dispatch, state, view }) => {
-						if (!view)
-							return false;
-
 						const schema = state.schema;
 
 						// 1. Create a local preview URL
@@ -82,9 +80,7 @@ export const ImageUpload = Extension.create<ImageUploadOptions>({
 									},
 								);
 
-								if (found) {
-									editorView.dispatch(currentTr);
-								}
+								editorView.dispatch(currentTr);
 
 								// Revoke the blob URL to free memory
 								URL.revokeObjectURL(url);
@@ -128,9 +124,7 @@ export const ImageUpload = Extension.create<ImageUploadOptions>({
 										},
 									);
 
-									if (replaced) {
-										view.dispatch(currentTr);
-									}
+									view.dispatch(currentTr);
 
 									// Revoke the blob URL to free memory
 									URL.revokeObjectURL(blobUrl);

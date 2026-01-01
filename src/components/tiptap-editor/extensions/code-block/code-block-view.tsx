@@ -1,9 +1,9 @@
-import type { NodeViewProps } from "@tiptap/react";
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { Check, Copy } from "lucide-react";
 import { useState } from "react";
-import DropdownMenu from "@/components/ui/dropdown-menu";
 import { LANGUAGES } from "./languages";
+import type { NodeViewProps } from "@tiptap/react";
+import DropdownMenu from "@/components/ui/dropdown-menu";
 
 export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 	const [copied, setCopied] = useState(false);

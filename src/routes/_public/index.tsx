@@ -1,5 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/components/article/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";

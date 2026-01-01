@@ -1,13 +1,13 @@
-import type { DB } from "@/lib/db";
 import { and, eq, isNotNull } from "drizzle-orm";
+import type { DB } from "@/lib/db";
 import { account, user } from "@/lib/db/schema";
 
 export async function userHasPassword(db: DB, userId: string) {
-	const user = await db.query.account.findFirst({
+	const userAccount = await db.query.account.findFirst({
 		where: and(eq(account.userId, userId), isNotNull(account.password)),
 	});
 
-	return !!user;
+	return !!userAccount;
 }
 
 export async function updateUser(

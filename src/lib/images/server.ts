@@ -24,7 +24,7 @@ export async function handleImageRequest(
 		headers.set("Content-Type", contentType);
 		headers.set("ETag", object.httpEtag);
 
-		return new Response(object.body as ReadableStream, { headers });
+		return new Response(object.body, { headers });
 	};
 
 	// 1. 防止循环调用 & 显式请求原图

@@ -1,4 +1,3 @@
-import type { SystemConfig } from "@/features/config/config.schema";
 import {
 	AlertCircle,
 	CheckCircle2,
@@ -8,6 +7,7 @@ import {
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";
+import type { SystemConfig } from "@/features/config/config.schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/ui/dropdown-menu";
@@ -130,7 +130,7 @@ export function AiProviderSection({
 						服务平台
 					</div>
 					<div className="flex-1 flex gap-2.5">
-						{(["GOOGLE", "DEEPSEEK"] as AiProvider[]).map(p => (
+						{(["GOOGLE", "DEEPSEEK"] as Array<AiProvider>).map(p => (
 							<Button
 								key={p}
 								variant={provider === p ? "default" : "outline"}

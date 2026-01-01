@@ -4,11 +4,11 @@ import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
-	navOptions: {
+	navOptions: Array<{
 		label: string;
 		to: string;
 		id: string;
-	}[];
+	}>;
 	isOpen: boolean;
 	onClose: () => void;
 	user?: {

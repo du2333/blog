@@ -1,6 +1,6 @@
+import { load, save } from "@orama/orama";
 import type { RawData } from "@orama/orama";
 import type { MyOramaDB } from "@/lib/search/schema";
-import { load, save } from "@orama/orama";
 import { createMyDb } from "@/lib/search/schema";
 
 const KV_KEY = "search:index:v3";
@@ -54,8 +54,6 @@ let cachedDb: MyOramaDB | null = null;
 let inflight: Promise<MyOramaDB> | null = null;
 
 async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
-	if (!env.KV)
-		return null;
 	const buf = await env.KV.get(KV_KEY, "arrayBuffer");
 	if (!buf)
 		return null;
@@ -92,8 +90,6 @@ export async function getOramaDb(env: Env): Promise<MyOramaDB> {
 }
 
 export async function persistOramaDb(env: Env, db: MyOramaDB) {
-	if (!env.KV)
-		return;
 	const raw = save(db);
 	const compressed = await compressRaw(raw);
 	await env.KV.put(KV_KEY, compressed);

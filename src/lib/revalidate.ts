@@ -6,7 +6,7 @@ import { serverEnv } from "@/lib/env/server.env";
  * @param paths - Array of paths to purge (e.g., ["/post/my-slug", "/blog", "/"])
  * @returns Promise that resolves when purge is complete
  */
-export async function purgeCDNCache(env: Env, paths: string[]) {
+export async function purgeCDNCache(env: Env, paths: Array<string>) {
 	const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN }
 		= serverEnv(env);
 

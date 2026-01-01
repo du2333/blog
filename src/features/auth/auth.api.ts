@@ -29,7 +29,7 @@ export const getIsEmailVerficationRequiredFn = createServerFn().handler(
 			z.boolean(),
 			async () => {
 				const config = await getSystemConfig(context.db);
-				return !!(config?.email?.apiKey && config?.email?.senderAddress);
+				return !!(config?.email?.apiKey && config.email.senderAddress);
 			},
 		);
 	},

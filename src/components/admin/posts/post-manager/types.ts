@@ -48,5 +48,5 @@ export function categoryFilterToApi(
 ): PostCategory | undefined {
 	if (filter === "ALL")
 		return undefined;
-	return filter as PostCategory;
+	return filter;
 }

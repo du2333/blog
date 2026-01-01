@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { LoginForm } from "@/components/auth/login-form";
 import { SocialLogin } from "@/components/auth/social-login";
 

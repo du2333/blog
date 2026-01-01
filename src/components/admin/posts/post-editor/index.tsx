@@ -1,6 +1,3 @@
-import type { JSONContent } from "@tiptap/react";
-import type { PostEditorData, PostEditorProps } from "./types";
-import type { PostCategory } from "@/lib/db/schema";
 import { useBlocker, useRouter } from "@tanstack/react-router";
 import {
 	Calendar,
@@ -20,6 +17,10 @@ import {
 } from "lucide-react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
+import { useAutoSave, usePostActions } from "./hooks";
+import type { JSONContent } from "@tiptap/react";
+import type { PostEditorData, PostEditorProps } from "./types";
+import type { PostCategory } from "@/lib/db/schema";
 import { Editor } from "@/components/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
@@ -32,7 +33,6 @@ import {
 	POST_STATUSES,
 
 } from "@/lib/db/schema";
-import { useAutoSave, usePostActions } from "./hooks";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
 	const router = useRouter();

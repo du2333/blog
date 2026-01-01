@@ -1,9 +1,9 @@
-import type { JSONContent } from "@tiptap/react";
-import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { useMutation } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
+import type { JSONContent } from "@tiptap/react";
 import {
 	generateSlugFn,
 	previewSummaryFn,

@@ -29,8 +29,8 @@ export function slugify(text: string | null | undefined) {
 	return cleaned || "untitled-log";
 }
 
-export function extractAllImageKeys(doc: JSONContent | null): string[] {
-	const keys: string[] = [];
+export function extractAllImageKeys(doc: JSONContent | null): Array<string> {
+	const keys: Array<string> = [];
 
 	function traverse(node: JSONContent) {
 		if (node.type === "image" && node.attrs?.src) {
@@ -50,7 +50,7 @@ export function extractAllImageKeys(doc: JSONContent | null): string[] {
 export function convertToPlainText(doc: JSONContent | null): string {
 	if (!doc)
 		return "";
-	const textParts: string[] = [];
+	const textParts: Array<string> = [];
 
 	function traverse(node: JSONContent) {
 		// 1. 处理普通文本 (包含 Bold, Italic, Link, Code, Strike 等所有 Inline 样式)

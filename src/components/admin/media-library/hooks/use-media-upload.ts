@@ -1,14 +1,14 @@
-import type { UploadItem } from "../types";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
+import type { UploadItem } from "../types";
 import { uploadImageFn } from "@/features/media/images.api";
 import { formatBytes } from "@/lib/utils";
 
 export function useMediaUpload() {
 	const queryClient = useQueryClient();
 	const [isOpen, setIsOpen] = useState(false);
-	const [queue, setQueue] = useState<UploadItem[]>([]);
+	const [queue, setQueue] = useState<Array<UploadItem>>([]);
 	const [isDragging, setIsDragging] = useState(false);
 
 	const processingRef = useRef(false);
@@ -120,8 +120,8 @@ export function useMediaUpload() {
 		processQueue();
 	}, [queue, uploadMutation, queryClient]);
 
-	const processFiles = (files: File[]) => {
-		const newItems: UploadItem[] = files.map(file => ({
+	const processFiles = (files: Array<File>) => {
+		const newItems: Array<UploadItem> = files.map(file => ({
 			id: Math.random().toString(36).substr(2, 9),
 			name: file.name,
 			size: formatBytes(file.size),
@@ -146,7 +146,7 @@ export function useMediaUpload() {
 	const handleDrop = (e: React.DragEvent) => {
 		e.preventDefault();
 		setIsDragging(false);
-		if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+		if (e.dataTransfer.files.length > 0) {
 			processFiles(Array.from(e.dataTransfer.files));
 		}
 	};

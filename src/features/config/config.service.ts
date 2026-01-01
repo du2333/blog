@@ -1,8 +1,8 @@
+import { getSystemConfig } from "./config.data";
+import { SystemConfigSchema } from "./config.schema";
 import type { Context } from "@/features/cache/types";
 import type { DB } from "@/lib/db";
 import { cachedData } from "@/features/cache/cache.data";
-import { getSystemConfig } from "./config.data";
-import { SystemConfigSchema } from "./config.schema";
 
 export async function getCachedSystemConfig({
 	db,

@@ -1,6 +1,6 @@
-import type { DB } from "@/lib/db";
 import { generateObject } from "ai";
 import { z } from "zod";
+import type { DB } from "@/lib/db";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createModel } from "@/lib/ai";
 

@@ -1,7 +1,7 @@
-import type { MediaAsset } from "@/components/admin/media-library/types";
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import type { MediaAsset } from "@/components/admin/media-library/types";
 import {
 	MediaGrid,
 	MediaPreviewModal,

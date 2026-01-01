@@ -7,11 +7,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 
 interface NavbarProps {
-	navOptions: {
+	navOptions: Array<{
 		label: string;
 		to: string;
 		id: string;
-	}[];
+	}>;
 	onSearchClick: () => void;
 	onMenuClick: () => void;
 	onOpenProfile: () => void;

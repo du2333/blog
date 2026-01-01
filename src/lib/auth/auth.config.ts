@@ -1,5 +1,5 @@
-import type { BetterAuthOptions } from "better-auth";
 import { admin } from "better-auth/plugins";
+import type { BetterAuthOptions } from "better-auth";
 
 export const authConfig = {
 	emailAndPassword: {

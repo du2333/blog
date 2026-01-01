@@ -1,17 +1,17 @@
-import type React from "react";
-import type { UploadItem } from "../types";
 import { ClientOnly } from "@tanstack/react-router";
 import { AlertCircle, Check, Loader2, Upload, X } from "lucide-react";
 import { useRef } from "react";
 import { createPortal } from "react-dom";
+import type { UploadItem } from "../types";
+import type React from "react";
 import { Button } from "@/components/ui/button";
 
 interface UploadModalProps {
 	isOpen: boolean;
-	queue: UploadItem[];
+	queue: Array<UploadItem>;
 	isDragging: boolean;
 	onClose: () => void;
-	onFileSelect: (files: File[]) => void;
+	onFileSelect: (files: Array<File>) => void;
 	onDragOver: (e: React.DragEvent) => void;
 	onDragLeave: (e: React.DragEvent) => void;
 	onDrop: (e: React.DragEvent) => void;

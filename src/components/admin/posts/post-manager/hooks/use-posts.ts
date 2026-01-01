@@ -1,6 +1,12 @@
-import type { CategoryFilter, PostListItem, SortDirection, StatusFilter } from "../types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+
+	categoryFilterToApi,
+
+	statusFilterToApi,
+} from "../types";
+import type { CategoryFilter, PostListItem, SortDirection, StatusFilter } from "../types";
 import {
 	deletePostFn,
 	getPostsCountFn,
@@ -8,12 +14,6 @@ import {
 } from "@/features/posts/api/posts.admin.api";
 
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
-import {
-
-	categoryFilterToApi,
-
-	statusFilterToApi,
-} from "../types";
 
 interface UsePostsOptions {
 	page: number;

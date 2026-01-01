@@ -44,7 +44,7 @@ export function useMediaPicker() {
 		searchQuery,
 		setSearchQuery,
 		loadMore,
-		hasMore: hasNextPage ?? false,
+		hasMore: hasNextPage,
 		isLoadingMore: isFetchingNextPage,
 		isPending,
 	};

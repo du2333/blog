@@ -1,6 +1,6 @@
-import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import type { PostEditorData } from "@/components/admin/posts/post-editor/types";
 import { PostEditor } from "@/components/admin/posts/post-editor";
 import { ErrorPage } from "@/components/common/error-page";
 import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";

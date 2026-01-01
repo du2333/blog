@@ -1,6 +1,6 @@
+import { insert, remove, search } from "@orama/orama";
 import type { JSONContent } from "@tiptap/react";
 import type { MyOramaDB } from "@/lib/search/schema";
-import { insert, remove, search } from "@orama/orama";
 import { convertToPlainText } from "@/lib/editor/utils";
 import { getOramaDb, persistOramaDb } from "@/lib/search/loader";
 
@@ -99,7 +99,7 @@ function buildSnippet({
 	fallbackTerm,
 }: {
 	text?: string | null;
-	terms: string[];
+	terms: Array<string>;
 	fallbackTerm: string;
 }) {
 	const source = text?.trim() ?? "";
@@ -165,7 +165,7 @@ function getMatchedTerms(
 	field: "title" | "summary" | "content",
 ) {
 	const maybeMatches = (
-		hit as { matches?: Record<string, { term?: string }[]> }
+		hit as { matches?: Record<string, Array<{ term?: string }>> }
 	).matches;
 	if (!maybeMatches)
 		return [];
@@ -180,7 +180,7 @@ function getMatchedTerms(
 function findExactMatch(
 	source: string,
 	lowerSource: string,
-	terms: string[],
+	terms: Array<string>,
 ): { idx: number; len: number; token: string } | null {
 	for (const term of terms) {
 		const lowerTerm = term.toLowerCase();
@@ -195,7 +195,7 @@ function findExactMatch(
 
 function findApproxMatch(
 	source: string,
-	terms: string[],
+	terms: Array<string>,
 	scanLimit: number,
 	maxDistance: number,
 ): { idx: number; len: number; token: string } | null {

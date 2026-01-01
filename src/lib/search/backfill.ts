@@ -1,6 +1,6 @@
-import type { DB } from "@/lib/db";
 import { insert } from "@orama/orama";
 import { and, eq, lte } from "drizzle-orm";
+import type { DB } from "@/lib/db";
 import { PostsTable } from "@/lib/db/schema";
 import { convertToPlainText } from "@/lib/editor/utils";
 import { persistOramaDb, setOramaDb } from "@/lib/search/loader";

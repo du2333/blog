@@ -1,7 +1,7 @@
+import { and, count, desc, eq, lt, ne } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
 import type { DB } from "@/lib/db";
 import type { PostCategory, PostListItem, PostStatus } from "@/lib/db/schema";
-import { and, count, desc, eq, lt, ne } from "drizzle-orm";
 import {
 	buildPostOrderByClause,
 	buildPostWhereClause,
@@ -92,7 +92,7 @@ export async function getPostsCursor(
 		publicOnly?: boolean;
 	} = {},
 ): Promise<{
-	items: PostListItem[];
+	items: Array<PostListItem>;
 	nextCursor: number | null;
 }> {
 	const { cursor, limit = DEFAULT_PAGE_SIZE, category, publicOnly } = options;

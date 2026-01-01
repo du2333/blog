@@ -1,5 +1,5 @@
-import type { PostEditorData, SaveStatus } from "../types";
 import { useEffect, useRef, useState } from "react";
+import type { PostEditorData, SaveStatus } from "../types";
 
 interface UseAutoSaveOptions {
 	post: PostEditorData;

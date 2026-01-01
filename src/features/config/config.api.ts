@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { getSystemConfig, upsertSystemConfig } from "./config.data";
+import { SystemConfigSchema } from "./config.schema";
 import { cachedData, deleteCachedData } from "@/features/cache/cache.data";
 import { testEmailConnection } from "@/features/email/email.service";
 import { testAiConnection } from "@/lib/ai";
 import { createAdminFn } from "@/lib/middlewares";
-import { getSystemConfig, upsertSystemConfig } from "./config.data";
-import { SystemConfigSchema } from "./config.schema";
 
 export const getSystemConfigFn = createAdminFn().handler(
 	async ({ context }) => {

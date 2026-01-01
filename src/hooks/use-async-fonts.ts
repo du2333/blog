@@ -4,7 +4,7 @@ import { useEffect } from "react";
  * 异步加载字体，不阻塞页面渲染
  * 使用 media="print" 技巧确保字体不会阻塞关键渲染路径
  */
-export function useAsyncFonts(fontUrls: string[]) {
+export function useAsyncFonts(fontUrls: Array<string>) {
 	useEffect(() => {
 		fontUrls.forEach((url) => {
 			// 检查是否已经加载过

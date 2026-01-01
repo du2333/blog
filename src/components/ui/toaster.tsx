@@ -1,7 +1,7 @@
-import type React from "react";
-import type { ToasterProps } from "sonner";
 import { AlertCircle, Check, Info, Loader2, X } from "lucide-react";
 import { Toaster as Sonner } from "sonner";
+import type React from "react";
+import type { ToasterProps } from "sonner";
 
 const Toaster: React.FC<ToasterProps> = (props) => {
 	return (

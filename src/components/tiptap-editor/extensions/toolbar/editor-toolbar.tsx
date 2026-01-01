@@ -1,6 +1,3 @@
-import type { Editor } from "@tiptap/react";
-import type { LucideIcon } from "lucide-react";
-import type React from "react";
 import { useEditorState } from "@tiptap/react";
 import clsx from "clsx";
 import {
@@ -20,6 +17,9 @@ import {
 	Underline as UnderlineIcon,
 	Undo,
 } from "lucide-react";
+import type { Editor } from "@tiptap/react";
+import type { LucideIcon } from "lucide-react";
+import type React from "react";
 
 interface EditorToolbarProps {
 	editor: Editor;
@@ -89,8 +89,6 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 			isLink: ctx.editor.isActive("link"),
 		}),
 	});
-	if (!editor)
-		return null;
 
 	return (
 		<div className="sticky top-0 z-30 mb-12 py-3 bg-background/80 backdrop-blur-xl border-b border-border flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">

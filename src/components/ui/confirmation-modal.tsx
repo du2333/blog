@@ -1,8 +1,8 @@
-import type React from "react";
 import { ClientOnly } from "@tanstack/react-router";
 import { AlertTriangle, Check, Loader2, Trash2, X } from "lucide-react";
 import { createPortal } from "react-dom";
 import { Button } from "./button";
+import type React from "react";
 
 interface ConfirmationModalProps {
 	isOpen: boolean;

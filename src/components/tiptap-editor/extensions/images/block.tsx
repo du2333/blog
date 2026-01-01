@@ -1,7 +1,7 @@
-import type { NodeViewProps } from "@tiptap/react";
 import { NodeViewWrapper } from "@tiptap/react";
 import { Loader2, UploadCloud } from "lucide-react";
 import { useMemo } from "react";
+import type { NodeViewProps } from "@tiptap/react";
 
 export function ImageBlock({
 	node,

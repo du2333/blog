@@ -1,6 +1,6 @@
+import { serializeKey } from "./cache.utils";
 import type { z } from "zod";
 import type { CacheKey, CacheNamespace, Context } from "./types";
-import { serializeKey } from "./cache.utils";
 
 /**
  * 缓存数据
@@ -44,7 +44,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
 
 export async function deleteCachedData(
 	context: { env: Env },
-	...keys: CacheKey[]
+	...keys: Array<CacheKey>
 ): Promise<void> {
 	const serializedKeys = keys.map(serializeKey);
 

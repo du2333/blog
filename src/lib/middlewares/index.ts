@@ -25,7 +25,7 @@ export const adminMiddleware = createMiddleware()
 	.server(async ({ next, context }) => {
 		const session = context.session;
 
-		if (session.user?.role !== "admin") {
+		if (session.user.role !== "admin") {
 			throw json({ message: "PERMISSION_DENIED" }, { status: 403 });
 		}
 

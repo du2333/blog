@@ -1,11 +1,11 @@
-import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
-import type { ModalType } from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import { useCallback, useState } from "react";
 import { toast } from "sonner";
+import type { ModalType } from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
+import type { JSONContent, Editor as TiptapEditor } from "@tiptap/react";
 import { CodeBlockExtension } from "@/components/tiptap-editor/extensions/code-block";
 import { ImageExtension } from "@/components/tiptap-editor/extensions/images";
 import InsertModal from "@/components/tiptap-editor/extensions/toolbar/components/insert-modal";
@@ -38,7 +38,7 @@ async function handleImageUpload(file: File): Promise<string> {
 	return result.url;
 }
 
-function handleFileDrop(editor: TiptapEditor, files: File[], pos: number) {
+function handleFileDrop(editor: TiptapEditor, files: Array<File>, pos: number) {
 	files.forEach((file) => {
 		if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
 			editor.commands.uploadImage(file, pos);
@@ -46,7 +46,7 @@ function handleFileDrop(editor: TiptapEditor, files: File[], pos: number) {
 	});
 }
 
-function handleFilePaste(editor: TiptapEditor, files: File[]) {
+function handleFilePaste(editor: TiptapEditor, files: Array<File>) {
 	files.forEach((file) => {
 		if (ALLOWED_IMAGE_MIME_TYPES.includes(file.type)) {
 			editor.commands.uploadImage(file);
@@ -142,8 +142,6 @@ export function Editor({ content, onChange }: EditorProps) {
 	});
 
 	const openLinkModal = useCallback(() => {
-		if (!editor)
-			return;
 		const previousUrl = editor.getAttributes("link").href;
 		setModalInitialUrl(previousUrl || "");
 		setModalOpen("LINK");
@@ -155,9 +153,6 @@ export function Editor({ content, onChange }: EditorProps) {
 	}, []);
 
 	const handleModalSubmit = (url: string) => {
-		if (!editor)
-			return;
-
 		if (modalOpen === "LINK") {
 			if (url === "") {
 				editor.chain().focus().extendMarkRange("link").unsetLink().run();

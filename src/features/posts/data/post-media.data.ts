@@ -1,7 +1,7 @@
+import { eq, inArray } from "drizzle-orm";
 import type { JSONContent } from "@tiptap/react";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
-import { eq, inArray } from "drizzle-orm";
 import { MediaTable, PostMediaTable, PostsTable } from "@/lib/db/schema";
 import { extractAllImageKeys } from "@/lib/editor/utils";
 
@@ -14,7 +14,7 @@ export async function syncPostMedia(
 	const usedKeys = extractAllImageKeys(contentJson);
 
 	// 2. 准备sql语句
-	const batchQueries: BatchItem<"sqlite">[] = [];
+	const batchQueries: Array<BatchItem<"sqlite">> = [];
 
 	// 2.1 准备删除文章中已有的图片关联语句
 	const deleteQuery = db
@@ -79,8 +79,8 @@ export async function isMediaInUse(db: DB, key: string): Promise<boolean> {
  */
 export async function getLinkedMediaKeys(
 	db: DB,
-	keys: string[],
-): Promise<string[]> {
+	keys: Array<string>,
+): Promise<Array<string>> {
 	if (keys.length === 0)
 		return [];
 

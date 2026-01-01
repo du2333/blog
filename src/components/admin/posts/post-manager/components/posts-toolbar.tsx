@@ -1,12 +1,12 @@
-import type { CategoryFilter, SortDirection, StatusFilter } from "../types";
 import { ArrowUpDown, ChevronDown, Filter, Search, Tag, X } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
 	CATEGORY_FILTERS,
 	STATUS_FILTERS,
 } from "../types";
+import type { CategoryFilter, SortDirection, StatusFilter } from "../types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 type DropdownType = "CATEGORY" | "STATUS" | "SORT" | null;
 

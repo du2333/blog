@@ -1,4 +1,3 @@
-import type { SystemConfig } from "@/features/config/config.schema";
 import {
 	AlertCircle,
 	CheckCircle2,
@@ -8,6 +7,7 @@ import {
 	Wifi,
 } from "lucide-react";
 import { useState } from "react";
+import type { SystemConfig } from "@/features/config/config.schema";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";

@@ -1,5 +1,5 @@
-import type { PostCategory } from "@/lib/db/schema";
 import { z } from "zod";
+import type { PostCategory } from "@/lib/db/schema";
 import { cachedData, getCacheVersion } from "@/features/cache/cache.data";
 import {
 	findPostBySlug,

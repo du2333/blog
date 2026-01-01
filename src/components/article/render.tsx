@@ -1,5 +1,5 @@
-import type { JSONContent } from "@tiptap/react";
 import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
+import type { JSONContent } from "@tiptap/react";
 import { CodeBlock } from "@/components/article/code-block";
 import { ImageDisplay } from "@/components/article/media/image-display";
 import { extensions } from "@/components/tiptap-editor";

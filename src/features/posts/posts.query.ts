@@ -1,10 +1,10 @@
-import type { PostCategory } from "@/lib/db/schema";
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
+import { findPostByIdFn } from "./api/posts.admin.api";
+import type { PostCategory } from "@/lib/db/schema";
 import {
 	findPostBySlugFn,
 	getPostsCursorFn,
 } from "@/features/posts/api/posts.public.api";
-import { findPostByIdFn } from "./api/posts.admin.api";
 
 export const featuredPostsQuery = queryOptions({
 	queryKey: ["posts", "featured"],
