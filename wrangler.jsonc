@@ -1,46 +1,46 @@
 {
-	"$schema": "node_modules/wrangler/config-schema.json",
-	"name": "my-blog",
-	"compatibility_date": "2025-10-11",
-	"compatibility_flags": ["nodejs_compat"],
-	"main": "./src/server.ts",
-	"observability": {
-		"enabled": true
-	},
-	"routes": [
-		{
-			"pattern": "blog.dukda.com",
-			"custom_domain": true
-		}
-	],
-	"d1_databases": [
-		{
-			"binding": "DB",
-			"database_name": "blog",
-			"database_id": "7f48004e-8086-4cec-871f-45d38cf9a2eb",
-			"migrations_dir": "migrations",
-			"remote": true
-		}
-	],
-	"r2_buckets": [
-		{
-			"bucket_name": "blog",
-			"binding": "R2",
-			"remote": true
-		}
-	],
-	"kv_namespaces": [
-		{
-			"binding": "KV",
-			"id": "b2804b2d5ca94cf58663160401cd3754",
-			"remote": true
-		}
-	],
-	"workflows": [
-		{
-			"name": "post-process-workflow",
-			"binding": "POST_PROCESS_WORKFLOW",
-			"class_name": "PostProcessWorkflow"
-		}
-	]
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-blog",
+  "compatibility_date": "2025-10-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "./src/server.ts",
+  "observability": {
+    "enabled": true,
+  },
+  "routes": [
+    {
+      "pattern": "blog.dukda.com",
+      "custom_domain": true,
+    },
+  ],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "blog",
+      "database_id": "7f48004e-8086-4cec-871f-45d38cf9a2eb",
+      "migrations_dir": "migrations",
+      "remote": true,
+    },
+  ],
+  "r2_buckets": [
+    {
+      "bucket_name": "blog",
+      "binding": "R2",
+      "remote": true,
+    },
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "b2804b2d5ca94cf58663160401cd3754",
+      "remote": true,
+    },
+  ],
+  "workflows": [
+    {
+      "name": "post-process-workflow",
+      "binding": "POST_PROCESS_WORKFLOW",
+      "class_name": "PostProcessWorkflow",
+    },
+  ],
 }

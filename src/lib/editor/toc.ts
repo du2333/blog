@@ -2,39 +2,37 @@ import type { JSONContent } from "@tiptap/react";
 import { slugify } from "@/lib/editor/utils";
 
 export interface TableOfContentsItem {
-	id: string;
-	text: string;
-	level: number;
+  id: string;
+  text: string;
+  level: number;
 }
 
 export function generateTableOfContents(
-	content: JSONContent | undefined | null,
+  content: JSONContent | undefined | null,
 ) {
-	if (!content || !content.content)
-		return [];
+  if (!content || !content.content) return [];
 
-	const headings: Array<TableOfContentsItem> = [];
+  const headings: Array<TableOfContentsItem> = [];
 
-	content.content.forEach((node) => {
-		if (node.type === "heading") {
-			const level = node.attrs?.level || 1;
-			const text = getNodeText(node);
-			const id = slugify(text);
+  content.content.forEach((node) => {
+    if (node.type === "heading") {
+      const level = node.attrs?.level || 1;
+      const text = getNodeText(node);
+      const id = slugify(text);
 
-			if (text) {
-				headings.push({ id, text, level });
-			}
-		}
-	});
+      if (text) {
+        headings.push({ id, text, level });
+      }
+    }
+  });
 
-	return headings;
+  return headings;
 }
 
 function getNodeText(node: JSONContent): string {
-	if (node.text)
-		return node.text;
-	if (node.content) {
-		return node.content.map(getNodeText).join("");
-	}
-	return "";
+  if (node.text) return node.text;
+  if (node.content) {
+    return node.content.map(getNodeText).join("");
+  }
+  return "";
 }

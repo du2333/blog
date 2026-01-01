@@ -1,26 +1,26 @@
 {
-	"compilerOptions": {
-		"target": "ES2022",
-		"jsx": "react-jsx",
-		"lib": ["ES2022", "DOM", "DOM.Iterable"],
-		"baseUrl": ".",
-		"module": "ESNext",
-		/* Bundler mode */
-		"moduleResolution": "bundler",
-		"paths": {
-			"@/*": ["./src/*"]
-		},
-		"types": ["vite/client", "./worker-configuration.d.ts"],
-		"allowImportingTsExtensions": true,
-		"strict": true,
-		"noFallthroughCasesInSwitch": true,
-		"noUnusedLocals": true,
-		"noUnusedParameters": true,
-		"noEmit": true,
-		"verbatimModuleSyntax": false,
-		/* Linting */
-		"skipLibCheck": true,
-		"noUncheckedSideEffectImports": true
-	},
-	"include": ["**/*.ts", "**/*.tsx", "eslint.config.mjs"]
+  "compilerOptions": {
+    "target": "ES2022",
+    "jsx": "react-jsx",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "baseUrl": ".",
+    "module": "ESNext",
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "types": ["vite/client", "./worker-configuration.d.ts"],
+    "allowImportingTsExtensions": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": false,
+    /* Linting */
+    "skipLibCheck": true,
+    "noUncheckedSideEffectImports": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "eslint.config.mjs"]
 }

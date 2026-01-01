@@ -4,31 +4,31 @@ import type { Orama, Tokenizer } from "@orama/orama";
 const segmenter = new Intl.Segmenter("zh-CN", { granularity: "word" });
 
 export const chineseTokenizerConfig: Tokenizer = {
-	language: "chinese",
-	tokenize: (text: string) => {
-		return Array.from(segmenter.segment(text))
-			.filter(x => x.isWordLike)
-			.map(x => x.segment);
-	},
-	normalizationCache: new Map(),
+  language: "chinese",
+  tokenize: (text: string) => {
+    return Array.from(segmenter.segment(text))
+      .filter((x) => x.isWordLike)
+      .map((x) => x.segment);
+  },
+  normalizationCache: new Map(),
 };
 
 export const searchSchema = {
-	id: "string",
-	slug: "string",
-	title: "string",
-	category: "string",
-	summary: "string",
-	content: "string",
+  id: "string",
+  slug: "string",
+  title: "string",
+  category: "string",
+  summary: "string",
+  content: "string",
 } as const;
 
 export type MyOramaDB = Orama<typeof searchSchema>;
 
 export async function createMyDb() {
-	return await create({
-		schema: searchSchema,
-		components: {
-			tokenizer: chineseTokenizerConfig,
-		},
-	});
+  return await create({
+    schema: searchSchema,
+    components: {
+      tokenizer: chineseTokenizerConfig,
+    },
+  });
 }

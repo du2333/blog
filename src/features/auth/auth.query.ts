@@ -1,21 +1,21 @@
 import { queryOptions } from "@tanstack/react-query";
 import {
-	getIsEmailVerficationRequiredFn,
-	getSessionFn,
+  getIsEmailVerficationRequiredFn,
+  getSessionFn,
 } from "@/features/auth/auth.api";
 
 export const sessionQuery = queryOptions({
-	queryKey: ["session"],
-	queryFn: async () => {
-		const session = await getSessionFn();
-		return session;
-	},
+  queryKey: ["session"],
+  queryFn: async () => {
+    const session = await getSessionFn();
+    return session;
+  },
 });
 
 export const emailVerficationRequiredQuery = queryOptions({
-	queryKey: ["emailVerficationRequired"],
-	queryFn: async () => {
-		const isEmailVerficationRequired = await getIsEmailVerficationRequiredFn();
-		return isEmailVerficationRequired;
-	},
+  queryKey: ["emailVerficationRequired"],
+  queryFn: async () => {
+    const isEmailVerficationRequired = await getIsEmailVerficationRequiredFn();
+    return isEmailVerficationRequired;
+  },
 });

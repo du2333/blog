@@ -3,8 +3,8 @@ import type { JSONContent } from "@tiptap/react";
 import { renderReact } from "@/components/article/render";
 
 interface ContentRendererProps {
-	content: JSONContent | null;
-	className?: string;
+  content: JSONContent | null;
+  className?: string;
 }
 
 /**
@@ -12,15 +12,14 @@ interface ContentRendererProps {
  * 服务器端渲染 React 组件，客户端 hydration 后自动激活交互功能
  */
 export function ContentRenderer({ content, className }: ContentRendererProps) {
-	const renderedContent = useMemo(() => {
-		if (!content)
-			return null;
-		return renderReact(content);
-	}, [content]);
+  const renderedContent = useMemo(() => {
+    if (!content) return null;
+    return renderReact(content);
+  }, [content]);
 
-	if (!content) {
-		return null;
-	}
+  if (!content) {
+    return null;
+  }
 
-	return <div className={className}>{renderedContent}</div>;
+  return <div className={className}>{renderedContent}</div>;
 }

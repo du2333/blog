@@ -2,46 +2,46 @@ import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { findPostByIdFn } from "./api/posts.admin.api";
 import type { PostCategory } from "@/lib/db/schema";
 import {
-	findPostBySlugFn,
-	getPostsCursorFn,
+  findPostBySlugFn,
+  getPostsCursorFn,
 } from "@/features/posts/api/posts.public.api";
 
 export const featuredPostsQuery = queryOptions({
-	queryKey: ["posts", "featured"],
-	queryFn: async () => {
-		const result = await getPostsCursorFn({
-			data: { limit: 4 },
-		});
-		return result.items;
-	},
+  queryKey: ["posts", "featured"],
+  queryFn: async () => {
+    const result = await getPostsCursorFn({
+      data: { limit: 4 },
+    });
+    return result.items;
+  },
 });
 
 export function postsInfiniteQueryOptions(category?: PostCategory) {
-	return infiniteQueryOptions({
-		queryKey: ["posts", category],
-		queryFn: ({ pageParam }) =>
-			getPostsCursorFn({
-				data: {
-					cursor: pageParam,
-					category,
-					limit: 12,
-				},
-			}),
-		getNextPageParam: lastPage => lastPage.nextCursor ?? undefined,
-		initialPageParam: undefined as number | undefined,
-	});
+  return infiniteQueryOptions({
+    queryKey: ["posts", category],
+    queryFn: ({ pageParam }) =>
+      getPostsCursorFn({
+        data: {
+          cursor: pageParam,
+          category,
+          limit: 12,
+        },
+      }),
+    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    initialPageParam: undefined as number | undefined,
+  });
 }
 
 export function postBySlugQuery(slug: string) {
-	return queryOptions({
-		queryKey: ["post", slug],
-		queryFn: () => findPostBySlugFn({ data: { slug } }),
-	});
+  return queryOptions({
+    queryKey: ["post", slug],
+    queryFn: () => findPostBySlugFn({ data: { slug } }),
+  });
 }
 
 export function postByIdQuery(id: number) {
-	return queryOptions({
-		queryKey: ["post", id],
-		queryFn: () => findPostByIdFn({ data: { id } }),
-	});
+  return queryOptions({
+    queryKey: ["post", id],
+    queryFn: () => findPostByIdFn({ data: { id } }),
+  });
 }

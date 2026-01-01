@@ -6,142 +6,142 @@
 @custom-variant system (&:is(.system *));
 
 @layer base {
-	:root {
-		--background: #ffffff;
-		--foreground: #09090b;
+  :root {
+    --background: #ffffff;
+    --foreground: #09090b;
 
-		--muted: #f4f4f5;
-		--muted-foreground: #71717a;
+    --muted: #f4f4f5;
+    --muted-foreground: #71717a;
 
-		--popover: #ffffff;
-		--popover-foreground: #09090b;
+    --popover: #ffffff;
+    --popover-foreground: #09090b;
 
-		--border: #e4e4e7;
-		--input: #e4e4e7;
+    --border: #e4e4e7;
+    --input: #e4e4e7;
 
-		--primary: #09090b;
-		--primary-foreground: #fafafa;
+    --primary: #09090b;
+    --primary-foreground: #fafafa;
 
-		--secondary: #f4f4f5;
-		--secondary-foreground: #18181b;
+    --secondary: #f4f4f5;
+    --secondary-foreground: #18181b;
 
-		--accent: #f4f4f5;
-		--accent-foreground: #18181b;
+    --accent: #f4f4f5;
+    --accent-foreground: #18181b;
 
-		--ring: #09090b;
+    --ring: #09090b;
 
-		--selection: #09090b;
-		--selection-foreground: #ffffff;
-	}
+    --selection: #09090b;
+    --selection-foreground: #ffffff;
+  }
 
-	.dark {
-		--background: #050505;
-		--foreground: #fafafa;
+  .dark {
+    --background: #050505;
+    --foreground: #fafafa;
 
-		--muted: #18181b;
-		--muted-foreground: #a1a1aa;
+    --muted: #18181b;
+    --muted-foreground: #a1a1aa;
 
-		--popover: #050505;
-		--popover-foreground: #fafafa;
+    --popover: #050505;
+    --popover-foreground: #fafafa;
 
-		--border: #27272a;
-		--input: #27272a;
+    --border: #27272a;
+    --input: #27272a;
 
-		--primary: #fafafa;
-		--primary-foreground: #09090b;
+    --primary: #fafafa;
+    --primary-foreground: #09090b;
 
-		--secondary: #27272a;
-		--secondary-foreground: #fafafa;
+    --secondary: #27272a;
+    --secondary-foreground: #fafafa;
 
-		--accent: #27272a;
-		--accent-foreground: #fafafa;
+    --accent: #27272a;
+    --accent-foreground: #fafafa;
 
-		--ring: #d4d4d8;
+    --ring: #d4d4d8;
 
-		--selection: #ffffff;
-		--selection-foreground: #000000;
-	}
+    --selection: #ffffff;
+    --selection-foreground: #000000;
+  }
 }
 
 mark {
-	@apply bg-muted text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-border;
+  @apply bg-muted text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-border;
 }
 
 @theme {
-	--tw-transition-duration: 0.3s;
+  --tw-transition-duration: 0.3s;
 
-	/* Awwwards Style Font Families */
-	--font-serif: "Playfair Display", "Noto Serif SC", serif;
-	--font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-	--font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
-	--font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  /* Awwwards Style Font Families */
+  --font-serif: "Playfair Display", "Noto Serif SC", serif;
+  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
+  --font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
 
-	/* Semantic Colors mapping to CSS variables */
-	--color-background: var(--background);
-	--color-foreground: var(--foreground);
-	--color-muted: var(--muted);
-	--color-muted-foreground: var(--muted-foreground);
-	--color-popover: var(--popover);
-	--color-popover-foreground: var(--popover-foreground);
-	--color-border: var(--border);
-	--color-input: var(--input);
-	--color-primary: var(--primary);
-	--color-primary-foreground: var(--primary-foreground);
-	--color-secondary: var(--secondary);
-	--color-secondary-foreground: var(--secondary-foreground);
-	--color-accent: var(--accent);
-	--color-accent-foreground: var(--accent-foreground);
-	--color-ring: var(--ring);
+  /* Semantic Colors mapping to CSS variables */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
 }
 
 @layer base {
-	body {
-		@apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
-		transition:
-			background-color 0.5s ease-in-out,
-			color 0.5s ease-in-out;
-		line-height: 1.6;
-	}
+  body {
+    @apply bg-background text-foreground overflow-x-hidden font-sans antialiased;
+    transition:
+      background-color 0.5s ease-in-out,
+      color 0.5s ease-in-out;
+    line-height: 1.6;
+  }
 
-	::selection {
-		background-color: var(--selection);
-		color: var(--selection-foreground);
-	}
+  ::selection {
+    background-color: var(--selection);
+    color: var(--selection-foreground);
+  }
 
-	p {
-		@apply leading-relaxed;
-	}
+  p {
+    @apply leading-relaxed;
+  }
 
-	button:not(:disabled),
-	[role="button"]:not(:disabled) {
-		cursor: pointer;
-	}
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
 
-	/* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
-	h1,
-	h2,
-	h3,
-	h4 {
-		scroll-margin-top: 8rem;
-	}
+  /* 为所有标题添加滚动偏移，避免被 navbar 遮挡 */
+  h1,
+  h2,
+  h3,
+  h4 {
+    scroll-margin-top: 8rem;
+  }
 
-	/* Minimalist Custom Scrollbar */
-	::-webkit-scrollbar {
-		width: 6px;
-		height: 6px;
-	}
+  /* Minimalist Custom Scrollbar */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
 
-	::-webkit-scrollbar-track {
-		background: transparent;
-	}
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-	::-webkit-scrollbar-thumb {
-		@apply bg-muted rounded-full transition-colors;
-	}
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full transition-colors;
+  }
 
-	::-webkit-scrollbar-thumb:hover {
-		@apply bg-accent;
-	}
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent;
+  }
 }
 
 /* Disable native browser UI on password inputs */
@@ -149,36 +149,36 @@ input::-ms-reveal,
 input::-ms-clear,
 input::-webkit-contacts-auto-fill-button,
 input::-webkit-credentials-auto-fill-button {
-	display: none !important;
+  display: none !important;
 }
 
 pre.shiki {
-	background-color: transparent !important;
-	margin: 0;
-	padding: 0;
+  background-color: transparent !important;
+  margin: 0;
+  padding: 0;
 }
 
 /* Tiptap Placeholder */
 .tiptap p.is-editor-empty:first-child::before {
-	@apply text-muted-foreground font-serif italic float-left h-0 pointer-events-none;
-	content: attr(data-placeholder);
+  @apply text-muted-foreground font-serif italic float-left h-0 pointer-events-none;
+  content: attr(data-placeholder);
 }
 
 @layer utilities {
-	.custom-scrollbar::-webkit-scrollbar {
-		width: 4px;
-		height: 4px;
-	}
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
 
-	.custom-scrollbar::-webkit-scrollbar-track {
-		background: transparent;
-	}
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
 
-	.custom-scrollbar::-webkit-scrollbar-thumb {
-		@apply bg-muted rounded-full transition-colors;
-	}
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full transition-colors;
+  }
 
-	.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-		@apply bg-accent;
-	}
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-accent;
+  }
 }

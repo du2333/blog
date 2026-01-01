@@ -10,6 +10,7 @@
     "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
     "cf-typegen": "wrangler types --env-interface Env",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",

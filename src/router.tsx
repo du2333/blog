@@ -8,27 +8,27 @@ import { NotFound } from "@/components/common/not-found";
 
 // Create a new router instance
 export function getRouter() {
-	const rqContext = TanstackQuery.getContext();
+  const rqContext = TanstackQuery.getContext();
 
-	const router = createRouter({
-		routeTree,
-		context: { ...rqContext },
-		defaultPreload: "intent",
-		Wrap: (props: { children: React.ReactNode }) => {
-			return (
-				<TanstackQuery.Provider {...rqContext}>
-					{props.children}
-				</TanstackQuery.Provider>
-			);
-		},
-		defaultNotFoundComponent: NotFound,
-		defaultErrorComponent: ErrorPage,
-	});
+  const router = createRouter({
+    routeTree,
+    context: { ...rqContext },
+    defaultPreload: "intent",
+    Wrap: (props: { children: React.ReactNode }) => {
+      return (
+        <TanstackQuery.Provider {...rqContext}>
+          {props.children}
+        </TanstackQuery.Provider>
+      );
+    },
+    defaultNotFoundComponent: NotFound,
+    defaultErrorComponent: ErrorPage,
+  });
 
-	setupRouterSsrQueryIntegration({
-		router,
-		queryClient: rqContext.queryClient,
-	});
+  setupRouterSsrQueryIntegration({
+    router,
+    queryClient: rqContext.queryClient,
+  });
 
-	return router;
+  return router;
 }
