@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "vite dev --port 3000",
     "build": "vite build",
-    "deploy": "wrangler deploy",
+    "deploy": "pnpm db:migrate && wrangler deploy",
     "serve": "vite preview",
     "test": "vitest run",
     "lint": "eslint .",

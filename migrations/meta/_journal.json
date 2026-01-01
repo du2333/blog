@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1767257633898,
+      "tag": "0000_sloppy_black_bird",
+      "breakpoints": true
+    }
+  ]
+}
