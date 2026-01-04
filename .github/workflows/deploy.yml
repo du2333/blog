@@ -16,14 +16,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v2
         with:
-          version: 10
-          run_install: true
+          bun-version: latest
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun ci
 
       - name: import cloudflare secrets
         uses: hashicorp/vault-action@v3
@@ -58,6 +57,6 @@ jobs:
 
       - name: Deploy to Cloudflare Workers
         run: |
-          npx wrangler secret bulk secrets.json
-          pnpm build
-          pnpm run deploy
+          bunx wrangler secret bulk secrets.json
+          bun build
+          bun run deploy
