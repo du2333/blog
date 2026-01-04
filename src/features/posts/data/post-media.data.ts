@@ -3,7 +3,7 @@ import type { JSONContent } from "@tiptap/react";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
 import { MediaTable, PostMediaTable, PostsTable } from "@/lib/db/schema";
-import { extractAllImageKeys } from "@/lib/editor/utils";
+import { extractAllImageKeys } from "@/features/posts/utils/content";
 
 export async function syncPostMedia(
   db: DB,

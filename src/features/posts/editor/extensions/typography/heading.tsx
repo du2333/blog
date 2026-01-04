@@ -1,6 +1,6 @@
 import Heading from "@tiptap/extension-heading";
 import { mergeAttributes } from "@tiptap/react";
-import { slugify } from "@/lib/editor/utils";
+import { slugify } from "@/features/posts/utils/content";
 
 export const HeadingExtension = Heading.extend({
   renderHTML({ HTMLAttributes, node }) {

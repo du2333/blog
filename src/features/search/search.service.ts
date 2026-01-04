@@ -10,7 +10,7 @@ import {
   persistOramaDb,
   setOramaDb,
 } from "@/features/search/model/store";
-import { convertToPlainText } from "@/lib/editor/utils";
+import { convertToPlainText } from "@/features/posts/utils/content";
 import { createMyDb } from "@/features/search/model/schema";
 import { PostsTable } from "@/lib/db/schema";
 import { buildSnippet, getMatchedTerms } from "@/features/search/search.utils";

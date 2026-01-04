@@ -10,7 +10,7 @@ import {
   startPostProcessWorkflowFn,
 } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
-import { slugify } from "@/lib/editor/utils";
+import { slugify } from "@/features/posts/utils/content";
 
 interface UsePostActionsOptions {
   postId: number;

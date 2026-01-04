@@ -1,7 +1,7 @@
 import { useNavigate } from "@tanstack/react-router";
 import { AlignLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import type { TableOfContentsItem } from "@/lib/editor/toc";
+import type { TableOfContentsItem } from "@/features/posts/utils/toc";
 import { useActiveTOC } from "@/hooks/use-active-toc";
 
 export default function TableOfContents({

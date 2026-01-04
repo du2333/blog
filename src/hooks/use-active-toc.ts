@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { TableOfContentsItem } from "@/lib/editor/toc";
+import type { TableOfContentsItem } from "@/features/posts/utils/toc";
 
 export function useActiveTOC(headers: Array<TableOfContentsItem>) {
   const [activeId, setActiveId] = useState<string>("");

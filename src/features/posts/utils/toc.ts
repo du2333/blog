@@ -1,5 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
-import { slugify } from "@/lib/editor/utils";
+import { slugify } from "@/features/posts/utils/content";
 
 export interface TableOfContentsItem {
   id: string;

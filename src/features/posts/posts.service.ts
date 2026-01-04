@@ -19,8 +19,8 @@ import {
   PostWithTocSchema,
 } from "@/features/posts/posts.schema";
 import * as AiService from "@/features/ai/ai.service";
-import { generateTableOfContents } from "@/lib/editor/toc";
-import { convertToPlainText, slugify } from "@/lib/editor/utils";
+import { generateTableOfContents } from "@/features/posts/utils/toc";
+import { convertToPlainText, slugify } from "@/features/posts/utils/content";
 import { purgePostCDNCache } from "@/lib/revalidate";
 import * as SearchService from "@/features/search/search.service";
 
