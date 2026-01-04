@@ -1,13 +1,10 @@
 import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
-import {
-  bumpCacheVersion,
-  deleteCachedData,
-} from "@/features/cache/cache.data";
-import { generateSummaryByPostId } from "@/features/posts/posts.service";
+import * as CacheService from "@/features/cache/cache.service";
+import * as PostService from "@/features/posts/posts.service";
 import { getDb } from "@/lib/db";
 import { purgePostCDNCache } from "@/lib/revalidate";
-import { addOrUpdateSearchDoc } from "@/lib/search/ops";
+import * as SearchService from "@/features/search/search.service";
 
 interface Params {
   postId: number;
@@ -26,7 +23,7 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       },
       async () => {
         const db = getDb(this.env);
-        return await generateSummaryByPostId({
+        return await PostService.generateSummaryByPostId({
           db,
           postId: event.payload.postId,
         });
@@ -34,14 +31,14 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
     );
 
     await step.do("update search index", async () => {
-      return await addOrUpdateSearchDoc(this.env, post);
+      return await SearchService.upsert({ env: this.env }, post);
     });
 
     await step.do("Invalidate caches", async () => {
       const tasks = [
-        deleteCachedData({ env: this.env }, ["post", post.slug]),
+        CacheService.deleteKey({ env: this.env }, ["post", post.slug]),
         purgePostCDNCache(this.env, post.slug),
-        bumpCacheVersion({ env: this.env }, "posts:list"),
+        CacheService.bumpVersion({ env: this.env }, "posts:list"),
       ];
       await Promise.all(tasks);
     });

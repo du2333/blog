@@ -1,7 +1,7 @@
 import { load, save } from "@orama/orama";
 import type { RawData } from "@orama/orama";
-import type { MyOramaDB } from "@/lib/search/schema";
-import { createMyDb } from "@/lib/search/schema";
+import type { MyOramaDB } from "@/features/search/model/schema";
+import { createMyDb } from "@/features/search/model/schema";
 
 const KV_KEY = "search:index:v3";
 

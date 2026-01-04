@@ -9,43 +9,43 @@ import {
   StartPostProcessInputSchema,
   UpdatePostInputSchema,
 } from "@/features/posts/posts.schema";
-import * as postService from "@/features/posts/posts.service";
+import * as PostService from "@/features/posts/posts.service";
 import { createAdminFn } from "@/lib/middlewares";
 
 export const generateSlugFn = createAdminFn()
   .inputValidator(GenerateSlugInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.generateSlug(context, data);
+    return await PostService.generateSlug(context, data);
   });
 
 export const createEmptyPostFn = createAdminFn({
   method: "POST",
 }).handler(async ({ context }) => {
-  return await postService.createEmptyPost(context);
+  return await PostService.createEmptyPost(context);
 });
 
 export const getPostsFn = createAdminFn()
   .inputValidator(GetPostsInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.getPosts(context, data);
+    return await PostService.getPosts(context, data);
   });
 
 export const getPostsCountFn = createAdminFn()
   .inputValidator(GetPostsCountInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.getPostsCount(context, data);
+    return await PostService.getPostsCount(context, data);
   });
 
 export const findPostBySlugFn = createAdminFn()
   .inputValidator(FindPostBySlugInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.findPostBySlugAdmin(context, data);
+    return await PostService.findPostBySlugAdmin(context, data);
   });
 
 export const findPostByIdFn = createAdminFn()
   .inputValidator(FindPostByIdInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.findPostById(context, data);
+    return await PostService.findPostById(context, data);
   });
 
 export const updatePostFn = createAdminFn({
@@ -53,7 +53,7 @@ export const updatePostFn = createAdminFn({
 })
   .inputValidator(UpdatePostInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.updatePost(context, data);
+    return await PostService.updatePost(context, data);
   });
 
 export const deletePostFn = createAdminFn({
@@ -61,7 +61,7 @@ export const deletePostFn = createAdminFn({
 })
   .inputValidator(DeletePostInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.deletePost(context, data);
+    return await PostService.deletePost(context, data);
   });
 
 export const previewSummaryFn = createAdminFn({
@@ -69,11 +69,11 @@ export const previewSummaryFn = createAdminFn({
 })
   .inputValidator(PreviewSummaryInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.previewSummary(context, data);
+    return await PostService.previewSummary(context, data);
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()
   .inputValidator(StartPostProcessInputSchema)
   .handler(async ({ data, context }) => {
-    return await postService.startPostProcessWorkflow(context, data);
+    return await PostService.startPostProcessWorkflow(context, data);
   });

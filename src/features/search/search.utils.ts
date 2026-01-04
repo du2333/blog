@@ -1,99 +1,14 @@
-import { insert, remove, search } from "@orama/orama";
-import type { JSONContent } from "@tiptap/react";
-import type { MyOramaDB } from "@/lib/search/schema";
-import { convertToPlainText } from "@/lib/editor/utils";
-import { getOramaDb, persistOramaDb } from "@/lib/search/loader";
-
-const CONTENT_SLICE = 10000;
-const SNIPPET_SLICE = 200;
-const SNIPPET_CONTEXT = 60;
-const SCAN_LIMIT = CONTENT_SLICE; // scan up to the same slice that gets indexed to avoid ghost hits
-const FUZZY_MAX_DISTANCE = 1;
-
-interface UpsertInput {
-  id: number | string;
-  slug: string;
-  title: string;
-  summary?: string | null;
-  contentJson?: JSONContent | null;
-}
-
-export async function addOrUpdateSearchDoc(env: Env, input: UpsertInput) {
-  const db = await getOramaDb(env);
-  await removeById(db, input.id);
-  const plain = convertToPlainText(input.contentJson ?? null);
-  const content =
-    plain.length > CONTENT_SLICE ? plain.slice(0, CONTENT_SLICE) : plain;
-  const summary =
-    input.summary && input.summary.trim().length > 0
-      ? input.summary
-      : content.slice(0, SNIPPET_SLICE);
-
-  await insert(db, {
-    id: input.id.toString(),
-    slug: input.slug,
-    title: input.title,
-    summary,
-    content,
-  });
-
-  await persistOramaDb(env, db);
-  return { id: input.id };
-}
-
-export async function deleteSearchDoc(env: Env, id: number | string) {
-  const db = await getOramaDb(env);
-  await removeById(db, id);
-  await persistOramaDb(env, db);
-  return { id };
-}
+import {
+  FUZZY_MAX_DISTANCE,
+  SCAN_LIMIT,
+  SNIPPET_CONTEXT,
+  SNIPPET_SLICE,
+} from "./search.service";
+import type { search } from "@orama/orama";
 
 type OramaHit = Awaited<ReturnType<typeof search>>["hits"][number];
 
-export async function searchDocs(env: Env, query: string, limit = 10) {
-  const db = await getOramaDb(env);
-  const result = await search(db, {
-    term: query,
-    limit: Math.min(limit, 25),
-  });
-
-  return result.hits.map((hit) => {
-    const { document, score } = hit;
-    const titleHighlight = buildSnippet({
-      text: document.title,
-      terms: getMatchedTerms(hit, "title"),
-      fallbackTerm: query,
-    });
-    const summaryHighlight = buildSnippet({
-      text: document.summary,
-      terms: getMatchedTerms(hit, "summary"),
-      fallbackTerm: query,
-    });
-    const contentHighlight = buildSnippet({
-      text: document.content,
-      terms: getMatchedTerms(hit, "content"),
-      fallbackTerm: query,
-    });
-
-    return {
-      post: {
-        id: document.id,
-        slug: document.slug,
-        title: document.title,
-        summary: document.summary,
-        category: document.category,
-      },
-      score,
-      matches: {
-        title: titleHighlight,
-        summary: summaryHighlight,
-        contentSnippet: contentHighlight,
-      },
-    };
-  });
-}
-
-function buildSnippet({
+export function buildSnippet({
   text,
   terms,
   fallbackTerm,
@@ -101,6 +16,12 @@ function buildSnippet({
   text?: string | null;
   terms: Array<string>;
   fallbackTerm: string;
+  options?: {
+    snippetSlice?: number;
+    snippetContext?: number;
+    scanLimit?: number;
+    fuzzyMaxDistance?: number;
+  };
 }) {
   const source = text?.trim() ?? "";
   if (source.length === 0) return null;
@@ -159,7 +80,7 @@ function escapeHtml(unsafe: string) {
     .replace(/'/g, "&#039;");
 }
 
-function getMatchedTerms(
+export function getMatchedTerms(
   hit: OramaHit,
   field: "title" | "summary" | "content",
 ) {
@@ -262,12 +183,4 @@ function levenshteinWithCutoff(a: string, b: string, max: number): number {
     for (let j = 0; j <= bLen; j++) prev[j] = curr[j];
   }
   return curr[bLen];
-}
-
-async function removeById(db: MyOramaDB, id: number | string) {
-  try {
-    await remove(db, id.toString());
-  } catch {
-    // ignore missing
-  }
 }

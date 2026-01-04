@@ -11,14 +11,9 @@ import type {
   UpdatePostInput,
 } from "@/features/posts/posts.schema";
 import type { DB } from "@/lib/db";
-import {
-  bumpCacheVersion,
-  cachedData,
-  deleteCachedData,
-  getCacheVersion,
-} from "@/features/cache/cache.data";
+import * as CacheService from "@/features/cache/cache.service";
 import { syncPostMedia } from "@/features/posts/data/post-media.data";
-import * as postRepo from "@/features/posts/data/posts.data";
+import * as PostRepo from "@/features/posts/data/posts.data";
 import {
   PostListResponseSchema,
   PostWithTocSchema,
@@ -27,7 +22,7 @@ import { summarizeText } from "@/lib/ai/summarizer";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { convertToPlainText, slugify } from "@/lib/editor/utils";
 import { purgePostCDNCache } from "@/lib/revalidate";
-import { deleteSearchDoc } from "@/lib/search/ops";
+import * as SearchService from "@/features/search/search.service";
 
 export async function getPostsCursor(
   context: Context,
@@ -35,14 +30,14 @@ export async function getPostsCursor(
 ) {
   const { env, db, executionCtx } = context;
   const fetcher = async () =>
-    await postRepo.getPostsCursor(db, {
+    await PostRepo.getPostsCursor(db, {
       cursor: data.cursor,
       limit: data.limit,
       category: data.category,
       publicOnly: true,
     });
 
-  const version = await getCacheVersion({ env }, "posts:list");
+  const version = await CacheService.getVersion({ env }, "posts:list");
   const cacheKey = [
     "posts",
     "list",
@@ -52,7 +47,7 @@ export async function getPostsCursor(
     data.cursor ?? 0,
   ];
 
-  return await cachedData(
+  return await CacheService.get(
     {
       env,
       executionCtx,
@@ -72,7 +67,7 @@ export async function findPostBySlug(
 ) {
   const { env, db, executionCtx } = context;
   const fetcher = async () => {
-    const post = await postRepo.findPostBySlug(db, data.slug, {
+    const post = await PostRepo.findPostBySlug(db, data.slug, {
       publicOnly: true,
     });
     if (!post) return null;
@@ -83,7 +78,7 @@ export async function findPostBySlug(
   };
 
   const cacheKey = ["post", data.slug];
-  return await cachedData(
+  return await CacheService.get(
     {
       env,
       executionCtx,
@@ -104,7 +99,7 @@ export async function generateSummaryByPostId({
   db: DB;
   postId: number;
 }) {
-  const post = await postRepo.findPostById(db, postId);
+  const post = await PostRepo.findPostById(db, postId);
 
   if (!post) {
     throw new Error("Post not found");
@@ -121,7 +116,7 @@ export async function generateSummaryByPostId({
   try {
     const { summary } = await summarizeText(db, plainText);
 
-    const updatedPost = await postRepo.updatePost(db, post.id, { summary });
+    const updatedPost = await PostRepo.updatePost(db, post.id, { summary });
 
     return updatedPost;
   } catch (error) {
@@ -139,7 +134,7 @@ export async function generateSummaryByPostId({
 export async function generateSlug(context: Context, data: GenerateSlugInput) {
   const baseSlug = slugify(data.title);
   // 1. 先查有没有完全一样的 (比如 'hello-world')
-  const exactMatch = await postRepo.slugExists(context.db, baseSlug, {
+  const exactMatch = await PostRepo.slugExists(context.db, baseSlug, {
     excludeId: data.excludeId,
   });
   if (!exactMatch) {
@@ -147,7 +142,7 @@ export async function generateSlug(context: Context, data: GenerateSlugInput) {
   }
 
   // 2. 既然 'hello-world' 被占了，那就查所有 'hello-world-%' 的
-  const similarSlugs = await postRepo.findSimilarSlugs(context.db, baseSlug, {
+  const similarSlugs = await PostRepo.findSimilarSlugs(context.db, baseSlug, {
     excludeId: data.excludeId,
   });
 
@@ -173,7 +168,7 @@ export async function generateSlug(context: Context, data: GenerateSlugInput) {
 export async function createEmptyPost(context: Context) {
   const { slug } = await generateSlug(context, { title: "" });
 
-  const post = await postRepo.insertPost(context.db, {
+  const post = await PostRepo.insertPost(context.db, {
     title: "",
     slug,
     summary: "",
@@ -188,7 +183,7 @@ export async function createEmptyPost(context: Context) {
 }
 
 export async function getPosts(context: Context, data: GetPostsInput) {
-  return await postRepo.getPosts(context.db, {
+  return await PostRepo.getPosts(context.db, {
     offset: data.offset ?? 0,
     limit: data.limit ?? 10,
     category: data.category,
@@ -203,7 +198,7 @@ export async function getPostsCount(
   context: Context,
   data: GetPostsCountInput,
 ) {
-  return await postRepo.getPostsCount(context.db, {
+  return await PostRepo.getPostsCount(context.db, {
     category: data.category,
     status: data.status,
     publicOnly: data.publicOnly,
@@ -215,7 +210,7 @@ export async function findPostBySlugAdmin(
   context: Context,
   data: FindPostBySlugInput,
 ) {
-  const post = await postRepo.findPostBySlug(context.db, data.slug, {
+  const post = await PostRepo.findPostBySlug(context.db, data.slug, {
     publicOnly: false,
   });
   if (!post) return null;
@@ -226,11 +221,11 @@ export async function findPostBySlugAdmin(
 }
 
 export async function findPostById(context: Context, data: FindPostByIdInput) {
-  return await postRepo.findPostById(context.db, data.id);
+  return await PostRepo.findPostById(context.db, data.id);
 }
 
 export async function updatePost(context: Context, data: UpdatePostInput) {
-  const post = await postRepo.updatePost(context.db, data.id, data.data);
+  const post = await PostRepo.updatePost(context.db, data.id, data.data);
   if (data.data.contentJson !== undefined) {
     context.executionCtx.waitUntil(
       syncPostMedia(context.db, post.id, data.data.contentJson),
@@ -241,17 +236,17 @@ export async function updatePost(context: Context, data: UpdatePostInput) {
 }
 
 export async function deletePost(context: Context, data: DeletePostInput) {
-  const post = await postRepo.findPostById(context.db, data.id);
+  const post = await PostRepo.findPostById(context.db, data.id);
   if (!post) return;
 
-  await postRepo.deletePost(context.db, data.id);
+  await PostRepo.deletePost(context.db, data.id);
 
   // Only clear cache/index for published posts
   if (post.status === "published") {
     const tasks = [];
-    tasks.push(deleteCachedData(context, ["post", post.slug]));
-    tasks.push(bumpCacheVersion(context, "posts:list"));
-    tasks.push(deleteSearchDoc(context.env, data.id));
+    tasks.push(CacheService.deleteKey(context, ["post", post.slug]));
+    tasks.push(CacheService.bumpVersion(context, "posts:list"));
+    tasks.push(SearchService.deleteIndex(context, { id: data.id }));
     tasks.push(purgePostCDNCache(context.env, post.slug));
 
     context.executionCtx.waitUntil(Promise.all(tasks));

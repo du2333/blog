@@ -6,7 +6,7 @@ import type { CacheKey, CacheNamespace, Context } from "./types";
  * 缓存数据
  * @param options.ttl - 缓存时间 (秒) 默认 3600 秒 (1 小时)
  */
-export async function cachedData<T extends z.ZodTypeAny>(
+export async function get<T extends z.ZodTypeAny>(
   context: Context,
   key: CacheKey,
   schema: T,
@@ -45,7 +45,7 @@ export async function cachedData<T extends z.ZodTypeAny>(
   return data;
 }
 
-export async function deleteCachedData(
+export async function deleteKey(
   context: { env: Env },
   ...keys: Array<CacheKey>
 ): Promise<void> {
@@ -64,7 +64,7 @@ export async function deleteCachedData(
  * 获取缓存版本号
  * 规范：Namespace 建议使用 "entity:scope" 格式，如 "posts:list"
  */
-export async function getCacheVersion(
+export async function getVersion(
   context: { env: Env },
   namespace: CacheNamespace,
 ): Promise<string> {
@@ -83,7 +83,7 @@ export async function getCacheVersion(
 /**
  * 升级版本号 -> 导致旧版本 Key 全部失效
  */
-export async function bumpCacheVersion(
+export async function bumpVersion(
   context: { env: Env },
   namespace: CacheNamespace,
 ): Promise<void> {

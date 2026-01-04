@@ -1,0 +1,23 @@
+import { z } from "zod";
+import type { JSONContent } from "@tiptap/react";
+
+export const SearchQuerySchema = z.object({
+  q: z.string().min(1),
+  limit: z.number().optional().default(10),
+});
+
+export const UpsertSearchDocSchema = z.object({
+  id: z.number(),
+  slug: z.string().min(1),
+  title: z.string().min(1),
+  summary: z.string().nullable().optional(),
+  contentJson: z.custom<JSONContent>().nullable().optional(),
+});
+
+export const DeleteSearchDocSchema = z.object({
+  id: z.number(),
+});
+
+export type SearchQueryInput = z.infer<typeof SearchQuerySchema>;
+export type UpsertSearchDocInput = z.infer<typeof UpsertSearchDocSchema>;
+export type DeleteSearchDocInput = z.infer<typeof DeleteSearchDocSchema>;

@@ -1,14 +1,14 @@
 import { z } from "zod";
 import { getSystemConfig, upsertSystemConfig } from "./config.data";
 import { SystemConfigSchema } from "./config.schema";
-import { cachedData, deleteCachedData } from "@/features/cache/cache.data";
+import * as CacheService from "@/features/cache/cache.service";
 import { testEmailConnection } from "@/features/email/email.service";
 import { testAiConnection } from "@/lib/ai";
 import { createAdminFn } from "@/lib/middlewares";
 
 export const getSystemConfigFn = createAdminFn().handler(
   async ({ context }) => {
-    return cachedData(
+    return CacheService.get(
       context,
       ["system"],
       SystemConfigSchema.nullable(),
@@ -25,7 +25,11 @@ export const updateSystemConfigFn = createAdminFn({
   .inputValidator(SystemConfigSchema)
   .handler(async ({ context, data }) => {
     await upsertSystemConfig(context.db, data);
-    await deleteCachedData(context, ["system"], ["isEmailVerficationRequired"]);
+    await CacheService.deleteKey(
+      context,
+      ["system"],
+      ["isEmailVerficationRequired"],
+    );
 
     return { success: true };
   });

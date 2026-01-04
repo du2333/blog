@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { getRequestHeaders } from "@tanstack/react-start/server";
 import { z } from "zod";
 import { userHasPassword } from "@/features/auth/auth.data";
-import { cachedData } from "@/features/cache/cache.data";
+import * as CacheService from "@/features/cache/cache.service";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createAuthedFn } from "@/lib/middlewares";
 
@@ -23,7 +23,7 @@ export const userHasPasswordFn = createAuthedFn().handler(
 
 export const getIsEmailVerficationRequiredFn = createServerFn().handler(
   async ({ context }) => {
-    return cachedData(
+    return CacheService.get(
       context,
       ["isEmailVerficationRequired"],
       z.boolean(),

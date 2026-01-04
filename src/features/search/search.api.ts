@@ -1,46 +1,32 @@
 import { createServerFn } from "@tanstack/react-start";
-import { z } from "zod";
-import type { JSONContent } from "@tiptap/react";
-import { backfillSearchIndex } from "@/lib/search/backfill";
 import {
-  addOrUpdateSearchDoc,
-  deleteSearchDoc,
-  searchDocs,
-} from "@/lib/search/ops";
+  DeleteSearchDocSchema,
+  SearchQuerySchema,
+  UpsertSearchDocSchema,
+} from "@/features/search/search.schema";
+import * as SearchService from "@/features/search/search.service";
+import { createAdminFn } from "@/lib/middlewares";
 
-export const buildSearchIndexFn = createServerFn().handler(
+export const buildSearchIndexFn = createAdminFn().handler(
   async ({ context }) => {
-    return await backfillSearchIndex(context.env, context.db);
+    return await SearchService.rebuildIndex(context);
   },
 );
 
-export const upsertSearchDocFn = createServerFn({ method: "POST" })
-  .inputValidator(
-    z.object({
-      id: z.number(),
-      slug: z.string().min(1),
-      title: z.string().min(1),
-      summary: z.string().nullable().optional(),
-      contentJson: z.custom<JSONContent>().nullable().optional(),
-    }),
-  )
+export const upsertSearchDocFn = createAdminFn({ method: "POST" })
+  .inputValidator(UpsertSearchDocSchema)
   .handler(async ({ data, context }) => {
-    return await addOrUpdateSearchDoc(context.env, data);
+    return await SearchService.upsert(context, data);
   });
 
-export const deleteSearchDocFn = createServerFn({ method: "POST" })
-  .inputValidator(z.object({ id: z.number() }))
+export const deleteSearchDocFn = createAdminFn({ method: "POST" })
+  .inputValidator(DeleteSearchDocSchema)
   .handler(async ({ data, context }) => {
-    return await deleteSearchDoc(context.env, data.id);
+    return await SearchService.deleteIndex(context, data);
   });
 
 export const searchDocsFn = createServerFn()
-  .inputValidator(
-    z.object({
-      q: z.string().min(1),
-      limit: z.number().optional(),
-    }),
-  )
+  .inputValidator(SearchQuerySchema)
   .handler(async ({ data, context }) => {
-    return await searchDocs(context.env, data.q, data.limit);
+    return await SearchService.search(context, data);
   });
