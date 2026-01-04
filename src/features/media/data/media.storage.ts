@@ -1,9 +1,6 @@
-import { generateKey } from "@/lib/images/utils";
+import { generateKey } from "@/features/media/media.utils";
 
-/**
- * 上传图片到 R2，返回完整的 Media 对象
- */
-export async function uploadImage(env: Env, image: File) {
+export async function putToR2(env: Env, image: File) {
   const key = generateKey(image.name);
   const contentType = image.type;
   const url = `/images/${key}`;
@@ -26,6 +23,10 @@ export async function uploadImage(env: Env, image: File) {
   };
 }
 
-export async function deleteImage(env: Env, key: string) {
+export async function deleteFromR2(env: Env, key: string) {
   await env.R2.delete(key);
+}
+
+export async function getFromR2(env: Env, key: string) {
+  return await env.R2.get(key);
 }

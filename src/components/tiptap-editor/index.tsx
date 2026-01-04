@@ -18,7 +18,7 @@ import {
   OrderedListExtension,
 } from "@/components/tiptap-editor/extensions/typography/list";
 import { ImageUpload } from "@/components/tiptap-editor/extensions/upload-image";
-import { uploadImageFn } from "@/features/media/images.api";
+import { uploadImageFn } from "@/features/media/media.api";
 
 const ALLOWED_IMAGE_MIME_TYPES = [
   "image/png",

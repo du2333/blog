@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
-import { getMediaFn } from "@/features/media/images.api";
+import { getMediaFn } from "@/features/media/media.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
 /**

@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { UploadItem } from "../types";
-import { uploadImageFn } from "@/features/media/images.api";
+import { uploadImageFn } from "@/features/media/media.api";
 import { formatBytes } from "@/lib/utils";
 
 export function useMediaUpload() {

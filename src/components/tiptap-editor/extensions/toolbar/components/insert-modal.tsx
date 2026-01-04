@@ -14,7 +14,7 @@ import type { MediaAsset } from "@/components/admin/media-library/types";
 import type React from "react";
 import { useMediaPicker } from "@/components/admin/media-library/hooks";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
-import { getOptimizedImageUrl } from "@/lib/images/utils";
+import { getOptimizedImageUrl } from "@/features/media/media.utils";
 
 export type ModalType = "LINK" | "IMAGE" | null;
 

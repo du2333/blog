@@ -13,7 +13,7 @@ import {
   getMediaFn,
   getTotalMediaSizeFn,
   updateMediaNameFn,
-} from "@/features/media/images.api";
+} from "@/features/media/media.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function useMediaLibrary() {

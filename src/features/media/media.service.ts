@@ -1,4 +1,72 @@
-import { getContentTypeFromKey } from "@/lib/images/utils";
+import type {
+  GetMediaListInput,
+  UpdateMediaNameInput,
+} from "@/features/media/media.schema";
+import * as Storage from "@/features/media/data/media.storage";
+import * as MediaRepo from "@/features/media/data/media.data";
+import * as PostMediaRepo from "@/features/posts/data/post-media.data";
+import {
+  buildTransformOptions,
+  getContentTypeFromKey,
+} from "@/features/media/media.utils";
+
+export async function upload(context: Context, file: File) {
+  const uploaded = await Storage.putToR2(context.env, file);
+
+  try {
+    const mediaRecord = await MediaRepo.insertMedia(context.db, {
+      key: uploaded.key,
+      url: uploaded.url,
+      fileName: uploaded.fileName,
+      mimeType: uploaded.mimeType,
+      sizeInBytes: uploaded.sizeInBytes,
+    });
+    return mediaRecord;
+  } catch (error) {
+    console.error("DB Insert Failed, rolling back R2 upload:", error);
+    context.executionCtx.waitUntil(
+      Storage.deleteFromR2(context.env, uploaded.key).catch(console.error),
+    );
+    throw new Error("Failed to insert media record");
+  }
+}
+
+export async function deleteImage(context: Context, key: string) {
+  await MediaRepo.deleteMedia(context.db, key);
+  context.executionCtx.waitUntil(
+    Storage.deleteFromR2(context.env, key).catch(console.error),
+  );
+}
+
+export async function getMediaList(context: Context, data: GetMediaListInput) {
+  return await MediaRepo.getMediaList(context.db, data);
+}
+
+export async function isMediaInUse(context: Context, key: string) {
+  return await PostMediaRepo.isMediaInUse(context.db, key);
+}
+
+export async function getLinkedPosts(context: Context, key: string) {
+  return await PostMediaRepo.getPostsByMediaKey(context.db, key);
+}
+
+export async function getLinkedMediaKeys(
+  context: Context,
+  keys: Array<string>,
+) {
+  return await PostMediaRepo.getLinkedMediaKeys(context.db, keys);
+}
+
+export async function getTotalMediaSize(context: Context) {
+  return await MediaRepo.getTotalMediaSize(context.db);
+}
+
+export async function updateMediaName(
+  context: Context,
+  data: UpdateMediaNameInput,
+) {
+  return await MediaRepo.updateMediaName(context.db, data.key, data.name);
+}
 
 export async function handleImageRequest(
   env: Env,
@@ -79,26 +147,4 @@ export async function handleImageRequest(
     console.error("Image transform failed:", e);
     return await serveOriginal();
   }
-}
-function buildTransformOptions(searchParams: URLSearchParams, accept: string) {
-  const transformOptions: Record<string, unknown> = { quality: 80 };
-
-  if (searchParams.has("width"))
-    transformOptions.width = Number.parseInt(searchParams.get("width")!, 10);
-  if (searchParams.has("height"))
-    transformOptions.height = Number.parseInt(searchParams.get("height")!, 10);
-  if (searchParams.has("quality"))
-    transformOptions.quality = Number.parseInt(
-      searchParams.get("quality")!,
-      10,
-    );
-  if (searchParams.has("fit")) transformOptions.fit = searchParams.get("fit");
-
-  if (/image\/avif/.test(accept)) {
-    transformOptions.format = "avif";
-  } else if (/image\/webp/.test(accept)) {
-    transformOptions.format = "webp";
-  }
-
-  return transformOptions;
 }

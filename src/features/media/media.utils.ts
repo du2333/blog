@@ -54,3 +54,29 @@ export function extractImageKey(src: string): string | undefined {
 export function getOptimizedImageUrl(key: string, width?: number) {
   return `/images/${key}?quality=80${width ? `&width=${width}` : ""}`;
 }
+
+export function buildTransformOptions(
+  searchParams: URLSearchParams,
+  accept: string,
+) {
+  const transformOptions: Record<string, unknown> = { quality: 80 };
+
+  if (searchParams.has("width"))
+    transformOptions.width = Number.parseInt(searchParams.get("width")!, 10);
+  if (searchParams.has("height"))
+    transformOptions.height = Number.parseInt(searchParams.get("height")!, 10);
+  if (searchParams.has("quality"))
+    transformOptions.quality = Number.parseInt(
+      searchParams.get("quality")!,
+      10,
+    );
+  if (searchParams.has("fit")) transformOptions.fit = searchParams.get("fit");
+
+  if (/image\/avif/.test(accept)) {
+    transformOptions.format = "avif";
+  } else if (/image\/webp/.test(accept)) {
+    transformOptions.format = "webp";
+  }
+
+  return transformOptions;
+}

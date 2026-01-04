@@ -3,7 +3,7 @@ import { Hono } from "hono";
 import { getAuth } from "@/lib/auth/auth.server";
 import { CACHE_CONTROL } from "@/lib/constants";
 import { getDb } from "@/lib/db";
-import { handleImageRequest } from "@/lib/images/server";
+import { handleImageRequest } from "@/features/media/media.service";
 
 export const app = new Hono<{ Bindings: Env }>();
 

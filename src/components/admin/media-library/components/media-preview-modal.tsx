@@ -17,7 +17,7 @@ import { useEffect, useState } from "react";
 import type { MediaAsset } from "@/components/admin/media-library/types";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { getLinkedPostsFn } from "@/features/media/images.api";
+import { getLinkedPostsFn } from "@/features/media/media.api";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { cn, formatBytes } from "@/lib/utils";
 

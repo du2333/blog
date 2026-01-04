@@ -1,7 +1,7 @@
 import { and, desc, eq, lt, sql, sum } from "drizzle-orm";
-import { escapeLikeString } from "./helper";
 import type { SQL } from "drizzle-orm";
 import type { DB } from "@/lib/db";
+import { escapeLikeString } from "@/features/media/data/helper";
 import { MediaTable } from "@/lib/db/schema";
 
 export type Media = typeof MediaTable.$inferSelect;

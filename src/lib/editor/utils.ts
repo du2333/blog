@@ -1,5 +1,5 @@
 import type { JSONContent } from "@tiptap/react";
-import { extractImageKey } from "@/lib/images/utils";
+import { extractImageKey } from "@/features/media/media.utils";
 
 export function slugify(text: string | null | undefined) {
   if (!text) return "untitled-log";
