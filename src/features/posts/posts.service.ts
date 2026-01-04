@@ -18,7 +18,7 @@ import {
   PostListResponseSchema,
   PostWithTocSchema,
 } from "@/features/posts/posts.schema";
-import { summarizeText } from "@/lib/ai/summarizer";
+import * as AiService from "@/features/ai/ai.service";
 import { generateTableOfContents } from "@/lib/editor/toc";
 import { convertToPlainText, slugify } from "@/lib/editor/utils";
 import { purgePostCDNCache } from "@/lib/revalidate";
@@ -28,16 +28,15 @@ export async function getPostsCursor(
   context: Context,
   data: GetPostsCursorInput,
 ) {
-  const { env, db, executionCtx } = context;
   const fetcher = async () =>
-    await PostRepo.getPostsCursor(db, {
+    await PostRepo.getPostsCursor(context.db, {
       cursor: data.cursor,
       limit: data.limit,
       category: data.category,
       publicOnly: true,
     });
 
-  const version = await CacheService.getVersion({ env }, "posts:list");
+  const version = await CacheService.getVersion(context, "posts:list");
   const cacheKey = [
     "posts",
     "list",
@@ -48,10 +47,7 @@ export async function getPostsCursor(
   ];
 
   return await CacheService.get(
-    {
-      env,
-      executionCtx,
-    },
+    context,
     cacheKey,
     PostListResponseSchema,
     fetcher,
@@ -65,9 +61,8 @@ export async function findPostBySlug(
   context: Context,
   data: FindPostBySlugInput,
 ) {
-  const { env, db, executionCtx } = context;
   const fetcher = async () => {
-    const post = await PostRepo.findPostBySlug(db, data.slug, {
+    const post = await PostRepo.findPostBySlug(context.db, data.slug, {
       publicOnly: true,
     });
     if (!post) return null;
@@ -78,18 +73,9 @@ export async function findPostBySlug(
   };
 
   const cacheKey = ["post", data.slug];
-  return await CacheService.get(
-    {
-      env,
-      executionCtx,
-    },
-    cacheKey,
-    PostWithTocSchema,
-    fetcher,
-    {
-      ttl: 60 * 60 * 24 * 7, // 7 days
-    },
-  );
+  return await CacheService.get(context, cacheKey, PostWithTocSchema, fetcher, {
+    ttl: 60 * 60 * 24 * 7, // 7 days
+  });
 }
 
 export async function generateSummaryByPostId({
@@ -114,7 +100,7 @@ export async function generateSummaryByPostId({
   }
 
   try {
-    const { summary } = await summarizeText(db, plainText);
+    const { summary } = await AiService.summarizeText({ db }, plainText);
 
     const updatedPost = await PostRepo.updatePost(db, post.id, { summary });
 
@@ -259,7 +245,7 @@ export async function previewSummary(
 ) {
   const plainText = convertToPlainText(data.contentJson);
   try {
-    const { summary } = await summarizeText(context.db, plainText);
+    const { summary } = await AiService.summarizeText(context, plainText);
     return { summary };
   } catch (error) {
     if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {

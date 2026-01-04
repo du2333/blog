@@ -1,6 +1,5 @@
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText } from "ai";
 import type { SystemConfig } from "@/features/config/config.schema";
 
 export function createModel(config: SystemConfig["ai"]) {
@@ -39,43 +38,3 @@ export const DeepSeekModels = ["deepseek-chat", "deepseek-reasoner"] as const;
 
 export type GoogleModelId = (typeof GoogleModels)[number];
 export type DeepSeekModelId = (typeof DeepSeekModels)[number];
-
-/**
- * 测试 AI 提供者连接
- * @param provider - 提供者类型
- * @param apiKey - API 密钥
- * @param model - 模型 ID
- * @returns 连接是否成功
- */
-export async function testAiConnection(
-  provider: "GOOGLE" | "DEEPSEEK",
-  apiKey: string,
-  model: string,
-): Promise<{ success: boolean; error?: string }> {
-  try {
-    let modelInstance;
-
-    switch (provider) {
-      case "GOOGLE": {
-        const google = createGoogleGenerativeAI({ apiKey });
-        modelInstance = google(model);
-        break;
-      }
-      case "DEEPSEEK": {
-        const deepseek = createDeepSeek({ apiKey });
-        modelInstance = deepseek(model);
-        break;
-      }
-    }
-
-    await generateText({
-      model: modelInstance,
-      prompt: "你是谁",
-    });
-
-    return { success: true };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : "未知错误";
-    return { success: false, error: errorMessage };
-  }
-}

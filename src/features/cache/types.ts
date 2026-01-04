@@ -1,8 +1,3 @@
-export interface Context {
-  env: Env;
-  executionCtx: ExecutionContext;
-}
-
 export type CacheKey =
   | string
   | Array<string | number | boolean | null | undefined>;

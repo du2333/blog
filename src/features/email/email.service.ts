@@ -1,10 +1,10 @@
 import type { DB } from "@/lib/db";
 import { getSystemConfig } from "@/features/config/config.data";
-import { createEmailClient } from "@/lib/email";
+import { createEmailClient } from "@/features/email/email.utils";
 import { serverEnv } from "@/lib/env/server.env";
 
 export async function testEmailConnection(
-  env: Env,
+  context: Context,
   options: {
     apiKey: string;
     senderAddress: string;
@@ -12,7 +12,7 @@ export async function testEmailConnection(
   },
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    const { ADMIN_EMAIL } = serverEnv(env);
+    const { ADMIN_EMAIL } = serverEnv(context.env);
     const { apiKey, senderAddress, senderName } = options;
     const resend = createEmailClient({ apiKey });
 
@@ -35,14 +35,16 @@ export async function testEmailConnection(
 }
 
 export async function sendEmail(
-  db: DB,
+  context: {
+    db: DB;
+  },
   options: {
     to: string;
     subject: string;
     html: string;
   },
 ) {
-  const config = await getSystemConfig(db);
+  const config = await getSystemConfig(context.db);
   const email = config?.email;
 
   if (!email?.apiKey || !email.senderAddress) {

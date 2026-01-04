@@ -1,73 +1,33 @@
-import { z } from "zod";
-import { getSystemConfig, upsertSystemConfig } from "./config.data";
-import { SystemConfigSchema } from "./config.schema";
-import * as CacheService from "@/features/cache/cache.service";
-import { testEmailConnection } from "@/features/email/email.service";
-import { testAiConnection } from "@/lib/ai";
+import * as ConfigService from "@/features/config/config.service";
 import { createAdminFn } from "@/lib/middlewares";
+import {
+  SystemConfigSchema,
+  TestAiConnectionSchema,
+  TestEmailConnectionSchema,
+} from "@/features/config/config.schema";
 
-export const getSystemConfigFn = createAdminFn().handler(
-  async ({ context }) => {
-    return CacheService.get(
-      context,
-      ["system"],
-      SystemConfigSchema.nullable(),
-      async () => {
-        return await getSystemConfig(context.db);
-      },
-    );
-  },
+export const getSystemConfigFn = createAdminFn().handler(({ context }) =>
+  ConfigService.getSystemConfig(context),
 );
 
 export const updateSystemConfigFn = createAdminFn({
   method: "POST",
 })
   .inputValidator(SystemConfigSchema)
-  .handler(async ({ context, data }) => {
-    await upsertSystemConfig(context.db, data);
-    await CacheService.deleteKey(
-      context,
-      ["system"],
-      ["isEmailVerficationRequired"],
-    );
-
-    return { success: true };
-  });
-
-const testAiConnectionSchema = z.object({
-  provider: z.enum(["GOOGLE", "DEEPSEEK"]),
-  apiKey: z.string().min(1),
-  model: z.string().min(1),
-});
+  .handler(({ context, data }) =>
+    ConfigService.updateSystemConfig(context, data),
+  );
 
 export const testAiConnectionFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(testAiConnectionSchema)
-  .handler(async ({ data }) => {
-    const result = await testAiConnection(
-      data.provider,
-      data.apiKey,
-      data.model,
-    );
-    return result;
-  });
-
-const testEmailConnectionSchema = z.object({
-  apiKey: z.string().min(1),
-  senderAddress: z.string().email(),
-  senderName: z.string().optional(),
-});
+  .inputValidator(TestAiConnectionSchema)
+  .handler(({ data }) => ConfigService.testAiConnectionService(data));
 
 export const testEmailConnectionFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(testEmailConnectionSchema)
-  .handler(async ({ context, data }) => {
-    const result = await testEmailConnection(context.env, {
-      apiKey: data.apiKey,
-      senderAddress: data.senderAddress,
-      senderName: data.senderName,
-    });
-    return result;
-  });
+  .inputValidator(TestEmailConnectionSchema)
+  .handler(({ context, data }) =>
+    ConfigService.testEmailConnectionService(context, data),
+  );

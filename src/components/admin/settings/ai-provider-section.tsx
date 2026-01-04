@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DropdownMenu from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { DeepSeekModels, GoogleModels } from "@/lib/ai";
+import { DeepSeekModels, GoogleModels } from "@/features/ai/ai.utils";
 
 type AiProvider = "GOOGLE" | "DEEPSEEK";
 type ConnectionStatus = "IDLE" | "TESTING" | "SUCCESS" | "ERROR";

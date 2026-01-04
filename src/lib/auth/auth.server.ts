@@ -49,11 +49,14 @@ function createAuth({ db, env }: { db: DB; env: Env }) {
           );
           return;
         }
-        const result = await sendEmail(db, {
-          to: user.email,
-          subject: "重置密码",
-          html: `请访问以下链接重置您的密码：<a href="${url}">${url}</a><br><br>此链接将在 1 小时后过期。`,
-        });
+        const result = await sendEmail(
+          { db },
+          {
+            to: user.email,
+            subject: "重置密码",
+            html: `请访问以下链接重置您的密码：<a href="${url}">${url}</a><br><br>此链接将在 1 小时后过期。`,
+          },
+        );
 
         if (result.status === "DISABLED") {
           throw new Error("系统邮件服务未配置，无法重置密码。请联系管理员。");
@@ -75,11 +78,14 @@ function createAuth({ db, env }: { db: DB; env: Env }) {
           );
           return;
         }
-        const result = await sendEmail(db, {
-          to: user.email,
-          subject: "验证您的邮箱",
-          html: `请访问以下链接验证您的邮箱地址：<a href="${url}">${url}</a>`,
-        });
+        const result = await sendEmail(
+          { db },
+          {
+            to: user.email,
+            subject: "验证您的邮箱",
+            html: `请访问以下链接验证您的邮箱地址：<a href="${url}">${url}</a>`,
+          },
+        );
 
         if (result.status === "DISABLED") {
           await updateUser(db, user.id, { emailVerified: true });

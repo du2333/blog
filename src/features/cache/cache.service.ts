@@ -1,6 +1,6 @@
 import { serializeKey } from "./cache.utils";
 import type { z } from "zod";
-import type { CacheKey, CacheNamespace, Context } from "./types";
+import type { CacheKey, CacheNamespace } from "./types";
 
 /**
  * 缓存数据
