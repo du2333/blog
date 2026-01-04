@@ -4,7 +4,7 @@ import { RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 import type { PostCategory } from "@/lib/db/schema";
-import { PostItem } from "@/components/article/post-item";
+import { PostItem } from "@/features/posts/components/view/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";

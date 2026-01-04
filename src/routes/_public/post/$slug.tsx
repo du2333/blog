@@ -7,8 +7,8 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { ContentRenderer } from "@/components/article/content-renderer";
-import TableOfContents from "@/components/article/table-of-content";
+import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
+import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
