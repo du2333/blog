@@ -29,6 +29,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu";
 
 import { Input } from "@/components/ui/input";
 import { POST_CATEGORIES, POST_STATUSES } from "@/lib/db/schema";
+import { extensions } from "@/features/posts/editor/config";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
   const router = useRouter();
@@ -363,6 +364,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
           {/* Editor Area */}
           <div className="min-h-[60vh] pb-32">
             <Editor
+              extensions={extensions}
               content={post.contentJson ?? ""}
               onChange={handleContentChange}
             />

@@ -2,7 +2,7 @@ import { renderToReactElement } from "@tiptap/static-renderer/pm/react";
 import type { JSONContent } from "@tiptap/react";
 import { CodeBlock } from "@/components/article/code-block";
 import { ImageDisplay } from "@/components/article/media/image-display";
-import { extensions } from "@/components/tiptap-editor";
+import { extensions } from "@/features/posts/editor/config";
 
 export function renderReact(content: JSONContent) {
   return renderToReactElement({
