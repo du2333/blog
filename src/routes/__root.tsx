@@ -8,9 +8,7 @@ import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { ThemeProvider } from "@/components/common/theme-provider";
 import Toaster from "@/components/ui/toaster";
-import { useAsyncFonts } from "@/hooks/use-async-fonts";
 import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
-import { FONT_URLS, PRELOAD_LINKS } from "@/lib/config/assets";
 import appCss from "@/styles.css?url";
 
 interface MyRouterContext {
@@ -61,7 +59,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         rel: "manifest",
         href: "/site.webmanifest",
       },
-      ...PRELOAD_LINKS,
       {
         rel: "stylesheet",
         href: appCss,
@@ -72,9 +69,6 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 });
 
 function RootDocument({ children }: { children: React.ReactNode }) {
-  // 异步加载字体 - 不阻塞渲染
-  useAsyncFonts(FONT_URLS);
-
   return (
     <html lang="zh" suppressHydrationWarning>
       <head>

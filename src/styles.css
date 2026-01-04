@@ -1,6 +1,11 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/noto-sans-sc";
+@import "@fontsource-variable/jetbrains-mono";
+
 @custom-variant dark (&:is(.dark *));
 @custom-variant light (&:is(.light *));
 @custom-variant system (&:is(.system *));
@@ -71,10 +76,9 @@ mark {
   --tw-transition-duration: 0.3s;
 
   /* Awwwards Style Font Families */
-  --font-serif: "Playfair Display", "Noto Serif SC", serif;
-  --font-sans: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", "Noto Sans SC", ui-monospace, monospace;
-  --font-body: "Inter", "Noto Sans SC", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Playfair Display Variable", "Noto Serif SC Variable", serif;
+  --font-sans: "Inter Variable", "Noto Sans SC Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* Semantic Colors mapping to CSS variables */
   --color-background: var(--background);
