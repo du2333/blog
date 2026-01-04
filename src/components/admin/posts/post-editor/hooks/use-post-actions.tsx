@@ -112,7 +112,7 @@ export function usePostActions({
         });
         return;
       }
-      setPost((prev) => ({ ...prev, summary: result.summary }));
+      setPost((prev) => ({ ...prev, summary: result.summary ?? "" }));
     },
     onError: (error) => {
       toast.error("摘要生成失败", {

@@ -138,30 +138,36 @@ export async function generateSummaryByPostId({
 
 export async function generateSlug(context: Context, data: GenerateSlugInput) {
   const baseSlug = slugify(data.title);
-
-  // Check if base slug is available
-  const baseExists = await postRepo.slugExists(context.db, baseSlug, {
+  // 1. 先查有没有完全一样的 (比如 'hello-world')
+  const exactMatch = await postRepo.slugExists(context.db, baseSlug, {
     excludeId: data.excludeId,
   });
-  if (!baseExists) {
+  if (!exactMatch) {
     return { slug: baseSlug };
   }
 
-  // Try numbered suffixes until we find a unique one
-  const MAX_ATTEMPTS = 100;
-  for (let i = 1; i <= MAX_ATTEMPTS; i++) {
-    const candidateSlug = `${baseSlug}-${i}`;
-    const exists = await postRepo.slugExists(context.db, candidateSlug, {
-      excludeId: data.excludeId,
-    });
-    if (!exists) {
-      return { slug: candidateSlug };
+  // 2. 既然 'hello-world' 被占了，那就查所有 'hello-world-%' 的
+  const similarSlugs = await postRepo.findSimilarSlugs(context.db, baseSlug, {
+    excludeId: data.excludeId,
+  });
+
+  // 3. 在内存里找最大的数字后缀
+  // 正则含义：匹配以 "-数字" 结尾的字符串，并捕获那个数字
+  const regex = new RegExp(`^${baseSlug}-(\\d+)$`);
+
+  let maxSuffix = 0;
+  for (const slug of similarSlugs) {
+    const match = slug.match(regex);
+    if (match) {
+      const number = parseInt(match[1], 10);
+      if (number > maxSuffix) {
+        maxSuffix = number;
+      }
     }
   }
 
-  // Fallback: use timestamp
-  const fallbackSlug = `${baseSlug}-${Date.now()}`;
-  return { slug: fallbackSlug };
+  // 4. 结果就是最大值 + 1
+  return { slug: `${baseSlug}-${maxSuffix + 1}` };
 }
 
 export async function createEmptyPost(context: Context) {

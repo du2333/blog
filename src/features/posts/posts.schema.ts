@@ -16,7 +16,7 @@ export const PostListResponseSchema = z.object({
   items: z.array(PostItemSchema),
   nextCursor: z.number().nullable(),
 });
-export const PostWithTocSchema = PostItemSchema.extend({
+export const PostWithTocSchema = PostSelectSchema.extend({
   toc: z.array(
     z.object({
       id: z.string(),

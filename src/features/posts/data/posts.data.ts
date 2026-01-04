@@ -1,4 +1,4 @@
-import { and, count, desc, eq, lt, ne } from "drizzle-orm";
+import { and, count, desc, eq, like, lt, ne } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
 import type { DB } from "@/lib/db";
 import type { PostCategory, PostListItem, PostStatus } from "@/lib/db/schema";
@@ -189,4 +189,27 @@ export async function slugExists(
     .where(and(...conditions))
     .limit(1);
   return results.length > 0;
+}
+
+/**
+ * 找出所有长得像 "baseSlug-%" 的 Slug
+ */
+export async function findSimilarSlugs(
+  db: DB,
+  baseSlug: string,
+  options: { excludeId?: number } = {},
+) {
+  const conditions = [like(PostsTable.slug, `${baseSlug}-%`)];
+
+  // 如果是编辑文章，要排除掉自己，防止把自己算作冲突
+  if (options.excludeId) {
+    conditions.push(ne(PostsTable.id, options.excludeId));
+  }
+
+  const results = await db
+    .select({ slug: PostsTable.slug })
+    .from(PostsTable)
+    .where(and(...conditions));
+
+  return results.map((r) => r.slug);
 }
