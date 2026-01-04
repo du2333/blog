@@ -4,13 +4,13 @@ import type {
   CategoryFilter,
   SortDirection,
   StatusFilter,
-} from "@/components/admin/posts/post-manager/types";
-import { PostManager } from "@/components/admin/posts/post-manager";
+} from "@/features/posts/components/post-manager/types";
+import { PostManager } from "@/features/posts/components/post-manager";
 import {
   CATEGORY_FILTERS,
   SORT_DIRECTIONS,
   STATUS_FILTERS,
-} from "@/components/admin/posts/post-manager/types";
+} from "@/features/posts/components/post-manager/types";
 
 const searchSchema = z.object({
   page: z.number().int().positive().optional().default(1).catch(1),

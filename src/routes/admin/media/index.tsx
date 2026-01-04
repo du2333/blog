@@ -1,17 +1,17 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Plus } from "lucide-react";
 import { useState } from "react";
-import type { MediaAsset } from "@/components/admin/media-library/types";
+import type { MediaAsset } from "@/features/media/components/media-library/types";
 import {
   MediaGrid,
   MediaPreviewModal,
   MediaToolbar,
   UploadModal,
-} from "@/components/admin/media-library/components";
+} from "@/features/media/components/media-library/components";
 import {
   useMediaLibrary,
   useMediaUpload,
-} from "@/components/admin/media-library/hooks";
+} from "@/features/media/components/media-library/hooks";
 import { MediaLibrarySkeleton } from "@/components/skeletons/media-skeleton";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";

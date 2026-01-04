@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Activity, Database, Shield, Users } from "lucide-react";
-import { StatCard } from "@/components/admin/dashboard/stat-card";
+import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ADMIN_STATS } from "@/lib/constants";
 
