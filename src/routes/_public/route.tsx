@@ -6,7 +6,7 @@ import { UserProfileModal } from "@/features/auth/components/user-profile-modal"
 import { Footer } from "@/components/layout/footer";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";
-import { SearchCommandCenter } from "@/components/layout/search-command-center";
+import { SearchCommandCenter } from "@/features/search/components/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
 import { CACHE_CONTROL } from "@/lib/constants";
 
