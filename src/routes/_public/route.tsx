@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { UserProfileModal } from "@/components/auth/user-profile-modal";
+import { UserProfileModal } from "@/features/auth/components/user-profile-modal";
 import { Footer } from "@/components/layout/footer";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";

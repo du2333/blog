@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { LoginForm } from "@/components/auth/login-form";
-import { SocialLogin } from "@/components/auth/social-login";
+import { LoginForm } from "@/features/auth/components/login-form";
+import { SocialLogin } from "@/features/auth/components/social-login";
 
 export const Route = createFileRoute("/_auth/login")({
   component: RouteComponent,
