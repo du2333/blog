@@ -1,36 +1,15 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestHeaders } from "@tanstack/react-start/server";
-import { z } from "zod";
-import { userHasPassword } from "@/features/auth/auth.data";
-import * as CacheService from "@/features/cache/cache.service";
-import { getSystemConfig } from "@/features/config/config.data";
+import * as AuthService from "@/features/auth/auth.service";
 import { createAuthedFn } from "@/lib/middlewares";
 
-export const getSessionFn = createServerFn().handler(async ({ context }) => {
-  const headers = getRequestHeaders();
-  const session = await context.auth.api.getSession({
-    headers,
-  });
+export const getSessionFn = createServerFn().handler(({ context }) =>
+  AuthService.getSession(context),
+);
 
-  return session;
-});
-
-export const userHasPasswordFn = createAuthedFn().handler(
-  async ({ context }) => {
-    return await userHasPassword(context.db, context.session.user.id);
-  },
+export const userHasPasswordFn = createAuthedFn().handler(({ context }) =>
+  AuthService.userHasPassword(context),
 );
 
 export const getIsEmailVerficationRequiredFn = createServerFn().handler(
-  async ({ context }) => {
-    return CacheService.get(
-      context,
-      ["isEmailVerficationRequired"],
-      z.boolean(),
-      async () => {
-        const config = await getSystemConfig(context.db);
-        return !!(config?.email?.apiKey && config.email.senderAddress);
-      },
-    );
-  },
+  ({ context }) => AuthService.getIsEmailVerficationRequired(context),
 );

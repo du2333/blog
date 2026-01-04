@@ -17,4 +17,11 @@ declare global {
     executionCtx: ExecutionContext;
     auth: Auth;
   };
+
+  type AuthContext = Context & {
+    session: {
+      session: Session;
+      user: User;
+    };
+  };
 }
