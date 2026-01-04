@@ -3,10 +3,12 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { SystemConfig } from "@/features/config/config.schema";
-import { AiProviderSection } from "@/components/admin/settings/ai-provider-section";
-import { EmailServiceSection } from "@/components/admin/settings/email-service-section";
-import { MaintenanceSection } from "@/components/admin/settings/maintenance-section";
-import { useSystemSetting } from "@/components/admin/settings/use-system-setting";
+import { AiProviderSection } from "@/features/ai/components/ai-provider-section";
+import { EmailServiceSection } from "@/features/email/components/email-service-section";
+import { MaintenanceSection } from "@/features/config/components/maintenance-section";
+import { useSystemSetting } from "@/features/config/hooks/use-system-setting";
+import { useAiConnection } from "@/features/ai/hooks/use-ai-connection";
+import { useEmailConnection } from "@/features/email/hooks/use-email-connection";
 import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_CONFIG } from "@/features/config/config.schema";
@@ -23,14 +25,9 @@ export const Route = createFileRoute("/admin/settings/")({
 });
 
 function RouteComponent() {
-  const {
-    settings,
-    saveSettings,
-    testAiConnection,
-    testEmailConnection,
-    isLoading,
-  } = useSystemSetting();
-
+  const { settings, saveSettings, isLoading } = useSystemSetting();
+  const { testAiConnection } = useAiConnection();
+  const { testEmailConnection } = useEmailConnection();
   const [config, setConfig] = useState<SystemConfig>(DEFAULT_CONFIG);
 
   // 同步 settings 到本地 config 状态

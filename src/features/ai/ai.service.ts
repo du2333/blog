@@ -3,6 +3,7 @@ import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createDeepSeek } from "@ai-sdk/deepseek";
 import { generateObject, generateText } from "ai";
 import type { DB } from "@/lib/db";
+import type { TestAiConnectionInput } from "@/features/ai/ai.schema";
 import { createModel } from "@/features/ai/ai.utils";
 import { getSystemConfig } from "@/features/config/config.data";
 
@@ -14,11 +15,10 @@ import { getSystemConfig } from "@/features/config/config.data";
  * @returns 连接是否成功
  */
 export async function testAiConnection(
-  provider: "GOOGLE" | "DEEPSEEK",
-  apiKey: string,
-  model: string,
+  data: TestAiConnectionInput,
 ): Promise<{ success: boolean; error?: string }> {
   try {
+    const { provider, apiKey, model } = data;
     let modelInstance;
 
     switch (provider) {

@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-router";
 import { ArrowUpRight, Menu } from "lucide-react";
 import { useState } from "react";
-import { SideBar } from "@/components/admin/side-bar";
+import { SideBar } from "@/components/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
 

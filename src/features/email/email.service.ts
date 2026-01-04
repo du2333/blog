@@ -1,19 +1,16 @@
 import type { DB } from "@/lib/db";
+import type { TestEmailConnectionInput } from "@/features/email/email.schema";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createEmailClient } from "@/features/email/email.utils";
 import { serverEnv } from "@/lib/env/server.env";
 
 export async function testEmailConnection(
   context: Context,
-  options: {
-    apiKey: string;
-    senderAddress: string;
-    senderName?: string;
-  },
+  data: TestEmailConnectionInput,
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const { ADMIN_EMAIL } = serverEnv(context.env);
-    const { apiKey, senderAddress, senderName } = options;
+    const { apiKey, senderAddress, senderName } = data;
     const resend = createEmailClient({ apiKey });
 
     const result = await resend.emails.send({

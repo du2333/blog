@@ -55,20 +55,3 @@ export const DEFAULT_CONFIG: SystemConfig = {
     senderAddress: "",
   },
 };
-
-export const TestAiConnectionSchema = z.object({
-  provider: z.enum(AI_PROVIDERS),
-  apiKey: z.string().min(1),
-  model: z.string().min(1),
-});
-
-export const TestEmailConnectionSchema = z.object({
-  apiKey: z.string().min(1),
-  senderAddress: z.email(),
-  senderName: z.string().optional(),
-});
-
-export type TestAiConnectionInput = z.infer<typeof TestAiConnectionSchema>;
-export type TestEmailConnectionInput = z.infer<
-  typeof TestEmailConnectionSchema
->;
