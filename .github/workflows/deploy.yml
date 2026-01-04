@@ -58,5 +58,5 @@ jobs:
       - name: Deploy to Cloudflare Workers
         run: |
           bunx wrangler secret bulk secrets.json
-          bun build
+          bun run build
           bun run deploy
