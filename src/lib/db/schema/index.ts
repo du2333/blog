@@ -1,4 +1,3 @@
-import { sql } from "drizzle-orm";
 import {
   index,
   integer,
@@ -6,11 +5,7 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import {
-  createInsertSchema,
-  createSelectSchema,
-  createUpdateSchema,
-} from "drizzle-zod";
+import { sql } from "drizzle-orm";
 import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
 
@@ -92,6 +87,4 @@ export type PostListItem = Omit<Post, "contentJson">;
 export type PostCategory = (typeof POST_CATEGORIES)[number];
 export type PostStatus = (typeof POST_STATUSES)[number];
 
-export const PostSelectSchema = createSelectSchema(PostsTable);
-export const PostInsertSchema = createInsertSchema(PostsTable);
-export const PostUpdateSchema = createUpdateSchema(PostsTable);
+

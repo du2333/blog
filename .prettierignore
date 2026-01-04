@@ -6,3 +6,5 @@ worker-configuration.d.ts
 .wrangler
 .dist
 .tanstack
+migrations
+routeTree.gen.ts

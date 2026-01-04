@@ -4,7 +4,7 @@ import {
   bumpCacheVersion,
   deleteCachedData,
 } from "@/features/cache/cache.data";
-import { generateSummaryByPostId } from "@/features/posts/services/posts-processing.service";
+import { generateSummaryByPostId } from "@/features/posts/post.service";
 import { getDb } from "@/lib/db";
 import { purgePostCDNCache } from "@/lib/revalidate";
 import { addOrUpdateSearchDoc } from "@/lib/search/ops";

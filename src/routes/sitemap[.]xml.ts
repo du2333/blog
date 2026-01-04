@@ -1,8 +1,8 @@
-import { createFileRoute } from '@tanstack/react-router'
-import { and, eq, lte } from 'drizzle-orm'
-import { PostsTable } from '@/lib/db/schema'
+import { createFileRoute } from "@tanstack/react-router";
+import { and, eq, lte } from "drizzle-orm";
+import { PostsTable } from "@/lib/db/schema";
 
-export const Route = createFileRoute('/sitemap.xml')({
+export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async ({ context: { db, env } }) => {
@@ -15,16 +15,16 @@ export const Route = createFileRoute('/sitemap.xml')({
           .from(PostsTable)
           .where(
             and(
-              eq(PostsTable.status, 'published'),
+              eq(PostsTable.status, "published"),
               lte(PostsTable.publishedAt, new Date()),
             ),
-          )
+          );
 
         // Format date to ISO 8601 (required by sitemap spec)
         const formatDate = (date: Date | null) => {
-          if (!date) return new Date().toISOString()
-          return new Date(date).toISOString()
-        }
+          if (!date) return new Date().toISOString();
+          return new Date(date).toISOString();
+        };
 
         const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
@@ -39,26 +39,26 @@ export const Route = createFileRoute('/sitemap.xml')({
     <priority>0.8</priority>
   </url>
   ${posts
-            .map(
-              (post) => `
+    .map(
+      (post) => `
   <url>
     <loc>https://${env.DOMAIN}/post/${post.slug}</loc>
     <lastmod>${formatDate(post.updatedAt)}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>`,
-            )
-            .join('')}
-</urlset>`
+    )
+    .join("")}
+</urlset>`;
 
         return new Response(sitemap, {
           headers: {
-            'Content-Type': 'application/xml; charset=utf-8',
+            "Content-Type": "application/xml; charset=utf-8",
             // Cache for 1 hour, allow CDN to cache
-            'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+            "Cache-Control": "public, max-age=3600, s-maxage=3600",
           },
-        })
+        });
       },
     },
   },
-})
+});
