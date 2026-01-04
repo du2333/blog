@@ -86,5 +86,3 @@ export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson">;
 export type PostCategory = (typeof POST_CATEGORIES)[number];
 export type PostStatus = (typeof POST_STATUSES)[number];
-
-

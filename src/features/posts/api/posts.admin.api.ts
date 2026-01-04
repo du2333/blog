@@ -1,221 +1,79 @@
-import { z } from "zod";
-import type { PostCategory, PostStatus } from "@/lib/db/schema";
 import {
-  bumpCacheVersion,
-  deleteCachedData,
-} from "@/features/cache/cache.data";
-import { syncPostMedia } from "@/features/posts/data/post-media.data";
-import {
-  deletePost,
-  findPostById,
-  findPostBySlug,
-  getPosts,
-  getPostsCount,
-  insertPost,
-  slugExists,
-  updatePost,
-} from "@/features/posts/data/posts.data";
-import { summarizeText } from "@/lib/ai/summarizer";
-import {
-  POST_STATUSES,
-  PostSelectSchema,
-  PostUpdateSchema,
-} from "@/lib/db/schema";
-import { generateTableOfContents } from "@/lib/editor/toc";
-import { convertToPlainText, slugify } from "@/lib/editor/utils";
+  DeletePostInputSchema,
+  FindPostByIdInputSchema,
+  FindPostBySlugInputSchema,
+  GenerateSlugInputSchema,
+  GetPostsCountInputSchema,
+  GetPostsInputSchema,
+  PreviewSummaryInputSchema,
+  StartPostProcessInputSchema,
+  UpdatePostInputSchema,
+} from "@/features/posts/posts.schema";
+import * as postService from "@/features/posts/posts.service";
 import { createAdminFn } from "@/lib/middlewares";
-import { purgePostCDNCache } from "@/lib/revalidate";
-import { deleteSearchDoc } from "@/lib/search/ops";
 
 export const generateSlugFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      title: z.string().optional(),
-      excludeId: z.number().optional(), // For editing existing posts
-    }),
-  )
+  .inputValidator(GenerateSlugInputSchema)
   .handler(async ({ data, context }) => {
-    const baseSlug = slugify(data.title);
-
-    // Check if base slug is available
-    const baseExists = await slugExists(context.db, baseSlug, {
-      excludeId: data.excludeId,
-    });
-    if (!baseExists) {
-      return { slug: baseSlug };
-    }
-
-    // Try numbered suffixes until we find a unique one
-    const MAX_ATTEMPTS = 100;
-    for (let i = 1; i <= MAX_ATTEMPTS; i++) {
-      const candidateSlug = `${baseSlug}-${i}`;
-      const exists = await slugExists(context.db, candidateSlug, {
-        excludeId: data.excludeId,
-      });
-      if (!exists) {
-        return { slug: candidateSlug };
-      }
-    }
-
-    // Fallback: use timestamp
-    const fallbackSlug = `${baseSlug}-${Date.now()}`;
-    return { slug: fallbackSlug };
+    return await postService.generateSlug(context, data);
   });
 
 export const createEmptyPostFn = createAdminFn({
   method: "POST",
 }).handler(async ({ context }) => {
-  const { slug } = await generateSlugFn({
-    data: {
-      title: "",
-    },
-  });
-
-  const post = await insertPost(context.db, {
-    title: "",
-    slug,
-    summary: "",
-    status: "draft",
-    readTimeInMinutes: 1,
-    contentJson: null,
-  });
-
-  // No cache/index operations for drafts
-
-  return { id: post.id };
+  return await postService.createEmptyPost(context);
 });
 
-const SORT_DIRECTIONS = ["ASC", "DESC"] as const;
-
 export const getPostsFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      offset: z.number().optional(),
-      limit: z.number().optional(),
-      category: z.custom<PostCategory>().optional(),
-      status: z.custom<PostStatus>().optional(),
-      publicOnly: z.boolean().optional(),
-      search: z.string().optional(),
-      sortDir: z.enum(SORT_DIRECTIONS).optional(),
-    }),
-  )
+  .inputValidator(GetPostsInputSchema)
   .handler(async ({ data, context }) => {
-    return await getPosts(context.db, {
-      offset: data.offset ?? 0,
-      limit: data.limit ?? 10,
-      category: data.category,
-      status: data.status,
-      publicOnly: data.publicOnly,
-      search: data.search,
-      sortDir: data.sortDir,
-    });
+    return await postService.getPosts(context, data);
   });
 
 export const getPostsCountFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      category: z.custom<PostCategory>().optional(),
-      status: z.custom<PostStatus>().optional(),
-      publicOnly: z.boolean().optional(),
-      search: z.string().optional(),
-    }),
-  )
+  .inputValidator(GetPostsCountInputSchema)
   .handler(async ({ data, context }) => {
-    return await getPostsCount(context.db, {
-      category: data.category,
-      status: data.status,
-      publicOnly: data.publicOnly,
-      search: data.search,
-    });
+    return await postService.getPostsCount(context, data);
   });
 
 export const findPostBySlugFn = createAdminFn()
-  .inputValidator(z.object({ slug: z.string() }))
+  .inputValidator(FindPostBySlugInputSchema)
   .handler(async ({ data, context }) => {
-    const post = await findPostBySlug(context.db, data.slug, {
-      publicOnly: false,
-    });
-    if (!post) return null;
-    return {
-      ...post,
-      toc: generateTableOfContents(post.contentJson),
-    };
+    return await postService.findPostBySlugAdmin(context, data);
   });
 
 export const findPostByIdFn = createAdminFn()
-  .inputValidator(z.object({ id: z.number() }))
+  .inputValidator(FindPostByIdInputSchema)
   .handler(async ({ data, context }) => {
-    return await findPostById(context.db, data.id);
+    return await postService.findPostById(context, data);
   });
 
 export const updatePostFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(z.object({ id: z.number(), data: PostUpdateSchema }))
-  .handler(async ({ data: { id, data }, context }) => {
-    const post = await updatePost(context.db, id, data);
-    if (data.contentJson !== undefined) {
-      context.executionCtx.waitUntil(
-        syncPostMedia(context.db, post.id, data.contentJson),
-      );
-    }
-
-    return post;
+  .inputValidator(UpdatePostInputSchema)
+  .handler(async ({ data, context }) => {
+    return await postService.updatePost(context, data);
   });
 
 export const deletePostFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(z.object({ id: z.number() }))
+  .inputValidator(DeletePostInputSchema)
   .handler(async ({ data, context }) => {
-    const post = await findPostById(context.db, data.id);
-    if (!post) return;
-
-    await deletePost(context.db, data.id);
-
-    // Only clear cache/index for published posts
-    if (post.status === "published") {
-      const tasks = [];
-      tasks.push(deleteCachedData(context, ["post", post.slug]));
-      tasks.push(bumpCacheVersion(context, "posts:list"));
-      tasks.push(deleteSearchDoc(context.env, data.id));
-      tasks.push(purgePostCDNCache(context.env, post.slug));
-
-      context.executionCtx.waitUntil(Promise.all(tasks));
-    }
+    return await postService.deletePost(context, data);
   });
 
 export const previewSummaryFn = createAdminFn({
   method: "POST",
 })
-  .inputValidator(PostSelectSchema.pick({ contentJson: true }))
+  .inputValidator(PreviewSummaryInputSchema)
   .handler(async ({ data, context }) => {
-    const plainText = convertToPlainText(data.contentJson);
-    try {
-      const { summary } = await summarizeText(context.db, plainText);
-      return { summary };
-    } catch (error) {
-      if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
-        return { error: "AI 服务未配置" };
-      }
-      throw error;
-    }
+    return await postService.previewSummary(context, data);
   });
 
 export const startPostProcessWorkflowFn = createAdminFn()
-  .inputValidator(
-    z.object({
-      id: z.number(),
-      status: z.enum(POST_STATUSES),
-    }),
-  )
-  .handler(async ({ data: { id, status }, context }) => {
-    if (status !== "published") return;
-
-    // 生成摘要， 更新搜索索引
-    await context.env.POST_PROCESS_WORKFLOW.create({
-      params: {
-        postId: id,
-      },
-    });
+  .inputValidator(StartPostProcessInputSchema)
+  .handler(async ({ data, context }) => {
+    return await postService.startPostProcessWorkflow(context, data);
   });
