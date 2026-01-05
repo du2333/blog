@@ -5,6 +5,7 @@ import type { Session, User } from "better-auth";
 declare global {
   interface PostProcessWorkflowParams {
     postId: number;
+    isPublished: boolean;
   }
 
   interface Env extends Cloudflare.Env {

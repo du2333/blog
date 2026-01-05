@@ -29,11 +29,10 @@ export async function get<T extends z.ZodTypeAny>(
     }
   }
 
-  console.log(`[Cache] MISS: ${serializedKey}`);
   const data = await fetcher();
-
+  
   if (data === null || data === undefined) return data;
-
+  
   executionCtx.waitUntil(
     env.KV.put(serializedKey, JSON.stringify(data), {
       expirationTtl: ttl,
@@ -41,7 +40,8 @@ export async function get<T extends z.ZodTypeAny>(
       console.error(`[Cache] Failed to put key ${serializedKey}:`, err),
     ),
   );
-
+  
+  console.log(`[Cache] MISS: ${serializedKey}`);
   return data;
 }
 

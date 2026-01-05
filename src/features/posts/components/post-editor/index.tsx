@@ -30,6 +30,7 @@ import DropdownMenu from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { POST_CATEGORIES, POST_STATUSES } from "@/lib/db/schema";
 import { extensions } from "@/features/posts/editor/config";
+import { isPostPubliclyViewable } from "@/features/posts/components/post-manager/types";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
   const router = useRouter();
@@ -114,7 +115,15 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             onClick={() => {
               if (post.slug) window.open(`/post/${post.slug}`, "_blank");
             }}
-            className="px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group"
+            disabled={!isPostPubliclyViewable(post)}
+            title={
+              !isPostPubliclyViewable(post)
+                ? post.status === "draft"
+                  ? "草稿无法直接预览"
+                  : "尚未公开发布"
+                : "预览文章"
+            }
+            className="px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group disabled:opacity-30"
           >
             <Eye
               size={14}

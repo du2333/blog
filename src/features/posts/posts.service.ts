@@ -259,12 +259,10 @@ export async function startPostProcessWorkflow(
   context: Context,
   data: StartPostProcessInput,
 ) {
-  if (data.status !== "published") return;
-
-  // 生成摘要， 更新搜索索引
   await context.env.POST_PROCESS_WORKFLOW.create({
     params: {
       postId: data.id,
+      isPublished: data.status === "published",
     },
   });
 }

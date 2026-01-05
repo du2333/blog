@@ -96,7 +96,7 @@ export async function upsert(
 }
 
 export async function deleteIndex(
-  context: Context,
+  context: { env: Env },
   data: DeleteSearchDocInput,
 ) {
   const db = await getOramaDb(context.env);
