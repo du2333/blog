@@ -8,7 +8,7 @@ export const chineseTokenizerConfig: Tokenizer = {
   tokenize: (text: string) => {
     return Array.from(segmenter.segment(text))
       .filter((x) => x.isWordLike)
-      .map((x) => x.segment);
+      .map((x) => x.segment.toLowerCase());
   },
   normalizationCache: new Map(),
 };
