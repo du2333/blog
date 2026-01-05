@@ -4,11 +4,14 @@ import { createMiddleware } from "hono/factory";
 import { getAuth } from "@/lib/auth/auth.server";
 import { getDb } from "@/lib/db";
 import { handleImageRequest } from "@/features/media/media.service";
+import { serverEnv } from "@/lib/env/server.env";
 
 export const app = new Hono<{ Bindings: Env }>();
 
 /* ================================ 缓存配置 ================================ */
 const cacheMiddleware = createMiddleware(async (c, next) => {
+  if (serverEnv(c.env).ENVIRONMENT === "dev") return;
+
   const cache = (caches as any).default as Cache;
 
   if (c.req.method !== "GET") {
