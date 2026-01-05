@@ -28,9 +28,15 @@ export async function purgeCDNCache(env: Env, options: PurgeOptions) {
 
   if (options.prefixes && options.prefixes.length > 0) {
     payload.prefixes = options.prefixes.map(path => {
-      return `${baseUrl}${path.startsWith("/") ? path : "/" + path}`;
+      const cleanPath = path.startsWith("/") ? path : `/${path}`;
+      if (cleanPath === "/") {
+        return baseUrl;
+      }
+      return `${baseUrl}${cleanPath}`;
     });
   }
+
+  if (!payload.files && !payload.prefixes) return;
 
   const response = await fetch(
     `https://api.cloudflare.com/client/v4/zones/${CLOUDFLARE_ZONE_ID}/purge_cache`,
