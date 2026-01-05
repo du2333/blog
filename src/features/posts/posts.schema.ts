@@ -7,7 +7,15 @@ import {
 import type { PostCategory, PostStatus } from "@/lib/db/schema";
 import { POST_STATUSES, PostsTable } from "@/lib/db/schema";
 
-export const PostSelectSchema = createSelectSchema(PostsTable);
+// Date fields need to accept both Date objects and ISO strings (for JSON serialization)
+const coercedDate = z.union([z.date(), z.string().pipe(z.coerce.date())]);
+const coercedDateNullable = coercedDate.nullable();
+
+export const PostSelectSchema = createSelectSchema(PostsTable, {
+  publishedAt: coercedDateNullable,
+  createdAt: coercedDate,
+  updatedAt: coercedDate,
+});
 export const PostInsertSchema = createInsertSchema(PostsTable);
 export const PostUpdateSchema = createUpdateSchema(PostsTable);
 
