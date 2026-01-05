@@ -1,70 +1,61 @@
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
+import { cache } from "hono/cache";
 import { getAuth } from "@/lib/auth/auth.server";
-import { CACHE_CONTROL } from "@/lib/constants";
 import { getDb } from "@/lib/db";
 import { handleImageRequest } from "@/features/media/media.service";
 
 export const app = new Hono<{ Bindings: Env }>();
 
-app.use("*", async (c, next) => {
-  await next();
-
-  const cacheStatus = c.res.headers.get("cf-cache-status");
-  c.executionCtx.waitUntil(
-    (async () => {
-      if (cacheStatus) {
-        console.log("[CDN] Cache status:", cacheStatus);
-      }
-    })(),
-  );
-
-  // 只处理 GET 请求
-  if (c.req.method !== "GET") return;
-
-  const status = c.res.status;
+/* ================================ 缓存配置 ================================ */
+app.get("*", async (c, next) => {
+  const EXCLUDED_PREFIXES = ["/api", "/_serverFn"];
   const path = c.req.path;
-  const contentType = c.res.headers.get("Content-Type") || "";
-
-  if (path.startsWith("/api/") || path.startsWith("/images/")) {
-    return;
+  if (EXCLUDED_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+    return next();
   }
 
-  const isHtml = contentType.includes("text/html");
-  if (!isHtml) return;
+  const AUTH_PATHS = [
+    "/login",
+    "/register",
+    "/forgot-password",
+    "/reset-password",
+    "/verify-email",
+    "/reset-link",
+  ];
 
-  if (status !== 404 && status < 500) return;
-
-  const newHeaders = new Headers(c.res.headers);
-
-  if (status === 404) {
-    Object.entries(CACHE_CONTROL.notFound).forEach(([k, v]) =>
-      newHeaders.set(k, v),
-    );
-  } else if (status >= 500) {
-    Object.entries(CACHE_CONTROL.serverError).forEach(([k, v]) =>
-      newHeaders.set(k, v),
-    );
+  if (path.startsWith("/images")) {
+    return cache({
+      cacheName: "image-cache",
+      cacheControl: "public, max-age=31536000, s-maxage=31536000, immutable",
+      cacheableStatusCodes: [200],
+    })(c, next);
   }
 
-  c.res = new Response(c.res.body, {
-    status: c.res.status,
-    statusText: c.res.statusText,
-    headers: newHeaders,
-  });
+  if (path.startsWith("/admin") || AUTH_PATHS.includes(path)) {
+    return cache({
+      cacheName: "no-cache",
+      cacheControl: "no-cache, no-store, must-revalidate",
+      cacheableStatusCodes: [200],
+    })(c, next);
+  }
+
+  return cache({
+    cacheName: "blog-cache",
+    cacheControl:
+      "public, max-age=300,s-maxage=3600, stale-while-revalidate=604800",
+    cacheableStatusCodes: [200],
+  })(c, next);
 });
 
-app.get("/images/:key", async (c) => {
+/* ================================ 路由开始 ================================ */
+app.get("/images/:key{.+}", async (c) => {
   const key = c.req.param("key");
 
   if (!key) return c.text("Image key is required", 400);
 
   try {
-    const response = await handleImageRequest(c.env, key, c.req.raw);
-    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) =>
-      response.headers.set(k, v),
-    );
-    return response;
+    return await handleImageRequest(c.env, key, c.req.raw);
   } catch (error) {
     console.error("Error fetching image from R2:", error);
     return c.text("Internal server error", 500);

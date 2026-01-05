@@ -9,7 +9,6 @@ import {
   emailVerficationRequiredQuery,
   sessionQuery,
 } from "@/features/auth/auth.query";
-import { CACHE_CONTROL } from "@/lib/constants";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
@@ -25,9 +24,6 @@ export const Route = createFileRoute("/_auth")({
     return { session, isEmailVerficationRequired };
   },
   component: RouteComponent,
-  headers: () => {
-    return CACHE_CONTROL.private;
-  },
 });
 
 function RouteComponent() {
