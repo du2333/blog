@@ -5,28 +5,29 @@ import {
   UpsertSearchDocSchema,
 } from "@/features/search/search.schema";
 import * as SearchService from "@/features/search/search.service";
-import { createAdminFn, noCacheMiddleware } from "@/lib/middlewares";
+import {
+  createAdminFn,
+  immutableCacheMiddleware,
+  noCacheMiddleware,
+} from "@/lib/middlewares";
 
-export const buildSearchIndexFn = createAdminFn().handler(
-  async ({ context }) => {
-    return await SearchService.rebuildIndex(context);
-  },
+export const buildSearchIndexFn = createAdminFn().handler(({ context }) =>
+  SearchService.rebuildIndex(context),
 );
 
 export const upsertSearchDocFn = createAdminFn({ method: "POST" })
   .inputValidator(UpsertSearchDocSchema)
-  .handler(async ({ data, context }) => {
-    return await SearchService.upsert(context, data);
-  });
+  .handler(({ data, context }) => SearchService.upsert(context, data));
 
 export const deleteSearchDocFn = createAdminFn({ method: "POST" })
   .inputValidator(DeleteSearchDocSchema)
-  .handler(async ({ data, context }) => {
-    return await SearchService.deleteIndex(context, data);
-  });
+  .handler(({ data, context }) => SearchService.deleteIndex(context, data));
 
-export const searchDocsFn = createServerFn().middleware([noCacheMiddleware])
+export const searchDocsFn = createServerFn()
+  .middleware([immutableCacheMiddleware])
   .inputValidator(SearchQuerySchema)
-  .handler(async ({ data, context }) => {
-    return await SearchService.search(context, data);
-  });
+  .handler(({ data, context }) => SearchService.search(context, data));
+
+export const getIndexVersionFn = createServerFn()
+  .middleware([noCacheMiddleware])
+  .handler(({ context }) => SearchService.getIndexVersion(context));

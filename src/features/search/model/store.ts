@@ -4,6 +4,7 @@ import type { MyOramaDB } from "@/features/search/model/schema";
 import { createMyDb } from "@/features/search/model/schema";
 
 const KV_KEY = "search:index:v3";
+const KV_META_KEY = "search:index:meta:v3";
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -50,6 +51,7 @@ async function decompressToRaw(buffer: ArrayBuffer): Promise<RawData> {
 }
 
 let cachedDb: MyOramaDB | null = null;
+let cachedVersion: string | null = null;
 let inflight: Promise<MyOramaDB> | null = null;
 
 async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
@@ -68,7 +70,10 @@ async function loadFromKv(env: Env): Promise<MyOramaDB | null> {
 }
 
 export async function getOramaDb(env: Env): Promise<MyOramaDB> {
-  if (cachedDb) return cachedDb;
+  const meta = await getOramaMeta(env);
+  const latestVersion = meta?.version || "init";
+
+  if (cachedDb && cachedVersion === latestVersion) return cachedDb;
   if (inflight) return inflight;
 
   inflight = (async () => {
@@ -80,6 +85,7 @@ export async function getOramaDb(env: Env): Promise<MyOramaDB> {
   });
 
   cachedDb = await inflight;
+  cachedVersion = latestVersion;
   return cachedDb;
 }
 
@@ -87,8 +93,26 @@ export async function persistOramaDb(env: Env, db: MyOramaDB) {
   const raw = save(db);
   const compressed = await compressRaw(raw);
   await env.KV.put(KV_KEY, compressed);
+
+  const newVersion = Date.now().toString();
+
+  const meta = {
+    version: newVersion,
+    updatedAt: new Date().toISOString(),
+    sizeInBytes: compressed.byteLength,
+  };
+  await env.KV.put(KV_META_KEY, JSON.stringify(meta));
+  setOramaDb(db, newVersion);
+  return newVersion;
 }
 
-export function setOramaDb(db: MyOramaDB) {
+export async function getOramaMeta(
+  env: Env,
+): Promise<{ version: string } | null> {
+  return await env.KV.get(KV_META_KEY, "json");
+}
+
+export function setOramaDb(db: MyOramaDB, version: string) {
   cachedDb = db;
+  cachedVersion = version;
 }

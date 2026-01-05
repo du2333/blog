@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
 import { CornerDownLeft, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { searchDocsFn } from "@/features/search/search.api";
+import { getIndexVersionFn, searchDocsFn } from "@/features/search/search.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchCommandCenterProps {
@@ -22,10 +22,20 @@ export function SearchCommandCenter({
   const listRef = useRef<HTMLDivElement>(null);
   const debouncedQuery = useDebounce(query, 300);
 
+  const { data: meta } = useQuery({
+    queryKey: ["search-meta"],
+    queryFn: () => getIndexVersionFn(),
+    enabled: isOpen,
+    staleTime: 5 * 60 * 1000,
+  });
+
   const { data: results, isLoading: isSearching } = useQuery({
-    queryKey: ["search", debouncedQuery],
-    queryFn: () => searchDocsFn({ data: { q: debouncedQuery } }),
-    enabled: isOpen && debouncedQuery.length > 0,
+    queryKey: ["search", debouncedQuery, meta?.version],
+    queryFn: () =>
+      searchDocsFn({ data: { q: debouncedQuery, v: meta?.version || "init" } }),
+    enabled: isOpen && debouncedQuery.length > 0 && !!meta?.version,
+    staleTime: Infinity,
+    placeholderData: keepPreviousData,
   });
 
   const searchResults = useMemo(() => results ?? [], [results]);

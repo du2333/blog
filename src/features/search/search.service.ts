@@ -7,8 +7,8 @@ import type {
 } from "@/features/search/search.schema";
 import {
   getOramaDb,
+  getOramaMeta,
   persistOramaDb,
-  setOramaDb,
 } from "@/features/search/model/store";
 import { convertToPlainText } from "@/features/posts/utils/content";
 import { createMyDb } from "@/features/search/model/schema";
@@ -151,11 +151,14 @@ export async function rebuildIndex(context: Context) {
     });
   }
 
-  setOramaDb(searchDb);
   await persistOramaDb(env, searchDb);
 
   const duration = Date.now() - start;
   console.log(`[search] Indexed ${posts.length} posts in ${duration}ms`);
 
   return { indexed: posts.length, duration };
+}
+
+export async function getIndexVersion(context: Context) {
+  return await getOramaMeta(context.env);
 }

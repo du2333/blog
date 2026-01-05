@@ -46,6 +46,16 @@ export const cachedMiddleware = createMiddleware().server(async ({ next }) => {
   return result;
 });
 
+export const immutableCacheMiddleware = createMiddleware().server(
+  async ({ next }) => {
+    const result = await next();
+    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) => {
+      setResponseHeader(k, v);
+    });
+    return result;
+  },
+);
+
 export const noCacheMiddleware = createMiddleware().server(async ({ next }) => {
   const result = await next();
   Object.entries(CACHE_CONTROL.private).forEach(([k, v]) => {
@@ -54,6 +64,12 @@ export const noCacheMiddleware = createMiddleware().server(async ({ next }) => {
   return result;
 });
 
-export const createAuthedFn = createServerFn().middleware([authMiddleware, noCacheMiddleware]);
-export const createAdminFn = createServerFn().middleware([adminMiddleware, noCacheMiddleware]);
+export const createAuthedFn = createServerFn().middleware([
+  authMiddleware,
+  noCacheMiddleware,
+]);
+export const createAdminFn = createServerFn().middleware([
+  adminMiddleware,
+  noCacheMiddleware,
+]);
 export const createCachedFn = createServerFn().middleware([cachedMiddleware]);
