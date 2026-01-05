@@ -6,8 +6,13 @@ interface PurgeOptions {
 }
 
 export async function purgeCDNCache(env: Env, options: PurgeOptions) {
-  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN } =
+  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN, ENVIRONMENT } =
     serverEnv(env);
+
+  if (ENVIRONMENT === "dev") {
+    console.log("Skipping CDN cache purge in development environment");
+    return;
+  }
 
   const baseUrl = `https://${DOMAIN}`;
 
@@ -47,14 +52,13 @@ export async function purgeCDNCache(env: Env, options: PurgeOptions) {
 }
 
 export async function purgePostCDNCache(env: Env, slug: string) {
-  const { ENVIRONMENT } = serverEnv(env);
-  if (ENVIRONMENT === "dev") {
-    console.log("Skipping CDN cache purge in development environment");
-    return;
-  }
-
   return purgeCDNCache(env, {
     urls: [`/post/${slug}`, "/blog", "/"],
-    prefixes: ["/_serverFn/"],
+  });
+}
+
+export async function purgeSiteCDNCache(env: Env) {
+  return purgeCDNCache(env, {
+    prefixes: ["/"],
   });
 }

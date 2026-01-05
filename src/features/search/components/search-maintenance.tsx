@@ -39,7 +39,7 @@ export function SearchMaintenance() {
           </p>
         </div>
         <Button
-          onClick={handleRebuild}
+          onClick={() => setIsModalOpen(true)}
           disabled={isIndexing}
           className="h-12 px-10 text-[10px] uppercase tracking-[0.25em] font-bold shadow-xl shadow-black/10 rounded-sm gap-4"
         >

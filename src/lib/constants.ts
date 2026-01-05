@@ -9,8 +9,12 @@ export const CATEGORY_COLORS = {
 
 export const CACHE_CONTROL = {
   public: {
-    "Cache-Control": "public, max-age=300, stale-while-revalidate=604800",
-    "CDN-Cache-Control": "public, s-maxage=3600, stale-while-revalidate=604800",
+    "Cache-Control": "public, max-age=0, must-revalidate",
+    "CDN-Cache-Control": "public, s-maxage=31536000",
+  },
+  swr: {
+    "Cache-Control": "public, max-age=0, must-revalidate",
+    "CDN-Cache-Control": "public, s-maxage=1, stale-while-revalidate=604800",
   },
   immutable: {
     "Cache-Control": "public, max-age=31536000, immutable",

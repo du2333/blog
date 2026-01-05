@@ -39,7 +39,7 @@ export const adminMiddleware = createMiddleware()
 export const cachedMiddleware = createMiddleware().server(async ({ next }) => {
   const result = await next();
 
-  Object.entries(CACHE_CONTROL.public).forEach(([k, v]) => {
+  Object.entries(CACHE_CONTROL.swr).forEach(([k, v]) => {
     setResponseHeader(k, v);
   });
 

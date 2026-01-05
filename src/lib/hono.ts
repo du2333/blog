@@ -10,7 +10,7 @@ export const app = new Hono<{ Bindings: Env }>();
 
 /* ================================ 缓存配置 ================================ */
 const cacheMiddleware = createMiddleware(async (c, next) => {
-  if (serverEnv(c.env).ENVIRONMENT === "dev") return;
+  if (serverEnv(c.env).ENVIRONMENT === "dev") return next();
 
   const cache = (caches as any).default as Cache;
 
