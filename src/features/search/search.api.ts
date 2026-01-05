@@ -5,7 +5,7 @@ import {
   UpsertSearchDocSchema,
 } from "@/features/search/search.schema";
 import * as SearchService from "@/features/search/search.service";
-import { createAdminFn } from "@/lib/middlewares";
+import { createAdminFn, noCacheMiddleware } from "@/lib/middlewares";
 
 export const buildSearchIndexFn = createAdminFn().handler(
   async ({ context }) => {
@@ -25,7 +25,7 @@ export const deleteSearchDocFn = createAdminFn({ method: "POST" })
     return await SearchService.deleteIndex(context, data);
   });
 
-export const searchDocsFn = createServerFn()
+export const searchDocsFn = createServerFn().middleware([noCacheMiddleware])
   .inputValidator(SearchQuerySchema)
   .handler(async ({ data, context }) => {
     return await SearchService.search(context, data);

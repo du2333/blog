@@ -1,8 +1,8 @@
 import { createServerFn } from "@tanstack/react-start";
 import * as AuthService from "@/features/auth/auth.service";
-import { createAuthedFn } from "@/lib/middlewares";
+import { createAuthedFn, noCacheMiddleware } from "@/lib/middlewares";
 
-export const getSessionFn = createServerFn().handler(({ context }) =>
+export const getSessionFn = createServerFn().middleware([noCacheMiddleware]).handler(({ context }) =>
   AuthService.getSession(context),
 );
 

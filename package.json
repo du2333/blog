@@ -3,10 +3,10 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "bunx vite dev --port 3000",
-    "build": "bun --bun vite build",
+    "dev": "vite dev --port 3000",
+    "build": "vite build",
     "deploy": "bun db:migrate && wrangler deploy",
-    "serve": "bun --bun vite preview",
+    "serve": "vite preview",
     "test": "vitest run",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -17,7 +17,7 @@
     "db:push": "drizzle-kit push",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "wrangler d1 migrations apply DB --remote",
-    "auth:generate-schema": "npx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
+    "auth:generate-schema": "bunx @better-auth/cli generate --config auth-cli.ts --output src/lib/db/schema/auth.schema.ts"
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^1.0.32",
