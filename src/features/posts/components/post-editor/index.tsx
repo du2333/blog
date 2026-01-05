@@ -277,7 +277,9 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   }
                   onChange={(dateStr) =>
                     handlePostChange({
-                      publishedAt: dateStr ? new Date(dateStr) : null,
+                      publishedAt: dateStr
+                        ? new Date(`${dateStr}T00:00:00`)
+                        : null,
                     })
                   }
                   className="p-0! border-none! bg-transparent! text-xs text-foreground"

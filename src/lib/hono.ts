@@ -1,6 +1,6 @@
 import handler from "@tanstack/react-start/server-entry";
 import { Hono } from "hono";
-import { cache } from "hono/cache";
+import { createMiddleware } from "hono/factory";
 import { getAuth } from "@/lib/auth/auth.server";
 import { getDb } from "@/lib/db";
 import { handleImageRequest } from "@/features/media/media.service";
@@ -8,18 +8,42 @@ import { handleImageRequest } from "@/features/media/media.service";
 export const app = new Hono<{ Bindings: Env }>();
 
 /* ================================ 缓存配置 ================================ */
-app.get("*", async (c, next) => {
+const cacheMiddleware = createMiddleware(async (c, next) => {
+  const cache = (caches as any).default as Cache;
+
+  if (c.req.method !== "GET") {
+    return next();
+  }
+
   const EXCLUDED_PREFIXES = ["/api"];
   const path = c.req.path;
   if (EXCLUDED_PREFIXES.some((prefix) => path.startsWith(prefix))) {
     return next();
   }
 
-  return cache({
-    cacheName: "blog-cache",
-    cacheableStatusCodes: [200],
-  })(c, next);
+  const cachedResponse = await cache.match(c.req.raw);
+  if (cachedResponse) {
+    return cachedResponse;
+  }
+
+  await next();
+
+  if (c.res.status === 200) {
+    const resCacheControl = c.res.headers.get("Cache-Control");
+    const hasSetCookie = c.res.headers.has("Set-Cookie");
+
+    if (!hasSetCookie && resCacheControl && !resCacheControl.includes("no-store") && !resCacheControl.includes("no-cache") && !resCacheControl.includes("private")) {
+      const responseToCache = c.res.clone();
+      c.executionCtx.waitUntil((async () => {
+        try {
+          await cache.put(c.req.raw, responseToCache);
+        } catch { }
+      })());
+    }
+  }
 });
+
+app.get("*", cacheMiddleware);
 
 /* ================================ 路由开始 ================================ */
 app.get("/images/:key{.+}", async (c) => {

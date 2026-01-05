@@ -3,7 +3,7 @@ import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CacheService from "@/features/cache/cache.service";
 import * as PostService from "@/features/posts/posts.service";
 import { getDb } from "@/lib/db";
-import { purgePostCDNCache } from "@/lib/revalidate";
+import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
 
 interface Params {

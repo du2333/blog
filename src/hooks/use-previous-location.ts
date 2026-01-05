@@ -7,7 +7,7 @@ export function usePreviousLocation() {
 
   useEffect(() => {
     return router.subscribe("onResolved", ({ fromLocation }) => {
-      setPreviousLocation(fromLocation?.href ?? "/");
+      setPreviousLocation(fromLocation?.href || "/");
     });
   }, []);
   return previousLocation;

@@ -21,7 +21,7 @@ import {
 import * as AiService from "@/features/ai/ai.service";
 import { generateTableOfContents } from "@/features/posts/utils/toc";
 import { convertToPlainText, slugify } from "@/features/posts/utils/content";
-import { purgePostCDNCache } from "@/lib/revalidate";
+import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
 
 export async function getPostsCursor(
