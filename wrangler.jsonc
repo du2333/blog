@@ -2,7 +2,9 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "my-blog",
   "compatibility_date": "2025-10-11",
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
   "main": "./src/server.ts",
   "observability": {
     "enabled": true,
@@ -43,4 +45,20 @@
       "class_name": "PostProcessWorkflow",
     },
   ],
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "RATE_LIMITER",
+        "class_name": "RateLimiter",
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "rate-limiter-v1",
+      "new_sqlite_classes": [
+        "RateLimiter"
+      ],
+    }
+  ]
 }

@@ -3,6 +3,7 @@ import type { DB } from "@/lib/db";
 import { app } from "@/lib/hono";
 
 export { PostProcessWorkflow } from "@/features/posts/workflows/post-process";
+export { RateLimiter } from "@/lib/rate-limiter";
 
 declare module "@tanstack/react-start" {
   interface Register {
