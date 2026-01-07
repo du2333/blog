@@ -6,8 +6,12 @@ interface PurgeOptions {
 }
 
 export async function purgeCDNCache(env: Env, options: PurgeOptions) {
-  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN, ENVIRONMENT } =
-    serverEnv(env);
+  const {
+    CLOUDFLARE_ZONE_ID,
+    CLOUDFLARE_PURGE_API_TOKEN,
+    DOMAIN,
+    ENVIRONMENT,
+  } = serverEnv(env);
 
   if (ENVIRONMENT === "dev") {
     console.log("Skipping CDN cache purge in development environment");
@@ -27,7 +31,7 @@ export async function purgeCDNCache(env: Env, options: PurgeOptions) {
   }
 
   if (options.prefixes && options.prefixes.length > 0) {
-    payload.prefixes = options.prefixes.map(path => {
+    payload.prefixes = options.prefixes.map((path) => {
       const cleanPath = path.startsWith("/") ? path : `/${path}`;
       if (cleanPath === "/") {
         return baseUrl;

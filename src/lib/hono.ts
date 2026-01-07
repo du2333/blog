@@ -35,13 +35,21 @@ const cacheMiddleware = createMiddleware(async (c, next) => {
     const resCacheControl = c.res.headers.get("Cache-Control");
     const hasSetCookie = c.res.headers.has("Set-Cookie");
 
-    if (!hasSetCookie && resCacheControl && !resCacheControl.includes("no-store") && !resCacheControl.includes("no-cache") && !resCacheControl.includes("private")) {
+    if (
+      !hasSetCookie &&
+      resCacheControl &&
+      !resCacheControl.includes("no-store") &&
+      !resCacheControl.includes("no-cache") &&
+      !resCacheControl.includes("private")
+    ) {
       const responseToCache = c.res.clone();
-      c.executionCtx.waitUntil((async () => {
-        try {
-          await cache.put(c.req.raw, responseToCache);
-        } catch { }
-      })());
+      c.executionCtx.waitUntil(
+        (async () => {
+          try {
+            await cache.put(c.req.raw, responseToCache);
+          } catch {}
+        })(),
+      );
     }
   }
 });

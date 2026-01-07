@@ -55,7 +55,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       if (!post) return;
 
       await step.do("remove from search index", async () => {
-        return await SearchService.deleteIndex({ env: this.env }, { id: postId });
+        return await SearchService.deleteIndex(
+          { env: this.env },
+          { id: postId },
+        );
       });
 
       await step.do("Invalidate caches", async () => {
