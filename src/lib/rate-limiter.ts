@@ -26,6 +26,14 @@ export class RateLimiter extends DurableObject {
     }
 
     checkLimit({ capacity, interval, cost = 1 }: { capacity: number, interval: Duration, cost?: number }): { allowed: boolean, remaining: number, retryAfterMs: number } {
+        if (cost > capacity) {
+            return {
+                allowed: false,
+                remaining: 0,
+                retryAfterMs: -1,
+            };
+        }
+
         const now = Date.now();
         const intervalMs = ms(interval);
         const rate = capacity / intervalMs;
