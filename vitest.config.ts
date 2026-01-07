@@ -12,14 +12,7 @@ export default defineWorkersConfig({
       workers: {
         wrangler: {
           configPath: "./wrangler.jsonc",
-        },
-        miniflare: {
-          kvNamespaces: ["KV"],
-          d1Databases: ["DB"],
-          r2Buckets: ["R2"],
-          durableObjects: {
-            RATE_LIMITER: "RateLimiter",
-          },
+          environment: "test",
         },
       },
     },
