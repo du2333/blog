@@ -61,7 +61,7 @@ export function buildSnippet({
 
   const highlighted = safeSlice.replace(
     highlightRegex,
-    (match) => `<mark>${match}</mark>`,
+    (m) => `<mark>${m}</mark>`,
   );
 
   return highlighted;

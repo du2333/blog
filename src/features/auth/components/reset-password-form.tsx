@@ -44,12 +44,12 @@ export function ResetPasswordForm({
       return;
     }
 
-    const { error } = await authClient.resetPassword({
+    const { error: resetPasswordError } = await authClient.resetPassword({
       newPassword: data.password,
       token,
     });
 
-    if (error) {
+    if (resetPasswordError) {
       toast.error("重置失败", {
         description: "令牌可能已过期，请重新请求。",
       });

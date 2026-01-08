@@ -98,9 +98,9 @@ export function PostManager({
         params: { id: String(result.id) },
       });
     },
-    onError: (error) => {
+    onError: (e) => {
       toast.error("新建条目失败", {
-        description: error.message,
+        description: e.message,
       });
     },
   });

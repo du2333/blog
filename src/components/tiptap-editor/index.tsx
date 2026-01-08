@@ -18,8 +18,8 @@ export function Editor({ content, onChange, extensions }: EditorProps) {
   const editor = useEditor({
     extensions,
     content,
-    onUpdate: ({ editor }) => {
-      onChange?.(editor.getJSON());
+    onUpdate: ({ editor: currentEditor }) => {
+      onChange?.(currentEditor.getJSON());
     },
     editorProps: {
       attributes: {

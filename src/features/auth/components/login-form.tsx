@@ -71,7 +71,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     }, 800);
   };
 
-  const handleResendVerification = async () => {
+  const handleResendVerification = () => {
     if (!emailValue) return;
     toast.promise(
       authClient.sendVerificationEmail({
