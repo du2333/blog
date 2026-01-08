@@ -7,6 +7,7 @@ import {
 import * as SearchService from "@/features/search/search.service";
 import {
   createAdminFn,
+  createRateLimitMiddleware,
   immutableCacheMiddleware,
   noCacheMiddleware,
 } from "@/lib/middlewares";
@@ -24,10 +25,22 @@ export const deleteSearchDocFn = createAdminFn({ method: "POST" })
   .handler(({ data, context }) => SearchService.deleteIndex(context, data));
 
 export const searchDocsFn = createServerFn()
-  .middleware([immutableCacheMiddleware])
+  .middleware([
+    immutableCacheMiddleware,
+    createRateLimitMiddleware({
+      capacity: 30,
+      interval: "1m",
+    }),
+  ])
   .inputValidator(SearchQuerySchema)
   .handler(({ data, context }) => SearchService.search(context, data));
 
 export const getIndexVersionFn = createServerFn()
-  .middleware([noCacheMiddleware])
+  .middleware([
+    noCacheMiddleware,
+    createRateLimitMiddleware({
+      capacity: 30,
+      interval: "1m",
+    }),
+  ])
   .handler(({ context }) => SearchService.getIndexVersion(context));

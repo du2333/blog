@@ -7,6 +7,12 @@ interface BucketState {
   lastRefill: number;
 }
 
+export type RateLimitOptions = {
+  capacity: number;
+  interval: Duration;
+  cost?: number;
+};
+
 export class RateLimiter extends DurableObject {
   private state: BucketState;
 
@@ -25,15 +31,11 @@ export class RateLimiter extends DurableObject {
     });
   }
 
-  checkLimit({
-    capacity,
-    interval,
-    cost = 1,
-  }: {
-    capacity: number;
-    interval: Duration;
-    cost?: number;
-  }): { allowed: boolean; remaining: number; retryAfterMs: number } {
+  checkLimit({ capacity, interval, cost = 1 }: RateLimitOptions): {
+    allowed: boolean;
+    remaining: number;
+    retryAfterMs: number;
+  } {
     if (cost > capacity) {
       return {
         allowed: false,

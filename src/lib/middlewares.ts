@@ -1,5 +1,6 @@
 import { createMiddleware, createServerFn, json } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
+import type { RateLimitOptions } from "@/lib/rate-limiter";
 import { CACHE_CONTROL } from "@/lib/constants";
 
 export const authMiddleware = createMiddleware().server(
@@ -63,6 +64,31 @@ export const noCacheMiddleware = createMiddleware().server(async ({ next }) => {
   });
   return result;
 });
+
+export const createRateLimitMiddleware = (options: RateLimitOptions) => {
+  return createMiddleware().server(async ({ next, context, request }) => {
+    const identifier = request.headers.get("cf-connecting-ip") || "unknown";
+
+    const id = context.env.RATE_LIMITER.idFromName(identifier);
+    const rateLimiter = context.env.RATE_LIMITER.get(id);
+
+    const result = await rateLimiter.checkLimit(options);
+
+    if (!result.allowed) {
+      throw json(
+        {
+          message: "Too Many Requests",
+          retryAfterSeconds: result.retryAfterMs / 1000,
+        },
+        { status: 429 },
+      );
+    }
+
+    return next();
+  });
+};
+
+/* ======================= Helper Functions ====================== */
 
 export const createAuthedFn = createServerFn().middleware([
   authMiddleware,
