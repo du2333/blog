@@ -22,7 +22,7 @@ export const CACHE_CONTROL = {
   },
   notFound: {
     "Cache-Control": "public, max-age=0, must-revalidate",
-    "CDN-Cache-Control": "public, s-maxage=10, stale-while-revalidate=300",
+    "CDN-Cache-Control": "public, s-maxage=10",
   },
   serverError: {
     "Cache-Control": "public, max-age=0, must-revalidate",

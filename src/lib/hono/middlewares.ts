@@ -1,13 +1,47 @@
 import { createMiddleware } from "hono/factory";
 import type { Context } from "hono";
 import type { Duration } from "@/lib/duration";
-import { serverEnv } from "@/lib/env/server.env";
+import { CACHE_CONTROL } from "@/lib/constants";
+
+const tryCacheResponse = (c: Context, cache: Cache) => {
+  let strategy:
+    | typeof CACHE_CONTROL.notFound
+    | typeof CACHE_CONTROL.serverError
+    | null = null;
+  if (c.res.status === 404) {
+    strategy = CACHE_CONTROL.notFound;
+  } else if (c.res.status >= 500) {
+    strategy = CACHE_CONTROL.serverError;
+  }
+  if (strategy) {
+    Object.entries(strategy).forEach(([k, v]) => {
+      c.res.headers.set(k, v);
+    });
+  }
+
+  const resCacheControl = c.res.headers.get("Cache-Control");
+  const hasSetCookie = c.res.headers.has("Set-Cookie");
+
+  const isStatusCacheable =
+    c.res.status === 200 || c.res.status === 404 || c.res.status >= 500;
+
+  const isCacheable =
+    isStatusCacheable &&
+    !hasSetCookie &&
+    resCacheControl &&
+    !resCacheControl.includes("no-store") &&
+    !resCacheControl.includes("no-cache") &&
+    !resCacheControl.includes("private");
+
+  if (!isCacheable) return;
+
+  const responseToCache = c.res.clone();
+  c.executionCtx.waitUntil(
+    cache.put(c.req.raw, responseToCache).catch(() => {}),
+  );
+};
 
 export const cacheMiddleware = createMiddleware(async (c, next) => {
-  if (serverEnv(c.env).ENVIRONMENT === "dev") return next();
-
-  const cache = (caches as any).default as Cache;
-
   if (c.req.method !== "GET") {
     return next();
   }
@@ -18,40 +52,21 @@ export const cacheMiddleware = createMiddleware(async (c, next) => {
     return next();
   }
 
+  // 缓存响应逻辑
+  const cache = (caches as any).default as Cache;
+
   const cachedResponse = await cache.match(c.req.raw);
-  if (cachedResponse) {
-    return cachedResponse;
-  }
+  if (cachedResponse) return cachedResponse;
 
   await next();
 
-  if (c.res.status === 200) {
-    const resCacheControl = c.res.headers.get("Cache-Control");
-    const hasSetCookie = c.res.headers.has("Set-Cookie");
-
-    if (
-      !hasSetCookie &&
-      resCacheControl &&
-      !resCacheControl.includes("no-store") &&
-      !resCacheControl.includes("no-cache") &&
-      !resCacheControl.includes("private")
-    ) {
-      const responseToCache = c.res.clone();
-      c.executionCtx.waitUntil(
-        (async () => {
-          try {
-            await cache.put(c.req.raw, responseToCache);
-          } catch {}
-        })(),
-      );
-    }
-  }
+  tryCacheResponse(c, cache);
 });
 
 interface RateLimitOptions {
   capacity: number;
   interval: Duration;
-  identifier: string | ((c: Context<{ Bindings: Env }>) => string | undefined);
+  identifier: string | ((c: Context) => string | undefined);
 }
 
 export const rateLimitMiddleware = (options: RateLimitOptions) =>
