@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import { ChevronDown, ChevronUp, LogIn } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { repliesByRootIdInfiniteQuery } from "../../comments.query";
 import { CommentItem } from "./comment-item";
 import { CommentReplyForm } from "./comment-reply-form";
@@ -150,7 +151,7 @@ function RootCommentWithReplies({
       />
 
       {isReplyingToRoot && (
-        <div className="py-4 ml-12">
+        <div className="py-8 ml-12 px-6 border border-dashed border-border/50 rounded-sm bg-accent/5">
           {session ? (
             <CommentReplyForm
               parentUserName={replyTarget.userName}
@@ -158,7 +159,33 @@ function RootCommentWithReplies({
               isSubmitting={isSubmittingReply!}
               onCancel={onCancelReply!}
             />
-          ) : null}
+          ) : (
+            <div className="flex flex-col items-center gap-4 text-center">
+              <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                登录后即可发表评论，与博主和其他读者一起交流心得。
+              </p>
+              <div className="flex gap-4">
+                <Link to="/login">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold border-border hover:bg-foreground hover:text-background transition-all"
+                  >
+                    <LogIn size={10} className="mr-2" />
+                    立即登录
+                  </Button>
+                </Link>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onCancelReply}
+                  className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground"
+                >
+                  取消
+                </Button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -210,7 +237,7 @@ function RootCommentWithReplies({
                       replyToName={reply.replyTo?.name}
                     />
                     {isReplyingToThis && (
-                      <div className="py-4 ml-12">
+                      <div className="py-8 ml-12 px-6 border border-dashed border-border/50 rounded-sm bg-accent/5">
                         {session ? (
                           <CommentReplyForm
                             parentUserName={replyTarget.userName}
@@ -218,7 +245,33 @@ function RootCommentWithReplies({
                             isSubmitting={isSubmittingReply!}
                             onCancel={onCancelReply!}
                           />
-                        ) : null}
+                        ) : (
+                          <div className="flex flex-col items-center gap-4 text-center">
+                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
+                              登录后即可发表评论，与博主和其他读者一起交流心得。
+                            </p>
+                            <div className="flex gap-4">
+                              <Link to="/login">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold border-border hover:bg-foreground hover:text-background transition-all"
+                                >
+                                  <LogIn size={10} className="mr-2" />
+                                  立即登录
+                                </Button>
+                              </Link>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={onCancelReply}
+                                className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground"
+                              >
+                                取消
+                              </Button>
+                            </div>
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
