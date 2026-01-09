@@ -27,11 +27,12 @@ export async function getCommentsByPostId(
     offset?: number;
     limit?: number;
     status?: CommentStatus | Array<CommentStatus>;
+    viewerId?: string;
   } = {},
 ) {
-  const { offset = 0, limit = DEFAULT_PAGE_SIZE, status } = options;
+  const { offset = 0, limit = DEFAULT_PAGE_SIZE, status, viewerId } = options;
 
-  const conditions = buildCommentWhereClause({ postId, status });
+  const conditions = buildCommentWhereClause({ postId, status, viewerId });
 
   const comments = await db
     .select({
@@ -48,6 +49,7 @@ export async function getCommentsByPostId(
         id: user.id,
         name: user.name,
         image: user.image,
+        role: user.role,
       },
     })
     .from(CommentsTable)
@@ -65,11 +67,12 @@ export async function getCommentsByPostIdCount(
   postId: number,
   options: {
     status?: CommentStatus | Array<CommentStatus>;
+    viewerId?: string;
   } = {},
 ) {
-  const { status } = options;
+  const { status, viewerId } = options;
 
-  const conditions = buildCommentWhereClause({ postId, status });
+  const conditions = buildCommentWhereClause({ postId, status, viewerId });
 
   const result = await db
     .select({ count: count() })
@@ -138,6 +141,7 @@ export async function getAllComments(
         id: user.id,
         name: user.name,
         image: user.image,
+        role: user.role,
       },
     })
     .from(CommentsTable)

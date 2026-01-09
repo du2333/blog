@@ -1,19 +1,20 @@
+import { createServerFn } from "@tanstack/react-start";
+import {
+  getRequestHeaders,
+  setResponseHeader,
+} from "@tanstack/react-start/server";
 import {
   CreateCommentInputSchema,
   DeleteCommentInputSchema,
   GetCommentsByPostIdInputSchema,
   GetMyCommentsInputSchema,
-  UpdateCommentInputSchema,
 } from "@/features/comments/comments.schema";
 import * as CommentService from "@/features/comments/comments.service";
-import {
-  createAuthedFn,
-  createCachedFn,
-  createRateLimitMiddleware,
-} from "@/lib/middlewares";
+import { createAuthedFn, createRateLimitMiddleware } from "@/lib/middlewares";
+import { CACHE_CONTROL } from "@/lib/constants";
 
-// Public API - Get comments by post ID (only published)
-export const getCommentsByPostIdFn = createCachedFn()
+// Public API - Get comments by post ID (published + viewer's pending)
+export const getCommentsByPostIdFn = createServerFn()
   .middleware([
     createRateLimitMiddleware({
       capacity: 60,
@@ -23,7 +24,27 @@ export const getCommentsByPostIdFn = createCachedFn()
   ])
   .inputValidator(GetCommentsByPostIdInputSchema)
   .handler(async ({ data, context }) => {
-    return await CommentService.getCommentsByPostId(context, data);
+    const session = await context.auth.api.getSession({
+      headers: getRequestHeaders(),
+    });
+
+    const result = await CommentService.getCommentsByPostId(context, {
+      ...data,
+      viewerId: session?.user.id,
+    });
+
+    // Handle caching based on session
+    if (!session) {
+      Object.entries(CACHE_CONTROL.swr).forEach(([k, v]) => {
+        setResponseHeader(k, v);
+      });
+    } else {
+      Object.entries(CACHE_CONTROL.private).forEach(([k, v]) => {
+        setResponseHeader(k, v);
+      });
+    }
+
+    return result;
   });
 
 // Authed User APIs
@@ -40,21 +61,6 @@ export const createCommentFn = createAuthedFn({
   .inputValidator(CreateCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.createComment(context, data);
-  });
-
-export const updateCommentFn = createAuthedFn({
-  method: "POST",
-})
-  .middleware([
-    createRateLimitMiddleware({
-      capacity: 10,
-      interval: "1m",
-      key: "comments:update",
-    }),
-  ])
-  .inputValidator(UpdateCommentInputSchema)
-  .handler(async ({ data, context }) => {
-    return await CommentService.updateComment(context, data);
   });
 
 export const deleteCommentFn = createAuthedFn({

@@ -134,9 +134,14 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
   }, [initialUrl, type, setSearchQuery]);
 
   const handleSubmit = () => {
-    if (inputUrl.trim()) {
-      onSubmit(inputUrl);
+    const trimmed = inputUrl.trim();
+    if (activeType === "LINK") {
+      // Allow empty submit to support "remove link" when editing an existing link.
+      if (trimmed || initialUrl.trim()) onSubmit(trimmed);
+      return;
     }
+
+    if (trimmed) onSubmit(trimmed);
   };
 
   if (!shouldRender) return null;
@@ -183,6 +188,7 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
             </h2>
           </div>
           <button
+            type="button"
             onClick={onClose}
             className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -278,17 +284,25 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
         {/* Actions */}
         <div className="p-8 md:p-12 py-8 border-t border-border flex flex-col sm:flex-row justify-end gap-4 shrink-0">
           <button
+            type="button"
             onClick={onClose}
             className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
           >
             取消
           </button>
           <button
+            type="button"
             onClick={handleSubmit}
-            disabled={!inputUrl.trim()}
+            disabled={
+              activeType === "LINK"
+                ? !inputUrl.trim() && !initialUrl.trim()
+                : !inputUrl.trim()
+            }
             className="px-10 py-4 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all shadow-xl shadow-black/10 disabled:opacity-20 disabled:cursor-not-allowed"
           >
-            确认插入
+            {activeType === "LINK" && !inputUrl.trim() && initialUrl.trim()
+              ? "移除链接"
+              : "确认插入"}
           </button>
         </div>
       </div>

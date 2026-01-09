@@ -5,6 +5,7 @@ import {
   Image as ImageIcon,
   LayoutDashboard,
   LogOut,
+  MessageSquare,
   Settings,
   User,
   X,
@@ -65,6 +66,12 @@ export function SideBar({
       path: "/admin/posts" as const,
       icon: FileText,
       label: "文章",
+      exact: false,
+    },
+    {
+      path: "/admin/comments" as const,
+      icon: MessageSquare,
+      label: "评论",
       exact: false,
     },
     {

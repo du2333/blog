@@ -4,6 +4,7 @@ import InsertModal from "./ui/insert-modal";
 import EditorToolbar from "./ui/editor-toolbar";
 import type { Extensions, JSONContent } from "@tiptap/react";
 import type { ModalType } from "./ui/insert-modal";
+import { normalizeLinkHref } from "@/lib/links/normalize-link-href";
 
 interface EditorProps {
   content?: JSONContent | string;
@@ -45,12 +46,8 @@ export function Editor({ content, onChange, extensions }: EditorProps) {
       if (url === "") {
         editor.chain().focus().extendMarkRange("link").unsetLink().run();
       } else {
-        editor
-          .chain()
-          .focus()
-          .extendMarkRange("link")
-          .setLink({ href: url })
-          .run();
+        const href = normalizeLinkHref(url);
+        editor.chain().focus().extendMarkRange("link").setLink({ href }).run();
       }
     } else if (modalOpen === "IMAGE") {
       if (url) {

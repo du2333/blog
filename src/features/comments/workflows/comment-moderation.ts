@@ -5,6 +5,7 @@ import * as AiService from "@/features/ai/ai.service";
 import * as PostService from "@/features/posts/posts.service";
 import { getDb } from "@/lib/db";
 import { convertToPlainText } from "@/features/posts/utils/content";
+import { serverEnv } from "@/lib/env/server.env";
 
 interface Params {
   commentId: number;
@@ -79,6 +80,12 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
         },
       },
       async () => {
+        if (serverEnv(this.env).ENVIRONMENT === "dev") {
+          return {
+            safe: true,
+            reason: "开发环境，自动通过",
+          }
+        }
         try {
           return await AiService.moderateComment(
             { env: this.env },

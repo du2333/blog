@@ -41,12 +41,16 @@ function PostManagerPage() {
   const updateSearch = (updates: Partial<PostsSearchParams>) => {
     navigate({
       to: "/admin/posts",
-      search: (prev) => ({
-        ...prev,
-        ...updates,
-        // Reset to page 1 when filters change (except for page changes)
+      // IMPORTANT: Don't spread `prev` here.
+      // Other /admin routes can use the same query param names (e.g. `status`)
+      // with different value domains; spreading would leak invalid values.
+      search: {
         page: updates.page ?? 1,
-      }),
+        status: updates.status ?? status,
+        category: updates.category ?? category,
+        sortDir: updates.sortDir ?? sortDir,
+        search: updates.search ?? search,
+      },
     });
   };
 

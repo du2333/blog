@@ -24,6 +24,7 @@ import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-pa
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
+import { Route as AdminCommentsIndexRouteImport } from './routes/admin/comments/index'
 import { Route as PublicBlogIndexRouteImport } from './routes/_public/blog/index'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 import { Route as AdminPostsEditIdRouteImport } from './routes/admin/posts/edit.$id'
@@ -101,6 +102,11 @@ const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   path: '/media/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
+const AdminCommentsIndexRoute = AdminCommentsIndexRouteImport.update({
+  id: '/comments/',
+  path: '/comments/',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
 const PublicBlogIndexRoute = PublicBlogIndexRouteImport.update({
   id: '/blog/',
   path: '/blog/',
@@ -130,6 +136,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
   '/blog': typeof PublicBlogIndexRoute
+  '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
@@ -147,6 +154,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
   '/blog': typeof PublicBlogIndexRoute
+  '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
   '/_public/blog/': typeof PublicBlogIndexRoute
+  '/admin/comments/': typeof AdminCommentsIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
   '/admin/settings/': typeof AdminSettingsIndexRoute
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/post/$slug'
     | '/blog'
+    | '/admin/comments'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/settings'
@@ -205,6 +215,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/post/$slug'
     | '/blog'
+    | '/admin/comments'
     | '/admin/media'
     | '/admin/posts'
     | '/admin/settings'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/_public/post/$slug'
     | '/_public/blog/'
+    | '/admin/comments/'
     | '/admin/media/'
     | '/admin/posts/'
     | '/admin/settings/'
@@ -346,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminMediaIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
+    '/admin/comments/': {
+      id: '/admin/comments/'
+      path: '/comments'
+      fullPath: '/admin/comments'
+      preLoaderRoute: typeof AdminCommentsIndexRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
     '/_public/blog/': {
       id: '/_public/blog/'
       path: '/blog'
@@ -408,6 +427,7 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
 
 interface AdminRouteRouteChildren {
   AdminIndexRoute: typeof AdminIndexRoute
+  AdminCommentsIndexRoute: typeof AdminCommentsIndexRoute
   AdminMediaIndexRoute: typeof AdminMediaIndexRoute
   AdminPostsIndexRoute: typeof AdminPostsIndexRoute
   AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
@@ -416,6 +436,7 @@ interface AdminRouteRouteChildren {
 
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
   AdminIndexRoute: AdminIndexRoute,
+  AdminCommentsIndexRoute: AdminCommentsIndexRoute,
   AdminMediaIndexRoute: AdminMediaIndexRoute,
   AdminPostsIndexRoute: AdminPostsIndexRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,

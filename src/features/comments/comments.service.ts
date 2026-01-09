@@ -6,7 +6,6 @@ import type {
   GetMyCommentsInput,
   ModerateCommentInput,
   StartCommentModerationInput,
-  UpdateCommentInput,
 } from "@/features/comments/comments.schema";
 import * as CommentRepo from "@/features/comments/data/comments.data";
 
@@ -14,16 +13,18 @@ import * as CommentRepo from "@/features/comments/data/comments.data";
 
 export async function getCommentsByPostId(
   context: Context,
-  data: GetCommentsByPostIdInput,
+  data: GetCommentsByPostIdInput & { viewerId?: string },
 ) {
   const [items, total] = await Promise.all([
     CommentRepo.getCommentsByPostId(context.db, data.postId, {
       offset: data.offset,
       limit: data.limit,
-      status: "published", // Only show published comments publicly
+      viewerId: data.viewerId,
+      status: data.viewerId ? undefined : "published",
     }),
     CommentRepo.getCommentsByPostIdCount(context.db, data.postId, {
-      status: "published",
+      viewerId: data.viewerId,
+      status: data.viewerId ? undefined : "published",
     }),
   ]);
 
@@ -48,35 +49,6 @@ export async function createComment(
   await startCommentModerationWorkflow(context, { commentId: comment.id });
 
   return comment;
-}
-
-export async function updateComment(
-  context: AuthContext,
-  data: UpdateCommentInput,
-) {
-  const comment = await CommentRepo.findCommentById(context.db, data.id);
-
-  if (!comment) {
-    throw new Error("COMMENT_NOT_FOUND");
-  }
-
-  // Only allow updating own comments (unless admin)
-  const userRole = context.session.user.role;
-  if (comment.userId !== context.session.user.id && userRole !== "admin") {
-    throw new Error("PERMISSION_DENIED");
-  }
-
-  // Reset status to verifying for re-moderation
-  const updatedComment = await CommentRepo.updateComment(context.db, data.id, {
-    content: data.content,
-    status: "verifying",
-    aiReason: null,
-  });
-
-  // Trigger AI moderation workflow for updated content
-  await startCommentModerationWorkflow(context, { commentId: data.id });
-
-  return updatedComment;
 }
 
 export async function deleteComment(

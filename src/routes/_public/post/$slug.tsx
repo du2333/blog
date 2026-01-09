@@ -9,6 +9,7 @@ import { ArrowLeft, ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
+import { CommentSection } from "@/features/comments/components/view/comment-section";
 import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -136,6 +137,11 @@ function RouteComponent() {
               <TableOfContents headers={post.toc} />
             </div>
           </aside>
+        </div>
+
+        {/* Comments Section */}
+        <div className="max-w-3xl">
+          <CommentSection postId={post.id} />
         </div>
       </article>
 
