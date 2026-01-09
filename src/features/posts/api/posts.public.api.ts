@@ -10,6 +10,7 @@ export const getPostsCursorFn = createCachedFn()
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
+      key: "posts:getCursor",
     }),
   ])
   .inputValidator(GetPostsCursorInputSchema)
@@ -22,6 +23,7 @@ export const findPostBySlugFn = createCachedFn()
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
+      key: "posts:findBySlug",
     }),
   ])
   .inputValidator(FindPostBySlugInputSchema)

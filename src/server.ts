@@ -1,5 +1,3 @@
-import type { Auth } from "@/lib/auth/auth.server";
-import type { DB } from "@/lib/db";
 import { app } from "@/lib/hono";
 
 export { CommentModerationWorkflow } from "@/features/comments/workflows/comment-moderation";
@@ -9,12 +7,7 @@ export { RateLimiter } from "@/lib/rate-limiter";
 declare module "@tanstack/react-start" {
   interface Register {
     server: {
-      requestContext: {
-        db: DB;
-        env: Env;
-        executionCtx: ExecutionContext;
-        auth: Auth;
-      };
+      requestContext: Context;
     };
   }
 }

@@ -30,6 +30,7 @@ export const searchDocsFn = createServerFn()
     createRateLimitMiddleware({
       capacity: 30,
       interval: "1m",
+      key: "search:query",
     }),
   ])
   .inputValidator(SearchQuerySchema)
@@ -41,6 +42,7 @@ export const getIndexVersionFn = createServerFn()
     createRateLimitMiddleware({
       capacity: 30,
       interval: "1m",
+      key: "search:getIndexVersion",
     }),
   ])
   .handler(({ context }) => SearchService.getIndexVersion(context));

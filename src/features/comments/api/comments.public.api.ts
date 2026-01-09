@@ -18,6 +18,7 @@ export const getCommentsByPostIdFn = createCachedFn()
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
+      key: "comments:getByPostId",
     }),
   ])
   .inputValidator(GetCommentsByPostIdInputSchema)
@@ -33,6 +34,7 @@ export const createCommentFn = createAuthedFn({
     createRateLimitMiddleware({
       capacity: 10,
       interval: "1m",
+      key: "comments:create",
     }),
   ])
   .inputValidator(CreateCommentInputSchema)
@@ -43,6 +45,13 @@ export const createCommentFn = createAuthedFn({
 export const updateCommentFn = createAuthedFn({
   method: "POST",
 })
+  .middleware([
+    createRateLimitMiddleware({
+      capacity: 10,
+      interval: "1m",
+      key: "comments:update",
+    }),
+  ])
   .inputValidator(UpdateCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.updateComment(context, data);
@@ -51,12 +60,26 @@ export const updateCommentFn = createAuthedFn({
 export const deleteCommentFn = createAuthedFn({
   method: "POST",
 })
+  .middleware([
+    createRateLimitMiddleware({
+      capacity: 10,
+      interval: "1m",
+      key: "comments:delete",
+    }),
+  ])
   .inputValidator(DeleteCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.deleteComment(context, data);
   });
 
 export const getMyCommentsFn = createAuthedFn()
+  .middleware([
+    createRateLimitMiddleware({
+      capacity: 60,
+      interval: "1m",
+      key: "comments:getMine",
+    }),
+  ])
   .inputValidator(GetMyCommentsInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.getMyComments(context, data);

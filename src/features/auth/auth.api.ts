@@ -19,6 +19,7 @@ export const getIsEmailVerficationRequiredFn = createServerFn()
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
+      key: "auth:getIsEmailVerificationRequired",
     }),
   ])
   .handler(({ context }) => AuthService.getIsEmailVerficationRequired(context));

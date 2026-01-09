@@ -65,11 +65,19 @@ export const noCacheMiddleware = createMiddleware().server(async ({ next }) => {
   return result;
 });
 
-export const createRateLimitMiddleware = (options: RateLimitOptions) => {
+export const createRateLimitMiddleware = (
+  options: RateLimitOptions & { key?: string },
+) => {
   return createMiddleware().server(async ({ next, context, request }) => {
-    const identifier = request.headers.get("cf-connecting-ip") || "unknown";
+    // 妥协一下，由于runtime可能有session，用Partial让session变成可选的
+    const session = (context as Partial<AuthContext>).session;
 
-    const id = context.env.RATE_LIMITER.idFromName(identifier);
+    const identifier =
+      session?.user.id || request.headers.get("cf-connecting-ip") || "unknown";
+    const scope = options.key || "default";
+    const uniqueIdentifier = `${identifier}:${scope}`;
+
+    const id = context.env.RATE_LIMITER.idFromName(uniqueIdentifier);
     const rateLimiter = context.env.RATE_LIMITER.get(id);
 
     const result = await rateLimiter.checkLimit(options);
@@ -91,11 +99,11 @@ export const createRateLimitMiddleware = (options: RateLimitOptions) => {
 /* ======================= Helper Functions ====================== */
 
 export const createAuthedFn = createServerFn().middleware([
-  authMiddleware,
   noCacheMiddleware,
+  authMiddleware,
 ]);
 export const createAdminFn = createServerFn().middleware([
-  adminMiddleware,
   noCacheMiddleware,
+  adminMiddleware,
 ]);
 export const createCachedFn = createServerFn().middleware([cachedMiddleware]);
