@@ -84,7 +84,7 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
           return {
             safe: true,
             reason: "开发环境，自动通过",
-          }
+          };
         }
         try {
           return await AiService.moderateComment(

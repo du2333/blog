@@ -1,4 +1,4 @@
-import { EditorContent, useEditor } from "@tiptap/react";
+import { EditorContent, useEditor, useEditorState } from "@tiptap/react";
 import { useCallback, useState } from "react";
 import { Loader2, Send } from "lucide-react";
 import { commentExtensions } from "../editor/config";
@@ -39,6 +39,13 @@ export const CommentEditor = ({
     },
   });
 
+  const { isEmpty } = useEditorState({
+    editor,
+    selector: (ctx) => ({
+      isEmpty: ctx.editor.isEmpty,
+    }),
+  });
+
   const openLinkModal = useCallback(() => {
     const previousUrl = editor.getAttributes("link").href as string | undefined;
     setModalInitialUrl(previousUrl || "");
@@ -51,7 +58,7 @@ export const CommentEditor = ({
   }, []);
 
   const handleSubmit = async () => {
-    if (editor.isEmpty || isSubmitting) return;
+    if (isEmpty || isSubmitting) return;
 
     try {
       await onSubmit(editor.getJSON());
@@ -84,7 +91,7 @@ export const CommentEditor = ({
         )}
         <Button
           size="sm"
-          disabled={editor.isEmpty || isSubmitting}
+          disabled={isEmpty || isSubmitting}
           onClick={handleSubmit}
           className="h-9 px-6 text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-primary/10 transition-all duration-300 active:scale-95"
         >

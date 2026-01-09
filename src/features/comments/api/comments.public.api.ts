@@ -8,18 +8,19 @@ import {
   DeleteCommentInputSchema,
   GetCommentsByPostIdInputSchema,
   GetMyCommentsInputSchema,
+  GetRepliesByRootIdInputSchema,
 } from "@/features/comments/comments.schema";
 import * as CommentService from "@/features/comments/comments.service";
 import { createAuthedFn, createRateLimitMiddleware } from "@/lib/middlewares";
 import { CACHE_CONTROL } from "@/lib/constants";
 
-// Public API - Get comments by post ID (published + viewer's pending)
-export const getCommentsByPostIdFn = createServerFn()
+// Public API - Get root comments by post ID (published + viewer's pending)
+export const getRootCommentsByPostIdFn = createServerFn()
   .middleware([
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
-      key: "comments:getByPostId",
+      key: "comments:getRootsByPostId",
     }),
   ])
   .inputValidator(GetCommentsByPostIdInputSchema)
@@ -28,7 +29,41 @@ export const getCommentsByPostIdFn = createServerFn()
       headers: getRequestHeaders(),
     });
 
-    const result = await CommentService.getCommentsByPostId(context, {
+    const result = await CommentService.getRootCommentsByPostId(context, {
+      ...data,
+      viewerId: session?.user.id,
+    });
+
+    // Handle caching based on session
+    if (!session) {
+      Object.entries(CACHE_CONTROL.swr).forEach(([k, v]) => {
+        setResponseHeader(k, v);
+      });
+    } else {
+      Object.entries(CACHE_CONTROL.private).forEach(([k, v]) => {
+        setResponseHeader(k, v);
+      });
+    }
+
+    return result;
+  });
+
+// Public API - Get replies by root ID (published + viewer's pending)
+export const getRepliesByRootIdFn = createServerFn()
+  .middleware([
+    createRateLimitMiddleware({
+      capacity: 60,
+      interval: "1m",
+      key: "comments:getRepliesByRootId",
+    }),
+  ])
+  .inputValidator(GetRepliesByRootIdInputSchema)
+  .handler(async ({ data, context }) => {
+    const session = await context.auth.api.getSession({
+      headers: getRequestHeaders(),
+    });
+
+    const result = await CommentService.getRepliesByRootId(context, {
       ...data,
       viewerId: session?.user.id,
     });

@@ -42,11 +42,42 @@ export const GetCommentsResponseSchema = z.object({
   total: z.number(),
 });
 
+export const GetRepliesByRootIdInputSchema = z.object({
+  postId: z.number(),
+  rootId: z.number(),
+  offset: z.number().optional(),
+  limit: z.number().optional(),
+});
+
+export const ReplyWithUserAndReplyToSchema = CommentWithUserSchema.extend({
+  replyTo: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .nullable(),
+});
+
+export const GetRepliesResponseSchema = z.object({
+  items: z.array(ReplyWithUserAndReplyToSchema),
+  total: z.number(),
+});
+
+export const RootCommentWithReplyCountSchema = CommentWithUserSchema.extend({
+  replyCount: z.number(),
+});
+
+export const GetRootCommentsResponseSchema = z.object({
+  items: z.array(RootCommentWithReplyCountSchema),
+  total: z.number(),
+});
+
 // Authed User API Schemas
 export const CreateCommentInputSchema = z.object({
   postId: z.number(),
   content: z.custom<JSONContent>(),
-  parentId: z.number().optional(),
+  rootId: z.number().optional(),
+  replyToCommentId: z.number().optional(),
 });
 
 export const UpdateCommentInputSchema = z.object({

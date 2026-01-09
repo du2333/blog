@@ -20,7 +20,7 @@ export async function findCommentById(db: DB, id: number) {
   });
 }
 
-export async function getCommentsByPostId(
+export async function getRootCommentsByPostId(
   db: DB,
   postId: number,
   options: {
@@ -32,13 +32,19 @@ export async function getCommentsByPostId(
 ) {
   const { offset = 0, limit = DEFAULT_PAGE_SIZE, status, viewerId } = options;
 
-  const conditions = buildCommentWhereClause({ postId, status, viewerId });
+  const conditions = buildCommentWhereClause({
+    postId,
+    status,
+    viewerId,
+    rootOnly: true,
+  });
 
   const comments = await db
     .select({
       id: CommentsTable.id,
       content: CommentsTable.content,
-      parentId: CommentsTable.parentId,
+      rootId: CommentsTable.rootId,
+      replyToCommentId: CommentsTable.replyToCommentId,
       postId: CommentsTable.postId,
       userId: CommentsTable.userId,
       status: CommentsTable.status,
@@ -62,7 +68,7 @@ export async function getCommentsByPostId(
   return comments;
 }
 
-export async function getCommentsByPostIdCount(
+export async function getRootCommentsByPostIdCount(
   db: DB,
   postId: number,
   options: {
@@ -72,7 +78,142 @@ export async function getCommentsByPostIdCount(
 ) {
   const { status, viewerId } = options;
 
-  const conditions = buildCommentWhereClause({ postId, status, viewerId });
+  const conditions = buildCommentWhereClause({
+    postId,
+    status,
+    viewerId,
+    rootOnly: true,
+  });
+
+  const result = await db
+    .select({ count: count() })
+    .from(CommentsTable)
+    .where(conditions);
+
+  return result[0].count;
+}
+
+export async function getReplyCountByRootId(
+  db: DB,
+  postId: number,
+  rootId: number,
+  options: {
+    status?: CommentStatus | Array<CommentStatus>;
+    viewerId?: string;
+  } = {},
+) {
+  const { status, viewerId } = options;
+
+  const conditions = buildCommentWhereClause({
+    postId,
+    rootId,
+    status,
+    viewerId,
+  });
+
+  const result = await db
+    .select({ count: count() })
+    .from(CommentsTable)
+    .where(conditions);
+
+  return result[0].count;
+}
+
+export async function getRepliesByRootId(
+  db: DB,
+  postId: number,
+  rootId: number,
+  options: {
+    offset?: number;
+    limit?: number;
+    status?: CommentStatus | Array<CommentStatus>;
+    viewerId?: string;
+  } = {},
+) {
+  const { offset = 0, limit = DEFAULT_PAGE_SIZE, status, viewerId } = options;
+
+  const conditions = buildCommentWhereClause({
+    postId,
+    rootId,
+    status,
+    viewerId,
+  });
+
+  const replies = await db
+    .select({
+      id: CommentsTable.id,
+      content: CommentsTable.content,
+      rootId: CommentsTable.rootId,
+      replyToCommentId: CommentsTable.replyToCommentId,
+      postId: CommentsTable.postId,
+      userId: CommentsTable.userId,
+      status: CommentsTable.status,
+      aiReason: CommentsTable.aiReason,
+      createdAt: CommentsTable.createdAt,
+      updatedAt: CommentsTable.updatedAt,
+      user: {
+        id: user.id,
+        name: user.name,
+        image: user.image,
+        role: user.role,
+      },
+    })
+    .from(CommentsTable)
+    .leftJoin(user, eq(CommentsTable.userId, user.id))
+    .where(conditions)
+    .orderBy(CommentsTable.createdAt)
+    .limit(Math.min(limit, 100))
+    .offset(offset);
+
+  // Fetch replyTo user info separately for each reply
+  const repliesWithReplyTo = await Promise.all(
+    replies.map(async (reply) => {
+      if (!reply.replyToCommentId) {
+        return { ...reply, replyTo: null };
+      }
+
+      const replyToComment = await findCommentById(db, reply.replyToCommentId);
+      if (!replyToComment) {
+        return { ...reply, replyTo: null };
+      }
+
+      const replyToUserInfo = await db.query.user.findFirst({
+        where: eq(user.id, replyToComment.userId),
+        columns: {
+          id: true,
+          name: true,
+        },
+      });
+
+      return {
+        ...reply,
+        replyTo: replyToUserInfo
+          ? { id: replyToUserInfo.id, name: replyToUserInfo.name }
+          : null,
+      };
+    }),
+  );
+
+  return repliesWithReplyTo;
+}
+
+export async function getRepliesByRootIdCount(
+  db: DB,
+  postId: number,
+  rootId: number,
+  options: {
+    status?: CommentStatus | Array<CommentStatus>;
+    viewerId?: string;
+  } = {},
+) {
+  const { status, viewerId } = options;
+
+  const conditions = buildCommentWhereClause({
+    postId,
+    rootId,
+    status,
+    viewerId,
+  });
 
   const result = await db
     .select({ count: count() })
@@ -130,7 +271,8 @@ export async function getAllComments(
     .select({
       id: CommentsTable.id,
       content: CommentsTable.content,
-      parentId: CommentsTable.parentId,
+      rootId: CommentsTable.rootId,
+      replyToCommentId: CommentsTable.replyToCommentId,
       postId: CommentsTable.postId,
       userId: CommentsTable.userId,
       status: CommentsTable.status,

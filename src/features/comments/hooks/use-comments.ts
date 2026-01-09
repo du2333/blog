@@ -13,8 +13,14 @@ export function useComments(postId?: number) {
     mutationFn: createCommentFn,
     onSuccess: () => {
       if (postId) {
+        // Invalidate both root comments and all replies queries for this post
         queryClient.invalidateQueries({
-          queryKey: ["comments", "post", postId],
+          queryKey: ["comments", "roots", "post", postId],
+          exact: false,
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["comments", "replies", "post", postId],
+          exact: false,
         });
       }
     },
@@ -27,8 +33,14 @@ export function useComments(postId?: number) {
     mutationFn: deleteCommentFn,
     onSuccess: () => {
       if (postId) {
+        // Invalidate both root comments and all replies queries for this post
         queryClient.invalidateQueries({
-          queryKey: ["comments", "post", postId],
+          queryKey: ["comments", "roots", "post", postId],
+          exact: false,
+        });
+        queryClient.invalidateQueries({
+          queryKey: ["comments", "replies", "post", postId],
+          exact: false,
         });
       }
       toast.success("评论已删除");

@@ -2,7 +2,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
-import { commentsByPostIdQuery } from "../../comments.query";
+import { rootCommentsByPostIdQuery } from "../../comments.query";
 import { useComments } from "../../hooks/use-comments";
 import { CommentList } from "./comment-list";
 import { CommentEditor } from "./comment-editor";
@@ -17,13 +17,14 @@ interface CommentSectionProps {
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data: session } = authClient.useSession();
   const { data: response } = useSuspenseQuery(
-    commentsByPostIdQuery(postId, session?.user.id),
+    rootCommentsByPostIdQuery(postId, session?.user.id),
   );
   const { createComment, deleteComment, isCreating, isDeleting } =
     useComments(postId);
 
   const [replyTarget, setReplyTarget] = useState<{
-    id: number;
+    rootId: number;
+    commentId: number;
     userName: string;
   } | null>(null);
 
@@ -44,7 +45,8 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       data: {
         postId,
         content,
-        parentId: replyTarget.id,
+        rootId: replyTarget.rootId,
+        replyToCommentId: replyTarget.commentId,
       },
     });
     setReplyTarget(null);
@@ -97,8 +99,11 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
       {/* Comments List */}
       <CommentList
-        comments={response.items}
-        onReply={(id, userName) => setReplyTarget({ id, userName })}
+        rootComments={response.items}
+        postId={postId}
+        onReply={(rootId, commentId, userName) =>
+          setReplyTarget({ rootId, commentId, userName })
+        }
         onDelete={(id) => setCommentToDelete(id)}
         replyTarget={replyTarget}
         onCancelReply={() => setReplyTarget(null)}

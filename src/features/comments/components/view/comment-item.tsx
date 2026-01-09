@@ -1,14 +1,23 @@
 import { memo, useMemo } from "react";
 import { MessageSquare, Trash2 } from "lucide-react";
 import { renderCommentReact } from "./comment-render";
-import type { Comment } from "@/lib/db/schema";
 import { authClient } from "@/lib/auth/auth.client";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface CommentItemProps {
-  comment: Comment & {
+  comment: {
+    id: number;
+    content: any;
+    rootId: number | null;
+    replyToCommentId: number | null;
+    postId: number;
+    userId: string;
+    status: string;
+    aiReason: string | null;
+    createdAt: Date;
+    updatedAt: Date;
     user: {
       id: string;
       name: string;
@@ -16,13 +25,14 @@ interface CommentItemProps {
       role: string | null;
     } | null;
   };
-  onReply?: (commentId: number, userName: string) => void;
+  onReply?: (rootId: number, commentId: number, userName: string) => void;
   onDelete?: (commentId: number) => void;
   isReply?: boolean;
+  replyToName?: string | null;
 }
 
 export const CommentItem = memo(
-  ({ comment, onReply, onDelete, isReply }: CommentItemProps) => {
+  ({ comment, onReply, onDelete, isReply, replyToName }: CommentItemProps) => {
     const { data: session } = authClient.useSession();
     const isAuthor = session?.user.id === comment.userId;
     const isAdmin = session?.user.role === "admin";
@@ -68,6 +78,14 @@ export const CommentItem = memo(
         <div className="flex-1 min-w-0 space-y-1">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
+              {isReply && replyToName && (
+                <span className="text-xs text-muted-foreground">
+                  回复{" "}
+                  <span className="text-primary font-medium">
+                    @{replyToName}
+                  </span>
+                </span>
+              )}
               <span className="text-sm font-medium text-foreground">
                 {comment.user?.name || "匿名用户"}
               </span>
@@ -92,9 +110,14 @@ export const CommentItem = memo(
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() =>
-                  onReply?.(comment.id, comment.user?.name || "未知用户")
-                }
+                onClick={() => {
+                  const rootId = comment.rootId ?? comment.id;
+                  onReply?.(
+                    rootId,
+                    comment.id,
+                    comment.user?.name || "未知用户",
+                  );
+                }}
                 className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
               >
                 <MessageSquare size={12} className="mr-1.5" />

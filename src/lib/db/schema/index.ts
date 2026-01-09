@@ -6,6 +6,7 @@ import {
   text,
 } from "drizzle-orm/sqlite-core";
 import { sql } from "drizzle-orm";
+import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
 import { user } from "@/lib/db/schema/auth.schema";
@@ -98,7 +99,16 @@ export const CommentsTable = sqliteTable(
   {
     id: integer().primaryKey({ autoIncrement: true }),
     content: text({ mode: "json" }).$type<JSONContent>(),
-    parentId: integer("parent_id"),
+    rootId: integer("root_id").references(
+      (): AnySQLiteColumn => CommentsTable.id,
+      {
+        onDelete: "cascade",
+      },
+    ),
+    replyToCommentId: integer("reply_to_comment_id").references(
+      (): AnySQLiteColumn => CommentsTable.id,
+      { onDelete: "set null" },
+    ),
     status: text("status", { enum: COMMENT_STATUSES })
       .notNull()
       .default("verifying"),
@@ -120,9 +130,14 @@ export const CommentsTable = sqliteTable(
       .$onUpdate(() => new Date()),
   },
   (table) => [
-    index("comments_post_id_idx").on(table.postId),
-    index("comments_user_id_idx").on(table.userId),
-    index("comments_status_idx").on(table.status),
+    index("comments_post_root_created_idx").on(
+      table.postId,
+      table.rootId,
+      table.createdAt,
+    ),
+    index("comments_user_created_idx").on(table.userId, table.createdAt),
+    index("comments_status_created_idx").on(table.status, table.createdAt),
+    index("comments_global_created_idx").on(table.createdAt),
   ],
 );
 

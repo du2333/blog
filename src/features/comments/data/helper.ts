@@ -1,4 +1,4 @@
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, eq, inArray, isNull, or } from "drizzle-orm";
 import type { CommentStatus } from "@/lib/db/schema";
 import { CommentsTable } from "@/lib/db/schema";
 
@@ -7,8 +7,10 @@ export function buildCommentWhereClause(options: {
   postId?: number;
   userId?: string;
   viewerId?: string;
+  rootId?: number | null;
+  rootOnly?: boolean;
 }) {
-  const { status, postId, userId, viewerId } = options;
+  const { status, postId, userId, viewerId, rootId, rootOnly } = options;
 
   const whereClauses = [];
 
@@ -20,19 +22,29 @@ export function buildCommentWhereClause(options: {
     whereClauses.push(eq(CommentsTable.userId, userId));
   }
 
-  // logic: 
+  if (rootOnly) {
+    whereClauses.push(isNull(CommentsTable.rootId));
+  } else if (rootId !== undefined) {
+    if (rootId === null) {
+      whereClauses.push(isNull(CommentsTable.rootId));
+    } else {
+      whereClauses.push(eq(CommentsTable.rootId, rootId));
+    }
+  }
+
+  // logic:
   // 1. If viewerId is provided, we want (status: published) OR (userId: viewerId AND status: pending/verifying)
   // 2. If status is explicitly provided, we use that.
-  
+
   if (viewerId && !status && !userId) {
     whereClauses.push(
       or(
         eq(CommentsTable.status, "published"),
         and(
           eq(CommentsTable.userId, viewerId),
-          inArray(CommentsTable.status, ["pending", "verifying"])
-        )
-      )
+          inArray(CommentsTable.status, ["pending", "verifying"]),
+        ),
+      ),
     );
   } else if (status) {
     if (Array.isArray(status)) {

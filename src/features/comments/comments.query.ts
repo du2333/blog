@@ -1,15 +1,46 @@
-import { queryOptions } from "@tanstack/react-query";
+import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import {
-  getCommentsByPostIdFn,
   getMyCommentsFn,
+  getRepliesByRootIdFn,
+  getRootCommentsByPostIdFn,
 } from "./api/comments.public.api";
 import { getAllCommentsFn } from "./api/comments.admin.api";
 import type { CommentStatus } from "@/lib/db/schema";
 
-export function commentsByPostIdQuery(postId: number, userId?: string) {
+export function rootCommentsByPostIdQuery(postId: number, userId?: string) {
   return queryOptions({
-    queryKey: ["comments", "post", postId, { userId }],
-    queryFn: () => getCommentsByPostIdFn({ data: { postId } }),
+    queryKey: ["comments", "roots", "post", postId, { userId }],
+    queryFn: () => getRootCommentsByPostIdFn({ data: { postId } }),
+  });
+}
+
+export function repliesByRootIdInfiniteQuery(
+  postId: number,
+  rootId: number,
+  userId?: string,
+) {
+  return infiniteQueryOptions({
+    queryKey: [
+      "comments",
+      "replies",
+      "post",
+      postId,
+      "root",
+      rootId,
+      { userId },
+    ],
+    queryFn: ({ pageParam = 0 }) =>
+      getRepliesByRootIdFn({
+        data: { postId, rootId, offset: pageParam, limit: 20 },
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const totalLoaded = allPages.reduce(
+        (sum, page) => sum + page.items.length,
+        0,
+      );
+      return totalLoaded < lastPage.total ? totalLoaded : undefined;
+    },
   });
 }
 

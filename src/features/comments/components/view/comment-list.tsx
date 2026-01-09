@@ -1,37 +1,46 @@
-import { Link } from "@tanstack/react-router";
-import { LogIn } from "lucide-react";
-import { useMemo } from "react";
+import { useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { repliesByRootIdInfiniteQuery } from "../../comments.query";
 import { CommentItem } from "./comment-item";
 import { CommentReplyForm } from "./comment-reply-form";
-import type { Comment } from "@/lib/db/schema";
 import { authClient } from "@/lib/auth/auth.client";
 import { Button } from "@/components/ui/button";
 
-interface CommentWithUser extends Comment {
+interface RootCommentWithUser {
+  id: number;
+  content: any;
+  rootId: number | null;
+  replyToCommentId: number | null;
+  postId: number;
+  userId: string;
+  status: string;
+  aiReason: string | null;
+  createdAt: Date;
+  updatedAt: Date;
   user: {
     id: string;
     name: string;
     image: string | null;
     role: string | null;
   } | null;
+  replyCount: number;
 }
 
 interface CommentListProps {
-  comments: Array<CommentWithUser>;
-  onReply?: (commentId: number, userName: string) => void;
+  rootComments: Array<RootCommentWithUser>;
+  postId: number;
+  onReply?: (rootId: number, commentId: number, userName: string) => void;
   onDelete?: (commentId: number) => void;
-  replyTarget?: { id: number; userName: string } | null;
+  replyTarget?: { rootId: number; commentId: number; userName: string } | null;
   onCancelReply?: () => void;
   onSubmitReply?: (content: any) => Promise<void>;
   isSubmittingReply?: boolean;
 }
 
-interface CommentNode extends CommentWithUser {
-  replies: Array<CommentNode>;
-}
-
 export const CommentList = ({
-  comments,
+  rootComments,
+  postId,
   onReply,
   onDelete,
   replyTarget,
@@ -40,30 +49,21 @@ export const CommentList = ({
   isSubmittingReply,
 }: CommentListProps) => {
   const { data: session } = authClient.useSession();
+  const [expandedRoots, setExpandedRoots] = useState<Set<number>>(new Set());
 
-  const tree = useMemo(() => {
-    const map = new Map<number, CommentNode>();
-    const roots: Array<CommentNode> = [];
-
-    // First pass: create nodes
-    comments.forEach((c) => {
-      map.set(c.id, { ...c, replies: [] });
-    });
-
-    // Second pass: link nodes
-    comments.forEach((c) => {
-      const node = map.get(c.id)!;
-      if (c.parentId && map.has(c.parentId)) {
-        map.get(c.parentId)!.replies.push(node);
+  const toggleExpand = (rootId: number) => {
+    setExpandedRoots((prev) => {
+      const next = new Set(prev);
+      if (next.has(rootId)) {
+        next.delete(rootId);
       } else {
-        roots.push(node);
+        next.add(rootId);
       }
+      return next;
     });
+  };
 
-    return roots;
-  }, [comments]);
-
-  if (comments.length === 0) {
+  if (rootComments.length === 0) {
     return (
       <div className="py-20 text-center border-y border-border/30">
         <p className="text-[11px] uppercase tracking-[0.3em] font-mono text-muted-foreground">
@@ -75,100 +75,171 @@ export const CommentList = ({
 
   return (
     <div className="divide-y divide-border/30">
-      {tree.map((node) => (
-        <div
-          key={node.id}
-          className="animate-in fade-in slide-in-from-bottom-2 duration-500"
-        >
-          <CommentItem comment={node} onReply={onReply} onDelete={onDelete} />
-
-          {replyTarget?.id === node.id && (
-            <div className="py-4">
-              {session ? (
-                <CommentReplyForm
-                  parentUserName={replyTarget.userName}
-                  onSubmit={onSubmitReply!}
-                  isSubmitting={isSubmittingReply!}
-                  onCancel={onCancelReply!}
-                  className="ml-12"
-                />
-              ) : (
-                <div className="ml-12 p-6 border border-dashed border-border/50 rounded-sm bg-accent/5 flex flex-col items-center gap-4">
-                  <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
-                    登录后回复 @{replyTarget.userName}
-                  </p>
-                  <Link to="/login">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="h-9 px-6 text-[10px] uppercase tracking-[0.2em] font-bold border-border hover:bg-foreground hover:text-background"
-                    >
-                      <LogIn size={12} className="mr-2" />
-                      去登录
-                    </Button>
-                  </Link>
-                  <button
-                    onClick={onCancelReply}
-                    className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-4"
-                  >
-                    取消
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-
-          {node.replies.length > 0 && (
-            <div className="space-y-2">
-              {node.replies.map((reply) => (
-                <div key={reply.id}>
-                  <CommentItem
-                    comment={reply}
-                    onReply={onReply}
-                    onDelete={onDelete}
-                    isReply
-                  />
-                  {replyTarget?.id === reply.id && (
-                    <div className="py-4">
-                      {session ? (
-                        <CommentReplyForm
-                          parentUserName={replyTarget.userName}
-                          onSubmit={onSubmitReply!}
-                          isSubmitting={isSubmittingReply!}
-                          onCancel={onCancelReply!}
-                          className="ml-24"
-                        />
-                      ) : (
-                        <div className="ml-24 p-6 border border-dashed border-border/50 rounded-sm bg-accent/5 flex flex-col items-center gap-4">
-                          <p className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">
-                            登录后回复 @{replyTarget.userName}
-                          </p>
-                          <Link to="/login">
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="h-9 px-6 text-[10px] uppercase tracking-[0.2em] font-bold border-border hover:bg-foreground hover:text-background"
-                            >
-                              <LogIn size={12} className="mr-2" />
-                              去登录
-                            </Button>
-                          </Link>
-                          <button
-                            onClick={onCancelReply}
-                            className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground underline underline-offset-4"
-                          >
-                            取消
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
+      {rootComments.map((root) => (
+        <RootCommentWithReplies
+          key={root.id}
+          root={root}
+          postId={postId}
+          isExpanded={expandedRoots.has(root.id)}
+          onToggleExpand={() => toggleExpand(root.id)}
+          onReply={onReply}
+          onDelete={onDelete}
+          replyTarget={replyTarget}
+          onCancelReply={onCancelReply}
+          onSubmitReply={onSubmitReply}
+          isSubmittingReply={isSubmittingReply}
+          session={session}
+        />
       ))}
     </div>
   );
 };
+
+interface RootCommentWithRepliesProps {
+  root: RootCommentWithUser;
+  postId: number;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
+  onReply?: (rootId: number, commentId: number, userName: string) => void;
+  onDelete?: (commentId: number) => void;
+  replyTarget?: { rootId: number; commentId: number; userName: string } | null;
+  onCancelReply?: () => void;
+  onSubmitReply?: (content: any) => Promise<void>;
+  isSubmittingReply?: boolean;
+  session: any;
+}
+
+function RootCommentWithReplies({
+  root,
+  postId,
+  isExpanded,
+  onToggleExpand,
+  onReply,
+  onDelete,
+  replyTarget,
+  onCancelReply,
+  onSubmitReply,
+  isSubmittingReply,
+  session,
+}: RootCommentWithRepliesProps) {
+  const {
+    data: repliesData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfiniteQuery(
+    repliesByRootIdInfiniteQuery(postId, root.id, session?.user.id),
+  );
+
+  const allReplies = repliesData?.pages.flatMap((page) => page.items) ?? [];
+  const isReplyingToRoot =
+    replyTarget &&
+    replyTarget.rootId === root.id &&
+    replyTarget.commentId === root.id;
+
+  return (
+    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+      <CommentItem
+        comment={root}
+        onReply={() => {
+          if (onReply) {
+            onReply(root.id, root.id, root.user?.name || "未知用户");
+          }
+        }}
+        onDelete={onDelete}
+      />
+
+      {isReplyingToRoot && (
+        <div className="py-4 ml-12">
+          {session ? (
+            <CommentReplyForm
+              parentUserName={replyTarget.userName}
+              onSubmit={onSubmitReply!}
+              isSubmitting={isSubmittingReply!}
+              onCancel={onCancelReply!}
+            />
+          ) : null}
+        </div>
+      )}
+
+      {root.replyCount > 0 && (
+        <div className="ml-12 mt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onToggleExpand}
+            className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
+          >
+            {isExpanded ? (
+              <>
+                <ChevronUp size={12} className="mr-1.5" />
+                收起回复 ({root.replyCount})
+              </>
+            ) : (
+              <>
+                <ChevronDown size={12} className="mr-1.5" />
+                展开回复 ({root.replyCount})
+              </>
+            )}
+          </Button>
+
+          {isExpanded && (
+            <div className="mt-4 space-y-2 border-l border-border/50 pl-6">
+              {allReplies.map((reply) => {
+                const isReplyingToThis =
+                  replyTarget &&
+                  replyTarget.rootId === root.id &&
+                  replyTarget.commentId === reply.id;
+                return (
+                  <div key={reply.id}>
+                    <CommentItem
+                      comment={reply}
+                      onReply={() => {
+                        if (onReply) {
+                          onReply(
+                            root.id,
+                            reply.id,
+                            reply.replyTo?.name ||
+                              reply.user?.name ||
+                              "未知用户",
+                          );
+                        }
+                      }}
+                      onDelete={onDelete}
+                      isReply
+                      replyToName={reply.replyTo?.name}
+                    />
+                    {isReplyingToThis && (
+                      <div className="py-4 ml-12">
+                        {session ? (
+                          <CommentReplyForm
+                            parentUserName={replyTarget.userName}
+                            onSubmit={onSubmitReply!}
+                            isSubmitting={isSubmittingReply!}
+                            onCancel={onCancelReply!}
+                          />
+                        ) : null}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+
+              {hasNextPage && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent mt-2"
+                >
+                  {isFetchingNextPage ? "加载中..." : "加载更多回复"}
+                </Button>
+              )}
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
