@@ -1,0 +1,96 @@
+import { z } from "zod";
+import {
+  createInsertSchema,
+  createSelectSchema,
+  createUpdateSchema,
+} from "drizzle-zod";
+import type { CommentStatus } from "@/lib/db/schema";
+import type { JSONContent } from "@tiptap/react";
+import { CommentsTable } from "@/lib/db/schema";
+
+// Date fields need to accept both Date objects and ISO strings (for JSON serialization)
+const coercedDate = z.union([z.date(), z.string().pipe(z.coerce.date())]);
+
+export const CommentSelectSchema = createSelectSchema(CommentsTable, {
+  createdAt: coercedDate,
+  updatedAt: coercedDate,
+});
+export const CommentInsertSchema = createInsertSchema(CommentsTable);
+export const CommentUpdateSchema = createUpdateSchema(CommentsTable);
+
+// User info schema for joined queries
+export const CommentUserSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  image: z.string().nullable(),
+});
+
+export const CommentWithUserSchema = CommentSelectSchema.extend({
+  user: CommentUserSchema.nullable(),
+});
+
+// Public API Schemas
+export const GetCommentsByPostIdInputSchema = z.object({
+  postId: z.number(),
+  offset: z.number().optional(),
+  limit: z.number().optional(),
+});
+
+export const GetCommentsResponseSchema = z.object({
+  items: z.array(CommentWithUserSchema),
+  total: z.number(),
+});
+
+// Authed User API Schemas
+export const CreateCommentInputSchema = z.object({
+  postId: z.number(),
+  content: z.custom<JSONContent>(),
+  parentId: z.number().optional(),
+});
+
+export const UpdateCommentInputSchema = z.object({
+  id: z.number(),
+  content: z.custom<JSONContent>(),
+});
+
+export const DeleteCommentInputSchema = z.object({
+  id: z.number(),
+});
+
+export const GetMyCommentsInputSchema = z.object({
+  offset: z.number().optional(),
+  limit: z.number().optional(),
+  status: z.custom<CommentStatus>().optional(),
+});
+
+// Admin API Schemas
+export const GetAllCommentsInputSchema = z.object({
+  offset: z.number().optional(),
+  limit: z.number().optional(),
+  status: z.custom<CommentStatus>().optional(),
+  postId: z.number().optional(),
+  userId: z.string().optional(),
+});
+
+export const ModerateCommentInputSchema = z.object({
+  id: z.number(),
+  status: z.enum(["published", "deleted"]),
+});
+
+export const StartCommentModerationInputSchema = z.object({
+  commentId: z.number(),
+});
+
+// Types
+export type GetCommentsByPostIdInput = z.infer<
+  typeof GetCommentsByPostIdInputSchema
+>;
+export type CreateCommentInput = z.infer<typeof CreateCommentInputSchema>;
+export type UpdateCommentInput = z.infer<typeof UpdateCommentInputSchema>;
+export type DeleteCommentInput = z.infer<typeof DeleteCommentInputSchema>;
+export type GetMyCommentsInput = z.infer<typeof GetMyCommentsInputSchema>;
+export type GetAllCommentsInput = z.infer<typeof GetAllCommentsInputSchema>;
+export type ModerateCommentInput = z.infer<typeof ModerateCommentInputSchema>;
+export type StartCommentModerationInput = z.infer<
+  typeof StartCommentModerationInputSchema
+>;

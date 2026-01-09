@@ -8,11 +8,22 @@ import {
 import { sql } from "drizzle-orm";
 import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
+import { user } from "@/lib/db/schema/auth.schema";
 
 export * from "./auth.schema";
 
 export const POST_CATEGORIES = ["DEV", "LIFE", "GAMING", "TECH"] as const;
 export const POST_STATUSES = ["draft", "published", "archived"] as const;
+// published: 所有人可见
+// verifying: 刚入库，AI 还没跑完 (仅作者可见)
+// pending: AI 觉得有风险，等人工 (仅作者/管理员可见)
+// deleted: 软删
+export const COMMENT_STATUSES = [
+  "pending",
+  "published",
+  "deleted",
+  "verifying",
+] as const;
 
 export const PostsTable = sqliteTable(
   "posts",
@@ -82,7 +93,43 @@ export const SystemConfigTable = sqliteTable("system_config", {
     .$onUpdate(() => new Date()),
 });
 
+export const CommentsTable = sqliteTable(
+  "comments",
+  {
+    id: integer().primaryKey({ autoIncrement: true }),
+    content: text({ mode: "json" }).$type<JSONContent>(),
+    parentId: integer("parent_id"),
+    status: text("status", { enum: COMMENT_STATUSES })
+      .notNull()
+      .default("verifying"),
+    aiReason: text("ai_reason"),
+
+    postId: integer("post_id")
+      .notNull()
+      .references(() => PostsTable.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "set null" }),
+
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+    updatedAt: integer("updated_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`)
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("comments_post_id_idx").on(table.postId),
+    index("comments_user_id_idx").on(table.userId),
+    index("comments_status_idx").on(table.status),
+  ],
+);
+
 export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson">;
+export type Comment = typeof CommentsTable.$inferSelect;
+
 export type PostCategory = (typeof POST_CATEGORIES)[number];
 export type PostStatus = (typeof POST_STATUSES)[number];
+export type CommentStatus = (typeof COMMENT_STATUSES)[number];

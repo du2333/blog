@@ -1,4 +1,3 @@
-import type { DB } from "@/lib/db";
 import type { TestEmailConnectionInput } from "@/features/email/email.schema";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createEmailClient } from "@/features/email/email.utils";
@@ -33,7 +32,7 @@ export async function testEmailConnection(
 
 export async function sendEmail(
   context: {
-    db: DB;
+    db: Context["db"];
   },
   options: {
     to: string;

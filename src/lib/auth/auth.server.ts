@@ -123,3 +123,4 @@ function createAuth({ db, env }: { db: DB; env: Env }) {
 }
 
 export type Auth = ReturnType<typeof createAuth>;
+export type Session = Auth["$Infer"]["Session"];

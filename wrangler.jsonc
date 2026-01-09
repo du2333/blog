@@ -42,6 +42,11 @@
       "binding": "POST_PROCESS_WORKFLOW",
       "class_name": "PostProcessWorkflow",
     },
+    {
+      "name": "comment-moderation-workflow",
+      "binding": "COMMENT_MODERATION_WORKFLOW",
+      "class_name": "CommentModerationWorkflow",
+    },
   ],
   "durable_objects": {
     "bindings": [
@@ -90,6 +95,11 @@
           "name": "post-process-workflow",
           "binding": "POST_PROCESS_WORKFLOW",
           "class_name": "PostProcessWorkflow",
+        },
+        {
+          "name": "comment-moderation-workflow",
+          "binding": "COMMENT_MODERATION_WORKFLOW",
+          "class_name": "CommentModerationWorkflow",
         },
       ],
     },

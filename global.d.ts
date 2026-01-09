@@ -1,6 +1,5 @@
 import type { DB } from "@/lib/db";
-import type { Auth } from "@/lib/auth/auth.server";
-import type { Session, User } from "better-auth";
+import type { Auth, Session } from "@/lib/auth/auth.server";
 
 declare global {
   interface PostProcessWorkflowParams {
@@ -8,8 +7,13 @@ declare global {
     isPublished: boolean;
   }
 
+  interface CommentModerationWorkflowParams {
+    commentId: number;
+  }
+
   interface Env extends Cloudflare.Env {
     POST_PROCESS_WORKFLOW: Workflow<PostProcessWorkflowParams>;
+    COMMENT_MODERATION_WORKFLOW: Workflow<CommentModerationWorkflowParams>;
   }
 
   type Context = {
@@ -20,9 +24,6 @@ declare global {
   };
 
   type AuthContext = Context & {
-    session: {
-      session: Session;
-      user: User;
-    };
+    session: Session;
   };
 }

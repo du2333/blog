@@ -10,7 +10,6 @@ import type {
   StartPostProcessInput,
   UpdatePostInput,
 } from "@/features/posts/posts.schema";
-import type { DB } from "@/lib/db";
 import * as CacheService from "@/features/cache/cache.service";
 import { syncPostMedia } from "@/features/posts/data/post-media.data";
 import * as PostRepo from "@/features/posts/data/posts.data";
@@ -83,7 +82,7 @@ export async function generateSummaryByPostId({
   postId,
 }: {
   context: {
-    db: DB;
+    db: Context["db"];
     env: Env;
   };
   postId: number;
@@ -211,7 +210,10 @@ export async function findPostBySlugAdmin(
   };
 }
 
-export async function findPostById(context: Context, data: FindPostByIdInput) {
+export async function findPostById(
+  context: { db: Context["db"] },
+  data: FindPostByIdInput,
+) {
   return await PostRepo.findPostById(context.db, data.id);
 }
 

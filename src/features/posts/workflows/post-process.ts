@@ -2,7 +2,6 @@ import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CacheService from "@/features/cache/cache.service";
 import * as PostService from "@/features/posts/posts.service";
-import * as PostRepo from "@/features/posts/data/posts.data";
 import { getDb } from "@/lib/db";
 import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
@@ -52,7 +51,7 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       // Unpublish workflow: remove from index and caches
       const post = await step.do("fetch post", async () => {
         const db = getDb(this.env);
-        return await PostRepo.findPostById(db, postId);
+        return await PostService.findPostById({ db }, { id: postId });
       });
 
       if (!post) return;
