@@ -70,7 +70,7 @@ export function UserProfileModal({
     formState: { errors: profileErrors, isSubmitting: isProfileSubmitting },
   } = useForm<ProfileSchema>({
     resolver: standardSchemaResolver(profileSchema),
-    defaultValues: {
+    values: {
       name: user?.name || "",
       image: user?.image || "",
     },
