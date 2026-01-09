@@ -3,11 +3,9 @@ import { Check, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import type { SystemConfig } from "@/features/config/config.schema";
-import { AiProviderSection } from "@/features/ai/components/ai-provider-section";
 import { EmailServiceSection } from "@/features/email/components/email-service-section";
 import { MaintenanceSection } from "@/features/config/components/maintenance-section";
 import { useSystemSetting } from "@/features/config/hooks/use-system-setting";
-import { useAiConnection } from "@/features/ai/hooks/use-ai-connection";
 import { useEmailConnection } from "@/features/email/hooks/use-email-connection";
 import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
 import { Button } from "@/components/ui/button";
@@ -26,7 +24,6 @@ export const Route = createFileRoute("/admin/settings/")({
 
 function RouteComponent() {
   const { settings, saveSettings, isLoading } = useSystemSetting();
-  const { testAiConnection } = useAiConnection();
   const { testEmailConnection } = useEmailConnection();
   const [config, setConfig] = useState<SystemConfig>(DEFAULT_CONFIG);
 
@@ -37,9 +34,9 @@ function RouteComponent() {
     }
   }, [settings]);
 
-  const [activeSection, setActiveSection] = useState<
-    "ai" | "email" | "maintenance"
-  >("ai");
+  const [activeSection, setActiveSection] = useState<"email" | "maintenance">(
+    "email",
+  );
 
   const [isSaving, setIsSaving] = useState(false);
 
@@ -60,7 +57,6 @@ function RouteComponent() {
       label: "服务配置",
       en: "SERVICES",
       items: [
-        { id: "ai" as const, label: "AI 智能", en: "Artificial Intelligence" },
         { id: "email" as const, label: "邮件分发", en: "Email Distribution" },
       ],
     },
@@ -161,15 +157,6 @@ function RouteComponent() {
             <SectionSkeleton />
           ) : (
             <>
-              {activeSection === "ai" && (
-                <AiProviderSection
-                  value={config.ai || DEFAULT_CONFIG.ai!}
-                  onChange={(aiConfig) =>
-                    setConfig({ ...config, ai: aiConfig })
-                  }
-                  testAiConnection={testAiConnection}
-                />
-              )}
               {activeSection === "email" && (
                 <EmailServiceSection
                   value={config.email || DEFAULT_CONFIG.email!}

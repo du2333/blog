@@ -79,13 +79,16 @@ export async function findPostBySlug(
 }
 
 export async function generateSummaryByPostId({
-  db,
+  context,
   postId,
 }: {
-  db: DB;
+  context: {
+    db: DB;
+    env: Env;
+  };
   postId: number;
 }) {
-  const post = await PostRepo.findPostById(db, postId);
+  const post = await PostRepo.findPostById(context.db, postId);
 
   if (!post) {
     throw new Error("Post not found");
@@ -100,9 +103,11 @@ export async function generateSummaryByPostId({
   }
 
   try {
-    const { summary } = await AiService.summarizeText({ db }, plainText);
+    const { summary } = await AiService.summarizeText(context, plainText);
 
-    const updatedPost = await PostRepo.updatePost(db, post.id, { summary });
+    const updatedPost = await PostRepo.updatePost(context.db, post.id, {
+      summary,
+    });
 
     return updatedPost;
   } catch (error) {

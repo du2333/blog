@@ -29,7 +29,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
         },
         async () => {
           const db = getDb(this.env);
-          return await PostService.generateSummaryByPostId({ db, postId });
+          return await PostService.generateSummaryByPostId({
+            context: { db, env: this.env },
+            postId,
+          });
         },
       );
 

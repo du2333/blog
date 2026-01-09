@@ -51,6 +51,9 @@
       },
     ],
   },
+  "ai": {
+    "binding": "AI",
+  },
   "migrations": [
     {
       "tag": "rate-limiter-v1",
