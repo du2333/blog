@@ -5,11 +5,12 @@ import { authClient } from "@/lib/auth/auth.client";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import type { JSONContent } from "@tiptap/react";
 
 interface CommentItemProps {
   comment: {
     id: number;
-    content: any;
+    content: JSONContent | null;
     rootId: number | null;
     replyToCommentId: number | null;
     postId: number;
@@ -62,7 +63,11 @@ export const CommentItem = memo(
         {/* Avatar */}
         <div className="shrink-0">
           <div className="w-10 h-10 rounded-sm bg-muted overflow-hidden flex items-center justify-center border border-border/50">
-            {comment.user?.image ? (
+            {comment.status === "deleted" ? (
+              <span className="text-xs font-mono text-muted-foreground uppercase opacity-50">
+                DEL
+              </span>
+            ) : comment.user?.image ? (
               <img
                 src={comment.user.image}
                 alt={comment.user.name}
@@ -84,14 +89,16 @@ export const CommentItem = memo(
                 <span className="text-xs text-muted-foreground">
                   回复{" "}
                   <span className="text-primary font-medium">
-                    @{replyToName}
+                    @{comment.status === "deleted" ? "已删除用户" : replyToName}
                   </span>
                 </span>
               )}
               <span className="text-sm font-medium text-foreground">
-                {comment.user?.name || "匿名用户"}
+                {comment.status === "deleted"
+                  ? "已删除"
+                  : comment.user?.name || "匿名用户"}
               </span>
-              {isBlogger && (
+              {isBlogger && comment.status !== "deleted" && (
                 <Badge
                   variant="outline"
                   className="text-[9px] h-4 px-1.5 font-mono uppercase tracking-widest border-primary/30 text-primary bg-primary/5 rounded-sm"

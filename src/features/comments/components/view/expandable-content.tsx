@@ -4,7 +4,7 @@ import type { JSONContent } from "@tiptap/react";
 import { cn } from "@/lib/utils";
 
 interface ExpandableContentProps {
-  content: JSONContent;
+  content: JSONContent | null;
   className?: string;
   maxLines?: number; // Default 3
 }
@@ -43,7 +43,7 @@ export function ExpandableContent({
           WebkitLineClamp: expanded ? "unset" : maxLines,
         }}
       >
-        {renderCommentReact(content)}
+        {renderCommentReact(content )}
       </div>
 
       {showButton && (

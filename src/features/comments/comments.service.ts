@@ -20,11 +20,11 @@ export async function getRootCommentsByPostId(
       offset: data.offset,
       limit: data.limit,
       viewerId: data.viewerId,
-      status: data.viewerId ? undefined : "published",
+      status: data.viewerId ? undefined : ["published", "deleted"],
     }),
     CommentRepo.getRootCommentsByPostIdCount(context.db, data.postId, {
       viewerId: data.viewerId,
-      status: data.viewerId ? undefined : "published",
+      status: data.viewerId ? undefined : ["published", "deleted"],
     }),
   ]);
 
@@ -37,7 +37,7 @@ export async function getRootCommentsByPostId(
         item.id,
         {
           viewerId: data.viewerId,
-          status: data.viewerId ? undefined : "published",
+          status: data.viewerId ? undefined : ["published", "deleted"],
         },
       );
       return { ...item, replyCount };
@@ -58,11 +58,11 @@ export async function getRepliesByRootId(
       offset: data.offset,
       limit: data.limit,
       viewerId: data.viewerId,
-      status: data.viewerId ? undefined : "published",
+      status: data.viewerId ? undefined : ["published", "deleted"],
     }),
     CommentRepo.getRepliesByRootIdCount(context.db, data.postId, data.rootId, {
       viewerId: data.viewerId,
-      status: data.viewerId ? undefined : "published",
+      status: data.viewerId ? undefined : ["published", "deleted"],
     }),
   ]);
 

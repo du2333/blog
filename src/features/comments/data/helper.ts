@@ -39,7 +39,7 @@ export function buildCommentWhereClause(options: {
   if (viewerId && !status && !userId) {
     whereClauses.push(
       or(
-        eq(CommentsTable.status, "published"),
+        inArray(CommentsTable.status, ["published", "deleted"]),
         and(
           eq(CommentsTable.userId, viewerId),
           inArray(CommentsTable.status, ["pending", "verifying"]),
