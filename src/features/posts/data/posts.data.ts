@@ -1,4 +1,4 @@
-import { and, count, desc, eq, like, lt, ne } from "drizzle-orm";
+import { and, count, desc, eq, inArray, like, lt, ne, or } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
 import type { DB } from "@/lib/db";
 import type { PostListItem, PostStatus } from "@/lib/db/schema";
@@ -98,14 +98,34 @@ export async function getPostsCursor(
   if (baseConditions) {
     conditions.push(baseConditions);
   }
+
   if (cursor) {
-    conditions.push(lt(PostsTable.id, cursor));
+    const reference = await db.query.PostsTable.findFirst({
+      where: eq(PostsTable.id, cursor),
+      columns: { publishedAt: true, id: true },
+    });
+
+    if (reference?.publishedAt) {
+      conditions.push(
+        or(
+          lt(PostsTable.publishedAt, reference.publishedAt),
+          and(
+            eq(PostsTable.publishedAt, reference.publishedAt),
+            lt(PostsTable.id, reference.id),
+          ),
+        ),
+      );
+    } else if (reference) {
+      // Fallback if somehow publishedAt is null (shouldn't happen for published posts)
+      conditions.push(lt(PostsTable.id, cursor));
+    }
   }
+
   if (tagName) {
     conditions.push(eq(TagsTable.name, tagName));
   }
 
-  const query = db
+  let query = db
     .select({
       id: PostsTable.id,
       title: PostsTable.title,
@@ -117,23 +137,51 @@ export async function getPostsCursor(
       createdAt: PostsTable.createdAt,
       updatedAt: PostsTable.updatedAt,
     })
-    .from(PostsTable);
+    .from(PostsTable)
+    .$dynamic();
 
   if (tagName) {
-    query
+    query = query
       .innerJoin(PostTagsTable, eq(PostsTable.id, PostTagsTable.postId))
       .innerJoin(TagsTable, eq(PostTagsTable.tagId, TagsTable.id));
   }
 
-  const items = await query
+  const itemsWithPotentialNext = await query
     .where(conditions.length > 0 ? and(...conditions) : undefined)
-    .orderBy(desc(PostsTable.id))
+    .orderBy(desc(PostsTable.publishedAt), desc(PostsTable.id))
     .limit(limit + 1);
 
   // Check if there's a next page
-  const hasMore = items.length > limit;
-  if (hasMore) {
-    items.pop();
+  const hasMore = itemsWithPotentialNext.length > limit;
+  const items = itemsWithPotentialNext.slice(0, limit) as Array<PostListItem>;
+
+  // Fetch tags for all items
+  if (items.length > 0) {
+    const postIds = items.map((p) => p.id);
+    const tagsResults = await db
+      .select({
+        postId: PostTagsTable.postId,
+        tag: {
+          id: TagsTable.id,
+          name: TagsTable.name,
+          createdAt: TagsTable.createdAt,
+        },
+      })
+      .from(PostTagsTable)
+      .innerJoin(TagsTable, eq(PostTagsTable.tagId, TagsTable.id))
+      .where(inArray(PostTagsTable.postId, postIds));
+
+    // Map tags back to items
+    const tagsByPostId = new Map<number, Array<any>>();
+    for (const result of tagsResults) {
+      const existing = tagsByPostId.get(result.postId) ?? [];
+      existing.push(result.tag);
+      tagsByPostId.set(result.postId, existing);
+    }
+
+    items.forEach((item) => {
+      item.tags = tagsByPostId.get(item.id) ?? [];
+    });
   }
 
   const nextCursor = hasMore ? (items[items.length - 1]?.id ?? null) : null;
@@ -142,7 +190,16 @@ export async function getPostsCursor(
 }
 
 export async function findPostById(db: DB, id: number) {
-  return await db.query.PostsTable.findFirst({ where: eq(PostsTable.id, id) });
+  return await db.query.PostsTable.findFirst({
+    where: eq(PostsTable.id, id),
+    with: {
+      postTags: {
+        with: {
+          tag: true,
+        },
+      },
+    },
+  });
 }
 
 export async function findPostBySlug(
@@ -153,9 +210,23 @@ export async function findPostBySlug(
   const { publicOnly = false } = options;
 
   const whereClause = buildPostWhereClause({ publicOnly });
-  return await db.query.PostsTable.findFirst({
+  const post = await db.query.PostsTable.findFirst({
     where: and(eq(PostsTable.slug, slug), whereClause),
+    with: {
+      postTags: {
+        with: {
+          tag: true,
+        },
+      },
+    },
   });
+
+  if (!post) return null;
+
+  // Flatten tags
+  const tags = post.postTags.map((pt: any) => pt.tag);
+  const { postTags, ...rest } = post;
+  return { ...rest, tags };
 }
 
 export async function updatePost(

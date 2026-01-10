@@ -335,10 +335,9 @@ export async function getAllCommentsCount(
     ? and(conditions, like(user.name, `%${userName}%`))
     : conditions;
 
-  let query = db.select({ count: count() }).from(CommentsTable);
+  let query = db.select({ count: count() }).from(CommentsTable).$dynamic();
 
   if (userName) {
-    // @ts-ignore - dynamic join
     query = query.leftJoin(user, eq(CommentsTable.userId, user.id));
   }
 

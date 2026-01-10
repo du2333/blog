@@ -98,6 +98,23 @@ function RouteComponent() {
                 <Clock size={12} strokeWidth={1.5} />
                 {post.readTimeInMinutes} min
               </span>
+
+              {/* Tags */}
+              {post.tags && post.tags.length > 0 && (
+                <div className="flex items-center gap-3">
+                  <span className="text-border/40 font-mono">|</span>
+                  <div className="flex items-center gap-3">
+                    {post.tags.map((tag) => (
+                      <span
+                        key={tag.id}
+                        className="text-muted-foreground hover:text-foreground transition-colors cursor-default"
+                      >
+                        # {tag.name}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight text-foreground">

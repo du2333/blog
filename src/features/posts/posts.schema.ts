@@ -6,6 +6,7 @@ import {
 } from "drizzle-zod";
 import type { PostStatus } from "@/lib/db/schema";
 import { POST_STATUSES, PostsTable } from "@/lib/db/schema";
+import { TagSelectSchema } from "@/features/tags/tags.schema";
 
 // Date fields need to accept both Date objects and ISO strings (for JSON serialization)
 const coercedDate = z.union([z.date(), z.string().pipe(z.coerce.date())]);
@@ -19,12 +20,17 @@ export const PostSelectSchema = createSelectSchema(PostsTable, {
 export const PostInsertSchema = createInsertSchema(PostsTable);
 export const PostUpdateSchema = createUpdateSchema(PostsTable);
 
-export const PostItemSchema = PostSelectSchema.omit({ contentJson: true });
+export const PostItemSchema = PostSelectSchema.omit({
+  contentJson: true,
+}).extend({
+  tags: z.array(TagSelectSchema).optional(),
+});
 export const PostListResponseSchema = z.object({
   items: z.array(PostItemSchema),
   nextCursor: z.number().nullable(),
 });
 export const PostWithTocSchema = PostSelectSchema.extend({
+  tags: z.array(TagSelectSchema).optional(),
   toc: z.array(
     z.object({
       id: z.string(),

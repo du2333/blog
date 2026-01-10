@@ -27,6 +27,20 @@ export const PostItem = memo(({ post, index }: PostItemProps) => (
       <p className="text-sm md:text-base text-muted-foreground max-w-2xl font-normal leading-relaxed line-clamp-2">
         {post.summary}
       </p>
+
+      {/* Tags */}
+      {post.tags && post.tags.length > 0 && (
+        <div className="flex flex-wrap gap-2 pt-2">
+          {post.tags.map((tag) => (
+            <span
+              key={tag.id}
+              className="px-2 py-0.5 bg-accent/50 text-[10px] uppercase tracking-widest text-muted-foreground rounded-sm border border-border/30"
+            >
+              # {tag.name}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
 
     {/* Meta Info */}

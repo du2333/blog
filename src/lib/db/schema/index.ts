@@ -5,7 +5,7 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { sql } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
@@ -115,6 +115,25 @@ export const SystemConfigTable = sqliteTable("system_config", {
     .$onUpdate(() => new Date()),
 });
 
+export const postsRelations = relations(PostsTable, ({ many }) => ({
+  postTags: many(PostTagsTable),
+}));
+
+export const tagsRelations = relations(TagsTable, ({ many }) => ({
+  postTags: many(PostTagsTable),
+}));
+
+export const postTagsRelations = relations(PostTagsTable, ({ one }) => ({
+  post: one(PostsTable, {
+    fields: [PostTagsTable.postId],
+    references: [PostsTable.id],
+  }),
+  tag: one(TagsTable, {
+    fields: [PostTagsTable.tagId],
+    references: [TagsTable.id],
+  }),
+}));
+
 export const CommentsTable = sqliteTable(
   "comments",
   {
@@ -162,10 +181,12 @@ export const CommentsTable = sqliteTable(
   ],
 );
 
-export type Post = typeof PostsTable.$inferSelect;
-export type PostListItem = Omit<Post, "contentJson">;
-export type Comment = typeof CommentsTable.$inferSelect;
 export type Tag = typeof TagsTable.$inferSelect;
+export type Post = typeof PostsTable.$inferSelect;
+export type PostListItem = Omit<Post, "contentJson"> & {
+  tags?: Array<Tag>;
+};
+export type Comment = typeof CommentsTable.$inferSelect;
 
 export type PostStatus = (typeof POST_STATUSES)[number];
 export type CommentStatus = (typeof COMMENT_STATUSES)[number];
