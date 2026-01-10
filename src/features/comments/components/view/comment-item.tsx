@@ -1,11 +1,11 @@
 import { memo, useMemo } from "react";
 import { MessageSquare, Trash2 } from "lucide-react";
 import { ExpandableContent } from "./expandable-content";
+import type { JSONContent } from "@tiptap/react";
 import { authClient } from "@/lib/auth/auth.client";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import type { JSONContent } from "@tiptap/react";
 
 interface CommentItemProps {
   comment: {

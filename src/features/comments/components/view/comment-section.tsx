@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
@@ -6,6 +6,7 @@ import { rootCommentsByPostIdQuery } from "../../comments.query";
 import { useComments } from "../../hooks/use-comments";
 import { CommentList } from "./comment-list";
 import { CommentEditor } from "./comment-editor";
+import { CommentSectionSkeleton } from "./comment-section-skeleton";
 import { authClient } from "@/lib/auth/auth.client";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
@@ -16,9 +17,10 @@ interface CommentSectionProps {
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data: session } = authClient.useSession();
-  const { data: response } = useSuspenseQuery(
+  const { data: response, isLoading } = useQuery(
     rootCommentsByPostIdQuery(postId, session?.user.id),
   );
+
   const { createComment, deleteComment, isCreating, isDeleting } =
     useComments(postId);
 
@@ -58,6 +60,10 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       setCommentToDelete(null);
     }
   };
+
+  if (isLoading || !response) {
+    return <CommentSectionSkeleton />;
+  }
 
   return (
     <section className="space-y-12 mt-32 pt-16 border-t border-border/50 animate-in fade-in duration-700">

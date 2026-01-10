@@ -43,7 +43,7 @@ export function ExpandableContent({
           WebkitLineClamp: expanded ? "unset" : maxLines,
         }}
       >
-        {renderCommentReact(content )}
+        {renderCommentReact(content)}
       </div>
 
       {showButton && (
