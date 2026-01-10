@@ -162,7 +162,7 @@ export function PostManager({
 
         {/* List Content */}
         {error ? (
-          <ErrorPage error={error} />
+          <ErrorPage />
         ) : isPending ? (
           <PostManagerSkeleton />
         ) : (

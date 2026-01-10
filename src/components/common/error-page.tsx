@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-export function ErrorPage({ error }: { error: Error }) {
+export function ErrorPage({ error }: { error?: Error }) {
   const router = useRouter();
   const onReset = () => {
     router.invalidate();
@@ -22,14 +22,6 @@ export function ErrorPage({ error }: { error: Error }) {
               执行过程中遇到了意外情况，您可以尝试刷新或重试。
             </p>
           </div>
-        </div>
-
-        {/* Error Details */}
-        <div className="w-full bg-muted/50 border border-border p-4 md:p-6 text-left relative group overflow-hidden rounded-sm">
-          <pre className="font-mono text-[10px] md:text-xs text-muted-foreground whitespace-pre-wrap break-all custom-scrollbar max-h-[30vh] overflow-y-auto leading-relaxed">
-            {error.toString()}
-            {error.stack && `\n\n${error.stack}`}
-          </pre>
         </div>
 
         <button

@@ -32,7 +32,7 @@ function EditPost() {
   const { data: post, error } = useSuspenseQuery(postByIdQuery(postId));
 
   if (error) {
-    return <ErrorPage error={error} />;
+    return <ErrorPage />;
   }
 
   if (!post) {
