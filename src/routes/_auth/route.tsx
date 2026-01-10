@@ -8,6 +8,7 @@ import {
 import { ArrowLeft } from "lucide-react";
 import { emailConfiguredQuery, sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
+import { blogConfig } from "@/blog.config";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
@@ -59,10 +60,12 @@ function RouteComponent() {
           {/* Shared Logo */}
           <div className="flex justify-center">
             <Link to="/" className="group">
-              <div className="w-12 h-12">
-                <div className="w-full h-full border-[1.5px] border-current rounded-full flex items-center justify-center p-[20%]">
-                  <div className="w-full h-full bg-current rounded-full"></div>
-                </div>
+              <div className="w-12 h-12 relative">
+                <img
+                  src={blogConfig.logo}
+                  alt={blogConfig.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
             </Link>
           </div>

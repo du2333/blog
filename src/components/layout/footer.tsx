@@ -7,9 +7,12 @@ export function Footer() {
         <div className="flex flex-col md:flex-row justify-between items-start gap-12 md:gap-8">
           <div className="space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-10 h-10 text-foreground relative">
-                <div className="absolute inset-0 border-2 border-current rounded-full"></div>
-                <div className="absolute inset-[30%] bg-current rounded-full"></div>
+              <div className="w-10 h-10 relative">
+                <img
+                  src={blogConfig.logo}
+                  alt={blogConfig.name}
+                  className="w-full h-full object-contain"
+                />
               </div>
               <span className="text-[12px] font-bold uppercase tracking-[0.6em] text-foreground">
                 {blogConfig.name}
@@ -74,7 +77,7 @@ export function Footer() {
 
         <div className="mt-20 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
-            © {new Date().getFullYear()} {blogConfig.author}. 版权所有
+            © {new Date().getFullYear()} {blogConfig.name}. 版权所有
           </div>
         </div>
       </div>

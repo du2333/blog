@@ -1,7 +1,7 @@
 export const blogConfig = {
   name: "CHRONICLE",
   description: "这是一个记录技术、思考与数字生活的博客。",
-  author: "Chronicle Archive",
+  logo: "/favicon.svg",
   hero: {
     title: "数字",
     titleHighlight: "生活",

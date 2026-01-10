@@ -12,10 +12,10 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Logo } from "@/components/common/logo";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
+import { blogConfig } from "@/blog.config";
 
 export function SideBar({
   isMobileSidebarOpen,
@@ -117,7 +117,11 @@ export function SideBar({
         <div className="h-24 flex items-center justify-between px-6 shrink-0 border-b border-border/50">
           <Link to="/admin" className="flex items-center gap-3">
             <div className="w-9 h-9 relative">
-              <Logo className="w-full h-full" />
+              <img
+                src={blogConfig.logo}
+                alt={blogConfig.name}
+                className="w-full h-full object-contain"
+              />
             </div>
             <span className="font-serif text-xl tracking-tight md:hidden lg:block">
               控制台

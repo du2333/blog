@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { blogConfig } from "@/blog.config";
 
 interface NavbarProps {
   navOptions: Array<{
@@ -53,12 +54,15 @@ export function Navbar({
         <div className="max-w-7xl mx-auto w-full px-6 md:px-12 flex items-center justify-between">
           {/* Left: Brand */}
           <Link to="/" className="group select-none flex items-center gap-4">
-            <div className="w-9 h-9 text-foreground relative">
-              <div className="absolute inset-0 border-2 border-current rounded-full group-hover:scale-110 transition-transform duration-700"></div>
-              <div className="absolute inset-[30%] bg-current rounded-full group-hover:scale-75 transition-transform duration-700"></div>
+            <div className="w-9 h-9 relative">
+              <img
+                src={blogConfig.logo}
+                alt={blogConfig.name}
+                className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
+              />
             </div>
             <span className="hidden md:block text-[11px] font-bold uppercase tracking-[0.6em] text-foreground">
-              Chronicle
+              {blogConfig.name}
             </span>
           </Link>
 
