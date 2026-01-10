@@ -52,7 +52,11 @@ function CommentAdminPage() {
 
   const handleStatusChange = (newStatus: string) => {
     navigate({
-      search: (prev) => ({ ...prev, status: newStatus as any, page: 1 }),
+      search: (prev) => ({
+        ...prev,
+        status: newStatus as CommentStatus | "ALL",
+        page: 1,
+      }),
     });
   };
 

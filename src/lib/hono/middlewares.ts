@@ -53,7 +53,7 @@ export const cacheMiddleware = createMiddleware(async (c, next) => {
   }
 
   // 缓存响应逻辑
-  const cache = (caches as any).default as Cache;
+  const cache = (caches as unknown as { default: Cache }).default;
 
   const cachedResponse = await cache.match(c.req.raw);
   if (cachedResponse) return cachedResponse;

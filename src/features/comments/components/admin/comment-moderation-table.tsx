@@ -236,19 +236,19 @@ export const CommentModerationTable = ({
               />
 
               <div className="flex flex-wrap gap-2 text-[10px] items-center text-muted-foreground/70 bg-muted/30 p-2 rounded-sm">
-                {(comment as any).post && (
+                {comment.post && (
                   <Link
                     to="/post/$slug"
-                    params={{ slug: (comment as any).post.slug || "" }}
+                    params={{ slug: comment.post.slug || "" }}
                     className="font-mono hover:text-primary transition-colors truncate max-w-[200px] flex items-center gap-1"
-                    title={(comment as any).post.title}
+                    title={comment.post.title}
                   >
-                    📄 {(comment as any).post.title}
+                    📄 {comment.post.title}
                   </Link>
                 )}
-                {(comment as any).replyToUser && (
+                {comment.replyToUser && (
                   <span className="font-mono flex items-center gap-1">
-                    ↪️ @{(comment as any).replyToUser.name}
+                    ↪️ @{comment.replyToUser.name}
                   </span>
                 )}
               </div>
@@ -347,23 +347,23 @@ export const CommentModerationTable = ({
 
                 {/* Context Info */}
                 <div className="flex flex-wrap gap-2 text-[10px] items-center text-muted-foreground pt-1">
-                  {(comment as any).post && (
+                  {comment.post && (
                     <Link
                       to="/post/$slug"
-                      params={{ slug: (comment as any).post.slug || "" }}
+                      params={{ slug: comment.post.slug || "" }}
                       className="group/link flex items-center gap-1.5 hover:text-foreground transition-colors max-w-[150px]"
-                      title={(comment as any).post.title}
+                      title={comment.post.title}
                     >
                       <span className="opacity-50">📄</span>
                       <span className="truncate group-hover/link:underline decoration-muted-foreground/30 underline-offset-4">
-                        {(comment as any).post.title}
+                        {comment.post.title}
                       </span>
                     </Link>
                   )}
-                  {(comment as any).replyToUser && (
+                  {comment.replyToUser && (
                     <span className="flex items-center gap-1.5 opacity-70">
                       <span className="opacity-50">↪️</span>
-                      <span>@{(comment as any).replyToUser.name}</span>
+                      <span>@{comment.replyToUser.name}</span>
                     </span>
                   )}
                 </div>

@@ -7,6 +7,7 @@ import { useComments } from "../../hooks/use-comments";
 import { CommentList } from "./comment-list";
 import { CommentEditor } from "./comment-editor";
 import { CommentSectionSkeleton } from "./comment-section-skeleton";
+import type { JSONContent } from "@tiptap/react";
 import { authClient } from "@/lib/auth/auth.client";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
@@ -36,7 +37,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
   const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
 
-  const handleCreateComment = async (content: any) => {
+  const handleCreateComment = async (content: JSONContent) => {
     await createComment({
       data: {
         postId,
@@ -45,7 +46,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     });
   };
 
-  const handleCreateReply = async (content: any) => {
+  const handleCreateReply = async (content: JSONContent) => {
     if (!replyTarget) return;
     await createComment({
       data: {

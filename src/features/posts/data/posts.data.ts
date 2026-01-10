@@ -1,7 +1,7 @@
 import { and, count, desc, eq, inArray, like, lt, ne, or } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
 import type { DB } from "@/lib/db";
-import type { PostListItem, PostStatus } from "@/lib/db/schema";
+import type { PostListItem, PostStatus, Tag } from "@/lib/db/schema";
 import {
   buildPostOrderByClause,
   buildPostWhereClause,
@@ -172,7 +172,7 @@ export async function getPostsCursor(
       .where(inArray(PostTagsTable.postId, postIds));
 
     // Map tags back to items
-    const tagsByPostId = new Map<number, Array<any>>();
+    const tagsByPostId = new Map<number, Array<Tag>>();
     for (const result of tagsResults) {
       const existing = tagsByPostId.get(result.postId) ?? [];
       existing.push(result.tag);
@@ -231,7 +231,7 @@ export async function findPostBySlug(
   if (!post) return null;
 
   // Flatten tags
-  const tags = post.postTags.map((pt: any) => pt.tag);
+  const tags = post.postTags.map((pt) => pt.tag);
   const { postTags, ...rest } = post;
   return { ...rest, tags };
 }

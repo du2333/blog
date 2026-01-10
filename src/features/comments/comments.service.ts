@@ -250,7 +250,10 @@ export async function startCommentModerationWorkflow(
   });
 }
 
-export async function findCommentById(context: Context, commentId: number) {
+export async function findCommentById(
+  context: { db: Context["db"] },
+  commentId: number,
+) {
   return await CommentRepo.findCommentById(context.db, commentId);
 }
 

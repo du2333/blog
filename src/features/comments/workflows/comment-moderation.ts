@@ -18,15 +18,7 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
     // Step 1: Fetch the comment
     const comment = await step.do("fetch comment", async () => {
       const db = getDb(this.env);
-      return await CommentService.findCommentById(
-        {
-          db,
-          env: this.env,
-          executionCtx: {} as ExecutionContext,
-          auth: {} as any,
-        },
-        commentId,
-      );
+      return await CommentService.findCommentById({ db }, commentId);
     });
 
     if (!comment) {

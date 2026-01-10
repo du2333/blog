@@ -61,7 +61,7 @@ export function TagManager() {
       setTagToEdit(null);
       toast.success("标签已重命名");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error("更新失败: " + (err.message || "未知错误"));
     },
   });
@@ -73,7 +73,7 @@ export function TagManager() {
       setTagToDelete(null);
       toast.success("标签已删除");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error("删除失败: " + (err.message || "未知错误"));
     },
   });
@@ -86,7 +86,7 @@ export function TagManager() {
       setIsCreating(false);
       toast.success("标签已创建");
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       toast.error("创建失败: " + (err.message || "未知错误"));
     },
   });

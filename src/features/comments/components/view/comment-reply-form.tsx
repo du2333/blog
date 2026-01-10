@@ -1,9 +1,10 @@
 import clsx from "clsx";
 import { CommentEditor } from "./comment-editor";
+import type { JSONContent } from "@tiptap/react";
 
 interface CommentReplyFormProps {
   parentUserName: string;
-  onSubmit: (content: any) => Promise<void>;
+  onSubmit: (content: JSONContent) => Promise<void>;
   isSubmitting: boolean;
   onCancel: () => void;
   className?: string;

@@ -5,28 +5,13 @@ import { Link } from "@tanstack/react-router";
 import { repliesByRootIdInfiniteQuery } from "../../comments.query";
 import { CommentItem } from "./comment-item";
 import { CommentReplyForm } from "./comment-reply-form";
+import type { RootCommentWithReplyCount } from "../../comments.schema";
+import type { JSONContent } from "@tiptap/react";
 import { authClient } from "@/lib/auth/auth.client";
 import { Button } from "@/components/ui/button";
 
-interface RootCommentWithUser {
-  id: number;
-  content: any;
-  rootId: number | null;
-  replyToCommentId: number | null;
-  postId: number;
-  userId: string;
-  status: string;
-  aiReason: string | null;
-  createdAt: Date;
-  updatedAt: Date;
-  user: {
-    id: string;
-    name: string;
-    image: string | null;
-    role: string | null;
-  } | null;
-  replyCount: number;
-}
+// Alias for local use
+type RootCommentWithUser = RootCommentWithReplyCount;
 
 interface CommentListProps {
   rootComments: Array<RootCommentWithUser>;
@@ -35,7 +20,7 @@ interface CommentListProps {
   onDelete?: (commentId: number) => void;
   replyTarget?: { rootId: number; commentId: number; userName: string } | null;
   onCancelReply?: () => void;
-  onSubmitReply?: (content: any) => Promise<void>;
+  onSubmitReply?: (content: JSONContent) => Promise<void>;
   isSubmittingReply?: boolean;
 }
 
@@ -105,9 +90,9 @@ interface RootCommentWithRepliesProps {
   onDelete?: (commentId: number) => void;
   replyTarget?: { rootId: number; commentId: number; userName: string } | null;
   onCancelReply?: () => void;
-  onSubmitReply?: (content: any) => Promise<void>;
+  onSubmitReply?: (content: JSONContent) => Promise<void>;
   isSubmittingReply?: boolean;
-  session: any;
+  session: AuthContext["session"] | null;
 }
 
 function RootCommentWithReplies({
