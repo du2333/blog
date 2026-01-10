@@ -87,9 +87,9 @@ export const CommentModerationActions = ({
           {status !== "pending" && (
             <button
               onClick={() => handleStatusChange("pending")}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
+              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-info/10 hover:text-info transition-colors"
             >
-              <RotateCcw className="h-3.5 w-3.5 text-blue-500" />
+              <RotateCcw className="h-3.5 w-3.5" />
               <span>重置 (待审)</span>
             </button>
           )}
@@ -97,9 +97,9 @@ export const CommentModerationActions = ({
           {status !== "deleted" && (
             <button
               onClick={() => handleStatusChange("deleted")}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
+              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-warning/10 text-warning transition-colors"
             >
-              <Trash2 className="h-3.5 w-3.5 text-orange-500" />
+              <Trash2 className="h-3.5 w-3.5" />
               <span>拒绝 (垃圾箱)</span>
             </button>
           )}
@@ -111,7 +111,7 @@ export const CommentModerationActions = ({
               setIsOpen(false);
               setShowDeleteConfirm(true);
             }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-destructive/10 text-destructive transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left bg-destructive/5 hover:bg-destructive text-destructive hover:text-destructive-foreground transition-all duration-200"
           >
             <ShieldAlert className="h-3.5 w-3.5" />
             <span>永久销毁</span>

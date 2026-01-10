@@ -35,6 +35,15 @@
 
     --ring: #09090b;
 
+    --destructive: #ef4444;
+    --destructive-foreground: #fafafa;
+
+    --warning: #f59e0b;
+    --warning-foreground: #ffffff;
+
+    --info: #3b82f6;
+    --info-foreground: #ffffff;
+
     --selection: #09090b;
     --selection-foreground: #ffffff;
   }
@@ -62,6 +71,15 @@
     --accent-foreground: #fafafa;
 
     --ring: #d4d4d8;
+
+    --destructive: #7f1d1d;
+    --destructive-foreground: #fafafa;
+
+    --warning: #78350f;
+    --warning-foreground: #ffffff;
+
+    --info: #1e3a8a;
+    --info-foreground: #ffffff;
 
     --selection: #ffffff;
     --selection-foreground: #000000;
@@ -96,6 +114,15 @@ mark {
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-ring: var(--ring);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
 }
 
 @layer base {

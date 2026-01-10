@@ -423,16 +423,16 @@ export const CommentModerationTable = ({
 const StatusBadge = ({ status }: { status: string }) => {
   const variants: Record<string, string> = {
     published: "border-green-500/20 text-green-500 bg-green-500/5",
-    pending: "border-orange-500/20 text-orange-500 bg-orange-500/5",
-    verifying: "border-blue-500/20 text-blue-500 bg-blue-500/5",
-    deleted: "border-destructive/20 text-destructive bg-destructive/5",
+    pending: "border-warning/20 text-warning bg-warning/5",
+    verifying: "border-info/20 text-info bg-info/5",
+    deleted: "border-destructive text-destructive bg-destructive/10",
   };
 
   const labels: Record<string, string> = {
     published: "已发布",
     pending: "待审核",
     verifying: "审核中",
-    deleted: "已拒绝",
+    deleted: "已删除",
   };
 
   return (
