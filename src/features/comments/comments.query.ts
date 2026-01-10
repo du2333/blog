@@ -64,6 +64,7 @@ export function allCommentsQuery(
     status?: CommentStatus;
     postId?: number;
     userId?: string;
+    userName?: string;
   } = {},
 ) {
   return queryOptions({

@@ -1,6 +1,7 @@
 import {
   DeleteCommentInputSchema,
   GetAllCommentsInputSchema,
+  GetUserStatsInputSchema,
   ModerateCommentInputSchema,
 } from "@/features/comments/comments.schema";
 import * as CommentService from "@/features/comments/comments.service";
@@ -29,4 +30,11 @@ export const adminDeleteCommentFn = createAdminFn({
   .inputValidator(DeleteCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.adminDeleteComment(context, data);
+  });
+
+// Admin API - Get user stats for hover card
+export const getUserStatsFn = createAdminFn()
+  .inputValidator(GetUserStatsInputSchema)
+  .handler(async ({ data, context }) => {
+    return await CommentService.getUserCommentStats(context, data.userId);
   });

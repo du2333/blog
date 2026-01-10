@@ -1,6 +1,6 @@
 import { memo, useMemo } from "react";
 import { MessageSquare, Trash2 } from "lucide-react";
-import { renderCommentReact } from "./comment-render";
+import { ExpandableContent } from "./expandable-content";
 import { authClient } from "@/lib/auth/auth.client";
 import { formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -47,9 +47,11 @@ export const CommentItem = memo(
         );
       }
       return (
-        <div className="prose prose-sm prose-zinc prose-invert max-w-none py-2">
-          {comment.content && renderCommentReact(comment.content)}
-        </div>
+        <ExpandableContent
+          content={comment.content}
+          className="py-2"
+          maxLines={6}
+        />
       );
     }, [comment.content, comment.status]);
 

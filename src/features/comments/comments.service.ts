@@ -191,11 +191,13 @@ export async function getAllComments(
       status: data.status,
       postId: data.postId,
       userId: data.userId,
+      userName: data.userName,
     }),
     CommentRepo.getAllCommentsCount(context.db, {
       status: data.status,
       postId: data.postId,
       userId: data.userId,
+      userName: data.userName,
     }),
   ]);
 
@@ -262,4 +264,8 @@ export async function updateCommentStatus(
     status,
     aiReason,
   });
+}
+
+export async function getUserCommentStats(context: Context, userId: string) {
+  return await CommentRepo.getUserCommentStats(context.db, userId);
 }

@@ -28,6 +28,30 @@ export const CommentUserSchema = z.object({
 
 export const CommentWithUserSchema = CommentSelectSchema.extend({
   user: CommentUserSchema.nullable(),
+  post: z
+    .object({
+      title: z.string().optional().nullable(),
+      slug: z.string().optional().nullable(),
+    })
+    .nullable()
+    .optional(),
+  replyToUser: z
+    .object({
+      id: z.string().optional().nullable(),
+      name: z.string().optional().nullable(),
+    })
+    .nullable()
+    .optional(),
+});
+
+export const UserStatsSchema = z.object({
+  totalComments: z.number(),
+  rejectedComments: z.number(),
+  registeredAt: z.date(),
+});
+
+export const GetUserStatsInputSchema = z.object({
+  userId: z.string(),
 });
 
 // Public API Schemas
@@ -102,6 +126,7 @@ export const GetAllCommentsInputSchema = z.object({
   status: z.custom<CommentStatus>().optional(),
   postId: z.number().optional(),
   userId: z.string().optional(),
+  userName: z.string().optional(),
 });
 
 export const ModerateCommentInputSchema = z.object({
