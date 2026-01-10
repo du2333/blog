@@ -1,4 +1,4 @@
-import { and, asc, desc, eq, ne } from "drizzle-orm";
+import { and, asc, count, desc, eq, ne, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
 import { PostTagsTable, TagsTable } from "@/lib/db/schema";
@@ -20,6 +20,42 @@ export async function getAllTags(
     sortBy === "createdAt" ? TagsTable.createdAt : TagsTable.name;
 
   return await db.select().from(TagsTable).orderBy(orderFn(orderColumn));
+}
+
+/**
+ * Get all tags with their post counts
+ */
+export async function getAllTagsWithCount(
+  db: DB,
+  options: {
+    sortBy?: "name" | "createdAt" | "postCount";
+    sortDir?: "asc" | "desc";
+  } = {},
+) {
+  const { sortBy = "name", sortDir = "asc" } = options;
+
+  const query = db
+    .select({
+      id: TagsTable.id,
+      name: TagsTable.name,
+      createdAt: TagsTable.createdAt,
+      postCount: count(PostTagsTable.postId).as("postCount"),
+    })
+    .from(TagsTable)
+    .leftJoin(PostTagsTable, eq(TagsTable.id, PostTagsTable.tagId))
+    .groupBy(TagsTable.id);
+
+  const orderFn = sortDir === "asc" ? asc : desc;
+
+  if (sortBy === "postCount") {
+    query.orderBy(orderFn(sql`postCount`));
+  } else if (sortBy === "createdAt") {
+    query.orderBy(orderFn(TagsTable.createdAt));
+  } else {
+    query.orderBy(orderFn(TagsTable.name));
+  }
+
+  return await query;
 }
 
 /**

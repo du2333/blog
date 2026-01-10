@@ -7,6 +7,7 @@ import {
   LogOut,
   MessageSquare,
   Settings,
+  Tag,
   User,
   X,
 } from "lucide-react";
@@ -78,6 +79,12 @@ export function SideBar({
       path: "/admin/media" as const,
       icon: ImageIcon,
       label: "媒体",
+      exact: false,
+    },
+    {
+      path: "/admin/tags" as const,
+      icon: Tag,
+      label: "标签",
       exact: false,
     },
     {

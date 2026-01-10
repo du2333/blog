@@ -64,3 +64,9 @@ export const setPostTagsFn = createAdminFn({
 export const getTagsByPostIdFn = createAdminFn()
   .inputValidator(GetTagsByPostIdInputSchema)
   .handler(({ data, context }) => TagService.getTagsByPostId(context, data));
+
+export const getTagsWithCountAdminFn = createAdminFn()
+  .inputValidator(GetTagsInputSchema)
+  .handler(async ({ data, context }) => {
+    return await TagService.getTagsWithCount(context, data);
+  });

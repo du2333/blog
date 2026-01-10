@@ -20,7 +20,7 @@ export async function getTags(
 ) {
   const fetcher = async () =>
     await TagRepo.getAllTags(context.db, {
-      sortBy: data.sortBy,
+      sortBy: data.sortBy === "postCount" ? "name" : data.sortBy,
       sortDir: data.sortDir,
     });
 
@@ -41,6 +41,17 @@ export async function getTags(
     fetcher,
     { ttl: 60 * 60 * 24 }, // 24 hours
   );
+}
+
+/**
+ * Get all tags with counts
+ */
+export async function getTagsWithCount(
+  context: Context,
+  data: GetTagsInput = {},
+) {
+  // We don't cache this for now as it's for admin management
+  return await TagRepo.getAllTagsWithCount(context.db, data);
 }
 
 /**
@@ -127,8 +138,11 @@ export async function deleteTag(context: Context, data: DeleteTagInput) {
 export async function setPostTags(context: Context, data: SetPostTagsInput) {
   await TagRepo.setPostTags(context.db, data.postId, data.tagIds);
 
-  // Invalidate tag list cache
+  // Invalidate tag list caches
   context.executionCtx.waitUntil(
-    CacheService.deleteKey(context, ["tags", "list"]),
+    Promise.all([
+      CacheService.deleteKey(context, ["tags", "list"]),
+      // We might need a broader invalidation depending on how specific counts are
+    ]),
   );
 }

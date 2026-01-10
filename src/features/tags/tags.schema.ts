@@ -15,6 +15,10 @@ export const TagSelectSchema = createSelectSchema(TagsTable, {
 export const TagInsertSchema = createInsertSchema(TagsTable);
 export const TagUpdateSchema = createUpdateSchema(TagsTable);
 
+export const TagWithCountSchema = TagSelectSchema.extend({
+  postCount: z.number(),
+});
+
 // API Input Schemas
 export const CreateTagInputSchema = z.object({
   name: z.string().min(1).max(50),
@@ -32,7 +36,7 @@ export const DeleteTagInputSchema = z.object({
 });
 
 export const GetTagsInputSchema = z.object({
-  sortBy: z.enum(["name", "createdAt"]).optional(),
+  sortBy: z.enum(["name", "createdAt", "postCount"]).optional(),
   sortDir: z.enum(["asc", "desc"]).optional(),
 });
 
@@ -53,3 +57,4 @@ export type DeleteTagInput = z.infer<typeof DeleteTagInputSchema>;
 export type GetTagsInput = z.infer<typeof GetTagsInputSchema>;
 export type SetPostTagsInput = z.infer<typeof SetPostTagsInputSchema>;
 export type GetTagsByPostIdInput = z.infer<typeof GetTagsByPostIdInputSchema>;
+export type TagWithCount = z.infer<typeof TagWithCountSchema>;
