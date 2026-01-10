@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
@@ -123,6 +124,14 @@ function RouteComponent() {
             <footer className="mt-32 pt-12 border-t border-border flex justify-end items-center">
               <Button
                 variant="ghost"
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    decodeURIComponent(window.location.href),
+                  );
+                  toast.success("链接已复制", {
+                    description: "文章链接已复制到剪贴板",
+                  });
+                }}
                 className="group h-auto p-0 flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
               >
                 <Share2 size={14} strokeWidth={1.5} />

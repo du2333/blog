@@ -57,6 +57,14 @@ export function Footer() {
                     Github
                   </a>
                 </li>
+                <li>
+                  <a
+                    href="mailto:contact@example.com"
+                    className="hover:text-foreground transition-colors"
+                  >
+                    Email
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
