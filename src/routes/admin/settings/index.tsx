@@ -96,7 +96,7 @@ function RouteComponent() {
                         : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <span className="text-[11px] font-bold uppercase tracking-[0.1em]">
+                    <span className="text-[11px] font-bold uppercase tracking-widest">
                       {item.label}
                     </span>
                     {activeSection === item.id && (

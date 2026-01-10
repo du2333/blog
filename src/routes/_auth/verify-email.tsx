@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_auth/verify-email")({
   }),
   beforeLoad: ({ context }) => {
     // If email verification is not required, redirect to login
-    if (!context.isEmailVerficationRequired) {
+    if (!context.isEmailConfigured) {
       throw redirect({ to: "/login" });
     }
   },

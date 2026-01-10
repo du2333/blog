@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { z } from "zod";
 import { ResetPasswordForm } from "@/features/auth/components/reset-password-form";
 
@@ -7,6 +7,11 @@ export const Route = createFileRoute("/_auth/reset-link")({
     token: z.string().optional().catch(undefined),
     error: z.string().optional().catch(undefined),
   }),
+  beforeLoad: ({ context }) => {
+    if (!context.isEmailConfigured) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
   head: () => ({
     meta: [

@@ -15,10 +15,10 @@ export async function userHasPassword(context: AuthContext) {
   return await AuthRepo.userHasPassword(context.db, context.session.user.id);
 }
 
-export async function getIsEmailVerficationRequired(context: Context) {
+export async function getIsEmailConfigured(context: Context) {
   return CacheService.get(
     context,
-    ["isEmailVerficationRequired"],
+    ["isEmailConfigured"],
     z.boolean(),
     async () => {
       const config = await ConfigRepo.getSystemConfig(context.db);

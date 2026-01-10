@@ -1,7 +1,12 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute, redirect } from "@tanstack/react-router";
 import { RegisterForm } from "@/features/auth/components/register-form";
 
 export const Route = createFileRoute("/_auth/register")({
+  beforeLoad: ({ context }) => {
+    if (!context.isEmailConfigured) {
+      throw redirect({ to: "/login" });
+    }
+  },
   component: RouteComponent,
   head: () => ({
     meta: [

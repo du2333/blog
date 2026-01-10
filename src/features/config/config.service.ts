@@ -14,11 +14,7 @@ export async function getSystemConfig(context: Context) {
 
 export async function updateSystemConfig(context: Context, data: SystemConfig) {
   await ConfigRepo.upsertSystemConfig(context.db, data);
-  await CacheService.deleteKey(
-    context,
-    ["system"],
-    ["isEmailVerficationRequired"],
-  );
+  await CacheService.deleteKey(context, ["system"], ["isEmailConfigured"]);
 
   return { success: true };
 }

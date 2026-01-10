@@ -3,7 +3,7 @@ import { ForgotPasswordForm } from "@/features/auth/components/forgot-password-f
 
 export const Route = createFileRoute("/_auth/forgot-password")({
   beforeLoad: ({ context }) => {
-    if (!context.isEmailVerficationRequired) {
+    if (!context.isEmailConfigured) {
       throw redirect({ to: "/login" });
     }
   },

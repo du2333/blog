@@ -6,24 +6,20 @@ import {
   useRouter,
 } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import {
-  emailVerficationRequiredQuery,
-  sessionQuery,
-} from "@/features/auth/auth.query";
+import { emailConfiguredQuery, sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
     const session = await context.queryClient.fetchQuery(sessionQuery);
-    const isEmailVerficationRequired = await context.queryClient.fetchQuery(
-      emailVerficationRequiredQuery,
-    );
+    const isEmailConfigured =
+      await context.queryClient.fetchQuery(emailConfiguredQuery);
 
     if (session && !location.pathname.includes("verify-email")) {
       throw redirect({ to: "/" });
     }
 
-    return { session, isEmailVerficationRequired };
+    return { session, isEmailConfigured };
   },
   component: RouteComponent,
   headers: () => {

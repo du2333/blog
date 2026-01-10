@@ -26,7 +26,7 @@ const registerSchema = z
 type RegisterSchema = z.infer<typeof registerSchema>;
 
 export function RegisterForm() {
-  const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
+  const { isEmailConfigured } = useRouteContext({ from: "/_auth" });
   const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = React.useState(false);
   const previousLocation = usePreviousLocation();
@@ -57,7 +57,7 @@ export function RegisterForm() {
 
     queryClient.removeQueries({ queryKey: ["session"] });
 
-    if (isEmailVerficationRequired) {
+    if (isEmailConfigured) {
       setIsSuccess(true);
       toast.success("账号已创建", {
         description: "验证邮件已发送，请检查您的收件箱。",

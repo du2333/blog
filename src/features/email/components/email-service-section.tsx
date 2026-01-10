@@ -202,7 +202,7 @@ export function EmailServiceSection({
                     onChange({ ...value, senderName: e.target.value })
                   }
                   className="w-full bg-transparent border-none shadow-none text-sm text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/20 px-0 h-auto"
-                  placeholder="如：Antigravity System"
+                  placeholder="如：John Doe的博客"
                 />
               </div>
             </div>
@@ -243,10 +243,10 @@ export function EmailServiceSection({
             </div>
             <div>
               <h5 className="text-[12px] font-bold text-foreground">
-                通道连通性测试
+                邮件服务测试
               </h5>
               <p className="text-[10px] text-muted-foreground font-serif italic">
-                {statusMsg || "保存配置前建议先进行握手测试"}
+                {statusMsg || "保存配置前建议先进行测试"}
               </p>
             </div>
           </div>
@@ -269,7 +269,7 @@ export function EmailServiceSection({
             ) : (
               <Wifi size={14} />
             )}
-            {status === "SUCCESS" ? "再测一次" : "开始推送测试"}
+            {status === "SUCCESS" ? "再测一次" : "发送测试邮件"}
           </Button>
         </div>
       </div>

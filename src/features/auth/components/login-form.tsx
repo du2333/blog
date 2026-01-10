@@ -23,7 +23,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
     "IDLE",
   );
   const [isUnverifiedEmail, setIsUnverifiedEmail] = useState(false);
-  const { isEmailVerficationRequired } = useRouteContext({ from: "/_auth" });
+  const { isEmailConfigured } = useRouteContext({ from: "/_auth" });
 
   const navigate = useNavigate();
   const previousLocation = usePreviousLocation();
@@ -133,7 +133,7 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
             <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
               登录密码
             </label>
-            {isEmailVerficationRequired && (
+            {isEmailConfigured && (
               <Link
                 to="/forgot-password"
                 tabIndex={-1}

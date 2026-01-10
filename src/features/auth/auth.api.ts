@@ -14,12 +14,12 @@ export const userHasPasswordFn = createAuthedFn().handler(({ context }) =>
   AuthService.userHasPassword(context),
 );
 
-export const getIsEmailVerficationRequiredFn = createServerFn()
+export const getIsEmailConfiguredFn = createServerFn()
   .middleware([
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
-      key: "auth:getIsEmailVerificationRequired",
+      key: "auth:getIsEmailConfigured",
     }),
   ])
-  .handler(({ context }) => AuthService.getIsEmailVerficationRequired(context));
+  .handler(({ context }) => AuthService.getIsEmailConfigured(context));
