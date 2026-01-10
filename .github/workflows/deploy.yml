@@ -78,3 +78,12 @@ jobs:
           bunx wrangler secret bulk secrets.json
           bun run build
           bun run deploy
+
+      - name: Purge Cloudflare CDN Cache
+        run: |
+          echo "Purging CDN cache for $DOMAIN"
+          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/$CLOUDFLARE_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer $CLOUDFLARE_PURGE_API_TOKEN" \
+            -H "Content-Type: application/json" \
+            --data '{"prefixes":["'$DOMAIN'"]}'
+          echo ""

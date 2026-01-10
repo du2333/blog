@@ -31,12 +31,13 @@ export async function purgeCDNCache(env: Env, options: PurgeOptions) {
   }
 
   if (options.prefixes && options.prefixes.length > 0) {
+    // Cloudflare prefix purge doesn't want URI scheme (https://)
     payload.prefixes = options.prefixes.map((path) => {
       const cleanPath = path.startsWith("/") ? path : `/${path}`;
       if (cleanPath === "/") {
-        return baseUrl;
+        return DOMAIN;
       }
-      return `${baseUrl}${cleanPath}`;
+      return `${DOMAIN}${cleanPath}`;
     });
   }
 
