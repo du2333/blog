@@ -80,34 +80,48 @@ function RouteComponent() {
           {navGroups.map((group) => (
             <div key={group.label} className="space-y-6">
               <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-border/40"></div>
-                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/30">
+                <div className="h-px flex-1 bg-border"></div>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-foreground/70">
                   {group.label}
                 </span>
               </div>
               <div className="flex flex-col gap-1">
-                {group.items.map((item) => (
+                {group.items.map((section) => (
                   <button
-                    key={item.id}
-                    onClick={() => setActiveSection(item.id)}
-                    className={`group relative flex items-center justify-between py-3.5 px-4 rounded-sm transition-all duration-300 ${
-                      activeSection === item.id
-                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10"
-                        : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                    key={section.id}
+                    onClick={() => setActiveSection(section.id)}
+                    className={`w-full group text-left px-6 py-4 rounded-sm transition-all duration-500 relative ${
+                      activeSection === section.id
+                        ? "bg-foreground text-background"
+                        : "hover:bg-accent text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <span className="text-[11px] font-bold uppercase tracking-widest">
-                      {item.label}
-                    </span>
-                    {activeSection === item.id && (
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground animate-in fade-in scale-in duration-500" />
-                    )}
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
+                        {section.label}
+                      </span>
+                      <div
+                        className={`w-1 h-1 rounded-full transition-all duration-700 ${
+                          activeSection === section.id
+                            ? "bg-background scale-100"
+                            : "bg-foreground scale-0 group-hover:scale-100"
+                        }`}
+                      />
+                    </div>
                   </button>
                 ))}
               </div>
             </div>
           ))}
         </nav>
+
+        <footer className="mt-20 pt-10 border-t border-border/40">
+          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-medium leading-loose">
+            配置更改将实时生效
+            <br />
+            请确保凭证在保存前执行过测试
+          </p>
+        </footer>
 
         <div className="pt-4">
           <Button

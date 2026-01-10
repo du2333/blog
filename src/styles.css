@@ -16,7 +16,7 @@
     --foreground: #09090b;
 
     --muted: #f4f4f5;
-    --muted-foreground: #71717a;
+    --muted-foreground: #52525b; /* zinc-600 for better light mode contrast */
 
     --popover: #ffffff;
     --popover-foreground: #09090b;
@@ -53,7 +53,7 @@
     --foreground: #fafafa;
 
     --muted: #18181b;
-    --muted-foreground: #a1a1aa;
+    --muted-foreground: #a3a3a3; /* neutral-400 for better dark mode contrast */
 
     --popover: #050505;
     --popover-foreground: #fafafa;

@@ -37,14 +37,12 @@ export function EmailServiceSection({
 }: EmailSectionProps) {
   const [showKey, setShowKey] = useState(false);
   const [status, setStatus] = useState<ConnectionStatus>("IDLE");
-  const [statusMsg, setStatusMsg] = useState<string>("");
 
   const isConfigured = !!value.apiKey?.trim() && !!value.senderAddress?.trim();
 
   const handleTest = async () => {
     if (!isConfigured) return;
     setStatus("TESTING");
-    setStatusMsg("正在尝试建立邮件服务握手...");
 
     try {
       const result = await testEmailConnection({
@@ -57,14 +55,11 @@ export function EmailServiceSection({
 
       if (result.success) {
         setStatus("SUCCESS");
-        setStatusMsg("测试邮件已成功进入队列，服务节点可用");
       } else {
         setStatus("ERROR");
-        setStatusMsg(result.error || "服务配置错误，无法完成推送");
       }
     } catch {
       setStatus("ERROR");
-      setStatusMsg("节点连接失败，请检查网络环境");
     }
   };
 
@@ -114,43 +109,46 @@ export function EmailServiceSection({
       </div>
 
       {/* Service Notice Box */}
-      <div className="bg-info/5 border border-info/20 rounded-sm p-6 space-y-4 animate-in fade-in slide-in-from-top-4 duration-1000">
-        <div className="flex items-center gap-3 text-info">
-          <Info size={18} />
-          <h4 className="text-[11px] uppercase tracking-[0.2em] font-bold">
+      <div className="bg-blue-50/50 dark:bg-blue-950/10 border border-blue-100/50 dark:border-blue-900/30 rounded-lg p-6 mb-12 animate-in fade-in slide-in-from-top-4 duration-1000">
+        <div className="flex items-center gap-3 mb-4 text-blue-600/80 dark:text-blue-400/80">
+          <Info size={16} />
+          <h4 className="text-[10px] uppercase tracking-[0.2em] font-medium">
             服务生效须知
           </h4>
         </div>
-        <ul className="space-y-3 pl-7">
+        <ul className="space-y-3">
           {[
-            "邮件服务是开启“邮箱注册验证”及“重置密码”功能的核心前置条件。",
+            "邮件服务是基于“邮箱注册验证”及“重置密码”功能的核心前置条件。",
             "未正确配置时，系统将仅允许通过 GitHub 等第三方 OAuth 渠道登录。",
-            "Resend 免费版需在后台完成域名所有权验证 (DNS)，否则仅能向注册账户发送邮件。",
+            "Resend 免费版需在后台完成域签名或所有权验证 (DNS)，否则仅能向注册账户发送邮件。",
           ].map((text, i) => (
-            <li
-              key={i}
-              className="text-[12px] text-muted-foreground/80 leading-relaxed font-serif italic relative before:content-[''] before:absolute before:-left-4 before:top-2 before:w-1.5 before:h-1.5 before:border before:border-info/40 before:rounded-full"
-            >
-              {text}
+            <li key={i} className="flex gap-3 group">
+              <span className="text-[8px] mt-1.5 text-blue-400 dark:text-blue-600">
+                □
+              </span>
+              <p className="text-xs font-sans text-muted-foreground leading-relaxed group-hover:text-foreground transition-colors">
+                {text}
+              </p>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="space-y-24">
-        {/* Group: Credentials */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-3 opacity-30">
-            <Lock size={12} />
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
+      <div className="space-y-16">
+        {/* Credentials Section */}
+        <section className="space-y-10">
+          <header className="flex items-center gap-3">
+            <Lock size={14} className="text-muted-foreground" />
+            <h5 className="text-[10px] uppercase tracking-[0.3em] font-medium text-foreground">
               访问凭证
-            </span>
-          </div>
-          <div className="space-y-px">
-            <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-border/30">
-              <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground/60 transition-colors group-focus-within:text-foreground">
+            </h5>
+          </header>
+
+          <div className="grid grid-cols-1 gap-10 pl-6">
+            <div className="space-y-3 group max-w-2xl">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground group-focus-within:text-foreground transition-colors">
                 Resend API Key
-              </div>
+              </label>
               <div className="flex-1 flex items-center gap-4">
                 <div className="flex-1 relative">
                   <Input
@@ -179,98 +177,87 @@ export function EmailServiceSection({
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Group: Sender Profile */}
-        <div className="space-y-8">
-          <div className="flex items-center gap-3 opacity-30">
-            <Globe size={12} />
-            <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
+        <section className="space-y-10 pt-6 border-t border-border/40">
+          <header className="flex items-center gap-3">
+            <Globe size={14} className="text-muted-foreground" />
+            <h5 className="text-[10px] uppercase tracking-[0.3em] font-medium text-foreground">
               发信身份
-            </span>
-          </div>
-          <div className="space-y-px">
-            {/* Property Row: Sender Name */}
-            <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-border/30">
-              <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground/60 transition-colors group-focus-within:text-foreground">
+            </h5>
+          </header>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 pl-6">
+            <div className="space-y-3 group">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground group-focus-within:text-foreground transition-colors">
                 发信人名称
-              </div>
-              <div className="flex-1">
-                <Input
-                  value={value.senderName || ""}
-                  onChange={(e) =>
-                    onChange({ ...value, senderName: e.target.value })
-                  }
-                  className="w-full bg-transparent border-none shadow-none text-sm text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/20 px-0 h-auto"
-                  placeholder="如：John Doe的博客"
-                />
-              </div>
-            </div>
-
-            {/* Property Row: Sender Email */}
-            <div className="group flex flex-col sm:flex-row sm:items-center py-6 gap-4 sm:gap-0 border-b border-border/30">
-              <div className="w-56 shrink-0 text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground/60 transition-colors group-focus-within:text-foreground">
-                发信邮箱 (Verified Domain)
-              </div>
-              <div className="flex-1">
-                <Input
-                  value={value.senderAddress || ""}
-                  onChange={(e) =>
-                    onChange({ ...value, senderAddress: e.target.value })
-                  }
-                  className="w-full bg-transparent border-none shadow-none text-sm font-mono text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/20 px-0 h-auto"
-                  placeholder="noreply@yourdomain.com"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Property Row: Test Connection */}
-        <div className="flex items-center gap-8 py-10 bg-accent/30 rounded-sm px-8 border border-border/50">
-          <div className="flex items-center gap-4 flex-1">
-            <div className="w-12 h-12 rounded-full bg-background flex items-center justify-center border border-border/50 shadow-inner">
-              <Mail
-                size={20}
-                className={
-                  status === "SUCCESS"
-                    ? "text-emerald-500"
-                    : status === "ERROR"
-                      ? "text-destructive"
-                      : "text-muted-foreground/50"
+              </label>
+              <Input
+                value={value.senderName || ""}
+                onChange={(e) =>
+                  onChange({ ...value, senderName: e.target.value })
                 }
+                placeholder="例如：Chronicle Blog"
+                className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-sm font-sans focus-visible:ring-0 focus:border-foreground transition-all px-0"
               />
             </div>
-            <div>
-              <h5 className="text-[12px] font-bold text-foreground">
-                邮件服务测试
-              </h5>
-              <p className="text-[10px] text-muted-foreground font-serif italic">
-                {statusMsg || "保存配置前建议先进行测试"}
-              </p>
+
+            <div className="space-y-3 group">
+              <label className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+                发信邮箱 (Verified Domain)
+              </label>
+              <Input
+                type="email"
+                value={value.senderAddress || ""}
+                onChange={(e) =>
+                  onChange({ ...value, senderAddress: e.target.value })
+                }
+                placeholder="noreply@yourdomain.com"
+                className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-sm font-sans focus-visible:ring-0 focus:border-foreground transition-all px-0"
+              />
             </div>
           </div>
-          <Button
-            variant={status === "TESTING" ? "default" : "outline"}
-            onClick={handleTest}
-            disabled={status === "TESTING" || !isConfigured}
-            className={`flex items-center gap-3 px-8 h-12 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all shadow-md active:shadow-none active:scale-[0.98] ${
-              !isConfigured
-                ? "bg-muted/50 text-muted-foreground/30 cursor-not-allowed border-none shadow-none"
-                : status === "TESTING"
-                  ? "animate-pulse"
-                  : status === "SUCCESS"
-                    ? "border-emerald-500/20 text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500 hover:text-white"
-                    : "text-foreground bg-background hover:bg-primary hover:text-primary-foreground hover:border-transparent"
-            }`}
-          >
-            {status === "TESTING" ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : (
-              <Wifi size={14} />
-            )}
-            {status === "SUCCESS" ? "再测一次" : "发送测试邮件"}
-          </Button>
+        </section>
+
+        {/* Property Row: Test Connection */}
+        <div className="pt-20 border-t border-border/40">
+          <div className="bg-zinc-50 dark:bg-zinc-900/40 border border-border rounded-xl p-8 flex flex-col md:flex-row items-center justify-between gap-8 transition-all hover:shadow-lg">
+            <div className="flex items-center gap-6">
+              <div className="w-14 h-14 bg-white dark:bg-zinc-800 rounded-full flex items-center justify-center shadow-sm border border-border">
+                <Mail size={24} className="text-muted-foreground" />
+              </div>
+              <div className="space-y-1.5">
+                <h6 className="text-sm font-medium text-foreground">
+                  邮件服务测试
+                </h6>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
+                  保存配置前建议先进行测试
+                </p>
+              </div>
+            </div>
+            <Button
+              variant={status === "TESTING" ? "default" : "outline"}
+              onClick={handleTest}
+              disabled={status === "TESTING" || !isConfigured}
+              className={`flex items-center gap-3 px-8 h-12 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold transition-all shadow-md active:shadow-none active:scale-[0.98] ${
+                !isConfigured
+                  ? "bg-muted/50 text-muted-foreground/30 cursor-not-allowed border-none shadow-none"
+                  : status === "TESTING"
+                    ? "animate-pulse"
+                    : status === "SUCCESS"
+                      ? "border-emerald-500/20 text-emerald-500 bg-emerald-500/5 hover:bg-emerald-500 hover:text-white"
+                      : "text-foreground bg-background hover:bg-primary hover:text-primary-foreground hover:border-transparent"
+              }`}
+            >
+              {status === "TESTING" ? (
+                <Loader2 size={14} className="animate-spin" />
+              ) : (
+                <Wifi size={14} />
+              )}
+              {status === "SUCCESS" ? "再测一次" : "发送测试邮件"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
