@@ -9,8 +9,8 @@ export const blogConfig = {
       "探索科技与生活的交汇点。在这里记录我的思考、技术心得与数字记忆。",
   },
   social: {
-    github: "https://github.com",
-    email: "contact@example.com",
+    github: "https://github.com/du2333",
+    email: "kuangdadu@gmail.com",
   },
 };
 
