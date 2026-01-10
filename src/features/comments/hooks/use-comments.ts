@@ -12,8 +12,8 @@ export function useComments(postId?: number) {
   const createCommentMutation = useMutation({
     mutationFn: createCommentFn,
     onSuccess: () => {
+      // Invalidate both root comments and all replies queries for this post
       if (postId) {
-        // Invalidate both root comments and all replies queries for this post
         queryClient.invalidateQueries({
           queryKey: ["comments", "roots", "post", postId],
           exact: false,
@@ -23,6 +23,16 @@ export function useComments(postId?: number) {
           exact: false,
         });
       }
+      // NEW: Also invalidate admin view queries
+      queryClient.invalidateQueries({
+        queryKey: ["comments", "all"],
+        exact: false,
+      });
+      // Also invalidate user's own comments list
+      queryClient.invalidateQueries({
+        queryKey: ["comments", "mine"],
+        exact: false,
+      });
     },
     onError: (error) => {
       toast.error("评论提交失败: " + error.message);
@@ -32,8 +42,8 @@ export function useComments(postId?: number) {
   const deleteCommentMutation = useMutation({
     mutationFn: deleteCommentFn,
     onSuccess: () => {
+      // Invalidate both root comments and all replies queries for this post
       if (postId) {
-        // Invalidate both root comments and all replies queries for this post
         queryClient.invalidateQueries({
           queryKey: ["comments", "roots", "post", postId],
           exact: false,
@@ -43,6 +53,16 @@ export function useComments(postId?: number) {
           exact: false,
         });
       }
+      // NEW: Also invalidate admin view queries
+      queryClient.invalidateQueries({
+        queryKey: ["comments", "all"],
+        exact: false,
+      });
+      // Also invalidate user's own comments list
+      queryClient.invalidateQueries({
+        queryKey: ["comments", "mine"],
+        exact: false,
+      });
       toast.success("评论已删除");
     },
     onError: (error) => {
@@ -64,7 +84,9 @@ export function useAdminComments() {
   const moderateMutation = useMutation({
     mutationFn: moderateCommentFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", "all"] });
+      // Invalidate all comment related queries to be safe since moderation
+      // affects visibility in both admin and public views
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
       toast.success("审核操作成功");
     },
     onError: (error) => {
@@ -75,7 +97,7 @@ export function useAdminComments() {
   const adminDeleteMutation = useMutation({
     mutationFn: adminDeleteCommentFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments", "all"] });
+      queryClient.invalidateQueries({ queryKey: ["comments"] });
       toast.success("评论已永久删除");
     },
     onError: (error) => {
