@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { PostItem } from "@/features/posts/components/view/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { featuredPostsQuery } from "@/features/posts/posts.query";
+import { blogConfig } from "@/blog.config";
 
 export const Route = createFileRoute("/_public/")({
   component: App,
@@ -26,14 +27,16 @@ function App() {
               <span className="h-0.5 w-12 bg-foreground"></span>
             </div>
             <h1 className="text-6xl md:text-9xl font-serif font-medium leading-[0.9] tracking-tight text-foreground">
-              数字 <br />
-              <span className="text-muted-foreground/50">生活</span>
+              {blogConfig.hero.title} <br />
+              <span className="text-muted-foreground/50">
+                {blogConfig.hero.titleHighlight}
+              </span>
             </h1>
           </header>
 
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-10">
             <p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-muted-foreground">
-              探索科技与生活的交汇点。在这里记录我的思考、技术心得与数字记忆。
+              {blogConfig.hero.subtitle}
             </p>
 
             <div className="pt-4">

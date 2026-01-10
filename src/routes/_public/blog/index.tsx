@@ -8,6 +8,7 @@ import { PostItem } from "@/features/posts/components/view/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
+import { blogConfig } from "@/blog.config";
 
 const searchSchema = z.object({
   category: z.custom<PostCategory>().optional().catch(undefined),
@@ -30,8 +31,7 @@ export const Route = createFileRoute("/_public/blog/")({
       },
       {
         name: "description",
-        content:
-          "按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。",
+        content: blogConfig.description,
       },
     ],
   }),
@@ -99,7 +99,7 @@ function RouteComponent() {
             文章
           </h1>
           <p className="max-w-xl text-lg md:text-xl font-normal leading-relaxed text-muted-foreground">
-            按时间顺序排列的文章记录。从技术深度到艺术探索，每一个数字片段都在此汇聚。
+            {blogConfig.description}
           </p>
         </div>
 

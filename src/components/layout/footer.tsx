@@ -1,3 +1,5 @@
+import { blogConfig } from "@/blog.config";
+
 export function Footer() {
   return (
     <footer className="border-t border-border bg-background py-24 mt-32 transition-colors duration-500">
@@ -10,11 +12,11 @@ export function Footer() {
                 <div className="absolute inset-[30%] bg-current rounded-full"></div>
               </div>
               <span className="text-[12px] font-bold uppercase tracking-[0.6em] text-foreground">
-                Chronicle
+                {blogConfig.name}
               </span>
             </div>
             <p className="max-w-xs text-sm text-muted-foreground font-normal leading-relaxed">
-              记录技术、思考与数字生活。
+              {blogConfig.description}
             </p>
           </div>
 
@@ -49,7 +51,7 @@ export function Footer() {
               <ul className="space-y-2 text-sm font-normal text-muted-foreground">
                 <li>
                   <a
-                    href="https://github.com"
+                    href={blogConfig.social.github}
                     target="_blank"
                     rel="noreferrer"
                     className="hover:text-foreground transition-colors"
@@ -59,7 +61,7 @@ export function Footer() {
                 </li>
                 <li>
                   <a
-                    href="mailto:contact@example.com"
+                    href={`mailto:${blogConfig.social.email}`}
                     className="hover:text-foreground transition-colors"
                   >
                     Email
@@ -72,7 +74,7 @@ export function Footer() {
 
         <div className="mt-20 pt-8 border-t border-border flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="font-mono text-[10px] text-muted-foreground tracking-widest uppercase">
-            © {new Date().getFullYear()} Chronicle Archive. 版权所有
+            © {new Date().getFullYear()} {blogConfig.author}. 版权所有
           </div>
         </div>
       </div>
