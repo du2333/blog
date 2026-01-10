@@ -42,6 +42,7 @@ export async function getPostsCursor(
     version,
     data.limit ?? 10,
     data.cursor ?? 0,
+    data.tagName ?? "all",
   ];
 
   return await CacheService.get(
@@ -216,6 +217,10 @@ export async function findPostById(
 
 export async function updatePost(context: Context, data: UpdatePostInput) {
   const post = await PostRepo.updatePost(context.db, data.id, data.data);
+  if (!post) {
+    throw new Error("Post not found");
+  }
+
   if (data.data.contentJson !== undefined) {
     context.executionCtx.waitUntil(
       syncPostMedia(context.db, post.id, data.data.contentJson),

@@ -1,5 +1,9 @@
 import { queryOptions } from "@tanstack/react-query";
-import type { GetTagsInput } from "@/features/tags/tags.schema";
+import type {
+  GetTagsInput,
+  Tag,
+  TagWithCount,
+} from "@/features/tags/tags.schema";
 import {
   getTagsAdminFn,
   getTagsByPostIdFn,
@@ -10,10 +14,19 @@ import {
 /**
  * Query options for fetching all tags (public, uses cached API)
  */
-export function tagsQueryOptions(options: GetTagsInput = {}) {
+export function tagsQueryOptions<T extends GetTagsInput>(options: T = {} as T) {
   return queryOptions({
-    queryKey: ["tags", options.sortBy ?? "name", options.sortDir ?? "asc"],
-    queryFn: () => getTagsFn({ data: options }),
+    queryKey: [
+      "tags",
+      options.sortBy ?? "name",
+      options.sortDir ?? "asc",
+      !!options.withCount,
+      !!options.publicOnly,
+    ],
+    queryFn: () =>
+      getTagsFn({ data: options }) as Promise<
+        T["withCount"] extends true ? Array<TagWithCount> : Array<Tag>
+      >,
   });
 }
 

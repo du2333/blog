@@ -6,18 +6,24 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
-import { PostItem } from "@/features/posts/components/view/post-item";
+
+import type { TagWithCount } from "@/features/tags/tags.schema";
+import { blogConfig } from "@/blog.config";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PostItem } from "@/features/posts/components/view/post-item";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
-import { blogConfig } from "@/blog.config";
 import { tagsQueryOptions } from "@/features/tags/tags.query";
 import { cn } from "@/lib/utils";
 
 const DisplayTagsQueryOptions = {
-  ...tagsQueryOptions(),
-  select: (tags: Array<{ id: number; name: string }>) =>
-    tags.sort((a, b) => a.name.localeCompare(b.name)),
+  ...tagsQueryOptions({
+    withCount: true,
+    publicOnly: true,
+    sortBy: "postCount",
+    sortDir: "desc",
+  }),
+  select: (tags: Array<TagWithCount>) => tags.filter((t) => t.postCount > 0),
 };
 
 export const Route = createFileRoute("/_public/blog/")({
@@ -112,10 +118,10 @@ function RouteComponent() {
           <button
             onClick={() => handleTagClick("")}
             className={cn(
-              "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border",
+              "px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border",
               !tagName
-                ? "bg-foreground text-background border-foreground"
-                : "bg-background text-muted-foreground border-border hover:border-foreground/50",
+                ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/10"
+                : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
             )}
           >
             全部
@@ -125,13 +131,23 @@ function RouteComponent() {
               key={tag.id}
               onClick={() => handleTagClick(tag.name)}
               className={cn(
-                "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border",
+                "px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2",
                 tagName === tag.name
-                  ? "bg-foreground text-background border-foreground"
-                  : "bg-background text-muted-foreground border-border hover:border-foreground/50",
+                  ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/10"
+                  : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
               )}
             >
-              {tag.name}
+              <span>{tag.name}</span>
+              <span
+                className={cn(
+                  "text-[10px] px-1.5 py-0.5 rounded-full transition-colors",
+                  tagName === tag.name
+                    ? "bg-background/20 text-background"
+                    : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/10",
+                )}
+              >
+                {tag.postCount}
+              </span>
             </button>
           ))}
         </div>

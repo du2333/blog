@@ -192,6 +192,20 @@ export function SearchCommandCenter({
                         __html: result.matches.summary || result.post.summary,
                       }}
                     />
+
+                    {/* Tags */}
+                    {result.post.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-2 pt-1">
+                        {result.post.tags.map((tag: string) => (
+                          <span
+                            key={tag}
+                            className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-1.5 py-0.5 bg-accent/30 rounded-sm border border-border/20"
+                          >
+                            # {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                   </div>
 
                   <div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">

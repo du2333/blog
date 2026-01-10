@@ -1,7 +1,7 @@
-import { and, asc, count, desc, eq, ne, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, lte, ne, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
-import { PostTagsTable, TagsTable } from "@/lib/db/schema";
+import { PostTagsTable, PostsTable, TagsTable } from "@/lib/db/schema";
 
 /**
  * Get all tags, optionally sorted
@@ -30,9 +30,10 @@ export async function getAllTagsWithCount(
   options: {
     sortBy?: "name" | "createdAt" | "postCount";
     sortDir?: "asc" | "desc";
+    publicOnly?: boolean;
   } = {},
 ) {
-  const { sortBy = "name", sortDir = "asc" } = options;
+  const { sortBy = "name", sortDir = "asc", publicOnly = false } = options;
 
   const query = db
     .select({
@@ -43,7 +44,20 @@ export async function getAllTagsWithCount(
     })
     .from(TagsTable)
     .leftJoin(PostTagsTable, eq(TagsTable.id, PostTagsTable.tagId))
-    .groupBy(TagsTable.id);
+    .groupBy(TagsTable.id)
+    .$dynamic();
+
+  if (publicOnly) {
+    // Only count published posts
+    query
+      .innerJoin(PostsTable, eq(PostTagsTable.postId, PostsTable.id))
+      .where(
+        and(
+          eq(PostsTable.status, "published"),
+          lte(PostsTable.publishedAt, new Date()),
+        ),
+      );
+  }
 
   const orderFn = sortDir === "asc" ? asc : desc;
 

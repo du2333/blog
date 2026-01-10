@@ -38,6 +38,8 @@ export const DeleteTagInputSchema = z.object({
 export const GetTagsInputSchema = z.object({
   sortBy: z.enum(["name", "createdAt", "postCount"]).optional(),
   sortDir: z.enum(["asc", "desc"]).optional(),
+  withCount: z.boolean().optional(),
+  publicOnly: z.boolean().optional(),
 });
 
 export const SetPostTagsInputSchema = z.object({

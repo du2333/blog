@@ -17,9 +17,9 @@ export const searchSchema = {
   id: "string",
   slug: "string",
   title: "string",
-  category: "string",
   summary: "string",
   content: "string",
+  tags: "string[]",
 } as const;
 
 export type MyOramaDB = Orama<typeof searchSchema>;

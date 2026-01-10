@@ -52,6 +52,7 @@ export async function search(context: Context, data: SearchQueryInput) {
         slug: document.slug,
         title: document.title,
         summary: document.summary,
+        tags: document.tags,
       },
       score,
       matches: {
@@ -87,7 +88,7 @@ export async function upsert(
     title: data.title,
     summary,
     content,
-    category: "post",
+    tags: data.tags ?? [],
   });
 
   await persistOramaDb(context.env, db);
@@ -111,23 +112,19 @@ export async function rebuildIndex(context: Context) {
 
   const searchDb = await createMyDb();
 
-  const posts = await db
-    .select({
-      id: PostsTable.id,
-      slug: PostsTable.slug,
-      title: PostsTable.title,
-      summary: PostsTable.summary,
-      contentJson: PostsTable.contentJson,
-      status: PostsTable.status,
-      publishedAt: PostsTable.publishedAt,
-    })
-    .from(PostsTable)
-    .where(
-      and(
-        eq(PostsTable.status, "published"),
-        lte(PostsTable.publishedAt, new Date()),
-      ),
-    );
+  const posts = await db.query.PostsTable.findMany({
+    where: and(
+      eq(PostsTable.status, "published"),
+      lte(PostsTable.publishedAt, new Date()),
+    ),
+    with: {
+      postTags: {
+        with: {
+          tag: true,
+        },
+      },
+    },
+  });
 
   for (const post of posts) {
     if (!post.title || !post.slug) continue;
@@ -139,11 +136,13 @@ export async function rebuildIndex(context: Context) {
         ? post.summary
         : content.slice(0, SNIPPET_SLICE);
 
+    const tags = post.postTags.map((pt) => pt.tag.name);
+
     await insert(searchDb, {
       id: post.id.toString(),
       title: post.title,
       slug: post.slug,
-      category: "post",
+      tags,
       summary,
       content,
     });

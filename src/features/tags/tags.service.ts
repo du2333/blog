@@ -7,7 +7,10 @@ import type {
   SetPostTagsInput,
   UpdateTagInput,
 } from "@/features/tags/tags.schema";
-import { TagSelectSchema } from "@/features/tags/tags.schema";
+import {
+  TagSelectSchema,
+  TagWithCountSchema,
+} from "@/features/tags/tags.schema";
 import * as TagRepo from "@/features/tags/data/tags.data";
 import * as CacheService from "@/features/cache/cache.service";
 
@@ -16,31 +19,50 @@ import * as CacheService from "@/features/cache/cache.service";
  */
 export async function getTags(
   context: Context,
-  data: GetTagsInput & { skipCache?: boolean } = {}, // Extend input to support skipCache
+  data: GetTagsInput & { skipCache?: boolean } = {},
 ) {
-  const fetcher = async () =>
-    await TagRepo.getAllTags(context.db, {
-      sortBy: data.sortBy === "postCount" ? "name" : data.sortBy,
-      sortDir: data.sortDir,
+  const {
+    sortBy = "name",
+    sortDir = "asc",
+    withCount = false,
+    publicOnly = false,
+    skipCache = false,
+  } = data;
+
+  const fetcher = async () => {
+    if (withCount) {
+      return await TagRepo.getAllTagsWithCount(context.db, {
+        sortBy,
+        sortDir,
+        publicOnly,
+      });
+    }
+    return await TagRepo.getAllTags(context.db, {
+      sortBy: sortBy === "postCount" ? "name" : sortBy,
+      sortDir,
     });
+  };
 
   const cacheKey = [
     "tags",
     "list",
-    data.sortBy ?? "name",
-    data.sortDir ?? "asc",
+    sortBy,
+    sortDir,
+    `wc:${withCount}`,
+    `po:${publicOnly}`,
   ];
-  if (data.skipCache) {
+
+  if (skipCache) {
     return await fetcher();
   }
 
-  return await CacheService.get(
-    context,
-    cacheKey,
-    z.array(TagSelectSchema),
-    fetcher,
-    { ttl: 60 * 60 * 24 }, // 24 hours
-  );
+  const schema = withCount
+    ? z.array(TagWithCountSchema)
+    : z.array(TagSelectSchema);
+
+  return await CacheService.get(context, cacheKey, schema, fetcher, {
+    ttl: 60 * 60 * 24, // 24 hours
+  });
 }
 
 /**

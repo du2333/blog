@@ -13,6 +13,7 @@ export const UpsertSearchDocSchema = z.object({
   title: z.string().min(1),
   summary: z.string().nullable().optional(),
   contentJson: z.custom<JSONContent>().nullable().optional(),
+  tags: z.array(z.string()).optional(),
 });
 
 export const DeleteSearchDocSchema = z.object({

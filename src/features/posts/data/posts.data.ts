@@ -190,7 +190,7 @@ export async function getPostsCursor(
 }
 
 export async function findPostById(db: DB, id: number) {
-  return await db.query.PostsTable.findFirst({
+  const post = await db.query.PostsTable.findFirst({
     where: eq(PostsTable.id, id),
     with: {
       postTags: {
@@ -200,6 +200,13 @@ export async function findPostById(db: DB, id: number) {
       },
     },
   });
+
+  if (!post) return null;
+
+  // Flatten tags
+  const tags = post.postTags.map((pt) => pt.tag);
+  const { postTags, ...rest } = post;
+  return { ...rest, tags };
 }
 
 export async function findPostBySlug(
@@ -234,12 +241,8 @@ export async function updatePost(
   id: number,
   data: Partial<Omit<typeof PostsTable.$inferInsert, "id" | "createdAt">>,
 ) {
-  const [post] = await db
-    .update(PostsTable)
-    .set(data)
-    .where(eq(PostsTable.id, id))
-    .returning();
-  return post;
+  await db.update(PostsTable).set(data).where(eq(PostsTable.id, id));
+  return await findPostById(db, id);
 }
 
 export async function deletePost(db: DB, id: number) {

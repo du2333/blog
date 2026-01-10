@@ -34,9 +34,16 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           });
         },
       );
+      if (!post) return;
 
       await step.do("update search index", async () => {
-        return await SearchService.upsert({ env: this.env }, post);
+        return await SearchService.upsert(
+          { env: this.env },
+          {
+            ...post,
+            tags: post.tags.map((t) => t.name),
+          },
+        );
       });
 
       await step.do("Invalidate caches", async () => {

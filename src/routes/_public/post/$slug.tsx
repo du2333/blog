@@ -1,6 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import {
   ClientOnly,
+  Link,
   createFileRoute,
   notFound,
   useRouter,
@@ -105,12 +106,14 @@ function RouteComponent() {
                   <span className="text-border/40 font-mono">|</span>
                   <div className="flex items-center gap-3">
                     {post.tags.map((tag) => (
-                      <span
+                      <Link
                         key={tag.id}
-                        className="text-muted-foreground hover:text-foreground transition-colors cursor-default"
+                        to="/blog"
+                        search={{ tagName: tag.name }}
+                        className="text-muted-foreground hover:text-foreground transition-colors"
                       >
                         # {tag.name}
-                      </span>
+                      </Link>
                     ))}
                   </div>
                 </div>
