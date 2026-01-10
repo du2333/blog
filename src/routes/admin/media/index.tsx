@@ -88,6 +88,9 @@ function MediaLibrary() {
           <h1 className="text-4xl font-serif font-medium tracking-tight">
             媒体库
           </h1>
+          <p className="text-sm text-muted-foreground">
+            管理和上传博客媒体资产
+          </p>
         </div>
         <Button
           onClick={() => setIsUploadOpen(true)}

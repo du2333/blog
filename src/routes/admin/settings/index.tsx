@@ -55,17 +55,11 @@ function RouteComponent() {
   const navGroups = [
     {
       label: "服务配置",
-      en: "SERVICES",
-      items: [
-        { id: "email" as const, label: "邮件分发", en: "Email Distribution" },
-      ],
+      items: [{ id: "email" as const, label: "邮件服务" }],
     },
     {
       label: "系统管理",
-      en: "SYSTEM",
-      items: [
-        { id: "maintenance" as const, label: "数据维护", en: "Maintenance" },
-      ],
+      items: [{ id: "maintenance" as const, label: "系统维护" }],
     },
   ];
 
@@ -77,20 +71,15 @@ function RouteComponent() {
           <h1 className="text-6xl font-serif font-medium tracking-tighter leading-none text-foreground">
             设置
           </h1>
-          <p className="text-[11px] uppercase tracking-[0.5em] text-muted-foreground font-bold opacity-60">
-            System Preferences
+          <p className="text-[11px] tracking-[0.5em] text-muted-foreground font-bold opacity-60">
+            系统偏好设置
           </p>
         </div>
 
         <nav className="space-y-16">
           {navGroups.map((group) => (
             <div key={group.label} className="space-y-8">
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground/30">
-                  {group.en}
-                </span>
-                <div className="h-px flex-1 bg-border/50"></div>
-              </div>
+              <div className="h-px flex-1 bg-border/50"></div>
               <div className="flex flex-col gap-2">
                 {group.items.map((item) => (
                   <button
@@ -103,22 +92,13 @@ function RouteComponent() {
                     }`}
                   >
                     <span
-                      className={`text-[12px] uppercase tracking-[0.25em] font-bold transition-colors ${
+                      className={`text-[12px] tracking-[0.25em] font-bold transition-colors ${
                         activeSection === item.id
                           ? "text-foreground"
                           : "text-muted-foreground group-hover:text-foreground"
                       }`}
                     >
                       {item.label}
-                    </span>
-                    <span
-                      className={`text-[9px] uppercase tracking-[0.2em] font-mono mt-1 transition-colors ${
-                        activeSection === item.id
-                          ? "text-muted-foreground"
-                          : "text-muted-foreground/30"
-                      }`}
-                    >
-                      {item.en}
                     </span>
                   </button>
                 ))}

@@ -23,8 +23,8 @@ function DashboardOverview() {
           <h1 className="text-4xl font-serif font-medium tracking-tight text-foreground">
             概览
           </h1>
-          <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-mono">
-            System Insight
+          <p className="text-[10px] tracking-[0.4em] text-muted-foreground">
+            系统运行状况概览
           </p>
         </div>
       </header>
@@ -69,8 +69,8 @@ function DashboardOverview() {
             <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
               流量趋势
             </CardTitle>
-            <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
-              Analysis // 24H
+            <span className="text-[9px] text-muted-foreground uppercase tracking-widest">
+              24小时流量分析
             </span>
           </CardHeader>
 

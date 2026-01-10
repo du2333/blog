@@ -128,6 +128,9 @@ export function PostManager({
           <h1 className="text-4xl font-serif font-medium tracking-tight">
             文章管理
           </h1>
+          <p className="text-sm text-muted-foreground">
+            发布、编辑或删除博客文章
+          </p>
         </div>
         <Button
           onClick={() => createMutation.mutate()}

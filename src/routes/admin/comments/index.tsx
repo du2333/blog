@@ -71,7 +71,7 @@ function CommentAdminPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
         <div className="space-y-2">
-          <h1 className="text-3xl font-serif font-medium tracking-tight">
+          <h1 className="text-4xl font-serif font-medium tracking-tight">
             评论管理
           </h1>
           <p className="text-sm text-muted-foreground max-w-lg">

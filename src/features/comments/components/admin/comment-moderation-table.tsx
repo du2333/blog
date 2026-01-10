@@ -403,9 +403,9 @@ export const CommentModerationTable = ({
       {totalPages > 1 && (
         <div className="flex items-center justify-between p-4 border-t border-border/50">
           <div className="text-xs text-muted-foreground">
-            Displaying {(page - 1) * PAGE_SIZE + 1} -{" "}
-            {Math.min(page * PAGE_SIZE, response.total)} of {response.total}{" "}
-            comments
+            显示第 {(page - 1) * PAGE_SIZE + 1} -{" "}
+            {Math.min(page * PAGE_SIZE, response.total)} 条，共 {response.total}{" "}
+            条评论
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -419,10 +419,10 @@ export const CommentModerationTable = ({
               }
             >
               <ChevronLeft size={16} />
-              Prev
+              上一页
             </Button>
             <div className="text-xs font-medium px-4">
-              Page {page} of {totalPages}
+              第 {page} 页，共 {totalPages} 页
             </div>
             <Button
               variant="outline"
@@ -437,7 +437,7 @@ export const CommentModerationTable = ({
                 })
               }
             >
-              Next
+              下一页
               <ChevronRight size={16} />
             </Button>
           </div>

@@ -64,7 +64,7 @@ export function PostsPagination({
   return (
     <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-border mt-12">
       <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
-        Displaying {startItem} — {endItem} of {totalItems}
+        显示第 {startItem} — {endItem} 条，共 {totalItems} 条
       </div>
 
       <div className="flex items-center gap-1">
@@ -92,7 +92,7 @@ export function PostsPagination({
                   variant="ghost"
                   size="sm"
                   onClick={() => onPageChange(pageNumber)}
-                  className={`h-8 min-w-[32px] px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none ${
+                  className={`h-8 min-w-8 px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none ${
                     currentPage === pageNumber
                       ? "text-foreground font-bold border-b-2 border-foreground bg-transparent hover:bg-transparent"
                       : "text-muted-foreground hover:text-foreground border-b-2 border-transparent bg-transparent hover:bg-transparent"
