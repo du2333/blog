@@ -71,7 +71,7 @@ export const CommentModerationActions = ({
       {isOpen && (
         <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border shadow-md rounded-md z-50 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
           <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">
-            Change Status
+            更改状态
           </div>
 
           {status !== "published" && (
@@ -80,7 +80,7 @@ export const CommentModerationActions = ({
               className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
             >
               <Check className="h-3.5 w-3.5 text-green-500" />
-              <span>批准发布</span>
+              <span>通过 (发布)</span>
             </button>
           )}
 
@@ -90,7 +90,7 @@ export const CommentModerationActions = ({
               className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
             >
               <RotateCcw className="h-3.5 w-3.5 text-blue-500" />
-              <span>重置为待审</span>
+              <span>重置 (待审)</span>
             </button>
           )}
 
@@ -100,7 +100,7 @@ export const CommentModerationActions = ({
               className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
             >
               <Trash2 className="h-3.5 w-3.5 text-orange-500" />
-              <span>移入垃圾箱 (软删)</span>
+              <span>拒绝 (垃圾箱)</span>
             </button>
           )}
 
@@ -114,7 +114,7 @@ export const CommentModerationActions = ({
             className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-destructive/10 text-destructive transition-colors"
           >
             <ShieldAlert className="h-3.5 w-3.5" />
-            <span>永久销毁 (Danger)</span>
+            <span>永久销毁</span>
           </button>
         </div>
       )}

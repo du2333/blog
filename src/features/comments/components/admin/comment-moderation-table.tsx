@@ -3,8 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   AlertTriangle,
   Check,
-  ChevronLeft,
-  ChevronRight,
   Loader2,
   MessageSquareOff,
   Trash2,
@@ -22,6 +20,7 @@ import type { JSONContent } from "@tiptap/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import { formatDate } from "@/lib/utils";
 
 interface CommentModerationTableProps {
@@ -31,7 +30,7 @@ interface CommentModerationTableProps {
   page?: number;
 }
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 20;
 const routeApi = new RouteApi({ id: "/admin/comments/" });
 
 export const CommentModerationTable = ({
@@ -347,36 +346,40 @@ export const CommentModerationTable = ({
                 />
 
                 {/* Context Info */}
-                <div className="flex flex-wrap gap-2 text-[10px] items-center text-muted-foreground/70">
+                <div className="flex flex-wrap gap-2 text-[10px] items-center text-muted-foreground pt-1">
                   {(comment as any).post && (
                     <Link
                       to="/post/$slug"
                       params={{ slug: (comment as any).post.slug || "" }}
-                      className="font-mono bg-muted px-1.5 py-0.5 rounded-xs truncate max-w-[150px] hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="group/link flex items-center gap-1.5 hover:text-foreground transition-colors max-w-[150px]"
                       title={(comment as any).post.title}
                     >
-                      📄 {(comment as any).post.title}
+                      <span className="opacity-50">📄</span>
+                      <span className="truncate group-hover/link:underline decoration-muted-foreground/30 underline-offset-4">
+                        {(comment as any).post.title}
+                      </span>
                     </Link>
                   )}
                   {(comment as any).replyToUser && (
-                    <span className="font-mono bg-muted px-1.5 py-0.5 rounded-xs hover:text-foreground cursor-default transition-colors">
-                      ↪️ 回复 @{(comment as any).replyToUser.name}
+                    <span className="flex items-center gap-1.5 opacity-70">
+                      <span className="opacity-50">↪️</span>
+                      <span>@{(comment as any).replyToUser.name}</span>
                     </span>
                   )}
                 </div>
               </div>
 
               {/* AI Reason */}
-              <div className="col-span-2 pt-1">
+              <div className="col-span-2 pt-1 font-mono">
                 {comment.aiReason ? (
-                  <div className="flex items-start gap-2 text-orange-500/90 bg-orange-500/5 p-2 rounded-sm border border-orange-500/10">
-                    <AlertTriangle size={14} className="shrink-0 mt-0.5" />
-                    <span className="text-[10px] leading-tight font-medium">
+                  <div className="flex items-center gap-1.5 text-orange-500/80 group-hover:text-orange-600 transition-colors">
+                    <AlertTriangle size={12} className="shrink-0" />
+                    <span className="text-[10px] leading-tight mt-0.5">
                       {comment.aiReason}
                     </span>
                   </div>
                 ) : (
-                  <span className="text-[10px] text-muted-foreground/30 font-mono pl-2">
+                  <span className="text-[10px] text-muted-foreground/20 pl-5">
                     -
                   </span>
                 )}
@@ -400,49 +403,19 @@ export const CommentModerationTable = ({
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between p-4 border-t border-border/50">
-          <div className="text-xs text-muted-foreground">
-            显示第 {(page - 1) * PAGE_SIZE + 1} -{" "}
-            {Math.min(page * PAGE_SIZE, response.total)} 条，共 {response.total}{" "}
-            条评论
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({ ...prev, page: Math.max(1, page - 1) }),
-                })
-              }
-            >
-              <ChevronLeft size={16} />
-              上一页
-            </Button>
-            <div className="text-xs font-medium px-4">
-              第 {page} 页，共 {totalPages} 页
-            </div>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              onClick={() =>
-                navigate({
-                  search: (prev) => ({
-                    ...prev,
-                    page: Math.min(totalPages, page + 1),
-                  }),
-                })
-              }
-            >
-              下一页
-              <ChevronRight size={16} />
-            </Button>
-          </div>
-        </div>
-      )}
+      {/* Pagination */}
+      <AdminPagination
+        currentPage={page}
+        totalPages={totalPages}
+        totalItems={response.total}
+        itemsPerPage={PAGE_SIZE}
+        currentPageItemCount={response.items.length}
+        onPageChange={(newPage) =>
+          navigate({
+            search: (prev) => ({ ...prev, page: newPage }),
+          })
+        }
+      />
     </div>
   );
 };

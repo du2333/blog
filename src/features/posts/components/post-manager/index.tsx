@@ -3,7 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { ListFilter, Plus } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { PostRow, PostsPagination, PostsToolbar } from "./components";
+import { PostRow, PostsToolbar } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
 import { PostManagerSkeleton } from "./post-manager-skeleton";
 import type {
@@ -14,6 +14,7 @@ import type {
 } from "./types";
 import { ErrorPage } from "@/components/common/error-page";
 import { Button } from "@/components/ui/button";
+import { AdminPagination } from "@/components/admin/admin-pagination";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
@@ -205,7 +206,7 @@ export function PostManager({
         )}
 
         {/* Pagination */}
-        <PostsPagination
+        <AdminPagination
           currentPage={page}
           totalPages={totalPages}
           totalItems={totalCount}
