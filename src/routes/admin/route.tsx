@@ -4,7 +4,7 @@ import {
   createFileRoute,
   redirect,
 } from "@tanstack/react-router";
-import { ArrowUpRight, Menu } from "lucide-react";
+import { ArrowUpRight, Menu, Settings } from "lucide-react";
 import { useState } from "react";
 import { SideBar } from "@/components/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
@@ -61,6 +61,17 @@ function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-6">
+            <Link
+              to="/admin/settings"
+              className="group p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+              title="系统设置"
+            >
+              <Settings
+                size={20}
+                className="group-hover:rotate-45 transition-transform duration-500 ease-in-out"
+              />
+            </Link>
+            <div className="h-6 w-px bg-border/60" />
             <Link
               to="/"
               className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors group"

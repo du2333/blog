@@ -34,10 +34,6 @@ function RouteComponent() {
     }
   }, [settings]);
 
-  const [activeSection, setActiveSection] = useState<"email" | "maintenance">(
-    "email",
-  );
-
   const [isSaving, setIsSaving] = useState(false);
 
   const handleSaveConfig = async () => {
@@ -52,130 +48,91 @@ function RouteComponent() {
     }
   };
 
-  const navGroups = [
-    {
-      label: "服务配置",
-      items: [{ id: "email" as const, label: "邮件服务" }],
-    },
-    {
-      label: "系统管理",
-      items: [{ id: "maintenance" as const, label: "系统维护" }],
-    },
-  ];
+  if (isLoading) {
+    return (
+      <div className="max-w-4xl mx-auto px-6 md:px-10 py-12">
+        <SectionSkeleton />
+      </div>
+    );
+  }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-20 max-w-7xl mx-auto min-h-[calc(100vh-200px)] px-6 md:px-12 lg:px-16 pt-24 lg:pt-36">
-      {/* Left Sticky Navigation */}
-      <aside className="lg:w-72 shrink-0 lg:sticky lg:top-36 h-fit space-y-16 animate-in fade-in slide-in-from-left-4 duration-1000">
-        <div className="space-y-4">
-          <h1 className="text-5xl font-serif font-medium tracking-tight text-foreground">
+    <div className="max-w-4xl mx-auto px-6 md:px-10 py-12 space-y-16 pb-32">
+      {/* Header Area */}
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-8 border-b border-border/40">
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight text-foreground">
             系统设置
           </h1>
-          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 font-bold">
-            系统维护和配置
+          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
+            系统配置和维护
           </p>
         </div>
 
-        <nav className="space-y-12">
-          {navGroups.map((group) => (
-            <div key={group.label} className="space-y-6">
-              <div className="flex items-center gap-3">
-                <div className="h-px flex-1 bg-border"></div>
-                <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-foreground/70">
-                  {group.label}
-                </span>
-              </div>
-              <div className="flex flex-col gap-1">
-                {group.items.map((section) => (
-                  <button
-                    key={section.id}
-                    onClick={() => setActiveSection(section.id)}
-                    className={`w-full group text-left px-6 py-4 rounded-sm transition-all duration-500 relative ${
-                      activeSection === section.id
-                        ? "bg-foreground text-background"
-                        : "hover:bg-accent text-muted-foreground hover:text-foreground"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] uppercase tracking-[0.3em] font-bold">
-                        {section.label}
-                      </span>
-                      <div
-                        className={`w-1 h-1 rounded-full transition-all duration-700 ${
-                          activeSection === section.id
-                            ? "bg-background scale-100"
-                            : "bg-foreground scale-0 group-hover:scale-100"
-                        }`}
-                      />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          ))}
-        </nav>
-
-        <div className="pt-4">
-          <Button
-            onClick={handleSaveConfig}
-            disabled={isSaving}
-            className={`h-12 w-full transition-all rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl shadow-primary/5 ${
-              isSaving ? "opacity-50" : "hover:scale-[1.02] active:scale-[0.98]"
-            }`}
-          >
-            {isSaving ? (
-              <Loader2 size={14} className="animate-spin mr-2" />
-            ) : (
-              <Check size={14} className="mr-2" />
-            )}
-            {isSaving ? "同步中..." : "保存配置"}
-          </Button>
-        </div>
-      </aside>
-
-      {/* Right Content Area (Dynamic Content) */}
-      <div className="flex-1 lg:pl-16">
-        <div
-          key={activeSection}
-          className="animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
-        >
-          {isLoading ? (
-            <SectionSkeleton />
-          ) : (
-            <div className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-8 md:p-12">
-              {activeSection === "email" && (
-                <EmailServiceSection
-                  value={config.email || DEFAULT_CONFIG.email!}
-                  onChange={(emailConfig) =>
-                    setConfig({ ...config, email: emailConfig })
-                  }
-                  testEmailConnection={testEmailConnection}
-                />
-              )}
-              {activeSection === "maintenance" && <MaintenanceSection />}
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Mobile Save Button */}
-      <div className="lg:hidden fixed bottom-10 right-10 z-40">
         <Button
           onClick={handleSaveConfig}
           disabled={isSaving}
-          size="lg"
-          className={`flex items-center gap-3 px-10 h-16 rounded-sm shadow-2xl transition-all active:scale-95 text-[10px] uppercase tracking-[0.2em] font-bold ${
+          className={`h-11 px-8 transition-all rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold shadow-lg shadow-primary/5 ${
+            isSaving ? "opacity-80" : "hover:scale-[1.02] active:scale-[0.98]"
+          }`}
+        >
+          {isSaving ? (
+            <Loader2 size={14} className="animate-spin mr-2" />
+          ) : (
+            <Check size={14} className="mr-2" />
+          )}
+          {isSaving ? "同步配置..." : "保存更改"}
+        </Button>
+      </div>
+
+      {/* Main Content */}
+      <div className="space-y-20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+        <section>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-border/50"></div>
+            <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+              服务配置
+            </span>
+            <div className="h-px flex-1 bg-border/50"></div>
+          </div>
+          <EmailServiceSection
+            value={config.email || DEFAULT_CONFIG.email!}
+            onChange={(emailConfig) =>
+              setConfig({ ...config, email: emailConfig })
+            }
+            testEmailConnection={testEmailConnection}
+          />
+        </section>
+
+        <section>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-border/50"></div>
+            <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+              系统维护
+            </span>
+            <div className="h-px flex-1 bg-border/50"></div>
+          </div>
+          <MaintenanceSection />
+        </section>
+      </div>
+
+      {/* Mobile Sticky Save Button */}
+      <div className="md:hidden fixed bottom-6 left-6 right-6 z-40">
+        <Button
+          onClick={handleSaveConfig}
+          disabled={isSaving}
+          className={`w-full h-14 rounded-sm shadow-xl transition-all text-[11px] uppercase tracking-[0.2em] font-bold ${
             isSaving
-              ? "bg-muted text-muted-foreground cursor-wait"
+              ? "bg-muted text-muted-foreground"
               : "bg-primary text-primary-foreground"
           }`}
         >
           {isSaving ? (
-            <Loader2 size={14} className="animate-spin" />
+            <Loader2 size={14} className="animate-spin mr-2" />
           ) : (
-            <Check size={14} />
+            <Check size={14} className="mr-2" />
           )}
-          {isSaving ? "正在保存" : "保存"}
+          {isSaving ? "正在保存..." : "保存系统配置"}
         </Button>
       </div>
     </div>

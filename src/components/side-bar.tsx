@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   LogOut,
   MessageSquare,
-  Settings,
   Tag,
   User,
   X,
@@ -70,9 +69,9 @@ export function SideBar({
       exact: false,
     },
     {
-      path: "/admin/comments" as const,
-      icon: MessageSquare,
-      label: "评论",
+      path: "/admin/tags" as const,
+      icon: Tag,
+      label: "标签",
       exact: false,
     },
     {
@@ -82,15 +81,9 @@ export function SideBar({
       exact: false,
     },
     {
-      path: "/admin/tags" as const,
-      icon: Tag,
-      label: "标签",
-      exact: false,
-    },
-    {
-      path: "/admin/settings" as const,
-      icon: Settings,
-      label: "设置",
+      path: "/admin/comments" as const,
+      icon: MessageSquare,
+      label: "评论",
       exact: false,
     },
   ];
