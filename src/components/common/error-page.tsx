@@ -1,7 +1,7 @@
 import { useRouter } from "@tanstack/react-router";
 import { AlertCircle, RefreshCw } from "lucide-react";
 
-export function ErrorPage({ error }: { error?: Error }) {
+export function ErrorPage({ error: _error }: { error?: Error }) {
   const router = useRouter();
   const onReset = () => {
     router.invalidate();

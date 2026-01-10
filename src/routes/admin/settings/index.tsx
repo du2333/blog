@@ -64,42 +64,44 @@ function RouteComponent() {
   ];
 
   return (
-    <div className="flex flex-col lg:flex-row gap-24 max-w-7xl mx-auto min-h-[calc(100vh-200px)] px-8 md:px-16 lg:px-24 pt-24 lg:pt-40">
+    <div className="flex flex-col lg:flex-row gap-20 max-w-7xl mx-auto min-h-[calc(100vh-200px)] px-6 md:px-12 lg:px-16 pt-24 lg:pt-36">
       {/* Left Sticky Navigation */}
-      <aside className="lg:w-80 shrink-0 lg:sticky lg:top-40 h-fit space-y-20 animate-in fade-in slide-in-from-left-4 duration-1000 fill-mode-both">
-        <div className="space-y-3">
-          <h1 className="text-6xl font-serif font-medium tracking-tighter leading-none text-foreground">
-            设置
+      <aside className="lg:w-72 shrink-0 lg:sticky lg:top-36 h-fit space-y-16 animate-in fade-in slide-in-from-left-4 duration-1000">
+        <div className="space-y-4">
+          <h1 className="text-5xl font-serif font-medium tracking-tight text-foreground">
+            系统控制台
           </h1>
-          <p className="text-[11px] tracking-[0.5em] text-muted-foreground font-bold opacity-60">
-            系统偏好设置
+          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 font-bold">
+            System Preferences & Configuration
           </p>
         </div>
 
-        <nav className="space-y-16">
+        <nav className="space-y-12">
           {navGroups.map((group) => (
-            <div key={group.label} className="space-y-8">
-              <div className="h-px flex-1 bg-border/50"></div>
-              <div className="flex flex-col gap-2">
+            <div key={group.label} className="space-y-6">
+              <div className="flex items-center gap-3">
+                <div className="h-px flex-1 bg-border/40"></div>
+                <span className="text-[9px] uppercase tracking-[0.2em] font-bold text-muted-foreground/30">
+                  {group.label}
+                </span>
+              </div>
+              <div className="flex flex-col gap-1">
                 {group.items.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveSection(item.id)}
-                    className={`group flex flex-col items-start py-4 px-5 -mx-5 rounded-sm transition-all ${
+                    className={`group relative flex items-center justify-between py-3.5 px-4 rounded-sm transition-all duration-300 ${
                       activeSection === item.id
-                        ? "bg-accent shadow-sm"
-                        : "hover:bg-accent/50"
+                        ? "bg-primary text-primary-foreground shadow-lg shadow-primary/10"
+                        : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
                     }`}
                   >
-                    <span
-                      className={`text-[12px] tracking-[0.25em] font-bold transition-colors ${
-                        activeSection === item.id
-                          ? "text-foreground"
-                          : "text-muted-foreground group-hover:text-foreground"
-                      }`}
-                    >
+                    <span className="text-[11px] font-bold uppercase tracking-[0.1em]">
                       {item.label}
                     </span>
+                    {activeSection === item.id && (
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary-foreground animate-in fade-in scale-in duration-500" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -107,36 +109,34 @@ function RouteComponent() {
           ))}
         </nav>
 
-        <div className="pt-8">
-          <button
+        <div className="pt-4">
+          <Button
             onClick={handleSaveConfig}
             disabled={isSaving}
-            className={`flex items-center justify-center gap-3 w-full py-4 transition-all shadow-xl shadow-black/10 rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold ${
-              isSaving
-                ? "bg-muted text-muted-foreground cursor-wait"
-                : "bg-primary text-primary-foreground hover:scale-[1.02] active:scale-[0.98]"
+            className={`h-12 w-full transition-all rounded-sm text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl shadow-primary/5 ${
+              isSaving ? "opacity-50" : "hover:scale-[1.02] active:scale-[0.98]"
             }`}
           >
             {isSaving ? (
-              <Loader2 size={14} className="animate-spin" />
+              <Loader2 size={14} className="animate-spin mr-2" />
             ) : (
-              <Check size={14} />
+              <Check size={14} className="mr-2" />
             )}
-            {isSaving ? "正在保存..." : "保存当前更改"}
-          </button>
+            {isSaving ? "同步中..." : "保存配置"}
+          </Button>
         </div>
       </aside>
 
       {/* Right Content Area (Dynamic Content) */}
-      <div className="flex-1 lg:pl-12">
+      <div className="flex-1 lg:pl-16">
         <div
           key={activeSection}
-          className="animate-in fade-in slide-in-from-right-4 duration-700 fill-mode-both"
+          className="animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both"
         >
           {isLoading ? (
             <SectionSkeleton />
           ) : (
-            <>
+            <div className="bg-card/30 backdrop-blur-sm border border-border/50 rounded-lg p-8 md:p-12">
               {activeSection === "email" && (
                 <EmailServiceSection
                   value={config.email || DEFAULT_CONFIG.email!}
@@ -147,7 +147,7 @@ function RouteComponent() {
                 />
               )}
               {activeSection === "maintenance" && <MaintenanceSection />}
-            </>
+            </div>
           )}
         </div>
       </div>
