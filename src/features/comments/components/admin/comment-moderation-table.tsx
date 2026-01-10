@@ -273,7 +273,7 @@ export const CommentModerationTable = ({
       {/* Desktop Layout (Table View) - Visible on medium+ screens */}
       {/* Removed overflow-hidden to allow hover cards to be fully visible */}
       <div className="hidden md:block border border-border rounded-lg bg-card shadow-sm">
-        <div className="grid grid-cols-12 gap-4 px-6 py-3 text-[10px] uppercase tracking-[0.1em] text-muted-foreground font-bold border-b border-border bg-muted/40 items-center">
+        <div className="grid grid-cols-12 gap-4 px-6 py-3 text-[10px] uppercase tracking-widest text-muted-foreground font-bold border-b border-border bg-muted/40 items-center">
           <div className="col-span-1 flex items-center justify-center">
             <Checkbox
               checked={allSelected}
@@ -352,14 +352,14 @@ export const CommentModerationTable = ({
                     <Link
                       to="/post/$slug"
                       params={{ slug: (comment as any).post.slug || "" }}
-                      className="font-mono bg-muted px-1.5 py-0.5 rounded-[2px] truncate max-w-[150px] hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer flex items-center gap-1.5"
+                      className="font-mono bg-muted px-1.5 py-0.5 rounded-xs truncate max-w-[150px] hover:text-primary hover:bg-primary/5 transition-colors cursor-pointer flex items-center gap-1.5"
                       title={(comment as any).post.title}
                     >
                       📄 {(comment as any).post.title}
                     </Link>
                   )}
                   {(comment as any).replyToUser && (
-                    <span className="font-mono bg-muted px-1.5 py-0.5 rounded-[2px] hover:text-foreground cursor-default transition-colors">
+                    <span className="font-mono bg-muted px-1.5 py-0.5 rounded-xs hover:text-foreground cursor-default transition-colors">
                       ↪️ 回复 @{(comment as any).replyToUser.name}
                     </span>
                   )}
