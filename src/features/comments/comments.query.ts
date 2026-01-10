@@ -14,6 +14,27 @@ export function rootCommentsByPostIdQuery(postId: number, userId?: string) {
   });
 }
 
+export function rootCommentsByPostIdInfiniteQuery(
+  postId: number,
+  userId?: string,
+) {
+  return infiniteQueryOptions({
+    queryKey: ["comments", "roots", "post", postId, "infinite", { userId }],
+    queryFn: ({ pageParam = 0 }) =>
+      getRootCommentsByPostIdFn({
+        data: { postId, offset: pageParam, limit: 20 },
+      }),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage, allPages) => {
+      const totalLoaded = allPages.reduce(
+        (sum, page) => sum + page.items.length,
+        0,
+      );
+      return totalLoaded < lastPage.total ? totalLoaded : undefined;
+    },
+  });
+}
+
 export function repliesByRootIdInfiniteQuery(
   postId: number,
   rootId: number,

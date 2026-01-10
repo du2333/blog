@@ -1,8 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
-import { rootCommentsByPostIdQuery } from "../../comments.query";
+import { rootCommentsByPostIdInfiniteQuery } from "../../comments.query";
 import { useComments } from "../../hooks/use-comments";
 import { CommentList } from "./comment-list";
 import { CommentEditor } from "./comment-editor";
@@ -17,9 +17,13 @@ interface CommentSectionProps {
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data: session } = authClient.useSession();
-  const { data: response, isLoading } = useQuery(
-    rootCommentsByPostIdQuery(postId, session?.user.id),
-  );
+  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery(
+      rootCommentsByPostIdInfiniteQuery(postId, session?.user.id),
+    );
+
+  const rootComments = data?.pages.flatMap((page) => page.items) ?? [];
+  const totalCount = data?.pages[0]?.total ?? 0;
 
   const { createComment, deleteComment, isCreating, isDeleting } =
     useComments(postId);
@@ -61,7 +65,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     }
   };
 
-  if (isLoading || !response) {
+  if (isLoading || !data) {
     return <CommentSectionSkeleton />;
   }
 
@@ -73,7 +77,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
             评论交流
           </h3>
           <p className="text-2xl font-serif font-medium text-foreground">
-            {response.total} 条评论
+            {totalCount} 条评论
           </p>
         </div>
       </header>
@@ -105,7 +109,7 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
 
       {/* Comments List */}
       <CommentList
-        rootComments={response.items}
+        rootComments={rootComments}
         postId={postId}
         onReply={(rootId, commentId, userName) =>
           setReplyTarget({ rootId, commentId, userName })
@@ -116,6 +120,20 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
         onSubmitReply={handleCreateReply}
         isSubmittingReply={isCreating}
       />
+
+      {/* Load More Root Comments */}
+      {hasNextPage && (
+        <div className="flex justify-center pt-8">
+          <Button
+            variant="outline"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="px-8 py-5 text-[10px] uppercase tracking-[0.2em] font-bold border-border hover:bg-foreground hover:text-background transition-all"
+          >
+            {isFetchingNextPage ? "正在加载..." : "加载更多评论"}
+          </Button>
+        </div>
+      )}
 
       {/* Delete Confirmation Modal */}
       <ConfirmationModal
