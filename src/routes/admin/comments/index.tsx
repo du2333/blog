@@ -1,11 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { Search, User } from "lucide-react";
+import { User } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { CommentStatus } from "@/lib/db/schema";
 import { CommentModerationTable } from "@/features/comments/components/admin/comment-moderation-table";
 import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 const searchSchema = z.object({
   status: z
@@ -91,9 +90,6 @@ function CommentAdminPage() {
               className="pl-9 h-10 border-border/50 bg-background/50 focus:bg-background transition-colors"
             />
           </div>
-          <Button variant="outline" size="icon" className="h-10 w-10 shrink-0">
-            <Search size={16} />
-          </Button>
         </div>
       </div>
 

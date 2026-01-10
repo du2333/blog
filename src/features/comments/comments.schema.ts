@@ -131,7 +131,7 @@ export const GetAllCommentsInputSchema = z.object({
 
 export const ModerateCommentInputSchema = z.object({
   id: z.number(),
-  status: z.enum(["published", "deleted"]),
+  status: z.enum(["published", "deleted", "pending"]),
 });
 
 export const StartCommentModerationInputSchema = z.object({

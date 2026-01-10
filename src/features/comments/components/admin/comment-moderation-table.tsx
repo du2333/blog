@@ -53,7 +53,7 @@ export const CommentModerationTable = ({
   );
 
   const [selectedIds, setSelectedIds] = useState<Set<number>>(new Set());
-  const { moderate, adminDelete } = useAdminComments();
+  const { moderate } = useAdminComments();
   const queryClient = useQueryClient();
 
   const handleSelectAll = () => {
@@ -92,14 +92,18 @@ export const CommentModerationTable = ({
     }
   };
 
-  const handleBatchDelete = async () => {
+  const handleBatchTrash = async () => {
     if (selectedIds.size === 0) return;
-    const toastId = toast.loading(`正在删除 ${selectedIds.size} 条评论...`);
+    const toastId = toast.loading(
+      `正在移入垃圾箱 ${selectedIds.size} 条评论...`,
+    );
     try {
       await Promise.all(
-        Array.from(selectedIds).map((id) => adminDelete({ data: { id } })),
+        Array.from(selectedIds).map((id) =>
+          moderate({ data: { id, status: "deleted" } }),
+        ),
       );
-      toast.success("批量删除完成", { id: toastId });
+      toast.success("已移入垃圾箱", { id: toastId });
       setSelectedIds(new Set());
       queryClient.invalidateQueries({ queryKey: ["comments"] });
     } catch (error) {
@@ -157,12 +161,12 @@ export const CommentModerationTable = ({
             </Button>
             <Button
               size="sm"
-              variant="destructive"
-              onClick={handleBatchDelete}
-              className="h-8 shadow-sm"
+              variant="secondary"
+              onClick={handleBatchTrash}
+              className="h-8 shadow-sm text-orange-600 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200"
             >
               <Trash2 size={14} className="mr-2" />
-              批量删除
+              移入垃圾箱
             </Button>
           </div>
         </div>
