@@ -1,4 +1,4 @@
-import { useBlocker, useRouter } from "@tanstack/react-router";
+import { useBlocker } from "@tanstack/react-router";
 import {
   Calendar,
   Check,
@@ -30,9 +30,10 @@ import { Input } from "@/components/ui/input";
 import { POST_STATUSES } from "@/lib/db/schema";
 import { extensions } from "@/features/posts/editor/config";
 import { isPostPubliclyViewable } from "@/features/posts/components/post-manager/types";
+import { useNavigateBack } from "@/hooks/use-navigate-back";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
-  const router = useRouter();
+  const navigateBack = useNavigateBack({ fallbackTo: "/admin/posts" });
 
   // Initialize post state from initialData (always provided)
   const [post, setPost] = useState<PostEditorData>(() => ({
@@ -114,7 +115,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       <header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
         <Button
           variant="ghost"
-          onClick={() => router.history.back()}
+          onClick={navigateBack}
           className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-all hover:bg-transparent"
         >
           <div className="p-2 bg-accent border border-border/50 rounded-sm group-hover:scale-105 active:scale-95 transition-all shadow-sm">

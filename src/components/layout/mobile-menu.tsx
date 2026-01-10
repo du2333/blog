@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, UserIcon, X } from "lucide-react";
+import type { FileRoutesByTo } from "@/routeTree.gen";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
   navOptions: Array<{
     label: string;
-    to: string;
+    to: keyof FileRoutesByTo;
     id: string;
   }>;
   isOpen: boolean;

@@ -150,7 +150,7 @@ function RootCommentWithReplies({
                 登录后即可发表评论，与博主和其他读者一起交流心得。
               </p>
               <div className="flex gap-4">
-                <Link to="/login">
+                <Link to="..">
                   <Button
                     variant="outline"
                     size="sm"

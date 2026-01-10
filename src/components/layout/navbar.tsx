@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LayoutDashboard, Search, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
+import type { FileRoutesByTo } from "@/routeTree.gen";
 import { ThemeToggle } from "@/components/common/theme-toggle";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -10,7 +11,7 @@ import { blogConfig } from "@/blog.config";
 interface NavbarProps {
   navOptions: Array<{
     label: string;
-    to: string;
+    to: keyof FileRoutesByTo;
     id: string;
   }>;
   onSearchClick: () => void;

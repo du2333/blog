@@ -4,7 +4,6 @@ import {
   Link,
   createFileRoute,
   notFound,
-  useRouter,
 } from "@tanstack/react-router";
 import { ArrowLeft, ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -17,6 +16,7 @@ import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
 import { Button } from "@/components/ui/button";
 import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
+import { useNavigateBack } from "@/hooks/use-navigate-back";
 
 export const Route = createFileRoute("/_public/post/$slug")({
   component: RouteComponent,
@@ -50,7 +50,7 @@ function RouteComponent() {
   const { data: post } = useSuspenseQuery(
     postBySlugQuery(Route.useParams().slug),
   );
-  const router = useRouter();
+  const navigateBack = useNavigateBack({ fallbackTo: "/blog" });
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -73,7 +73,7 @@ function RouteComponent() {
       <nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
         <Button
           variant="ghost"
-          onClick={() => router.history.back()}
+          onClick={navigateBack}
           className="group h-auto p-0 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
         >
           <ArrowLeft

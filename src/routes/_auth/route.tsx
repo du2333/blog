@@ -3,12 +3,12 @@ import {
   Outlet,
   createFileRoute,
   redirect,
-  useRouter,
 } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { emailConfiguredQuery, sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
 import { blogConfig } from "@/blog.config";
+import { useNavigateBack } from "@/hooks/use-navigate-back";
 
 export const Route = createFileRoute("/_auth")({
   beforeLoad: async ({ context, location }) => {
@@ -29,7 +29,7 @@ export const Route = createFileRoute("/_auth")({
 });
 
 function RouteComponent() {
-  const router = useRouter();
+  const navigateBack = useNavigateBack();
   return (
     <div className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-500">
       {/* --- Background Decorative Elements --- */}
@@ -40,7 +40,7 @@ function RouteComponent() {
       {/* --- Header --- */}
       <header className="relative z-50 h-24 flex items-center px-6 md:px-12">
         <div
-          onClick={() => router.history.back()}
+          onClick={navigateBack}
           className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
         >
           <ArrowLeft
