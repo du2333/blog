@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type { PostEditorData } from "@/features/posts/components/post-editor/types";
 import { PostEditor } from "@/features/posts/components/post-editor";
 import { ErrorPage } from "@/components/common/error-page";
-import { PostEditorSkeleton } from "@/components/skeletons/post-editor-skeleton";
+import { PostEditorSkeleton } from "@/features/posts/components/post-editor/post-editor-skeleton";
 import { updatePostFn } from "@/features/posts/api/posts.admin.api";
 import { postByIdQuery } from "@/features/posts/posts.query";
 

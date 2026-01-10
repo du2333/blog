@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
-import { ArticleSkeleton } from "@/components/skeletons/article-skeleton";
+import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { postBySlugQuery } from "@/features/posts/posts.query";

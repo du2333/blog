@@ -12,7 +12,7 @@ import {
   useMediaLibrary,
   useMediaUpload,
 } from "@/features/media/components/media-library/hooks";
-import { MediaLibrarySkeleton } from "@/components/skeletons/media-skeleton";
+import { MediaLibrarySkeleton } from "@/features/media/components/media-library/media-skeleton";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { formatBytes } from "@/lib/utils";

@@ -7,7 +7,7 @@ import { EmailServiceSection } from "@/features/email/components/email-service-s
 import { MaintenanceSection } from "@/features/config/components/maintenance-section";
 import { useSystemSetting } from "@/features/config/hooks/use-system-setting";
 import { useEmailConnection } from "@/features/email/hooks/use-email-connection";
-import { SectionSkeleton } from "@/components/skeletons/settings-skeleton";
+import { SectionSkeleton } from "@/features/config/components/settings-skeleton";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_CONFIG } from "@/features/config/config.schema";
 

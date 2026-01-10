@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PostRow, PostsPagination, PostsToolbar } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
+import { PostManagerSkeleton } from "./post-manager-skeleton";
 import type {
   CategoryFilter,
   PostListItem,
@@ -12,7 +13,6 @@ import type {
   StatusFilter,
 } from "./types";
 import { ErrorPage } from "@/components/common/error-page";
-import { PostManagerSkeleton } from "@/components/skeletons/post-manager-skeleton";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
