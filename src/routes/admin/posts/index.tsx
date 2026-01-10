@@ -1,13 +1,11 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { z } from "zod";
 import type {
-  CategoryFilter,
   SortDirection,
   StatusFilter,
 } from "@/features/posts/components/post-manager/types";
 import { PostManager } from "@/features/posts/components/post-manager";
 import {
-  CATEGORY_FILTERS,
   SORT_DIRECTIONS,
   STATUS_FILTERS,
 } from "@/features/posts/components/post-manager/types";
@@ -15,7 +13,6 @@ import {
 const searchSchema = z.object({
   page: z.number().int().positive().optional().default(1).catch(1),
   status: z.enum(STATUS_FILTERS).optional().default("ALL").catch("ALL"),
-  category: z.enum(CATEGORY_FILTERS).optional().default("ALL").catch("ALL"),
   sortDir: z.enum(SORT_DIRECTIONS).optional().default("DESC").catch("DESC"),
   search: z.string().optional().default("").catch(""),
 });
@@ -36,7 +33,7 @@ export const Route = createFileRoute("/admin/posts/")({
 
 function PostManagerPage() {
   const navigate = useNavigate();
-  const { page, status, category, sortDir, search } = Route.useSearch();
+  const { page, status, sortDir, search } = Route.useSearch();
 
   const updateSearch = (updates: Partial<PostsSearchParams>) => {
     navigate({
@@ -47,7 +44,6 @@ function PostManagerPage() {
       search: {
         page: updates.page ?? 1,
         status: updates.status ?? status,
-        category: updates.category ?? category,
         sortDir: updates.sortDir ?? sortDir,
         search: updates.search ?? search,
       },
@@ -60,10 +56,6 @@ function PostManagerPage() {
 
   const handleStatusChange = (newStatus: StatusFilter) => {
     updateSearch({ status: newStatus });
-  };
-
-  const handleCategoryChange = (newCategory: CategoryFilter) => {
-    updateSearch({ category: newCategory });
   };
 
   const handleSortChange = (dir: SortDirection) => {
@@ -80,7 +72,6 @@ function PostManagerPage() {
       search: {
         page: 1,
         status: "ALL",
-        category: "ALL",
         sortDir: "DESC",
         search: "",
       },
@@ -91,12 +82,10 @@ function PostManagerPage() {
     <PostManager
       page={page}
       status={status}
-      category={category}
       sortDir={sortDir}
       search={search}
       onPageChange={handlePageChange}
       onStatusChange={handleStatusChange}
-      onCategoryChange={handleCategoryChange}
       onSortChange={handleSortChange}
       onSearchChange={handleSearchChange}
       onResetFilters={handleResetFilters}

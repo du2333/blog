@@ -4,7 +4,7 @@ import {
   createSelectSchema,
   createUpdateSchema,
 } from "drizzle-zod";
-import type { PostCategory, PostStatus } from "@/lib/db/schema";
+import type { PostStatus } from "@/lib/db/schema";
 import { POST_STATUSES, PostsTable } from "@/lib/db/schema";
 
 // Date fields need to accept both Date objects and ISO strings (for JSON serialization)
@@ -37,7 +37,7 @@ export const PostWithTocSchema = PostSelectSchema.extend({
 export const GetPostsCursorInputSchema = z.object({
   cursor: z.number().optional(),
   limit: z.number().optional(),
-  category: z.custom<PostCategory>().optional(),
+  tagName: z.string().optional(),
 });
 
 export const FindPostBySlugInputSchema = z.object({
@@ -56,7 +56,6 @@ export const GenerateSlugInputSchema = z.object({
 export const GetPostsInputSchema = z.object({
   offset: z.number().optional(),
   limit: z.number().optional(),
-  category: z.custom<PostCategory>().optional(),
   status: z.custom<PostStatus>().optional(),
   publicOnly: z.boolean().optional(),
   search: z.string().optional(),

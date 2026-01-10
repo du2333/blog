@@ -1,12 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { categoryFilterToApi, statusFilterToApi } from "../types";
-import type {
-  CategoryFilter,
-  PostListItem,
-  SortDirection,
-  StatusFilter,
-} from "../types";
+import { statusFilterToApi } from "../types";
+import type { PostListItem, SortDirection, StatusFilter } from "../types";
 import {
   deletePostFn,
   getPostsCountFn,
@@ -18,30 +13,21 @@ import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 interface UsePostsOptions {
   page: number;
   status: StatusFilter;
-  category: CategoryFilter;
   sortDir: SortDirection;
   search: string;
 }
 
-export function usePosts({
-  page,
-  status,
-  category,
-  sortDir,
-  search,
-}: UsePostsOptions) {
+export function usePosts({ page, status, sortDir, search }: UsePostsOptions) {
   const apiStatus = statusFilterToApi(status);
-  const apiCategory = categoryFilterToApi(category);
 
   const postsQuery = useQuery({
-    queryKey: ["posts", page, status, category, sortDir, search],
+    queryKey: ["posts", page, status, sortDir, search],
     queryFn: () =>
       getPostsFn({
         data: {
           offset: (page - 1) * ADMIN_ITEMS_PER_PAGE,
           limit: ADMIN_ITEMS_PER_PAGE,
           status: apiStatus,
-          category: apiCategory,
           sortDir,
           search: search || undefined,
         },
@@ -49,12 +35,11 @@ export function usePosts({
   });
 
   const countQuery = useQuery({
-    queryKey: ["postsCount", status, category, search],
+    queryKey: ["postsCount", status, search],
     queryFn: () =>
       getPostsCountFn({
         data: {
           status: apiStatus,
-          category: apiCategory,
           search: search || undefined,
         },
       }),

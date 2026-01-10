@@ -69,10 +69,10 @@ function RouteComponent() {
       <aside className="lg:w-72 shrink-0 lg:sticky lg:top-36 h-fit space-y-16 animate-in fade-in slide-in-from-left-4 duration-1000">
         <div className="space-y-4">
           <h1 className="text-5xl font-serif font-medium tracking-tight text-foreground">
-            系统控制台
+            系统设置
           </h1>
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground/50 font-bold">
-            System Preferences & Configuration
+            系统维护和配置
           </p>
         </div>
 
@@ -114,14 +114,6 @@ function RouteComponent() {
             </div>
           ))}
         </nav>
-
-        <footer className="mt-20 pt-10 border-t border-border/40">
-          <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-medium leading-loose">
-            配置更改将实时生效
-            <br />
-            请确保凭证在保存前执行过测试
-          </p>
-        </footer>
 
         <div className="pt-4">
           <Button

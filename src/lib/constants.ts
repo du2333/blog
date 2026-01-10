@@ -1,12 +1,5 @@
 export const ADMIN_ITEMS_PER_PAGE = 12;
 
-export const CATEGORY_COLORS = {
-  DEV: "text-muted-foreground border-border",
-  LIFE: "text-muted-foreground border-border",
-  GAMING: "text-muted-foreground border-border",
-  TECH: "text-muted-foreground border-border",
-};
-
 export const CACHE_CONTROL = {
   public: {
     "Cache-Control": "public, max-age=0, must-revalidate",

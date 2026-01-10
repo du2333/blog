@@ -6,12 +6,7 @@ import { toast } from "sonner";
 import { PostRow, PostsToolbar } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
 import { PostManagerSkeleton } from "./post-manager-skeleton";
-import type {
-  CategoryFilter,
-  PostListItem,
-  SortDirection,
-  StatusFilter,
-} from "./types";
+import type { PostListItem, SortDirection, StatusFilter } from "./types";
 import { ErrorPage } from "@/components/common/error-page";
 import { Button } from "@/components/ui/button";
 import { AdminPagination } from "@/components/admin/admin-pagination";
@@ -23,8 +18,6 @@ import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
 
 // Re-export types for external use
 export {
-  CATEGORY_FILTERS,
-  type CategoryFilter,
   SORT_DIRECTIONS,
   type SortDirection,
   STATUS_FILTERS,
@@ -34,12 +27,10 @@ export {
 interface PostManagerProps {
   page: number;
   status: StatusFilter;
-  category: CategoryFilter;
   sortDir: SortDirection;
   search: string;
   onPageChange: (page: number) => void;
   onStatusChange: (status: StatusFilter) => void;
-  onCategoryChange: (category: CategoryFilter) => void;
   onSortChange: (dir: SortDirection) => void;
   onSearchChange: (search: string) => void;
   onResetFilters: () => void;
@@ -48,12 +39,10 @@ interface PostManagerProps {
 export function PostManager({
   page,
   status,
-  category,
   sortDir,
   search,
   onPageChange,
   onStatusChange,
-  onCategoryChange,
   onSortChange,
   onSearchChange,
   onResetFilters,
@@ -84,7 +73,6 @@ export function PostManager({
   const { posts, totalCount, totalPages, isPending, error } = usePosts({
     page,
     status,
-    category,
     sortDir,
     search: debouncedSearch,
   });
@@ -148,8 +136,6 @@ export function PostManager({
         <PostsToolbar
           searchTerm={searchInput}
           onSearchChange={setSearchInput}
-          category={category}
-          onCategoryChange={onCategoryChange}
           status={status}
           onStatusChange={onStatusChange}
           sortDir={sortDir}
@@ -185,8 +171,7 @@ export function PostManager({
                 {/* Desktop Header (Simplified) */}
                 <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border">
                   <div className="col-span-1">ID</div>
-                  <div className="col-span-6">文章摘要</div>
-                  <div className="col-span-2">分类</div>
+                  <div className="col-span-8">文章摘要</div>
                   <div className="col-span-2">日期</div>
                   <div className="col-span-1 text-right">操作</div>
                 </div>

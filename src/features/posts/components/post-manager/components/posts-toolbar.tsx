@@ -1,17 +1,15 @@
-import { ArrowUpDown, ChevronDown, Filter, Search, Tag, X } from "lucide-react";
+import { ArrowUpDown, ChevronDown, Filter, Search, X } from "lucide-react";
 import { useState } from "react";
-import { CATEGORY_FILTERS, STATUS_FILTERS } from "../types";
-import type { CategoryFilter, SortDirection, StatusFilter } from "../types";
+import { STATUS_FILTERS } from "../types";
+import type { SortDirection, StatusFilter } from "../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-type DropdownType = "CATEGORY" | "STATUS" | "SORT" | null;
+type DropdownType = "STATUS" | "SORT" | null;
 
 interface PostsToolbarProps {
   searchTerm: string;
   onSearchChange: (value: string) => void;
-  category: CategoryFilter;
-  onCategoryChange: (category: CategoryFilter) => void;
   status: StatusFilter;
   onStatusChange: (status: StatusFilter) => void;
   sortDir: SortDirection;
@@ -22,8 +20,6 @@ interface PostsToolbarProps {
 export function PostsToolbar({
   searchTerm,
   onSearchChange,
-  category,
-  onCategoryChange,
   status,
   onStatusChange,
   sortDir,
@@ -33,10 +29,7 @@ export function PostsToolbar({
   const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
 
   const hasActiveFilters =
-    category !== "ALL" ||
-    status !== "ALL" ||
-    sortDir !== "DESC" ||
-    searchTerm !== "";
+    status !== "ALL" || sortDir !== "DESC" || searchTerm !== "";
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 mb-12 items-start lg:items-center">
@@ -68,57 +61,7 @@ export function PostsToolbar({
 
       {/* Filters Container */}
       <div className="flex flex-wrap gap-4 w-full lg:w-auto">
-        {/* 1. Category Filter */}
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setActiveDropdown(
-                activeDropdown === "CATEGORY" ? null : "CATEGORY",
-              )
-            }
-            className={`
-                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all px-4 rounded-sm
-                ${
-                  category !== "ALL"
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }
-            `}
-          >
-            <Tag size={12} strokeWidth={1.5} />
-            {category === "ALL" ? "所有分类" : category}
-            <ChevronDown
-              size={12}
-              className={`transition-transform duration-500 opacity-40 ${
-                activeDropdown === "CATEGORY" ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-          {activeDropdown === "CATEGORY" && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
-              {CATEGORY_FILTERS.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => {
-                    onCategoryChange(cat);
-                    setActiveDropdown(null);
-                  }}
-                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
-                    category === cat
-                      ? "font-bold bg-accent"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* 2. Status Filter */}
+        {/* 1. Status Filter */}
         <div className="relative">
           <Button
             variant="ghost"
@@ -166,7 +109,7 @@ export function PostsToolbar({
           )}
         </div>
 
-        {/* 3. Sort Dropdown */}
+        {/* 2. Sort Dropdown */}
         <div className="relative">
           <Button
             variant="ghost"

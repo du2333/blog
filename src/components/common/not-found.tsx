@@ -36,12 +36,6 @@ export function NotFound() {
           </span>
         </button>
       </div>
-
-      <footer className="absolute bottom-12 left-0 w-full text-center px-6">
-        <div className="text-[9px] font-mono text-muted-foreground/30 uppercase tracking-[0.6em]">
-          End of Line // Error 404
-        </div>
-      </footer>
     </div>
   );
 }

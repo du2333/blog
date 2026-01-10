@@ -1,6 +1,6 @@
 import { and, asc, desc, eq, like, lte } from "drizzle-orm";
 import type { SQL } from "drizzle-orm";
-import type { PostCategory, PostStatus } from "@/lib/db/schema";
+import type { PostStatus } from "@/lib/db/schema";
 import { PostsTable } from "@/lib/db/schema";
 
 export type SortField = "DATE";
@@ -21,16 +21,11 @@ export function isPostPubliclyViewable(post: {
 }
 
 export function buildPostWhereClause(options: {
-  category?: PostCategory;
   status?: PostStatus;
   publicOnly?: boolean; // For public pages - checks publishedAt <= now
   search?: string;
 }) {
   const whereClauses = [];
-
-  if (options.category) {
-    whereClauses.push(eq(PostsTable.category, options.category));
-  }
 
   if (options.status) {
     whereClauses.push(eq(PostsTable.status, options.status));

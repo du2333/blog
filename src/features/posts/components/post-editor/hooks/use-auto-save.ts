@@ -34,10 +34,10 @@ export function useAutoSave({
     title: string;
     summary: string;
     slug: string;
-    category: string;
     status: string;
     readTimeInMinutes: number;
     publishedAt: number | null;
+    tagIds: string; // Serialize for easy comparison
     contentRef: PostEditorData["contentJson"];
   } | null>(null);
   // Store onSave in ref to avoid effect re-running when onSave reference changes
@@ -48,10 +48,10 @@ export function useAutoSave({
     title: p.title,
     summary: p.summary,
     slug: p.slug,
-    category: p.category,
     status: p.status,
     readTimeInMinutes: p.readTimeInMinutes,
     publishedAt: p.publishedAt ? p.publishedAt.valueOf() : null,
+    tagIds: [...p.tagIds].sort().join(","),
     contentRef: p.contentJson,
   });
 
@@ -62,10 +62,10 @@ export function useAutoSave({
       prev.title !== curr.title ||
       prev.summary !== curr.summary ||
       prev.slug !== curr.slug ||
-      prev.category !== curr.category ||
       prev.status !== curr.status ||
       prev.readTimeInMinutes !== curr.readTimeInMinutes ||
       prev.publishedAt !== curr.publishedAt ||
+      prev.tagIds !== curr.tagIds ||
       prev.contentRef !== curr.contentRef
     );
   };

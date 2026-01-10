@@ -13,7 +13,6 @@ import { user } from "@/lib/db/schema/auth.schema";
 
 export * from "./auth.schema";
 
-export const POST_CATEGORIES = ["DEV", "LIFE", "GAMING", "TECH"] as const;
 export const POST_STATUSES = ["draft", "published", "archived"] as const;
 // published: 所有人可见
 // verifying: 刚入库，AI 还没跑完 (仅作者可见)
@@ -34,9 +33,7 @@ export const PostsTable = sqliteTable(
     summary: text(),
     readTimeInMinutes: integer("read_time_in_minutes").default(1).notNull(),
     slug: text().notNull().unique(),
-    category: text("category", { enum: POST_CATEGORIES })
-      .default("DEV")
-      .notNull(),
+
     contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
     status: text("status", { enum: POST_STATUSES }).notNull().default("draft"),
     publishedAt: integer("published_at", { mode: "timestamp" }),
@@ -83,6 +80,30 @@ export const PostMediaTable = sqliteTable(
       .references(() => MediaTable.id, { onDelete: "cascade" }),
   },
   (table) => [primaryKey({ columns: [table.postId, table.mediaId] })],
+);
+
+export const TagsTable = sqliteTable("tags", {
+  id: integer().primaryKey({ autoIncrement: true }),
+  name: text().notNull().unique(),
+  createdAt: integer("created_at", { mode: "timestamp" })
+    .notNull()
+    .default(sql`(unixepoch())`),
+});
+
+export const PostTagsTable = sqliteTable(
+  "post_tags",
+  {
+    postId: integer("post_id")
+      .notNull()
+      .references(() => PostsTable.id, { onDelete: "cascade" }),
+    tagId: integer("tag_id")
+      .notNull()
+      .references(() => TagsTable.id, { onDelete: "cascade" }),
+  },
+  (table) => [
+    primaryKey({ columns: [table.postId, table.tagId] }),
+    index("post_tags_tag_idx").on(table.tagId),
+  ],
 );
 
 export const SystemConfigTable = sqliteTable("system_config", {
@@ -144,7 +165,7 @@ export const CommentsTable = sqliteTable(
 export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson">;
 export type Comment = typeof CommentsTable.$inferSelect;
+export type Tag = typeof TagsTable.$inferSelect;
 
-export type PostCategory = (typeof POST_CATEGORIES)[number];
 export type PostStatus = (typeof POST_STATUSES)[number];
 export type CommentStatus = (typeof COMMENT_STATUSES)[number];

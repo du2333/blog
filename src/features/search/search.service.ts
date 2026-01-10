@@ -52,7 +52,6 @@ export async function search(context: Context, data: SearchQueryInput) {
         slug: document.slug,
         title: document.title,
         summary: document.summary,
-        category: document.category,
       },
       score,
       matches: {
@@ -118,7 +117,6 @@ export async function rebuildIndex(context: Context) {
       slug: PostsTable.slug,
       title: PostsTable.title,
       summary: PostsTable.summary,
-      category: PostsTable.category,
       contentJson: PostsTable.contentJson,
       status: PostsTable.status,
       publishedAt: PostsTable.publishedAt,
@@ -145,7 +143,7 @@ export async function rebuildIndex(context: Context) {
       id: post.id.toString(),
       title: post.title,
       slug: post.slug,
-      category: post.category,
+      category: "post",
       summary,
       content,
     });

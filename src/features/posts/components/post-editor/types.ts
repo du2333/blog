@@ -1,19 +1,19 @@
 import type { JSONContent } from "@tiptap/react";
-import type { Post, PostCategory, PostStatus } from "@/lib/db/schema";
+import type { PostStatus } from "@/lib/db/schema";
 
 export interface PostEditorData {
   title: string;
   summary: string;
   slug: string;
-  category: PostCategory;
   status: PostStatus;
   readTimeInMinutes: number;
   contentJson: JSONContent | null;
   publishedAt: Date | null;
+  tagIds: Array<number>;
 }
 
 export interface PostEditorProps {
-  initialData: Post;
+  initialData: PostEditorData & { id: number };
   onSave: (data: PostEditorData) => Promise<void>;
 }
 
@@ -23,9 +23,9 @@ export const defaultPostData: PostEditorData = {
   title: "",
   summary: "",
   slug: "",
-  category: "DEV",
   status: "draft",
   readTimeInMinutes: 1,
   contentJson: null,
   publishedAt: null,
+  tagIds: [],
 };

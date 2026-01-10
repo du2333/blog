@@ -21,7 +21,7 @@ import type { LucideIcon } from "lucide-react";
 import type React from "react";
 
 interface EditorToolbarProps {
-  editor: Editor;
+  editor: Editor | null;
   onLinkClick: () => void;
   onImageClick: () => void;
 }
@@ -74,32 +74,65 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     isLink,
   } = useEditorState({
     editor,
-    selector: (ctx) => ({
-      isBold: ctx.editor.isActive("bold"),
-      isHeading2: ctx.editor.isActive("heading", { level: 2 }),
-      isHeading3: ctx.editor.isActive("heading", { level: 3 }),
-      isItalic: ctx.editor.isActive("italic"),
-      isUnderline: ctx.editor.isActive("underline"),
-      isStrike: ctx.editor.isActive("strike"),
-      isCode: ctx.editor.isActive("code"),
-      isBulletList: ctx.editor.isActive("bulletList"),
-      isOrderedList: ctx.editor.isActive("orderedList"),
-      isBlockquote: ctx.editor.isActive("blockquote"),
-      isLink: ctx.editor.isActive("link"),
-    }),
-  });
+    selector: (ctx) => {
+      if (!ctx.editor) {
+        return {
+          isBold: false,
+          isHeading2: false,
+          isHeading3: false,
+          isItalic: false,
+          isUnderline: false,
+          isStrike: false,
+          isCode: false,
+          isBulletList: false,
+          isOrderedList: false,
+          isBlockquote: false,
+          isLink: false,
+        };
+      }
+      return {
+        isBold: ctx.editor.isActive("bold"),
+        isHeading2: ctx.editor.isActive("heading", { level: 2 }),
+        isHeading3: ctx.editor.isActive("heading", { level: 3 }),
+        isItalic: ctx.editor.isActive("italic"),
+        isUnderline: ctx.editor.isActive("underline"),
+        isStrike: ctx.editor.isActive("strike"),
+        isCode: ctx.editor.isActive("code"),
+        isBulletList: ctx.editor.isActive("bulletList"),
+        isOrderedList: ctx.editor.isActive("orderedList"),
+        isBlockquote: ctx.editor.isActive("blockquote"),
+        isLink: ctx.editor.isActive("link"),
+      };
+    },
+  }) || {
+    isBold: false,
+    isHeading2: false,
+    isHeading3: false,
+    isItalic: false,
+    isUnderline: false,
+    isStrike: false,
+    isCode: false,
+    isBulletList: false,
+    isOrderedList: false,
+    isBlockquote: false,
+    isLink: false,
+  };
 
   return (
     <div className="sticky top-0 z-30 mb-12 py-3 bg-background/80 backdrop-blur-xl border-b border-border flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">
       {/* Headings */}
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        onClick={() =>
+          editor?.chain().focus().toggleHeading({ level: 2 }).run()
+        }
         isActive={isHeading2}
         icon={Heading2}
         label="大标题"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        onClick={() =>
+          editor?.chain().focus().toggleHeading({ level: 3 }).run()
+        }
         isActive={isHeading3}
         icon={Heading3}
         label="小标题"
@@ -109,31 +142,31 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
       {/* Formatting */}
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBold().run()}
+        onClick={() => editor?.chain().focus().toggleBold().run()}
         isActive={isBold}
         icon={Bold}
         label="粗体"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleItalic().run()}
+        onClick={() => editor?.chain().focus().toggleItalic().run()}
         isActive={isItalic}
         icon={Italic}
         label="斜体"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleUnderline().run()}
+        onClick={() => editor?.chain().focus().toggleUnderline().run()}
         isActive={isUnderline}
         icon={UnderlineIcon}
         label="下划线"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleStrike().run()}
+        onClick={() => editor?.chain().focus().toggleStrike().run()}
         isActive={isStrike}
         icon={Strikethrough}
         label="删除线"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleCode().run()}
+        onClick={() => editor?.chain().focus().toggleCode().run()}
         isActive={isCode}
         icon={Code}
         label="行内代码"
@@ -143,19 +176,19 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
       {/* Lists & Blocks */}
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBulletList().run()}
+        onClick={() => editor?.chain().focus().toggleBulletList().run()}
         isActive={isBulletList}
         icon={List}
         label="无序列表"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleOrderedList().run()}
+        onClick={() => editor?.chain().focus().toggleOrderedList().run()}
         isActive={isOrderedList}
         icon={ListOrdered}
         label="有序列表"
       />
       <ToolbarButton
-        onClick={() => editor.chain().focus().toggleBlockquote().run()}
+        onClick={() => editor?.chain().focus().toggleBlockquote().run()}
         isActive={isBlockquote}
         icon={Quote}
         label="引用"
@@ -179,12 +212,12 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
 
       <div className="ml-auto flex gap-1.5">
         <ToolbarButton
-          onClick={() => editor.chain().focus().undo().run()}
+          onClick={() => editor?.chain().focus().undo().run()}
           icon={Undo}
           label="撤销"
         />
         <ToolbarButton
-          onClick={() => editor.chain().focus().redo().run()}
+          onClick={() => editor?.chain().focus().redo().run()}
           icon={Redo}
           label="重做"
         />

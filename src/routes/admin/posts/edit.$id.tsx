@@ -1,25 +1,33 @@
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import type { PostEditorData } from "@/features/posts/components/post-editor/types";
 import { PostEditor } from "@/features/posts/components/post-editor";
-import { ErrorPage } from "@/components/common/error-page";
 import { PostEditorSkeleton } from "@/features/posts/components/post-editor/post-editor-skeleton";
-import { updatePostFn } from "@/features/posts/api/posts.admin.api";
+import { updatePostFn as adminUpdatePostFn } from "@/features/posts/api/posts.admin.api";
+import { setPostTagsFn } from "@/features/tags/api/tags.api";
 import { postByIdQuery } from "@/features/posts/posts.query";
+import {
+  tagsAdminQueryOptions,
+  tagsByPostIdQueryOptions,
+} from "@/features/tags/tags.query";
 
 export const Route = createFileRoute("/admin/posts/edit/$id")({
   component: EditPost,
   pendingComponent: PostEditorSkeleton,
   loader: async ({ context, params }) => {
-    const post = await context.queryClient.fetchQuery(
-      postByIdQuery(Number(params.id)),
-    );
-    return post;
+    const postId = Number(params.id);
+    const [post, tags] = await Promise.all([
+      context.queryClient.ensureQueryData(postByIdQuery(postId)),
+      context.queryClient.ensureQueryData(tagsByPostIdQueryOptions(postId)),
+      // Prefetch all tags for the selector
+      context.queryClient.prefetchQuery(tagsAdminQueryOptions()),
+    ]);
+    return { post, tags };
   },
-  head: ({ loaderData: post }) => ({
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: post?.title,
+        title: loaderData?.post?.title,
       },
     ],
   }),
@@ -29,13 +37,13 @@ function EditPost() {
   const { id } = Route.useParams();
   const postId = Number(id);
   const queryClient = useQueryClient();
-  const { data: post, error } = useSuspenseQuery(postByIdQuery(postId));
 
-  if (error) {
-    return <ErrorPage />;
-  }
+  // Use useQuery instead of useSuspenseQuery to prevent flickering on background refetches
+  // Since loader ensures data is in cache, these will have initial data immediately.
+  const { data: post } = useQuery(postByIdQuery(postId));
+  const { data: tags } = useQuery(tagsByPostIdQueryOptions(postId));
 
-  if (!post) {
+  if (!post || !tags) {
     return (
       <div className="flex items-center justify-center h-[50vh]">
         <div className="text-center space-y-4">
@@ -48,27 +56,49 @@ function EditPost() {
     );
   }
 
+  const initialData = {
+    id: post.id,
+    title: post.title,
+    summary: post.summary ?? "",
+    slug: post.slug,
+    status: post.status,
+    readTimeInMinutes: post.readTimeInMinutes,
+    contentJson: post.contentJson,
+    publishedAt: post.publishedAt,
+    tagIds: tags.map((t) => t.id),
+  };
+
   const handleSave = async (data: PostEditorData) => {
-    await updatePostFn({
-      data: {
-        id: post.id,
+    // Parallelize updates
+    await Promise.all([
+      adminUpdatePostFn({
         data: {
-          ...data,
-          publishedAt:
-            data.status === "published" && !post.publishedAt
-              ? new Date()
-              : data.publishedAt,
+          id: post.id,
+          data: {
+            ...data,
+            publishedAt:
+              data.status === "published" && !post.publishedAt
+                ? new Date()
+                : data.publishedAt,
+          },
         },
-      },
-    });
+      }),
+      setPostTagsFn({
+        data: {
+          postId: post.id,
+          tagIds: data.tagIds,
+        },
+      }),
+    ]);
 
     // Invalidate cache to ensure fresh data on next visit
     queryClient.invalidateQueries({ queryKey: ["post", postId] });
     queryClient.invalidateQueries({ queryKey: ["posts"] });
+    queryClient.invalidateQueries({ queryKey: ["post", postId, "tags"] });
     queryClient.invalidateQueries({
       predicate: (q) => q.queryKey[0] === "linkedMediaKeys",
     });
   };
 
-  return <PostEditor initialData={post} onSave={handleSave} />;
+  return <PostEditor initialData={initialData} onSave={handleSave} />;
 }

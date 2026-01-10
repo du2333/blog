@@ -28,10 +28,11 @@ export function Editor({ content, onChange, extensions }: EditorProps) {
           "prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg font-body leading-relaxed min-h-[500px]",
       },
     },
+    immediatelyRender: false,
   });
 
   const openLinkModal = useCallback(() => {
-    const previousUrl = editor.getAttributes("link").href;
+    const previousUrl = editor?.getAttributes("link").href;
     setModalInitialUrl(previousUrl || "");
     setModalOpen("LINK");
   }, [editor]);
@@ -44,14 +45,14 @@ export function Editor({ content, onChange, extensions }: EditorProps) {
   const handleModalSubmit = (url: string) => {
     if (modalOpen === "LINK") {
       if (url === "") {
-        editor.chain().focus().extendMarkRange("link").unsetLink().run();
+        editor?.chain().focus().extendMarkRange("link").unsetLink().run();
       } else {
         const href = normalizeLinkHref(url);
-        editor.chain().focus().extendMarkRange("link").setLink({ href }).run();
+        editor?.chain().focus().extendMarkRange("link").setLink({ href }).run();
       }
     } else if (modalOpen === "IMAGE") {
       if (url) {
-        editor.chain().focus().setImage({ src: url }).run();
+        editor?.chain().focus().setImage({ src: url }).run();
       }
     }
 

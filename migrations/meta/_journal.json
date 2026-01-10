@@ -8,6 +8,13 @@
       "when": 1768012947476,
       "tag": "0000_breezy_pretty_boy",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1768029417769,
+      "tag": "0001_flawless_black_queen",
+      "breakpoints": true
     }
   ]
 }

@@ -74,17 +74,8 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         </div>
       </div>
 
-      {/* Category & Date (Responsive stacking) */}
-      <div className="md:col-span-4 flex md:grid md:grid-cols-2 items-center gap-6 w-full text-zinc-400">
-        <div className="flex items-center gap-2">
-          <div className="w-1 h-1 rounded-full bg-current opacity-40 md:hidden" />
-          <Badge
-            variant="outline"
-            className="text-[9px] uppercase tracking-[0.2em] font-medium border-border/50 text-muted-foreground bg-transparent"
-          >
-            {post.category}
-          </Badge>
-        </div>
+      {/* Date (Responsive stacking) */}
+      <div className="md:col-span-4 flex md:justify-end items-center gap-6 w-full text-zinc-400">
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
           <Calendar size={10} strokeWidth={1.5} className="opacity-40" />
           <ClientOnly fallback={<span>-</span>}>

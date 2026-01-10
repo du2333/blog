@@ -1,28 +1,39 @@
-import { useSuspenseInfiniteQuery } from "@tanstack/react-query";
+import {
+  useSuspenseInfiniteQuery,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { RefreshCw } from "lucide-react";
-import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
-import type { PostCategory } from "@/lib/db/schema";
 import { PostItem } from "@/features/posts/components/view/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
 import { blogConfig } from "@/blog.config";
+import { tagsQueryOptions } from "@/features/tags/tags.query";
+import { cn } from "@/lib/utils";
 
-const searchSchema = z.object({
-  category: z.custom<PostCategory>().optional().catch(undefined),
-});
+const DisplayTagsQueryOptions = {
+  ...tagsQueryOptions(),
+  select: (tags: Array<{ id: number; name: string }>) =>
+    tags.sort((a, b) => a.name.localeCompare(b.name)),
+};
 
 export const Route = createFileRoute("/_public/blog/")({
+  validateSearch: z.object({
+    tagName: z.string().optional(),
+  }),
   component: RouteComponent,
   pendingComponent: LoadingFallback,
-  validateSearch: searchSchema,
-  loaderDeps: ({ search: { category } }) => ({ category }),
-  loader: async ({ context, deps: { category } }) => {
-    await context.queryClient.prefetchInfiniteQuery(
-      postsInfiniteQueryOptions(category),
-    );
+  loaderDeps: ({ search: { tagName } }) => ({ tagName }),
+  loader: async ({ context, deps }) => {
+    await Promise.all([
+      context.queryClient.prefetchInfiniteQuery(
+        postsInfiniteQueryOptions({ tagName: deps.tagName }),
+      ),
+      context.queryClient.prefetchQuery(DisplayTagsQueryOptions),
+    ]);
   },
   head: () => ({
     meta: [
@@ -38,24 +49,13 @@ export const Route = createFileRoute("/_public/blog/")({
 });
 
 function RouteComponent() {
-  const { category } = Route.useSearch();
-  const navigate = useNavigate();
+  const { tagName } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
 
-  const activeCategory = category ?? "ALL";
-
-  const handleCategoryChange = useCallback(
-    (cat: string) => {
-      navigate({
-        to: "/blog",
-        search: cat === "ALL" ? {} : { category: cat as PostCategory },
-      });
-      window.scrollTo(0, 0);
-    },
-    [navigate],
-  );
+  const { data: tags } = useSuspenseQuery(DisplayTagsQueryOptions);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useSuspenseInfiniteQuery(postsInfiniteQueryOptions(category));
+    useSuspenseInfiniteQuery(postsInfiniteQueryOptions({ tagName }));
 
   const posts = useMemo(() => {
     return data.pages.flatMap((page) => page.items);
@@ -80,12 +80,14 @@ function RouteComponent() {
     return () => observer.disconnect();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const categories: Array<{ label: string; value: string }> = [
-    { label: "全部内容", value: "ALL" },
-    { label: "开发日志", value: "DEV" },
-    { label: "生活碎念", value: "LIFE" },
-    { label: "技术探索", value: "TECH" },
-  ];
+  const handleTagClick = (clickedTag: string) => {
+    navigate({
+      search: {
+        tagName: clickedTag === tagName ? undefined : clickedTag,
+      },
+      replace: true, // Replace history to avoid back-button clutter
+    });
+  };
 
   return (
     <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-10">
@@ -102,37 +104,50 @@ function RouteComponent() {
             {blogConfig.description}
           </p>
         </div>
+      </header>
 
-        {/* Categories Filter */}
-        <nav className="flex flex-wrap gap-x-8 gap-y-4 border-b border-border pb-8 animate-in fade-in duration-700 delay-200 fill-mode-both">
-          {categories.map((cat) => (
+      {/* Tag Filters */}
+      <div className="mb-12 overflow-x-auto pb-4 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-none">
+        <div className="flex items-center gap-2 min-w-max">
+          <button
+            onClick={() => handleTagClick("")}
+            className={cn(
+              "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border",
+              !tagName
+                ? "bg-foreground text-background border-foreground"
+                : "bg-background text-muted-foreground border-border hover:border-foreground/50",
+            )}
+          >
+            全部
+          </button>
+          {tags.map((tag) => (
             <button
-              key={cat.value}
-              onClick={() => handleCategoryChange(cat.value)}
-              className={`text-[11px] uppercase tracking-[0.2em] transition-all duration-500 relative group font-medium ${
-                activeCategory === cat.value
-                  ? "text-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              key={tag.id}
+              onClick={() => handleTagClick(tag.name)}
+              className={cn(
+                "px-4 py-1.5 rounded-full text-sm font-medium transition-all duration-300 border",
+                tagName === tag.name
+                  ? "bg-foreground text-background border-foreground"
+                  : "bg-background text-muted-foreground border-border hover:border-foreground/50",
+              )}
             >
-              {cat.label}
-              <span
-                className={`absolute -bottom-2 left-0 h-px bg-current transition-all duration-500 ${
-                  activeCategory === cat.value
-                    ? "w-full"
-                    : "w-0 group-hover:w-full"
-                }`}
-              ></span>
+              {tag.name}
             </button>
           ))}
-        </nav>
-      </header>
+        </div>
+      </div>
 
       {/* Posts List */}
       <div className="flex flex-col gap-0 border-t border-border">
-        {posts.map((post, index) => (
-          <PostItem key={post.id} post={post} index={index} />
-        ))}
+        {posts.length === 0 ? (
+          <div className="py-20 text-center text-muted-foreground">
+            暂无文章
+          </div>
+        ) : (
+          posts.map((post, index) => (
+            <PostItem key={post.id} post={post} index={index} />
+          ))
+        )}
       </div>
 
       {/* Load More Area & Infinite Scroll Observer */}
@@ -152,7 +167,7 @@ function RouteComponent() {
               <Skeleton className="absolute inset-0 w-12 h-12 rounded-full border-t border-primary bg-transparent animate-[spin_1.5s_linear_infinite]" />
             </div>
             <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground">
-              Loading
+              加载中
             </span>
           </div>
         ) : hasNextPage ? (

@@ -20,15 +20,14 @@ import TextareaAutosize from "react-textarea-autosize";
 import { useAutoSave, usePostActions } from "./hooks";
 import type { JSONContent } from "@tiptap/react";
 import type { PostEditorData, PostEditorProps } from "./types";
-import type { PostCategory } from "@/lib/db/schema";
+import { TagSelector } from "@/features/tags/components/tag-selector";
 import { Editor } from "@/components/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import DatePicker from "@/components/ui/date-picker";
-import DropdownMenu from "@/components/ui/dropdown-menu";
 
 import { Input } from "@/components/ui/input";
-import { POST_CATEGORIES, POST_STATUSES } from "@/lib/db/schema";
+import { POST_STATUSES } from "@/lib/db/schema";
 import { extensions } from "@/features/posts/editor/config";
 import { isPostPubliclyViewable } from "@/features/posts/components/post-manager/types";
 
@@ -38,14 +37,31 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
   // Initialize post state from initialData (always provided)
   const [post, setPost] = useState<PostEditorData>(() => ({
     title: initialData.title,
-    summary: initialData.summary ?? "",
+    summary: initialData.summary,
     slug: initialData.slug,
-    category: initialData.category,
     status: initialData.status,
     readTimeInMinutes: initialData.readTimeInMinutes,
     contentJson: initialData.contentJson ?? null,
     publishedAt: initialData.publishedAt,
+    tagIds: initialData.tagIds,
   }));
+
+  // Sync state when initialData updates (e.g. after background refetch/invalidation)
+  const [prevInitialDataId, setPrevInitialDataId] = useState(initialData.id);
+  const [prevTagIds, setPrevTagIds] = useState(() =>
+    [...initialData.tagIds].sort().join(","),
+  );
+
+  const currentTagIdsStr = [...initialData.tagIds].sort().join(",");
+
+  if (prevInitialDataId !== initialData.id || prevTagIds !== currentTagIdsStr) {
+    setPrevInitialDataId(initialData.id);
+    setPrevTagIds(currentTagIdsStr);
+    setPost((prev) => ({
+      ...prev,
+      tagIds: initialData.tagIds,
+    }));
+  }
 
   // Auto-save hook
   const { saveStatus, lastSaved, setError } = useAutoSave({
@@ -247,24 +263,18 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               </div>
             </div>
 
-            {/* Property Row: Category */}
-            <div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
-              <div className="w-32 flex items-center gap-2 text-muted-foreground">
+            {/* Property Row: Tags */}
+            <div className="group flex items-start py-3 px-2 hover:bg-accent rounded-sm transition-colors">
+              <div className="w-32 flex items-center gap-2 text-muted-foreground pt-1">
                 <Tag size={14} strokeWidth={1.5} />
                 <span className="text-[11px] uppercase tracking-wider font-medium">
-                  类别
+                  标签
                 </span>
               </div>
               <div className="flex-1">
-                <DropdownMenu
-                  value={post.category}
-                  onChange={(val) =>
-                    handlePostChange({ category: val as PostCategory })
-                  }
-                  options={POST_CATEGORIES.map((c) => ({
-                    label: c,
-                    value: c,
-                  }))}
+                <TagSelector
+                  value={post.tagIds}
+                  onChange={(tagIds) => handlePostChange({ tagIds })}
                 />
               </div>
             </div>

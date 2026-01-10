@@ -1,6 +1,5 @@
 import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 import { findPostByIdFn } from "./api/posts.admin.api";
-import type { PostCategory } from "@/lib/db/schema";
 import {
   findPostBySlugFn,
   getPostsCursorFn,
@@ -16,15 +15,15 @@ export const featuredPostsQuery = queryOptions({
   },
 });
 
-export function postsInfiniteQueryOptions(category?: PostCategory) {
+export function postsInfiniteQueryOptions(filters: { tagName?: string } = {}) {
   return infiniteQueryOptions({
-    queryKey: ["posts", category],
+    queryKey: ["posts", filters],
     queryFn: ({ pageParam }) =>
       getPostsCursorFn({
         data: {
           cursor: pageParam,
-          category,
           limit: 12,
+          tagName: filters.tagName,
         },
       }),
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,

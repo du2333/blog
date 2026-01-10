@@ -31,8 +31,8 @@ export async function getPostsCursor(
     await PostRepo.getPostsCursor(context.db, {
       cursor: data.cursor,
       limit: data.limit,
-      category: data.category,
       publicOnly: true,
+      tagName: data.tagName,
     });
 
   const version = await CacheService.getVersion(context, "posts:list");
@@ -40,7 +40,6 @@ export async function getPostsCursor(
     "posts",
     "list",
     version,
-    data.category ?? "all",
     data.limit ?? 10,
     data.cursor ?? 0,
   ];
@@ -176,7 +175,6 @@ export async function getPosts(context: Context, data: GetPostsInput) {
   return await PostRepo.getPosts(context.db, {
     offset: data.offset ?? 0,
     limit: data.limit ?? 10,
-    category: data.category,
     status: data.status,
     publicOnly: data.publicOnly,
     search: data.search,
@@ -189,7 +187,6 @@ export async function getPostsCount(
   data: GetPostsCountInput,
 ) {
   return await PostRepo.getPostsCount(context.db, {
-    category: data.category,
     status: data.status,
     publicOnly: data.publicOnly,
     search: data.search,

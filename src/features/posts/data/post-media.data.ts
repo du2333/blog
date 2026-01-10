@@ -50,7 +50,6 @@ export async function getPostsByMediaKey(db: DB, key: string) {
       summary: PostsTable.summary,
       readTimeInMinutes: PostsTable.readTimeInMinutes,
       slug: PostsTable.slug,
-      category: PostsTable.category,
       status: PostsTable.status,
     })
     .from(PostsTable)

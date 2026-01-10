@@ -72,7 +72,7 @@ export function EmailServiceSection({
             邮件分发
           </h3>
           <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground font-semibold opacity-80">
-            Email Delivery & Notification Services
+            邮件通知和分发服务
           </p>
         </div>
         {status !== "IDLE" && (

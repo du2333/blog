@@ -1,12 +1,12 @@
 import { and, count, desc, eq, like, lt, ne } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
 import type { DB } from "@/lib/db";
-import type { PostCategory, PostListItem, PostStatus } from "@/lib/db/schema";
+import type { PostListItem, PostStatus } from "@/lib/db/schema";
 import {
   buildPostOrderByClause,
   buildPostWhereClause,
 } from "@/features/posts/data/helper";
-import { PostsTable } from "@/lib/db/schema";
+import { PostTagsTable, PostsTable, TagsTable } from "@/lib/db/schema";
 
 const DEFAULT_PAGE_SIZE = 12;
 
@@ -20,7 +20,6 @@ export async function getPosts(
   options: {
     offset?: number;
     limit?: number;
-    category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
     search?: string;
@@ -43,7 +42,6 @@ export async function getPosts(
       summary: PostsTable.summary,
       readTimeInMinutes: PostsTable.readTimeInMinutes,
       slug: PostsTable.slug,
-      category: PostsTable.category,
       status: PostsTable.status,
       publishedAt: PostsTable.publishedAt,
       createdAt: PostsTable.createdAt,
@@ -60,7 +58,6 @@ export async function getPosts(
 export async function getPostsCount(
   db: DB,
   options: {
-    category?: PostCategory;
     status?: PostStatus;
     publicOnly?: boolean;
     search?: string;
@@ -84,17 +81,17 @@ export async function getPostsCursor(
   options: {
     cursor?: number;
     limit?: number;
-    category?: PostCategory;
     publicOnly?: boolean;
+    tagName?: string;
   } = {},
 ): Promise<{
   items: Array<PostListItem>;
   nextCursor: number | null;
 }> {
-  const { cursor, limit = DEFAULT_PAGE_SIZE, category, publicOnly } = options;
+  const { cursor, limit = DEFAULT_PAGE_SIZE, publicOnly, tagName } = options;
 
   // Build base conditions from helper
-  const baseConditions = buildPostWhereClause({ category, publicOnly });
+  const baseConditions = buildPostWhereClause({ publicOnly });
 
   // Add cursor condition if provided
   const conditions = [];
@@ -104,21 +101,31 @@ export async function getPostsCursor(
   if (cursor) {
     conditions.push(lt(PostsTable.id, cursor));
   }
+  if (tagName) {
+    conditions.push(eq(TagsTable.name, tagName));
+  }
 
-  const items = await db
+  const query = db
     .select({
       id: PostsTable.id,
       title: PostsTable.title,
       summary: PostsTable.summary,
       readTimeInMinutes: PostsTable.readTimeInMinutes,
       slug: PostsTable.slug,
-      category: PostsTable.category,
       status: PostsTable.status,
       publishedAt: PostsTable.publishedAt,
       createdAt: PostsTable.createdAt,
       updatedAt: PostsTable.updatedAt,
     })
-    .from(PostsTable)
+    .from(PostsTable);
+
+  if (tagName) {
+    query
+      .innerJoin(PostTagsTable, eq(PostsTable.id, PostTagsTable.postId))
+      .innerJoin(TagsTable, eq(PostTagsTable.tagId, TagsTable.id));
+  }
+
+  const items = await query
     .where(conditions.length > 0 ? and(...conditions) : undefined)
     .orderBy(desc(PostsTable.id))
     .limit(limit + 1);

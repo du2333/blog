@@ -11,7 +11,7 @@ export function MaintenanceSection() {
             数据维护
           </h3>
           <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold opacity-70">
-            System Maintenance & Data Synchronization
+            系统维护和数据同步
           </p>
         </div>
       </div>

@@ -12,7 +12,7 @@ import { ContentRenderer } from "@/features/posts/components/view/content-render
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
 import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
-import { Badge } from "@/components/ui/badge";
+
 import { Button } from "@/components/ui/button";
 import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
@@ -88,12 +88,6 @@ function RouteComponent() {
         <header className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both max-w-4xl">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground">
-              <Badge
-                variant="outline"
-                className="font-mono tracking-[0.2em] uppercase rounded-sm border-border px-2 py-0.5 text-muted-foreground"
-              >
-                {post.category}
-              </Badge>
               <span className="flex items-center gap-1.5">
                 <Calendar size={12} strokeWidth={1.5} />
                 <ClientOnly fallback={<span>-</span>}>
