@@ -5,7 +5,14 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router";
-import { ArrowUp, Calendar, Clock, Share2, Tag as TagIcon } from "lucide-react";
+import {
+  ArrowUp,
+  Calendar,
+  Clock,
+  RefreshCw,
+  Share2,
+  Tag as TagIcon,
+} from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
@@ -86,8 +93,20 @@ function RouteComponent() {
               </span>
               <span className="flex items-center gap-1.5">
                 <Clock size={12} strokeWidth={1.5} />
-                {post.readTimeInMinutes} min
+                {post.readTimeInMinutes} 分钟阅读
               </span>
+
+              {post.publishedAt &&
+                post.updatedAt.getTime() - post.publishedAt.getTime() >
+                  60000 && (
+                  <span className="flex items-center gap-1.5">
+                    <RefreshCw size={12} strokeWidth={1.5} />
+                    最后更新于{" "}
+                    <ClientOnly fallback={<span>-</span>}>
+                      {formatDate(post.updatedAt)}
+                    </ClientOnly>
+                  </span>
+                )}
 
               {/* Tags */}
               {post.tags && post.tags.length > 0 && (
