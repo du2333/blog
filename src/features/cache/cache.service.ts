@@ -7,7 +7,7 @@ import type { CacheKey, CacheNamespace } from "./types";
  * @param options.ttl - 缓存时间 (秒) 默认 3600 秒 (1 小时)
  */
 export async function get<T extends z.ZodTypeAny>(
-  context: Context,
+  context: { env: Env; executionCtx: ExecutionContext },
   key: CacheKey,
   schema: T,
   fetcher: () => Promise<z.infer<T>>,

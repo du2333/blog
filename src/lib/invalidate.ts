@@ -64,7 +64,7 @@ export async function purgeCDNCache(env: Env, options: PurgeOptions) {
 
 export async function purgePostCDNCache(env: Env, slug: string) {
   return purgeCDNCache(env, {
-    urls: [`/post/${slug}`, "/blog", "/"],
+    urls: [`/post/${slug}`, "/post", "/"],
   });
 }
 

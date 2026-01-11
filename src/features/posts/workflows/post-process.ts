@@ -2,6 +2,7 @@ import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CacheService from "@/features/cache/cache.service";
 import * as PostService from "@/features/posts/posts.service";
+import * as TagService from "@/features/tags/tags.service";
 import { getDb } from "@/lib/db";
 import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
@@ -47,10 +48,22 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       });
 
       await step.do("Invalidate caches", async () => {
+        const version = await CacheService.getVersion(
+          { env: this.env },
+          "posts:detail",
+        );
         const tasks = [
-          CacheService.deleteKey({ env: this.env }, ["post", post.slug]),
+          CacheService.deleteKey({ env: this.env }, [
+            version,
+            "post",
+            post.slug,
+          ]),
           purgePostCDNCache(this.env, post.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
+          // Invalidate public tags list (tag counts may have changed)
+          CacheService.deleteKey({ env: this.env }, [
+            ...TagService.PUBLIC_TAGS_CACHE_KEY,
+          ]),
         ];
         await Promise.all(tasks);
       });
@@ -71,10 +84,22 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       });
 
       await step.do("Invalidate caches", async () => {
+        const version = await CacheService.getVersion(
+          { env: this.env },
+          "posts:detail",
+        );
         const tasks = [
-          CacheService.deleteKey({ env: this.env }, ["post", post.slug]),
+          CacheService.deleteKey({ env: this.env }, [
+            version,
+            "post",
+            post.slug,
+          ]),
           purgePostCDNCache(this.env, post.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
+          // Invalidate public tags list (tag counts may have changed)
+          CacheService.deleteKey({ env: this.env }, [
+            ...TagService.PUBLIC_TAGS_CACHE_KEY,
+          ]),
         ];
         await Promise.all(tasks);
       });

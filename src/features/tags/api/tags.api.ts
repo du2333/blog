@@ -25,9 +25,8 @@ export const getTagsFn = createCachedFn()
       key: "tags:getAll",
     }),
   ])
-  .inputValidator(GetTagsInputSchema)
-  .handler(async ({ data, context }) => {
-    return await TagService.getTags(context, data);
+  .handler(async ({ context }) => {
+    return await TagService.getPublicTags(context);
   });
 
 // ============ Admin API ============
@@ -36,7 +35,7 @@ export const getTagsFn = createCachedFn()
 export const getTagsAdminFn = createAdminFn()
   .inputValidator(GetTagsInputSchema)
   .handler(async ({ data, context }) => {
-    return await TagService.getTags(context, { ...data, skipCache: true });
+    return await TagService.getTags(context, data);
   });
 
 export const createTagFn = createAdminFn({

@@ -71,7 +71,8 @@ export async function findPostBySlug(
     };
   };
 
-  const cacheKey = ["post", data.slug];
+  const version = await CacheService.getVersion(context, "posts:detail");
+  const cacheKey = [version, "post", data.slug];
   return await CacheService.get(context, cacheKey, PostWithTocSchema, fetcher, {
     ttl: 60 * 60 * 24 * 7, // 7 days
   });

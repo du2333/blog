@@ -1,4 +1,4 @@
-import { and, asc, count, desc, eq, lte, ne, sql } from "drizzle-orm";
+import { and, asc, count, desc, eq, gt, lte, ne, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
 import type { DB } from "@/lib/db";
 import { PostTagsTable, PostsTable, TagsTable } from "@/lib/db/schema";
@@ -56,7 +56,8 @@ export async function getAllTagsWithCount(
           eq(PostsTable.status, "published"),
           lte(PostsTable.publishedAt, new Date()),
         ),
-      );
+      )
+      .having(gt(count(PostTagsTable.postId), 0));
   }
 
   const orderFn = sortDir === "asc" ? asc : desc;
@@ -197,4 +198,26 @@ export async function nameExists(
  */
 export async function deletePostTagAssociations(db: DB, postId: number) {
   await db.delete(PostTagsTable).where(eq(PostTagsTable.postId, postId));
+}
+
+/**
+ * Get published posts associated with a tag (for cache invalidation)
+ */
+export async function getPublishedPostsByTagId(db: DB, tagId: number) {
+  const results = await db
+    .select({
+      id: PostsTable.id,
+      slug: PostsTable.slug,
+    })
+    .from(PostTagsTable)
+    .innerJoin(PostsTable, eq(PostTagsTable.postId, PostsTable.id))
+    .where(
+      and(
+        eq(PostTagsTable.tagId, tagId),
+        eq(PostsTable.status, "published"),
+        lte(PostsTable.publishedAt, new Date()),
+      ),
+    );
+
+  return results;
 }

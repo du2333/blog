@@ -7,7 +7,6 @@ import { RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useRef } from "react";
 import { z } from "zod";
 
-import type { TagWithCount } from "@/features/tags/tags.schema";
 import { blogConfig } from "@/blog.config";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -17,13 +16,7 @@ import { tagsQueryOptions } from "@/features/tags/tags.query";
 import { cn } from "@/lib/utils";
 
 const DisplayTagsQueryOptions = {
-  ...tagsQueryOptions({
-    withCount: true,
-    publicOnly: true,
-    sortBy: "postCount",
-    sortDir: "desc",
-  }),
-  select: (tags: Array<TagWithCount>) => tags.filter((t) => t.postCount > 0),
+  ...tagsQueryOptions(),
 };
 
 export const Route = createFileRoute("/_public/post/")({

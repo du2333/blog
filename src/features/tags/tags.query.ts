@@ -1,9 +1,5 @@
 import { queryOptions } from "@tanstack/react-query";
-import type {
-  GetTagsInput,
-  Tag,
-  TagWithCount,
-} from "@/features/tags/tags.schema";
+import type { GetTagsInput } from "@/features/tags/tags.schema";
 import {
   getTagsAdminFn,
   getTagsByPostIdFn,
@@ -11,28 +7,13 @@ import {
   getTagsWithCountAdminFn,
 } from "@/features/tags/api/tags.api";
 
-/**
- * Query options for fetching all tags (public, uses cached API)
- */
-export function tagsQueryOptions<T extends GetTagsInput>(options: T = {} as T) {
+export function tagsQueryOptions() {
   return queryOptions({
-    queryKey: [
-      "tags",
-      options.sortBy ?? "name",
-      options.sortDir ?? "asc",
-      !!options.withCount,
-      !!options.publicOnly,
-    ],
-    queryFn: () =>
-      getTagsFn({ data: options }) as Promise<
-        T["withCount"] extends true ? Array<TagWithCount> : Array<Tag>
-      >,
+    queryKey: ["tags", "public"],
+    queryFn: () => getTagsFn({}),
   });
 }
 
-/**
- * Query options for fetching all tags (admin, bypasses function-level cache)
- */
 export function tagsAdminQueryOptions(options: GetTagsInput = {}) {
   return queryOptions({
     queryKey: [
@@ -42,13 +23,10 @@ export function tagsAdminQueryOptions(options: GetTagsInput = {}) {
       options.sortDir ?? "asc",
     ],
     queryFn: () => getTagsAdminFn({ data: options }),
-    staleTime: Infinity, // Fetch once and cache forever (client-side feeling)
+    staleTime: Infinity,
   });
 }
 
-/**
- * Query options for fetching tags by post ID
- */
 export function tagsByPostIdQueryOptions(postId: number) {
   return queryOptions({
     queryKey: ["post", postId, "tags"],
@@ -56,9 +34,6 @@ export function tagsByPostIdQueryOptions(postId: number) {
   });
 }
 
-/**
- * Query options for fetching tags with post counts (admin)
- */
 export function tagsWithCountAdminQueryOptions(options: GetTagsInput = {}) {
   return queryOptions({
     queryKey: [
