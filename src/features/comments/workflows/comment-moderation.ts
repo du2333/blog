@@ -1,4 +1,5 @@
 import { WorkflowEntrypoint } from "cloudflare:workers";
+import { renderToStaticMarkup } from "react-dom/server";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CommentService from "@/features/comments/comments.service";
 import * as CommentRepo from "@/features/comments/data/comments.data";
@@ -6,6 +7,7 @@ import * as AiService from "@/features/ai/ai.service";
 import * as PostService from "@/features/posts/posts.service";
 import * as EmailData from "@/features/email/data/email.data";
 import { generateUnsubscribeToken } from "@/features/email/email.utils";
+import { ReplyNotificationEmail } from "@/features/email/templates/ReplyNotificationEmail";
 import { getDb } from "@/lib/db";
 import { convertToPlainText } from "@/features/posts/utils/content";
 import { serverEnv } from "@/lib/env/server.env";
@@ -180,22 +182,23 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
           unsubscribeType,
         );
         const unsubscribeUrl = `https://${DOMAIN}/unsubscribe?userId=${replyToAuthor.id}&type=${unsubscribeType}&token=${token}`;
+        const postUrl = `https://${DOMAIN}/post/${post.slug}`;
+
+        const emailHtml = renderToStaticMarkup(
+          ReplyNotificationEmail({
+            postTitle: post.title,
+            replierName,
+            replyPreview: `${replyPreview}${replyPreview.length >= 100 ? "..." : ""}`,
+            postUrl,
+            unsubscribeUrl,
+          }),
+        );
 
         await this.env.SEND_EMAIL_WORKFLOW.create({
           params: {
             to: replyToAuthor.email,
             subject: `[评论回复] ${replierName} 回复了您在《${post.title}》的评论`,
-            html: `
-              <p><strong>${replierName}</strong> 回复了您的评论：</p>
-              <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
-                ${replyPreview}${replyPreview.length >= 100 ? "..." : ""}
-              </blockquote>
-              <p><a href="https://${DOMAIN}/post/${post.slug}">查看完整回复</a></p>
-              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-              <p style="font-size: 12px; color: #999;">
-                不想接收此类通知？<a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">点击退订</a>
-              </p>
-            `,
+            html: emailHtml,
             headers: {
               "List-Unsubscribe": `<${unsubscribeUrl}>`,
               "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",

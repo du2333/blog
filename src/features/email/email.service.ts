@@ -33,6 +33,7 @@ export async function testEmailConnection(
 export async function sendEmail(
   context: {
     db: Context["db"];
+    env: Env;
   },
   options: {
     to: string;
@@ -41,6 +42,15 @@ export async function sendEmail(
     headers?: Record<string, string>;
   },
 ) {
+  const { ENVIRONMENT } = serverEnv(context.env);
+
+  if (ENVIRONMENT === "dev") {
+    console.log(
+      `[EMAIL_SERVICE] 开发环境跳过发送至 ${options.to} 的邮件：${options.subject}`,
+    );
+    return { status: "SUCCESS" as const };
+  }
+
   const config = await getSystemConfig(context.db);
   const email = config?.email;
 

@@ -25,7 +25,10 @@ export class SendEmailWorkflow extends WorkflowEntrypoint<Env, Params> {
       },
       async () => {
         const db = getDb(this.env);
-        const result = await sendEmail({ db }, { to, subject, html, headers });
+        const result = await sendEmail(
+          { db, env: this.env },
+          { to, subject, html, headers },
+        );
 
         if (result.status === "FAILED") {
           throw new Error(`Email send failed: ${result.error}`);

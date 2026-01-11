@@ -1,3 +1,4 @@
+import { renderToStaticMarkup } from "react-dom/server";
 import type {
   CreateCommentInput,
   DeleteCommentInput,
@@ -9,6 +10,7 @@ import type {
 } from "@/features/comments/comments.schema";
 import * as CommentRepo from "@/features/comments/data/comments.data";
 import * as PostService from "@/features/posts/posts.service";
+import { AdminNotificationEmail } from "@/features/email/templates/AdminNotificationEmail";
 import { convertToPlainText } from "@/features/posts/utils/content";
 import { serverEnv } from "@/lib/env/server.env";
 
@@ -144,17 +146,20 @@ export async function createComment(
     const commentPreview = convertToPlainText(data.content).slice(0, 100);
     const commenterName = context.session.user.name;
 
+    const emailHtml = renderToStaticMarkup(
+      AdminNotificationEmail({
+        postTitle: post.title,
+        commenterName,
+        commentPreview: `${commentPreview}${commentPreview.length >= 100 ? "..." : ""}`,
+        postUrl: `https://${DOMAIN}/post/${post.slug}`,
+      }),
+    );
+
     await context.env.SEND_EMAIL_WORKFLOW.create({
       params: {
         to: ADMIN_EMAIL,
         subject: `[新评论] ${post.title}`,
-        html: `
-          <p><strong>${commenterName}</strong> 在《${post.title}》下发表了评论：</p>
-          <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
-            ${commentPreview}${commentPreview.length >= 100 ? "..." : ""}
-          </blockquote>
-          <p><a href="https://${DOMAIN}/post/${post.slug}">查看文章</a></p>
-        `,
+        html: emailHtml,
       },
     });
   }
