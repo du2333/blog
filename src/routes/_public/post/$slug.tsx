@@ -5,7 +5,7 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router";
-import { ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
+import { ArrowUp, Calendar, Clock, Share2, Tag as TagIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
@@ -93,15 +93,21 @@ function RouteComponent() {
               {post.tags && post.tags.length > 0 && (
                 <div className="flex items-center gap-3">
                   <span className="text-border/40 font-mono">|</span>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
                     {post.tags.map((tag) => (
                       <Link
                         key={tag.id}
                         to="/post"
                         search={{ tagName: tag.name }}
-                        className="text-muted-foreground hover:text-foreground transition-colors"
+                        className="group flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/50 hover:bg-secondary border border-border/50 hover:border-border transition-all duration-300"
                       >
-                        # {tag.name}
+                        <TagIcon
+                          size={10}
+                          className="text-muted-foreground group-hover:text-foreground transition-colors"
+                        />
+                        <span className="text-[10px] font-mono lowercase text-muted-foreground group-hover:text-foreground transition-colors tracking-tight">
+                          {tag.name}
+                        </span>
                       </Link>
                     ))}
                   </div>
