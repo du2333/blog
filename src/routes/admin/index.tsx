@@ -6,10 +6,13 @@ import { ADMIN_STATS } from "@/lib/constants";
 
 export const Route = createFileRoute("/admin/")({
   component: DashboardOverview,
-  head: () => ({
+  loader: () => ({
+    title: "概览",
+  }),
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: "概览",
+        title: loaderData?.title,
       },
     ],
   }),

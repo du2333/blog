@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
-    "check": "bun format && bun lint:fix",
+    "check": "bun lint:fix && bun format",
     "cf-typegen": "wrangler types --env-interface Env",
     "db:studio": "drizzle-kit studio",
     "db:push": "drizzle-kit push",

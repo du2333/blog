@@ -13,10 +13,13 @@ import { DEFAULT_CONFIG } from "@/features/config/config.schema";
 
 export const Route = createFileRoute("/admin/settings/")({
   component: RouteComponent,
-  head: () => ({
+  loader: () => ({
+    title: "设置",
+  }),
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: "设置",
+        title: loaderData?.title,
       },
     ],
   }),

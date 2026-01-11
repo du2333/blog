@@ -7,11 +7,14 @@ export const Route = createFileRoute("/admin/tags/")({
   loader: async ({ context }) => {
     // Prefetch tags with count for a smooth load
     await context.queryClient.prefetchQuery(tagsWithCountAdminQueryOptions());
+    return {
+      title: "标签管理",
+    };
   },
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: "标签管理",
+        title: loaderData?.title,
       },
     ],
   }),

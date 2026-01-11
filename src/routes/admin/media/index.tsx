@@ -19,10 +19,13 @@ import { formatBytes } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/media/")({
   component: MediaLibrary,
-  head: () => ({
+  loader: () => ({
+    title: "媒体库",
+  }),
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: "媒体库",
+        title: loaderData?.title,
       },
     ],
   }),

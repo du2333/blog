@@ -16,18 +16,18 @@ export const Route = createFileRoute("/admin/posts/edit/$id")({
   pendingComponent: PostEditorSkeleton,
   loader: async ({ context, params }) => {
     const postId = Number(params.id);
-    const [post, tags] = await Promise.all([
+    const [post, _] = await Promise.all([
       context.queryClient.ensureQueryData(postByIdQuery(postId)),
       context.queryClient.ensureQueryData(tagsByPostIdQueryOptions(postId)),
       // Prefetch all tags for the selector
       context.queryClient.prefetchQuery(tagsAdminQueryOptions()),
     ]);
-    return { post, tags };
+    return { title: post?.title };
   },
   head: ({ loaderData }) => ({
     meta: [
       {
-        title: loaderData?.post?.title,
+        title: loaderData?.title,
       },
     ],
   }),

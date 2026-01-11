@@ -19,10 +19,15 @@ const searchSchema = z.object({
 export const Route = createFileRoute("/admin/comments/")({
   validateSearch: searchSchema,
   component: CommentAdminPage,
-  head: () => ({
+  loader: () => {
+    return {
+      title: "评论管理",
+    };
+  },
+  head: ({ loaderData }) => ({
     meta: [
       {
-        title: "评论管理",
+        title: loaderData?.title,
       },
     ],
   }),

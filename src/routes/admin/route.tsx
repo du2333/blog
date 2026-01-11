@@ -9,6 +9,7 @@ import { useState } from "react";
 import { SideBar } from "@/components/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
+import { AdminBreadcrumbs } from "@/components/admin/admin-breadcrumbs";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ context }) => {
@@ -51,13 +52,7 @@ function AdminLayout() {
             >
               <Menu size={20} />
             </button>
-            <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-              <span className="hidden sm:inline">Admin</span>
-              <span className="hidden sm:inline opacity-30">/</span>
-              <span className="text-foreground font-bold tracking-widest uppercase">
-                Workspace
-              </span>
-            </div>
+            <AdminBreadcrumbs />
           </div>
 
           <div className="flex items-center gap-6">
