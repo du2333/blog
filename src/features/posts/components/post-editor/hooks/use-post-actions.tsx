@@ -37,6 +37,18 @@ export function usePostActions({
   const [processState, setProcessState] = useState<
     "IDLE" | "PROCESSING" | "SUCCESS"
   >("IDLE");
+  const [isDirty, setIsDirty] = useState(false);
+
+  // Mark as dirty whenever the post object changes
+  // This satisfies: "Even if the final change is the same as the original, it stays dirty"
+  const isFirstRender = useRef(true);
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    setIsDirty(true);
+  }, [post]);
   // Keep track of how slug was requested to control noisy toasts
   const slugGenerationMode = useRef<"manual" | "auto">("manual");
   // Track previous values to detect actual changes & skip first mount
@@ -72,6 +84,7 @@ export function usePostActions({
       });
 
       setProcessState("SUCCESS");
+      setIsDirty(false); // Reset only on successful publish
 
       // Reset after cooldown
       setTimeout(() => {
@@ -334,5 +347,6 @@ export function usePostActions({
     processState,
     isGeneratingTags,
     handleGenerateTags,
+    isDirty,
   };
 }

@@ -12,13 +12,55 @@ interface Params {
   isPublished: boolean;
 }
 
+async function calculateContentHash(
+  content: Record<string, unknown>,
+): Promise<string> {
+  const msgUint8 = new TextEncoder().encode(JSON.stringify(content));
+  const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+
 export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
     const { postId, isPublished } = event.payload;
 
     if (isPublished) {
+      // 1. Fetch post and Check Sync Status
+      const { post: initialPost, shouldSkip } = await step.do(
+        "check sync status",
+        async () => {
+          const db = getDb(this.env);
+          const p = await PostService.findPostById({ db }, { id: postId });
+          if (!p) return { post: null, shouldSkip: true };
+
+          // Elements that define the public state
+          const stateToHash = {
+            title: p.title,
+            contentJson: p.contentJson,
+            summary: p.summary,
+            tagIds: p.tags.map((t) => t.id).sort(),
+            slug: p.slug,
+          };
+
+          const newHash = await calculateContentHash(stateToHash);
+          const oldHash = await this.env.KV.get(`post_hash:${postId}`);
+
+          if (newHash === oldHash) {
+            console.log(
+              `[Workflow] Content for post ${postId} unchanged. Skipping.`,
+            );
+            return { post: p, shouldSkip: true };
+          }
+
+          return { post: p, shouldSkip: false };
+        },
+      );
+
+      if (shouldSkip || !initialPost) return;
+
       // Full publish workflow: generate summary, update index, invalidate caches
-      const post = await step.do(
+      const updatedPost = await step.do(
         `generate summary for post ${postId}`,
         {
           retries: {
@@ -35,14 +77,18 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           });
         },
       );
-      if (!post) return;
+      if (!updatedPost) return;
 
       await step.do("update search index", async () => {
         return await SearchService.upsert(
           { env: this.env },
           {
-            ...post,
-            tags: post.tags.map((t) => t.name),
+            id: updatedPost.id,
+            slug: updatedPost.slug,
+            title: updatedPost.title,
+            summary: updatedPost.summary,
+            contentJson: updatedPost.contentJson,
+            tags: updatedPost.tags.map((t) => t.name),
           },
         );
       });
@@ -56,9 +102,9 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           CacheService.deleteKey({ env: this.env }, [
             version,
             "post",
-            post.slug,
+            updatedPost.slug,
           ]),
-          purgePostCDNCache(this.env, post.slug),
+          purgePostCDNCache(this.env, updatedPost.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
           // Invalidate public tags list (tag counts may have changed)
           CacheService.deleteKey({ env: this.env }, [
@@ -66,6 +112,23 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           ]),
         ];
         await Promise.all(tasks);
+      });
+
+      // Update sync hash in KV
+      await step.do("update sync hash", async () => {
+        const db = getDb(this.env);
+        const p = await PostService.findPostById({ db }, { id: postId });
+        if (!p) return;
+
+        const stateToHash = {
+          title: p.title,
+          contentJson: p.contentJson,
+          summary: p.summary,
+          tagIds: p.tags.map((t) => t.id).sort(),
+          slug: p.slug,
+        };
+        const hash = await calculateContentHash(stateToHash);
+        await this.env.KV.put(`post_hash:${postId}`, hash);
       });
     } else {
       // Unpublish workflow: remove from index and caches

@@ -67,10 +67,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
   const { data: allTags = [] } = useQuery(tagsAdminQueryOptions());
 
   // Auto-save hook
-  const { saveStatus, lastSaved, setError } = useAutoSave({
+  const useAutoSaveReturn = useAutoSave({
     post,
     onSave,
   });
+
+  const { saveStatus, lastSaved, setError } = useAutoSaveReturn;
 
   const { proceed, reset, status } = useBlocker({
     shouldBlockFn: () => saveStatus === "SAVING",
@@ -89,6 +91,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     processState,
     isGeneratingTags,
     handleGenerateTags,
+    isDirty: isPostDirty,
   } = usePostActions({
     postId: initialData.id,
     post,
@@ -145,7 +148,9 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
 
           <Button
             onClick={handleProcessData}
-            disabled={processState !== "IDLE"}
+            disabled={
+              processState !== "IDLE" || saveStatus === "SAVING" || !isPostDirty
+            }
             className={`
               px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold transition-all gap-2 shadow-lg shadow-black/5
               ${

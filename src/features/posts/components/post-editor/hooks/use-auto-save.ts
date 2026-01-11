@@ -13,6 +13,7 @@ interface UseAutoSaveReturn {
   error: string | null;
   setError: (error: string | null) => void;
   setSaveStatus: (status: SaveStatus) => void;
+  isDirty: boolean;
 }
 
 export function useAutoSave({
@@ -156,5 +157,6 @@ export function useAutoSave({
     error,
     setError,
     setSaveStatus,
+    isDirty: isDirty(toComparable(post)),
   };
 }
