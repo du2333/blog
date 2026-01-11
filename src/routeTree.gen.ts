@@ -21,12 +21,14 @@ import { Route as AuthResetLinkRouteImport } from './routes/_auth/reset-link'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
+import { Route as AdminPostsRouteRouteImport } from './routes/admin/posts/route'
+import { Route as PublicPostRouteRouteImport } from './routes/_public/post/route'
 import { Route as AdminTagsIndexRouteImport } from './routes/admin/tags/index'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
 import { Route as AdminCommentsIndexRouteImport } from './routes/admin/comments/index'
-import { Route as PublicBlogIndexRouteImport } from './routes/_public/blog/index'
+import { Route as PublicPostIndexRouteImport } from './routes/_public/post/index'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 import { Route as AdminPostsEditIdRouteImport } from './routes/admin/posts/edit.$id'
 
@@ -88,6 +90,16 @@ const AuthForgotPasswordRoute = AuthForgotPasswordRouteImport.update({
   path: '/forgot-password',
   getParentRoute: () => AuthRouteRoute,
 } as any)
+const AdminPostsRouteRoute = AdminPostsRouteRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => AdminRouteRoute,
+} as any)
+const PublicPostRouteRoute = PublicPostRouteRouteImport.update({
+  id: '/post',
+  path: '/post',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
 const AdminTagsIndexRoute = AdminTagsIndexRouteImport.update({
   id: '/tags/',
   path: '/tags/',
@@ -99,9 +111,9 @@ const AdminSettingsIndexRoute = AdminSettingsIndexRouteImport.update({
   getParentRoute: () => AdminRouteRoute,
 } as any)
 const AdminPostsIndexRoute = AdminPostsIndexRouteImport.update({
-  id: '/posts/',
-  path: '/posts/',
-  getParentRoute: () => AdminRouteRoute,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminPostsRouteRoute,
 } as any)
 const AdminMediaIndexRoute = AdminMediaIndexRouteImport.update({
   id: '/media/',
@@ -113,26 +125,28 @@ const AdminCommentsIndexRoute = AdminCommentsIndexRouteImport.update({
   path: '/comments/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const PublicBlogIndexRoute = PublicBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
-  getParentRoute: () => PublicRouteRoute,
+const PublicPostIndexRoute = PublicPostIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PublicPostRouteRoute,
 } as any)
 const PublicPostSlugRoute = PublicPostSlugRouteImport.update({
-  id: '/post/$slug',
-  path: '/post/$slug',
-  getParentRoute: () => PublicRouteRoute,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PublicPostRouteRoute,
 } as any)
 const AdminPostsEditIdRoute = AdminPostsEditIdRouteImport.update({
-  id: '/posts/edit/$id',
-  path: '/posts/edit/$id',
-  getParentRoute: () => AdminRouteRoute,
+  id: '/edit/$id',
+  path: '/edit/$id',
+  getParentRoute: () => AdminPostsRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/post': typeof PublicPostRouteRouteWithChildren
+  '/admin/posts': typeof AdminPostsRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
@@ -141,10 +155,10 @@ export interface FileRoutesByFullPath {
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/blog': typeof PublicBlogIndexRoute
+  '/post/': typeof PublicPostIndexRoute
   '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
-  '/admin/posts': typeof AdminPostsIndexRoute
+  '/admin/posts/': typeof AdminPostsIndexRoute
   '/admin/settings': typeof AdminSettingsIndexRoute
   '/admin/tags': typeof AdminTagsIndexRoute
   '/admin/posts/edit/$id': typeof AdminPostsEditIdRoute
@@ -160,7 +174,7 @@ export interface FileRoutesByTo {
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/blog': typeof PublicBlogIndexRoute
+  '/post': typeof PublicPostIndexRoute
   '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
@@ -175,6 +189,8 @@ export interface FileRoutesById {
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/_public/post': typeof PublicPostRouteRouteWithChildren
+  '/admin/posts': typeof AdminPostsRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
@@ -183,7 +199,7 @@ export interface FileRoutesById {
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
-  '/_public/blog/': typeof PublicBlogIndexRoute
+  '/_public/post/': typeof PublicPostIndexRoute
   '/admin/comments/': typeof AdminCommentsIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
@@ -197,6 +213,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/post'
+    | '/admin/posts'
     | '/forgot-password'
     | '/login'
     | '/register'
@@ -205,10 +223,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/'
     | '/post/$slug'
-    | '/blog'
+    | '/post/'
     | '/admin/comments'
     | '/admin/media'
-    | '/admin/posts'
+    | '/admin/posts/'
     | '/admin/settings'
     | '/admin/tags'
     | '/admin/posts/edit/$id'
@@ -224,7 +242,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/post/$slug'
-    | '/blog'
+    | '/post'
     | '/admin/comments'
     | '/admin/media'
     | '/admin/posts'
@@ -238,6 +256,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/robots.txt'
     | '/sitemap.xml'
+    | '/_public/post'
+    | '/admin/posts'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
@@ -246,7 +266,7 @@ export interface FileRouteTypes {
     | '/_public/'
     | '/admin/'
     | '/_public/post/$slug'
-    | '/_public/blog/'
+    | '/_public/post/'
     | '/admin/comments/'
     | '/admin/media/'
     | '/admin/posts/'
@@ -349,6 +369,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthForgotPasswordRouteImport
       parentRoute: typeof AuthRouteRoute
     }
+    '/admin/posts': {
+      id: '/admin/posts'
+      path: '/posts'
+      fullPath: '/admin/posts'
+      preLoaderRoute: typeof AdminPostsRouteRouteImport
+      parentRoute: typeof AdminRouteRoute
+    }
+    '/_public/post': {
+      id: '/_public/post'
+      path: '/post'
+      fullPath: '/post'
+      preLoaderRoute: typeof PublicPostRouteRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
     '/admin/tags/': {
       id: '/admin/tags/'
       path: '/tags'
@@ -365,10 +399,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/posts/': {
       id: '/admin/posts/'
-      path: '/posts'
-      fullPath: '/admin/posts'
+      path: '/'
+      fullPath: '/admin/posts/'
       preLoaderRoute: typeof AdminPostsIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
+      parentRoute: typeof AdminPostsRouteRoute
     }
     '/admin/media/': {
       id: '/admin/media/'
@@ -384,26 +418,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCommentsIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_public/blog/': {
-      id: '/_public/blog/'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof PublicBlogIndexRouteImport
-      parentRoute: typeof PublicRouteRoute
+    '/_public/post/': {
+      id: '/_public/post/'
+      path: '/'
+      fullPath: '/post/'
+      preLoaderRoute: typeof PublicPostIndexRouteImport
+      parentRoute: typeof PublicPostRouteRoute
     }
     '/_public/post/$slug': {
       id: '/_public/post/$slug'
-      path: '/post/$slug'
+      path: '/$slug'
       fullPath: '/post/$slug'
       preLoaderRoute: typeof PublicPostSlugRouteImport
-      parentRoute: typeof PublicRouteRoute
+      parentRoute: typeof PublicPostRouteRoute
     }
     '/admin/posts/edit/$id': {
       id: '/admin/posts/edit/$id'
-      path: '/posts/edit/$id'
+      path: '/edit/$id'
       fullPath: '/admin/posts/edit/$id'
       preLoaderRoute: typeof AdminPostsEditIdRouteImport
-      parentRoute: typeof AdminRouteRoute
+      parentRoute: typeof AdminPostsRouteRoute
     }
   }
 }
@@ -428,40 +462,64 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface PublicRouteRouteChildren {
-  PublicIndexRoute: typeof PublicIndexRoute
+interface PublicPostRouteRouteChildren {
   PublicPostSlugRoute: typeof PublicPostSlugRoute
-  PublicBlogIndexRoute: typeof PublicBlogIndexRoute
+  PublicPostIndexRoute: typeof PublicPostIndexRoute
+}
+
+const PublicPostRouteRouteChildren: PublicPostRouteRouteChildren = {
+  PublicPostSlugRoute: PublicPostSlugRoute,
+  PublicPostIndexRoute: PublicPostIndexRoute,
+}
+
+const PublicPostRouteRouteWithChildren = PublicPostRouteRoute._addFileChildren(
+  PublicPostRouteRouteChildren,
+)
+
+interface PublicRouteRouteChildren {
+  PublicPostRouteRoute: typeof PublicPostRouteRouteWithChildren
+  PublicIndexRoute: typeof PublicIndexRoute
 }
 
 const PublicRouteRouteChildren: PublicRouteRouteChildren = {
+  PublicPostRouteRoute: PublicPostRouteRouteWithChildren,
   PublicIndexRoute: PublicIndexRoute,
-  PublicPostSlugRoute: PublicPostSlugRoute,
-  PublicBlogIndexRoute: PublicBlogIndexRoute,
 }
 
 const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
   PublicRouteRouteChildren,
 )
 
-interface AdminRouteRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminCommentsIndexRoute: typeof AdminCommentsIndexRoute
-  AdminMediaIndexRoute: typeof AdminMediaIndexRoute
+interface AdminPostsRouteRouteChildren {
   AdminPostsIndexRoute: typeof AdminPostsIndexRoute
-  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
-  AdminTagsIndexRoute: typeof AdminTagsIndexRoute
   AdminPostsEditIdRoute: typeof AdminPostsEditIdRoute
 }
 
+const AdminPostsRouteRouteChildren: AdminPostsRouteRouteChildren = {
+  AdminPostsIndexRoute: AdminPostsIndexRoute,
+  AdminPostsEditIdRoute: AdminPostsEditIdRoute,
+}
+
+const AdminPostsRouteRouteWithChildren = AdminPostsRouteRoute._addFileChildren(
+  AdminPostsRouteRouteChildren,
+)
+
+interface AdminRouteRouteChildren {
+  AdminPostsRouteRoute: typeof AdminPostsRouteRouteWithChildren
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminCommentsIndexRoute: typeof AdminCommentsIndexRoute
+  AdminMediaIndexRoute: typeof AdminMediaIndexRoute
+  AdminSettingsIndexRoute: typeof AdminSettingsIndexRoute
+  AdminTagsIndexRoute: typeof AdminTagsIndexRoute
+}
+
 const AdminRouteRouteChildren: AdminRouteRouteChildren = {
+  AdminPostsRouteRoute: AdminPostsRouteRouteWithChildren,
   AdminIndexRoute: AdminIndexRoute,
   AdminCommentsIndexRoute: AdminCommentsIndexRoute,
   AdminMediaIndexRoute: AdminMediaIndexRoute,
-  AdminPostsIndexRoute: AdminPostsIndexRoute,
   AdminSettingsIndexRoute: AdminSettingsIndexRoute,
   AdminTagsIndexRoute: AdminTagsIndexRoute,
-  AdminPostsEditIdRoute: AdminPostsEditIdRoute,
 }
 
 const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(

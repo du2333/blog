@@ -5,7 +5,7 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router";
-import { ArrowLeft, ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
+import { ArrowUp, Calendar, Clock, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
@@ -16,7 +16,7 @@ import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
 import { Button } from "@/components/ui/button";
 import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
-import { useNavigateBack } from "@/hooks/use-navigate-back";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export const Route = createFileRoute("/_public/post/$slug")({
   component: RouteComponent,
@@ -50,7 +50,6 @@ function RouteComponent() {
   const { data: post } = useSuspenseQuery(
     postBySlugQuery(Route.useParams().slug),
   );
-  const navigateBack = useNavigateBack({ fallbackTo: "/blog" });
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -71,17 +70,7 @@ function RouteComponent() {
     <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
       {/* Back Link */}
       <nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
-        <Button
-          variant="ghost"
-          onClick={navigateBack}
-          className="group h-auto p-0 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
-        >
-          <ArrowLeft
-            size={14}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          <span>返回列表</span>
-        </Button>
+        <Breadcrumbs />
       </nav>
 
       <article className="space-y-16">
@@ -108,7 +97,7 @@ function RouteComponent() {
                     {post.tags.map((tag) => (
                       <Link
                         key={tag.id}
-                        to="/blog"
+                        to="/post"
                         search={{ tagName: tag.name }}
                         className="text-muted-foreground hover:text-foreground transition-colors"
                       >

@@ -9,7 +9,7 @@ import { useState } from "react";
 import { SideBar } from "@/components/side-bar";
 import { sessionQuery } from "@/features/auth/auth.query";
 import { CACHE_CONTROL } from "@/lib/constants";
-import { AdminBreadcrumbs } from "@/components/admin/admin-breadcrumbs";
+import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export const Route = createFileRoute("/admin")({
   beforeLoad: async ({ context }) => {
@@ -25,6 +25,16 @@ export const Route = createFileRoute("/admin")({
     return { session };
   },
   component: AdminLayout,
+  loader: () => ({
+    title: "管理后台",
+  }),
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: loaderData?.title,
+      },
+    ],
+  }),
   headers: () => {
     return CACHE_CONTROL.private;
   },
@@ -52,7 +62,7 @@ function AdminLayout() {
             >
               <Menu size={20} />
             </button>
-            <AdminBreadcrumbs />
+            <Breadcrumbs />
           </div>
 
           <div className="flex items-center gap-6">

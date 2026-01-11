@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Fragment } from "react";
 
-export function AdminBreadcrumbs() {
+export function Breadcrumbs() {
   const matches = useRouterState({ select: (s) => s.matches });
 
   const breadcrumbs = matches.flatMap(({ pathname, loaderData }) => {
@@ -13,10 +13,9 @@ export function AdminBreadcrumbs() {
 
   return (
     <nav className="flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] text-muted-foreground">
-      <span className="hidden sm:inline">Admin</span>
       {breadcrumbs.map((crumb, index) => (
         <Fragment key={crumb.path}>
-          <span className="opacity-30">/</span>
+          {index > 0 && <span className="opacity-30">/</span>}
           <Link
             to={crumb.path}
             className={`transition-colors hover:text-foreground ${

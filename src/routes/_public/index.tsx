@@ -41,7 +41,7 @@ function App() {
 
             <div className="pt-4">
               <Link
-                to="/blog"
+                to="/post"
                 className="group inline-flex items-center gap-4 text-sm font-bold uppercase tracking-widest hover:gap-6 transition-all duration-500"
               >
                 <span>阅读文章</span>
@@ -69,7 +69,7 @@ function App() {
             </h2>
           </div>
           <Link
-            to="/blog"
+            to="/post"
             className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] font-bold text-muted-foreground hover:text-foreground transition-all duration-700 md:pb-2"
           >
             <span className="border-b border-border group-hover:border-foreground transition-colors pb-1">

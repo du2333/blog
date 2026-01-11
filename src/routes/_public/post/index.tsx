@@ -26,7 +26,7 @@ const DisplayTagsQueryOptions = {
   select: (tags: Array<TagWithCount>) => tags.filter((t) => t.postCount > 0),
 };
 
-export const Route = createFileRoute("/_public/blog/")({
+export const Route = createFileRoute("/_public/post/")({
   validateSearch: z.object({
     tagName: z.string().optional(),
   }),
@@ -41,17 +41,6 @@ export const Route = createFileRoute("/_public/blog/")({
       context.queryClient.prefetchQuery(DisplayTagsQueryOptions),
     ]);
   },
-  head: () => ({
-    meta: [
-      {
-        title: "文章",
-      },
-      {
-        name: "description",
-        content: blogConfig.description,
-      },
-    ],
-  }),
 });
 
 function RouteComponent() {
