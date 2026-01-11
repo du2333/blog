@@ -100,7 +100,6 @@ async function invalidateTagRelatedCache(
   const tasks: Array<Promise<void>> = [];
 
   if (affectedPosts.length > 0) {
-    tasks.push(CacheService.bumpVersion(context, "tags:list"));
     // Invalidate post list (since tags are displayed in lists)
     tasks.push(CacheService.bumpVersion(context, "posts:list"));
 
