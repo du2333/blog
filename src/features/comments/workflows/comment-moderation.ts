@@ -1,6 +1,7 @@
 import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CommentService from "@/features/comments/comments.service";
+import * as CommentRepo from "@/features/comments/data/comments.data";
 import * as AiService from "@/features/ai/ai.service";
 import * as PostService from "@/features/posts/posts.service";
 import { getDb } from "@/lib/db";
@@ -120,5 +121,60 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
         );
       }
     });
+
+    // Step 4: Send reply notification if comment was approved and is a reply
+    if (moderationResult.safe && comment.replyToCommentId) {
+      await step.do("send reply notification", async () => {
+        const db = getDb(this.env);
+
+        // Get the author of the comment being replied to
+        const replyToAuthor = await CommentRepo.getCommentAuthorWithEmail(
+          db,
+          comment.replyToCommentId!,
+        );
+
+        if (!replyToAuthor || !replyToAuthor.email) {
+          console.log(
+            `[CommentModerationWorkflow] Reply-to author not found or no email, skipping notification`,
+          );
+          return;
+        }
+
+        // Don't notify if replying to own comment
+        if (replyToAuthor.id === comment.userId) {
+          console.log(
+            `[CommentModerationWorkflow] Self-reply, skipping notification`,
+          );
+          return;
+        }
+
+        // Get replier info
+        const replier = await CommentRepo.getCommentAuthorWithEmail(
+          db,
+          commentId,
+        );
+        const replierName = replier?.name ?? "有人";
+
+        const replyPreview = convertToPlainText(comment.content).slice(0, 100);
+
+        await this.env.SEND_EMAIL_WORKFLOW.create({
+          params: {
+            to: replyToAuthor.email,
+            subject: `[评论回复] ${replierName} 回复了您在《${post.title}》的评论`,
+            html: `
+              <p><strong>${replierName}</strong> 回复了您的评论：</p>
+              <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
+                ${replyPreview}${replyPreview.length >= 100 ? "..." : ""}
+              </blockquote>
+              <p><a href="https://blog.dukda.com/post/${post.slug}">查看完整回复</a></p>
+            `,
+          },
+        });
+
+        console.log(
+          `[CommentModerationWorkflow] Reply notification sent to ${replyToAuthor.email}`,
+        );
+      });
+    }
   }
 }

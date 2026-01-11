@@ -47,6 +47,11 @@
       "binding": "COMMENT_MODERATION_WORKFLOW",
       "class_name": "CommentModerationWorkflow",
     },
+    {
+      "name": "send-email-workflow",
+      "binding": "SEND_EMAIL_WORKFLOW",
+      "class_name": "SendEmailWorkflow",
+    },
   ],
   "durable_objects": {
     "bindings": [
@@ -101,6 +106,11 @@
           "name": "comment-moderation-workflow",
           "binding": "COMMENT_MODERATION_WORKFLOW",
           "class_name": "CommentModerationWorkflow",
+        },
+        {
+          "name": "send-email-workflow",
+          "binding": "SEND_EMAIL_WORKFLOW",
+          "class_name": "SendEmailWorkflow",
         },
       ],
     },

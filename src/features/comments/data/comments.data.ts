@@ -385,3 +385,26 @@ export async function getUserCommentStats(db: DB, userId: string) {
     registeredAt: userInfo.registeredAt,
   };
 }
+
+export async function getCommentAuthorWithEmail(db: DB, commentId: number) {
+  const result = await db
+    .select({
+      userId: CommentsTable.userId,
+      userName: user.name,
+      userEmail: user.email,
+    })
+    .from(CommentsTable)
+    .leftJoin(user, eq(CommentsTable.userId, user.id))
+    .where(eq(CommentsTable.id, commentId))
+    .limit(1);
+
+  if (result.length === 0 || !result[0].userEmail) {
+    return null;
+  }
+
+  return {
+    id: result[0].userId,
+    name: result[0].userName,
+    email: result[0].userEmail,
+  };
+}

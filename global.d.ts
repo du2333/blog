@@ -11,9 +11,16 @@ declare global {
     commentId: number;
   }
 
+  interface SendEmailWorkflowParams {
+    to: string;
+    subject: string;
+    html: string;
+  }
+
   interface Env extends Cloudflare.Env {
     POST_PROCESS_WORKFLOW: Workflow<PostProcessWorkflowParams>;
     COMMENT_MODERATION_WORKFLOW: Workflow<CommentModerationWorkflowParams>;
+    SEND_EMAIL_WORKFLOW: Workflow<SendEmailWorkflowParams>;
   }
 
   type Context = {

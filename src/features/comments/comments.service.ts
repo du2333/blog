@@ -8,6 +8,9 @@ import type {
   StartCommentModerationInput,
 } from "@/features/comments/comments.schema";
 import * as CommentRepo from "@/features/comments/data/comments.data";
+import * as PostService from "@/features/posts/posts.service";
+import { convertToPlainText } from "@/features/posts/utils/content";
+import { serverEnv } from "@/lib/env/server.env";
 
 // ============ Public Service Methods ============
 
@@ -133,6 +136,28 @@ export async function createComment(
 
   // Trigger AI moderation workflow
   await startCommentModerationWorkflow(context, { commentId: comment.id });
+
+  // Notify admin about new comment
+  const post = await PostService.findPostById(context, { id: data.postId });
+  if (post) {
+    const { ADMIN_EMAIL, DOMAIN } = serverEnv(context.env);
+    const commentPreview = convertToPlainText(data.content).slice(0, 100);
+    const commenterName = context.session.user.name;
+
+    await context.env.SEND_EMAIL_WORKFLOW.create({
+      params: {
+        to: ADMIN_EMAIL,
+        subject: `[新评论] ${post.title}`,
+        html: `
+          <p><strong>${commenterName}</strong> 在《${post.title}》下发表了评论：</p>
+          <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
+            ${commentPreview}${commentPreview.length >= 100 ? "..." : ""}
+          </blockquote>
+          <p><a href="https://${DOMAIN}/post/${post.slug}">查看文章</a></p>
+        `,
+      },
+    });
+  }
 
   return comment;
 }
