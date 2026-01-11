@@ -3,8 +3,8 @@ import {
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { RefreshCw } from "lucide-react";
-import { useEffect, useMemo, useRef } from "react";
+import { ChevronDown, ChevronUp, RefreshCw, Tag } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
 import { blogConfig } from "@/blog.config";
@@ -77,6 +77,11 @@ function RouteComponent() {
     });
   };
 
+  const [isExpanded, setIsExpanded] = useState(false);
+  const INITIAL_TAG_COUNT = 8;
+  const hasMoreTags = tags.length > INITIAL_TAG_COUNT;
+  const visibleTags = isExpanded ? tags : tags.slice(0, INITIAL_TAG_COUNT);
+
   return (
     <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-10">
       {/* Header Section */}
@@ -95,43 +100,73 @@ function RouteComponent() {
       </header>
 
       {/* Tag Filters */}
-      <div className="mb-12 overflow-x-auto pb-4 -mx-6 px-6 md:mx-0 md:px-0 scrollbar-none">
-        <div className="flex items-center gap-2 min-w-max">
+      <div className="mb-20 space-y-6">
+        <div className="flex items-center gap-2 text-[10px] font-mono tracking-widest uppercase text-muted-foreground/60">
+          <Tag size={12} strokeWidth={1.5} />
+          <span>分类筛选</span>
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={() => handleTagClick("")}
             className={cn(
-              "px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border",
+              "px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-300 border",
               !tagName
-                ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/10"
-                : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
+                ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/5"
+                : "bg-secondary/40 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground",
             )}
           >
             全部
           </button>
-          {tags.map((tag) => (
+          {visibleTags.map((tag) => (
             <button
               key={tag.id}
               onClick={() => handleTagClick(tag.name)}
               className={cn(
-                "px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 border flex items-center gap-2",
+                "group px-5 py-2 rounded-full text-[13px] font-medium transition-all duration-300 border flex items-center gap-2.5",
                 tagName === tag.name
-                  ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/10"
-                  : "bg-background text-muted-foreground border-border hover:border-foreground/40 hover:text-foreground",
+                  ? "bg-foreground text-background border-foreground shadow-lg shadow-foreground/5"
+                  : "bg-secondary/40 text-muted-foreground border-transparent hover:bg-secondary hover:text-foreground",
               )}
             >
               <span>{tag.name}</span>
               <span
                 className={cn(
-                  "text-[10px] px-1.5 py-0.5 rounded-full transition-colors",
+                  "text-[10px] font-mono px-2 py-0.5 rounded-full transition-colors",
                   tagName === tag.name
                     ? "bg-background/20 text-background"
-                    : "bg-muted text-muted-foreground group-hover:bg-muted-foreground/10",
+                    : "bg-background/50 text-muted-foreground group-hover:bg-background",
                 )}
               >
                 {tag.postCount}
               </span>
             </button>
           ))}
+
+          {hasMoreTags && (
+            <button
+              onClick={() => setIsExpanded(!isExpanded)}
+              className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/40 transition-colors group"
+            >
+              {isExpanded ? (
+                <>
+                  <span>收起</span>
+                  <ChevronUp
+                    size={14}
+                    className="group-hover:-translate-y-0.5 transition-transform"
+                  />
+                </>
+              ) : (
+                <>
+                  <span>显示更多 ({tags.length - INITIAL_TAG_COUNT})</span>
+                  <ChevronDown
+                    size={14}
+                    className="group-hover:translate-y-0.5 transition-transform"
+                  />
+                </>
+              )}
+            </button>
+          )}
         </div>
       </div>
 
