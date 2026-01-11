@@ -43,7 +43,14 @@ export async function getTags(
     });
   };
 
+  if (skipCache) {
+    return await fetcher();
+  }
+
+  const version = await CacheService.getVersion(context, "tags:list");
+
   const cacheKey = [
+    version,
     "tags",
     "list",
     sortBy,
@@ -51,10 +58,6 @@ export async function getTags(
     `wc:${withCount}`,
     `po:${publicOnly}`,
   ];
-
-  if (skipCache) {
-    return await fetcher();
-  }
 
   const schema = withCount
     ? z.array(TagWithCountSchema)
@@ -104,7 +107,7 @@ export async function createTag(context: Context, data: CreateTagInput) {
 
   // Invalidate tag list cache
   context.executionCtx.waitUntil(
-    CacheService.deleteKey(context, ["tags", "list"]),
+    CacheService.bumpVersion(context, "tags:list"),
   );
 
   return tag;
@@ -133,7 +136,7 @@ export async function updateTag(context: Context, data: UpdateTagInput) {
 
   // Invalidate caches
   context.executionCtx.waitUntil(
-    CacheService.deleteKey(context, ["tags", "list"]),
+    CacheService.bumpVersion(context, "tags:list"),
   );
 
   return tag;
@@ -150,7 +153,7 @@ export async function deleteTag(context: Context, data: DeleteTagInput) {
 
   // Invalidate caches
   context.executionCtx.waitUntil(
-    CacheService.deleteKey(context, ["tags", "list"]),
+    CacheService.bumpVersion(context, "tags:list"),
   );
 }
 
@@ -163,7 +166,7 @@ export async function setPostTags(context: Context, data: SetPostTagsInput) {
   // Invalidate tag list caches
   context.executionCtx.waitUntil(
     Promise.all([
-      CacheService.deleteKey(context, ["tags", "list"]),
+      CacheService.bumpVersion(context, "tags:list"),
       // We might need a broader invalidation depending on how specific counts are
     ]),
   );

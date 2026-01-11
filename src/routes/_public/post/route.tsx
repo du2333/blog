@@ -1,12 +1,12 @@
-import { Outlet, createFileRoute } from '@tanstack/react-router'
-import { blogConfig } from '@/blog.config'
+import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { blogConfig } from "@/blog.config";
 
-export const Route = createFileRoute('/_public/post')({
+export const Route = createFileRoute("/_public/post")({
   component: RouteComponent,
   loader: async () => {
     return {
-      title: '全部文章',
-    }
+      title: "全部文章",
+    };
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -14,13 +14,13 @@ export const Route = createFileRoute('/_public/post')({
         title: loaderData?.title,
       },
       {
-        name: 'description',
+        name: "description",
         content: blogConfig.description,
       },
     ],
   }),
-})
+});
 
 function RouteComponent() {
-  return <Outlet />
+  return <Outlet />;
 }

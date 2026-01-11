@@ -99,3 +99,50 @@ export async function summarizeText(
     summary: result.output.summary,
   };
 }
+
+export async function generateTags(
+  context: {
+    env: Env;
+  },
+  content: {
+    title: string;
+    summary?: string;
+    content?: string;
+  },
+  existingTags: Array<string> = [],
+) {
+  const workersAI = createWorkersAI({ binding: context.env.AI });
+
+  const result = await generateText({
+    // @ts-expect-error 不知道为啥workers-ai-provider的类型定义不完整
+    model: workersAI("@cf/meta/llama-3.3-70b-instruct-fp8-fast"),
+    messages: [
+      {
+        role: "system",
+        content: `你是一个专业的博客文章标签生成器。
+你的任务是根据文章内容生成 3-5 个最相关的标签（Keywords）。
+请优先从"已存在的标签列表"中选择合适的标签，只有当现有标签完全不适用时才生成新标签。
+标签应当简洁、精准，通常为名词。
+返回结果必须是一个简单的字符串数组，不要包含任何解释。`,
+      },
+      {
+        role: "user",
+        content: `已存在的标签列表：
+${JSON.stringify(existingTags)}
+
+文章标题：${content.title}
+文章摘要：${content.summary || "无"}
+文章内容预览：
+${content.content ? content.content.slice(0, 1000) : "无"}
+...`,
+      },
+    ],
+    output: Output.object({
+      schema: z.object({
+        tags: z.array(z.string()).describe("生成的标签列表"),
+      }),
+    }),
+  });
+
+  return result.output.tags;
+}

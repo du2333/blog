@@ -1,9 +1,10 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { PostEditorData } from "@/features/posts/components/post-editor/types";
 import type { JSONContent } from "@tiptap/react";
+import type { Tag } from "@/features/tags/tags.schema";
 import {
   generateSlugFn,
   previewSummaryFn,
@@ -11,12 +12,15 @@ import {
 } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/features/posts/utils/content";
+import { createTagFn, generateTagsFn } from "@/features/tags/api/tags.api";
+import { tagsAdminQueryOptions } from "@/features/tags/tags.query";
 
 interface UsePostActionsOptions {
   postId: number;
   post: PostEditorData;
   setPost: React.Dispatch<React.SetStateAction<PostEditorData>>;
   setError: (error: string | null) => void;
+  allTags: Array<Tag>;
 }
 
 export function usePostActions({
@@ -24,9 +28,12 @@ export function usePostActions({
   post,
   setPost,
   setError,
+  allTags,
 }: UsePostActionsOptions) {
+  const queryClient = useQueryClient();
   const [isCalculatingReadTime, setIsCalculatingReadTime] = useState(false);
   const [isGeneratingSummary, setIsGeneratingSummary] = useState(false);
+  const [isGeneratingTags, setIsGeneratingTags] = useState(false);
   const [processState, setProcessState] = useState<
     "IDLE" | "PROCESSING" | "SUCCESS"
   >("IDLE");
@@ -91,8 +98,8 @@ export function usePostActions({
       }
     },
     onError: (error) => {
-      console.error("Slug generation failed:", error);
-      setError("SLUG_GENERATION_FAILED");
+      console.error("Slug生成失败:", error);
+      setError("Slug生成失败");
       const fallbackSlug = slugify(post.title) || "untitled-log";
       setPost((prev) => ({ ...prev, slug: fallbackSlug }));
     },
@@ -225,7 +232,7 @@ export function usePostActions({
 
   const handleGenerateSlug = () => {
     if (!post.title.trim()) {
-      setError("TITLE_REQUIRED_FOR_SLUG");
+      setError("标题不能为空");
       return;
     }
     slugGenerationMode.current = "manual";
@@ -251,6 +258,71 @@ export function usePostActions({
     });
   };
 
+  const handleGenerateTags = async () => {
+    try {
+      setIsGeneratingTags(true);
+      const generatedTagNames = await generateTagsFn({
+        data: {
+          title: post.title,
+          summary: post.summary,
+          content:
+            typeof post.contentJson === "string"
+              ? post.contentJson
+              : JSON.stringify(post.contentJson),
+          existingTags: allTags.map((t) => t.name),
+        },
+      });
+
+      // Match or Create Tags
+      const newTagIds: Array<number> = [];
+      const currentTagIds = new Set(post.tagIds);
+
+      for (const name of generatedTagNames) {
+        const existingTag = allTags.find(
+          (t) => t.name.toLowerCase() === name.toLowerCase(),
+        );
+
+        if (existingTag) {
+          if (!currentTagIds.has(existingTag.id)) {
+            newTagIds.push(existingTag.id);
+            currentTagIds.add(existingTag.id);
+          }
+        } else {
+          // Create new tag
+          const newTag = await createTagFn({ data: { name } });
+          newTagIds.push(newTag.id);
+          currentTagIds.add(newTag.id);
+        }
+      }
+
+      if (newTagIds.length > 0) {
+        setPost((prev) => ({
+          ...prev,
+          tagIds: [...prev.tagIds, ...newTagIds],
+        }));
+
+        await queryClient.invalidateQueries({
+          queryKey: tagsAdminQueryOptions().queryKey,
+        });
+
+        toast.success("AI 标签生成完成", {
+          description: `已添加 ${newTagIds.length} 个新标签`,
+        });
+      } else {
+        toast.info("AI 标签生成完成", {
+          description: "没有生成新的标签",
+        });
+      }
+    } catch (error) {
+      console.error("生成标签失败:", error);
+      toast.error("生成标签失败", {
+        description: error instanceof Error ? error.message : "未知错误",
+      });
+    } finally {
+      setIsGeneratingTags(false);
+    }
+  };
+
   return {
     isGeneratingSlug: slugMutation.isPending,
     isCalculatingReadTime,
@@ -260,5 +332,7 @@ export function usePostActions({
     handleGenerateSummary,
     handleProcessData,
     processState,
+    isGeneratingTags,
+    handleGenerateTags,
   };
 }

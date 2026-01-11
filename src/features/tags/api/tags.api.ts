@@ -1,12 +1,14 @@
 import {
   CreateTagInputSchema,
   DeleteTagInputSchema,
+  GenerateTagsInputSchema,
   GetTagsByPostIdInputSchema,
   GetTagsInputSchema,
   SetPostTagsInputSchema,
   UpdateTagInputSchema,
 } from "@/features/tags/tags.schema";
 import * as TagService from "@/features/tags/tags.service";
+import * as AIService from "@/features/ai/ai.service";
 import {
   createAdminFn,
   createCachedFn,
@@ -69,4 +71,20 @@ export const getTagsWithCountAdminFn = createAdminFn()
   .inputValidator(GetTagsInputSchema)
   .handler(async ({ data, context }) => {
     return await TagService.getTagsWithCount(context, data);
+  });
+
+export const generateTagsFn = createAdminFn({
+  method: "POST",
+})
+  .inputValidator(GenerateTagsInputSchema)
+  .handler(async ({ data, context }) => {
+    return await AIService.generateTags(
+      context,
+      {
+        title: data.title,
+        summary: data.summary,
+        content: data.content,
+      },
+      data.existingTags,
+    );
   });

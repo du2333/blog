@@ -1,4 +1,5 @@
 import { useBlocker } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 import {
   Calendar,
   Check,
@@ -20,6 +21,7 @@ import { useAutoSave, usePostActions } from "./hooks";
 import type { JSONContent } from "@tiptap/react";
 import type { PostEditorData, PostEditorProps } from "./types";
 import { TagSelector } from "@/features/tags/components/tag-selector";
+import { tagsAdminQueryOptions } from "@/features/tags/tags.query";
 import { Editor } from "@/components/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
@@ -61,6 +63,9 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     }));
   }
 
+  // Fetch all tags for AI context and matching
+  const { data: allTags = [] } = useQuery(tagsAdminQueryOptions());
+
   // Auto-save hook
   const { saveStatus, lastSaved, setError } = useAutoSave({
     post,
@@ -82,11 +87,14 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     handleGenerateSummary,
     handleProcessData,
     processState,
+    isGeneratingTags,
+    handleGenerateTags,
   } = usePostActions({
     postId: initialData.id,
     post,
     setPost,
     setError,
+    allTags,
   });
 
   const handleContentChange = useCallback((json: JSONContent) => {
@@ -238,7 +246,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   size="icon"
                   onClick={handleGenerateSlug}
                   disabled={isGeneratingSlug}
-                  className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all rounded-sm"
+                  className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm"
                   title="自动生成"
                 >
                   {isGeneratingSlug ? (
@@ -264,6 +272,20 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   onChange={(tagIds) => handlePostChange({ tagIds })}
                 />
               </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleGenerateTags}
+                disabled={isGeneratingTags}
+                className="h-9 w-9 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm ml-2"
+                title="AI 自动生成标签"
+              >
+                {isGeneratingTags ? (
+                  <Loader2 size={14} className="animate-spin" />
+                ) : (
+                  <Sparkles size={14} />
+                )}
+              </Button>
             </div>
 
             {/* Property Row: Date */}
@@ -320,7 +342,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   size="icon"
                   onClick={handleCalculateReadTime}
                   disabled={isCalculatingReadTime}
-                  className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-0 group-hover:opacity-100 transition-all rounded-sm"
+                  className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm"
                   title="自动计算"
                 >
                   {isCalculatingReadTime ? (
