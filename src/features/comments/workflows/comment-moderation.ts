@@ -195,6 +195,7 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
         );
 
         await this.env.SEND_EMAIL_WORKFLOW.create({
+          id: `notification-reply-${comment.id}`,
           params: {
             to: replyToAuthor.email,
             subject: `[评论回复] ${replierName} 回复了您在《${post.title}》的评论`,
