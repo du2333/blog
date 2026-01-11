@@ -181,12 +181,30 @@ export const CommentsTable = sqliteTable(
   ],
 );
 
+export const EMAIL_UNSUBSCRIBE_TYPES = ["reply_notification"] as const;
+
+export const EmailUnsubscriptionsTable = sqliteTable(
+  "email_unsubscriptions",
+  {
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    type: text("type", { enum: EMAIL_UNSUBSCRIBE_TYPES }).notNull(),
+    createdAt: integer("created_at", { mode: "timestamp" })
+      .notNull()
+      .default(sql`(unixepoch())`),
+  },
+  (table) => [primaryKey({ columns: [table.userId, table.type] })],
+);
+
 export type Tag = typeof TagsTable.$inferSelect;
 export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson"> & {
   tags?: Array<Tag>;
 };
 export type Comment = typeof CommentsTable.$inferSelect;
+export type EmailUnsubscription = typeof EmailUnsubscriptionsTable.$inferSelect;
+export type EmailUnsubscribeType = (typeof EMAIL_UNSUBSCRIBE_TYPES)[number];
 
 export type PostStatus = (typeof POST_STATUSES)[number];
 export type CommentStatus = (typeof COMMENT_STATUSES)[number];

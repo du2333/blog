@@ -15,6 +15,7 @@ declare global {
     to: string;
     subject: string;
     html: string;
+    headers?: Record<string, string>;
   }
 
   interface Env extends Cloudflare.Env {

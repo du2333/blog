@@ -7,11 +7,12 @@ interface Params {
   to: string;
   subject: string;
   html: string;
+  headers?: Record<string, string>;
 }
 
 export class SendEmailWorkflow extends WorkflowEntrypoint<Env, Params> {
   async run(event: WorkflowEvent<Params>, step: WorkflowStep) {
-    const { to, subject, html } = event.payload;
+    const { to, subject, html, headers } = event.payload;
 
     await step.do(
       `send email to ${to}`,
@@ -24,7 +25,7 @@ export class SendEmailWorkflow extends WorkflowEntrypoint<Env, Params> {
       },
       async () => {
         const db = getDb(this.env);
-        const result = await sendEmail({ db }, { to, subject, html });
+        const result = await sendEmail({ db }, { to, subject, html, headers });
 
         if (result.status === "FAILED") {
           throw new Error(`Email send failed: ${result.error}`);

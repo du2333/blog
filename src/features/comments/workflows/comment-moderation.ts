@@ -4,6 +4,8 @@ import * as CommentService from "@/features/comments/comments.service";
 import * as CommentRepo from "@/features/comments/data/comments.data";
 import * as AiService from "@/features/ai/ai.service";
 import * as PostService from "@/features/posts/posts.service";
+import * as EmailData from "@/features/email/data/email.data";
+import { generateUnsubscribeToken } from "@/features/email/email.utils";
 import { getDb } from "@/lib/db";
 import { convertToPlainText } from "@/features/posts/utils/content";
 import { serverEnv } from "@/lib/env/server.env";
@@ -148,14 +150,36 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
           return;
         }
 
+        // Check for unsubscription
+        const unsubscribed = await EmailData.isUnsubscribed(
+          db,
+          replyToAuthor.id,
+          "reply_notification",
+        );
+
+        if (unsubscribed) {
+          console.log(
+            `[CommentModerationWorkflow] User ${replyToAuthor.id} unsubscribed from reply notifications, skipping`,
+          );
+          return;
+        }
+
         // Get replier info
         const replier = await CommentRepo.getCommentAuthorWithEmail(
           db,
           commentId,
         );
         const replierName = replier?.name ?? "有人";
-
         const replyPreview = convertToPlainText(comment.content).slice(0, 100);
+
+        const { DOMAIN, BETTER_AUTH_SECRET } = serverEnv(this.env);
+        const unsubscribeType = "reply_notification";
+        const token = await generateUnsubscribeToken(
+          BETTER_AUTH_SECRET,
+          replyToAuthor.id,
+          unsubscribeType,
+        );
+        const unsubscribeUrl = `https://${DOMAIN}/unsubscribe?userId=${replyToAuthor.id}&type=${unsubscribeType}&token=${token}`;
 
         await this.env.SEND_EMAIL_WORKFLOW.create({
           params: {
@@ -166,8 +190,16 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
               <blockquote style="border-left: 3px solid #ccc; padding-left: 10px; color: #666;">
                 ${replyPreview}${replyPreview.length >= 100 ? "..." : ""}
               </blockquote>
-              <p><a href="https://blog.dukda.com/post/${post.slug}">查看完整回复</a></p>
+              <p><a href="https://${DOMAIN}/post/${post.slug}">查看完整回复</a></p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
+              <p style="font-size: 12px; color: #999;">
+                不想接收此类通知？<a href="${unsubscribeUrl}" style="color: #999; text-decoration: underline;">点击退订</a>
+              </p>
             `,
+            headers: {
+              "List-Unsubscribe": `<${unsubscribeUrl}>`,
+              "List-Unsubscribe-Post": "List-Unsubscribe=One-Click",
+            },
           },
         });
 

@@ -1,6 +1,8 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  Bell,
+  BellOff,
   Check,
   Loader2,
   LogOut,
@@ -15,6 +17,10 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { userHasPasswordFn } from "@/features/auth/auth.api";
+import {
+  getReplyNotificationStatusFn,
+  toggleReplyNotificationFn,
+} from "@/features/email/email.api";
 import { authClient } from "@/lib/auth/auth.client";
 
 interface UserProfileModalProps {
@@ -80,6 +86,29 @@ export function UserProfileModal({
     queryKey: ["user-has-password", user?.id],
     queryFn: () => userHasPasswordFn(),
     enabled: !!user,
+  });
+
+  const queryClient = useQueryClient();
+
+  const { data: notificationStatus, isLoading: isLoadingNotification } =
+    useQuery({
+      queryKey: ["reply-notification-status", user?.id],
+      queryFn: () => getReplyNotificationStatusFn(),
+      enabled: !!user && isOpen,
+    });
+
+  const toggleNotificationMutation = useMutation({
+    mutationFn: (enabled: boolean) =>
+      toggleReplyNotificationFn({ data: { enabled } }),
+    onSuccess: (_, enabled) => {
+      queryClient.setQueryData(["reply-notification-status", user?.id], {
+        enabled,
+      });
+      toast.success(enabled ? "已开启通知" : "已关闭通知");
+    },
+    onError: () => {
+      toast.error("操作失败，请重试");
+    },
   });
 
   const onPasswordSubmit = async (data: PasswordSchema) => {
@@ -284,6 +313,56 @@ export function UserProfileModal({
                 )}
               </div>
             </form>
+
+            <div className="space-y-6 pt-10 border-t border-border max-w-xl">
+              <div className="flex items-center justify-between group">
+                <div className="space-y-1">
+                  <h4 className="text-lg font-serif font-medium tracking-tight">
+                    评论回复通知
+                  </h4>
+                  <p className="text-sm font-light text-muted-foreground">
+                    当有人回复您的评论时，通过邮件提醒您
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  disabled={
+                    isLoadingNotification ||
+                    toggleNotificationMutation.isPending
+                  }
+                  onClick={() =>
+                    toggleNotificationMutation.mutate(
+                      !notificationStatus?.enabled,
+                    )
+                  }
+                  className={`
+                    flex items-center gap-3 px-4 py-6 rounded-none border border-border transition-all
+                    ${
+                      notificationStatus?.enabled
+                        ? "text-foreground bg-muted/50 border-foreground/20"
+                        : "text-muted-foreground hover:text-foreground"
+                    }
+                  `}
+                >
+                  {notificationStatus?.enabled ? (
+                    <>
+                      <Bell size={16} strokeWidth={1.5} />
+                      <span className="text-[10px] uppercase tracking-[0.2em]">
+                        已开启
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <BellOff size={16} strokeWidth={1.5} />
+                      <span className="text-[10px] uppercase tracking-[0.2em]">
+                        已关闭
+                      </span>
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
           </section>
 
           {/* Security Protocol */}

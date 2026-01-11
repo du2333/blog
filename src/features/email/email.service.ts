@@ -38,6 +38,7 @@ export async function sendEmail(
     to: string;
     subject: string;
     html: string;
+    headers?: Record<string, string>;
   },
 ) {
   const config = await getSystemConfig(context.db);
@@ -57,6 +58,7 @@ export async function sendEmail(
     to: options.to,
     subject: options.subject,
     html: options.html,
+    headers: options.headers,
   });
 
   if (result.error) {
