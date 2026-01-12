@@ -4,7 +4,7 @@ interface ReplyNotificationEmailProps {
   postTitle: string;
   replierName: string;
   replyPreview: string;
-  postUrl: string;
+  commentUrl: string;
   unsubscribeUrl: string;
 }
 
@@ -12,7 +12,7 @@ export const ReplyNotificationEmail = ({
   postTitle,
   replierName,
   replyPreview,
-  postUrl,
+  commentUrl,
   unsubscribeUrl,
 }: ReplyNotificationEmailProps) => {
   return (
@@ -49,7 +49,7 @@ export const ReplyNotificationEmail = ({
       </blockquote>
       <div style={{ marginTop: "32px", marginBottom: "40px" }}>
         <a
-          href={postUrl}
+          href={commentUrl}
           style={{
             backgroundColor: "#1a1a1a",
             color: "#ffffff",

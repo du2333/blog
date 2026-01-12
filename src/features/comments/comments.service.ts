@@ -127,41 +127,51 @@ export async function createComment(
     }
   }
 
+  const isAdmin = context.session.user.role === "admin";
+
   const comment = await CommentRepo.insertComment(context.db, {
     postId: data.postId,
     content: data.content,
     rootId,
     replyToCommentId,
     userId: context.session.user.id,
-    status: "verifying", // Initial status, will be processed by AI
+    // Admin comments are published immediately, others go through moderation
+    status: isAdmin ? "published" : "verifying",
   });
 
-  // Trigger AI moderation workflow
-  await startCommentModerationWorkflow(context, { commentId: comment.id });
+  // Trigger AI moderation workflow only for non-admin users
+  if (!isAdmin) {
+    await startCommentModerationWorkflow(context, { commentId: comment.id });
+  }
 
-  // Notify admin about new comment
-  const post = await PostService.findPostById(context, { id: data.postId });
-  if (post) {
-    const { ADMIN_EMAIL, DOMAIN } = serverEnv(context.env);
-    const commentPreview = convertToPlainText(data.content).slice(0, 100);
-    const commenterName = context.session.user.name;
+  // Notify admin about new root comments from non-admin users only
+  // - Skip if admin is commenting (no need to notify yourself)
+  // - Skip if it's a reply (only root comments trigger admin notification)
+  const isRootComment = rootId === null;
+  if (!isAdmin && isRootComment) {
+    const post = await PostService.findPostById(context, { id: data.postId });
+    if (post) {
+      const { ADMIN_EMAIL, DOMAIN } = serverEnv(context.env);
+      const commentPreview = convertToPlainText(data.content).slice(0, 100);
+      const commenterName = context.session.user.name;
 
-    const emailHtml = renderToStaticMarkup(
-      AdminNotificationEmail({
-        postTitle: post.title,
-        commenterName,
-        commentPreview: `${commentPreview}${commentPreview.length >= 100 ? "..." : ""}`,
-        postUrl: `https://${DOMAIN}/post/${post.slug}`,
-      }),
-    );
+      const emailHtml = renderToStaticMarkup(
+        AdminNotificationEmail({
+          postTitle: post.title,
+          commenterName,
+          commentPreview: `${commentPreview}${commentPreview.length >= 100 ? "..." : ""}`,
+          commentUrl: `https://${DOMAIN}/post/${post.slug}?highlightCommentId=${comment.id}&rootId=${comment.id}#comment-${comment.id}`,
+        }),
+      );
 
-    await context.env.SEND_EMAIL_WORKFLOW.create({
-      params: {
-        to: ADMIN_EMAIL,
-        subject: `[新评论] ${post.title}`,
-        html: emailHtml,
-      },
-    });
+      await context.env.SEND_EMAIL_WORKFLOW.create({
+        params: {
+          to: ADMIN_EMAIL,
+          subject: `[新评论] ${post.title}`,
+          html: emailHtml,
+        },
+      });
+    }
   }
 
   return comment;

@@ -182,14 +182,17 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
           unsubscribeType,
         );
         const unsubscribeUrl = `https://${DOMAIN}/unsubscribe?userId=${replyToAuthor.id}&type=${unsubscribeType}&token=${token}`;
-        const postUrl = `https://${DOMAIN}/post/${post.slug}`;
+
+        // Build URL with comment anchor and query params for direct navigation
+        const rootId = comment.rootId ?? comment.id;
+        const commentUrl = `https://${DOMAIN}/post/${post.slug}?highlightCommentId=${comment.id}&rootId=${rootId}#comment-${comment.id}`;
 
         const emailHtml = renderToStaticMarkup(
           ReplyNotificationEmail({
             postTitle: post.title,
             replierName,
             replyPreview: `${replyPreview}${replyPreview.length >= 100 ? "..." : ""}`,
-            postUrl,
+            commentUrl,
             unsubscribeUrl,
           }),
         );

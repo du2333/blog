@@ -4,14 +4,14 @@ interface AdminNotificationEmailProps {
   postTitle: string;
   commenterName: string;
   commentPreview: string;
-  postUrl: string;
+  commentUrl: string;
 }
 
 export const AdminNotificationEmail = ({
   postTitle,
   commenterName,
   commentPreview,
-  postUrl,
+  commentUrl,
 }: AdminNotificationEmailProps) => {
   return (
     <EmailLayout
@@ -47,7 +47,7 @@ export const AdminNotificationEmail = ({
       </blockquote>
       <div style={{ marginTop: "32px" }}>
         <a
-          href={postUrl}
+          href={commentUrl}
           style={{
             backgroundColor: "#1a1a1a",
             color: "#ffffff",
@@ -58,7 +58,7 @@ export const AdminNotificationEmail = ({
             letterSpacing: "0.05em",
           }}
         >
-          查看文章
+          查看评论
         </a>
       </div>
     </EmailLayout>
