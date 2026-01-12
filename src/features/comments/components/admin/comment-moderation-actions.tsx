@@ -69,52 +69,54 @@ export const CommentModerationActions = ({
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-1 w-48 bg-popover border border-border shadow-md rounded-md z-50 py-1 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-          <div className="px-2 py-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider border-b border-border/50 mb-1">
-            更改状态
+        <div className="absolute right-0 top-full mt-2 w-56 bg-background border border-border rounded-none shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300">
+          <div className="px-4 py-2 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] border-b border-border/50 mb-2">
+            状态管理
           </div>
 
-          {status !== "published" && (
-            <button
-              onClick={() => handleStatusChange("published")}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-accent hover:text-accent-foreground transition-colors text-foreground"
-            >
-              <Check className="h-3.5 w-3.5 text-green-500" />
-              <span>通过 (发布)</span>
-            </button>
-          )}
+          <div className="space-y-px">
+            {status !== "published" && (
+              <button
+                onClick={() => handleStatusChange("published")}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-foreground group"
+              >
+                <span>批准发布</span>
+                <Check className="h-3 w-3 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            )}
 
-          {status !== "pending" && (
-            <button
-              onClick={() => handleStatusChange("pending")}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-info/10 hover:text-info transition-colors"
-            >
-              <RotateCcw className="h-3.5 w-3.5" />
-              <span>重置 (待审)</span>
-            </button>
-          )}
+            {status !== "pending" && (
+              <button
+                onClick={() => handleStatusChange("pending")}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-foreground group"
+              >
+                <span>设为待审</span>
+                <RotateCcw className="h-3 w-3 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            )}
 
-          {status !== "deleted" && (
-            <button
-              onClick={() => handleStatusChange("deleted")}
-              className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left hover:bg-warning/10 text-warning transition-colors"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              <span>拒绝 (垃圾箱)</span>
-            </button>
-          )}
+            {status !== "deleted" && (
+              <button
+                onClick={() => handleStatusChange("deleted")}
+                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-orange-500 group"
+              >
+                <span>移入垃圾箱</span>
+                <Trash2 className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </button>
+            )}
+          </div>
 
-          <div className="h-px bg-border/50 my-1" />
+          <div className="h-px bg-border/50 my-2" />
 
           <button
             onClick={() => {
               setIsOpen(false);
               setShowDeleteConfirm(true);
             }}
-            className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-left bg-destructive/5 hover:bg-destructive text-destructive hover:text-destructive-foreground transition-all duration-200"
+            className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-bold text-left hover:bg-destructive hover:text-white transition-all duration-300 text-destructive group"
           >
-            <ShieldAlert className="h-3.5 w-3.5" />
             <span>永久销毁</span>
+            <ShieldAlert className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
           </button>
         </div>
       )}

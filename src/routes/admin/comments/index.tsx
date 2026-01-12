@@ -76,42 +76,41 @@ function CommentAdminPage() {
   ];
 
   return (
-    <div className="space-y-8 pb-20">
+    <div className="space-y-12 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       {/* Header */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
-        <div className="space-y-2">
-          <h1 className="text-4xl font-serif font-medium tracking-tight">
+      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
+        <div className="space-y-1">
+          <h1 className="text-4xl font-serif font-medium tracking-tight text-foreground">
             评论管理
           </h1>
-          <p className="text-sm text-muted-foreground max-w-lg">
-            管理所有评论，审核风险内容，查看用户发言记录。
+          <p className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
+            管理 / 审核 / 社区
           </p>
         </div>
 
         {/* User Search */}
-        <div className="flex w-full md:w-auto gap-2">
-          <div className="relative flex-1 md:w-64">
-            <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input
-              placeholder="搜索用户昵称..."
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              className="pl-9 h-10 border-border/50 bg-background/50 focus:bg-background transition-colors"
-            />
-          </div>
+        <div className="relative w-full md:w-72 group">
+          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3.5 h-3.5 transition-colors group-focus-within:text-primary" />
+          <Input
+            placeholder="搜索用户昵称..."
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            className="pl-9 h-10 border-none! bg-muted/30 hover:bg-muted/50 focus:bg-background transition-all rounded-none! font-mono text-xs ring-offset-background focus-visible:ring-1 focus-visible:ring-border"
+          />
+          <div className="absolute bottom-0 left-0 w-full h-px bg-border group-focus-within:bg-primary transition-all" />
         </div>
-      </div>
+      </header>
 
-      <div className="animate-in fade-in duration-1000 delay-100 fill-mode-both space-y-6">
-        {/* Tabs */}
-        <div className="border-b border-border/50">
-          <nav className="flex items-center gap-6 overflow-x-auto no-scrollbar">
+      <div className="space-y-10">
+        {/* Navigation & Tabs */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-border/50 pb-px">
+          <nav className="flex items-center gap-8 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => handleStatusChange(tab.key)}
                 className={`
-                  relative pb-4 text-sm font-medium transition-all whitespace-nowrap
+                  relative pb-4 text-[11px] font-bold uppercase tracking-[0.2em] transition-all whitespace-nowrap
                   ${
                     status === tab.key
                       ? "text-foreground"
@@ -121,15 +120,15 @@ function CommentAdminPage() {
               >
                 {tab.label}
                 {status === tab.key && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary rounded-t-full transition-all" />
+                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary animate-in fade-in slide-in-from-left-2 duration-500" />
                 )}
               </button>
             ))}
           </nav>
         </div>
 
-        {/* Content */}
-        <div className="bg-card rounded-xl">
+        {/* Content Area - Minimal background, focus on content */}
+        <div className="min-h-[400px]">
           <CommentModerationTable
             status={currentStatus}
             userName={userName}

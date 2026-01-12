@@ -139,8 +139,17 @@ export const CommentItem = memo(
                 variant="ghost"
                 size="sm"
                 onClick={() => {
-                  const url = new URL(window.location.href);
+                  const url = new URL(
+                    window.location.origin + window.location.pathname,
+                  );
+                  const effectiveRootId = comment.rootId ?? comment.id;
+                  url.searchParams.set(
+                    "highlightCommentId",
+                    comment.id.toString(),
+                  );
+                  url.searchParams.set("rootId", effectiveRootId.toString());
                   url.hash = `comment-${comment.id}`;
+
                   navigator.clipboard.writeText(url.toString());
                   toast.success("链接已复制", {
                     description: "评论直链已复制到剪贴板",

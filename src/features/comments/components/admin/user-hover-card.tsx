@@ -1,11 +1,9 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
-import { Calendar, MessageSquare, ShieldAlert } from "lucide-react";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getUserStatsFn } from "@/features/comments/api/comments.admin.api";
 import { formatDate } from "@/lib/utils";
 
@@ -35,51 +33,70 @@ export function UserHoverCard({ user, children }: UserHoverCardProps) {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>{children}</HoverCardTrigger>
-      <HoverCardContent className="w-80 p-0 overflow-hidden" align="start">
-        <div className="bg-muted/30 p-6 border-b border-border/50">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border border-border">
-              <AvatarImage src={user.image || undefined} />
-              <AvatarFallback>{user.name.slice(0, 2)}</AvatarFallback>
-            </Avatar>
-            <div className="space-y-1">
-              <h4 className="text-sm font-medium leading-none">{user.name}</h4>
-              <p className="text-xs text-muted-foreground font-mono">
-                {user.id.slice(0, 8)}...
+      <HoverCardContent
+        className="w-80 p-0 overflow-hidden border border-border shadow-2xl bg-background rounded-none animate-in fade-in zoom-in-95 duration-500"
+        align="start"
+      >
+        <div className="p-8 space-y-8">
+          {/* User Profile Header */}
+          <div className="flex items-start justify-between">
+            <div className="space-y-4 max-w-[180px]">
+              <h4 className="text-xl font-serif font-medium leading-tight tracking-tight">
+                {user.name}
+              </h4>
+              <p className="text-[9px] font-mono tracking-widest text-muted-foreground uppercase bg-muted/30 px-2 py-1 inline-block">
+                ID / {user.id.slice(0, 12)}...
               </p>
             </div>
-          </div>
-        </div>
-
-        <div className="p-6 grid grid-cols-2 gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider">
-              <Calendar size={12} />
-              <span>注册时间</span>
+            <div className="w-14 h-14 border border-border grayscale hover:grayscale-0 transition-all duration-700 bg-muted">
+              {user.image ? (
+                <img
+                  src={user.image}
+                  className="w-full h-full object-cover"
+                  alt={user.name}
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center font-mono text-xs">
+                  {user.name.slice(0, 1)}
+                </div>
+              )}
             </div>
-            <p className="text-sm font-mono">
-              {isLoading || !stats ? "..." : formatDate(stats.registeredAt)}
-            </p>
-          </div>
-
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 text-xs text-muted-foreground uppercase tracking-wider">
-              <MessageSquare size={12} />
-              <span>历史评论</span>
-            </div>
-            <p className="text-sm font-mono">
-              {isLoading || !stats ? "..." : stats.totalComments}
-            </p>
           </div>
 
-          <div className="col-span-2 space-y-1 pt-2 border-t border-border/50 mt-2">
-            <div className="flex items-center gap-2 text-xs text-red-500/80 uppercase tracking-wider">
-              <ShieldAlert size={12} />
-              <span>违规/被删记录</span>
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 gap-x-8 gap-y-6">
+            <div className="space-y-1">
+              <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                加入时间
+              </div>
+              <p className="text-xs font-mono">
+                {isLoading || !stats
+                  ? "加载中"
+                  : formatDate(stats.registeredAt).split(" ")[0]}
+              </p>
             </div>
-            <p className="text-sm font-mono text-red-500">
-              {isLoading || !stats ? "..." : stats.rejectedComments} 条记录
-            </p>
+
+            <div className="space-y-1">
+              <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
+                活跃度
+              </div>
+              <p className="text-xs font-mono">
+                {isLoading || !stats ? "..." : `${stats.totalComments} 条评论`}
+              </p>
+            </div>
+
+            <div className="col-span-2 space-y-1 pt-4 border-t border-border/50">
+              <div className="text-[9px] font-bold uppercase tracking-[0.2em] text-orange-600/80">
+                风险评估
+              </div>
+              <p className="text-xs font-mono text-orange-600">
+                {isLoading || !stats
+                  ? "..."
+                  : stats.rejectedComments === 0
+                    ? "良好 / 无违规"
+                    : `${stats.rejectedComments} 次违规记录`}
+              </p>
+            </div>
           </div>
         </div>
       </HoverCardContent>

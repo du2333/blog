@@ -27,7 +27,7 @@ import { formatDate } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const searchSchema = z.object({
-  highlightCommentId: z.number().optional(),
+  highlightCommentId: z.coerce.number().optional(),
   rootId: z.number().optional(),
 });
 

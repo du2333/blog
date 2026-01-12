@@ -62,9 +62,10 @@ export function AdminPagination({
   const endItem = Math.min(startItem + currentPageItemCount - 1, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-12 border-t border-border mt-12">
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-8">
       <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
-        显示第 {startItem} — {endItem} 条，共 {totalItems} 条
+        第 {startItem.toString().padStart(2, "0")} —{" "}
+        {endItem.toString().padStart(2, "0")} 条 / 共 {totalItems} 条
       </div>
 
       <div className="flex items-center gap-1">
@@ -74,9 +75,9 @@ export function AdminPagination({
           size="icon"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-10 w-10 text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors rounded-sm"
+          className="h-10 w-10 text-muted-foreground disabled:opacity-0 hover:text-foreground transition-all rounded-none"
         >
-          <ChevronLeft size={18} strokeWidth={1.5} />
+          <ChevronLeft size={16} strokeWidth={1} />
         </Button>
 
         {/* Page Numbers */}
@@ -84,7 +85,7 @@ export function AdminPagination({
           {pageNumbers.map((pageNumber, index) => (
             <React.Fragment key={index}>
               {pageNumber === "..." ? (
-                <div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter">
+                <div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter font-mono">
                   ...
                 </div>
               ) : (
@@ -92,10 +93,10 @@ export function AdminPagination({
                   variant="ghost"
                   size="sm"
                   onClick={() => onPageChange(pageNumber)}
-                  className={`h-8 min-w-8 px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none ${
+                  className={`h-8 min-w-8 px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none border-b ${
                     currentPage === pageNumber
-                      ? "text-foreground font-bold border-b-2 border-foreground bg-transparent hover:bg-transparent"
-                      : "text-muted-foreground hover:text-foreground border-b-2 border-transparent bg-transparent hover:bg-transparent"
+                      ? "text-foreground font-bold border-foreground bg-transparent"
+                      : "text-muted-foreground hover:text-foreground border-transparent bg-transparent"
                   }`}
                 >
                   {pageNumber.toString().padStart(2, "0")}
@@ -111,9 +112,9 @@ export function AdminPagination({
           size="icon"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-10 w-10 text-muted-foreground disabled:opacity-10 hover:text-foreground transition-colors rounded-sm"
+          className="h-10 w-10 text-muted-foreground disabled:opacity-0 hover:text-foreground transition-all rounded-none"
         >
-          <ChevronRight size={18} strokeWidth={1.5} />
+          <ChevronRight size={16} strokeWidth={1} />
         </Button>
       </div>
     </div>
