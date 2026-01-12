@@ -4,7 +4,7 @@ import {
   createAdminTestContext,
   seedUser,
   waitForBackgroundTasks,
-} from "../../../tests/test-utils";
+} from "tests/test-utils";
 import * as PostService from "@/features/posts/posts.service";
 import * as CacheService from "@/features/cache/cache.service";
 

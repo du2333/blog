@@ -4,7 +4,7 @@ import {
   createAuthTestContext,
   createMockSession,
   seedUser,
-} from "../../../tests/test-utils";
+} from "tests/test-utils";
 import * as CommentService from "@/features/comments/comments.service";
 import * as PostService from "@/features/posts/posts.service";
 
