@@ -20,9 +20,9 @@ export async function getDashboardStats(
     DashboardRepo.getPublishedPostsCount(db),
     DashboardRepo.getDraftsCount(db),
     MediaRepo.getTotalMediaSize(db),
-    DashboardRepo.getRecentComments(db),
-    DashboardRepo.getRecentPosts(db),
-    DashboardRepo.getRecentUsers(db),
+    DashboardRepo.getRecentComments(db, 10),
+    DashboardRepo.getRecentPosts(db, 10),
+    DashboardRepo.getRecentUsers(db, 10),
   ]);
 
   const activities = [

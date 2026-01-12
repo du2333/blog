@@ -41,13 +41,13 @@ function formatTimeAgo(date: Date | null | string) {
     (now.getTime() - new Date(date).getTime()) / 1000,
   );
 
-  if (diffInSeconds < 60) return "Just now";
+  if (diffInSeconds < 60) return "刚刚";
   const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  if (diffInMinutes < 60) return `${diffInMinutes} 分钟前`;
   const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours}h ago`;
+  if (diffInHours < 24) return `${diffInHours} 小时前`;
   const diffInDays = Math.floor(diffInHours / 24);
-  return `${diffInDays}d ago`;
+  return `${diffInDays} 天前`;
 }
 
 function DashboardOverview() {
@@ -156,14 +156,11 @@ function DashboardOverview() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pt-6">
-            <div className="space-y-6 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
+            <div className="space-y-1 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
               {activities.length > 0 ? (
                 activities.map((log, i) => {
                   const content = (
-                    <div
-                      key={i}
-                      className="flex gap-4 p-3 -m-3 rounded-lg hover:bg-muted/50 transition-all duration-300 group/item relative overflow-hidden"
-                    >
+                    <div className="flex gap-4 p-3 rounded-lg group-hover/item:bg-muted/50 transition-all duration-300 relative overflow-hidden">
                       <div
                         className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
                           log.type === "comment"
@@ -174,7 +171,7 @@ function DashboardOverview() {
                         }`}
                       ></div>
                       <div className="space-y-1">
-                        <p className="text-xs font-light leading-snug group-hover/item:text-foreground transition-colors pr-6">
+                        <p className="text-xs font-light leading-snug group-hover/item:text-foreground transition-colors pr-6 text-muted-foreground/90">
                           {log.text}
                         </p>
                         <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
@@ -191,13 +188,21 @@ function DashboardOverview() {
 
                   if (log.link) {
                     return (
-                      <Link key={i} to={log.link} className="block">
+                      <Link
+                        key={i}
+                        to={log.link}
+                        className="block group/item transition-all"
+                      >
                         {content}
                       </Link>
                     );
                   }
 
-                  return content;
+                  return (
+                    <div key={i} className="group/item">
+                      {content}
+                    </div>
+                  );
                 })
               ) : (
                 <div className="text-xs text-muted-foreground">暂无活动</div>
