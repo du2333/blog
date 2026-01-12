@@ -113,6 +113,20 @@
           "class_name": "SendEmailWorkflow",
         },
       ],
+      "ai": {
+        "binding": "AI",
+      },
+      "vars": {
+        "BETTER_AUTH_SECRET": "test-secret",
+        "BETTER_AUTH_URL": "http://localhost:3000",
+        "ADMIN_EMAIL": "admin@example.com",
+        "GITHUB_CLIENT_ID": "test-id",
+        "GITHUB_CLIENT_SECRET": "test-secret",
+        "CLOUDFLARE_ZONE_ID": "test-zone",
+        "CLOUDFLARE_PURGE_API_TOKEN": "test-token",
+        "DOMAIN": "example.com",
+        "ENVIRONMENT": "test",
+      },
     },
   },
 }

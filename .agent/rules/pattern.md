@@ -166,19 +166,12 @@ description: 当你需要添加新功能模块、编写 Server Functions、处�
 
 项目使用 **Vitest** 结合 **Cloudflare Workers Vitest Pool** 进行测试。
 
-### 配置文件
-
-- vitest.config.ts: 配置 Worker 测试池，使用 wrangler.jsonc 的 test 环境。
-
-### 测试文件位置
-
-- 测试文件与源码同目录放置，命名为 [name].test.ts。
-- 示例: src/lib/rate-limiter.test.ts
+> **详细指南**: 请参考 [Testing Rule](testing.md) 获取完整的测试架构、依赖注入模式、Mocking 策略和最佳实践。
 
 ### 常用命令
 
-- bun test: 运行所有测试。
-- bun test <pattern>: 运行匹配特定模式的测试。
+- `bun test`: 运行所有测试。
+- `bun test <pattern>`: 运行匹配特定模式的测试。
 
 ---
 

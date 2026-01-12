@@ -14,7 +14,7 @@ const serverEnvSchema = z.object({
       /^([a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,}$/i,
       "Must be a valid domain (e.g., www.example.com)",
     ),
-  ENVIRONMENT: z.enum(["dev", "prod"]).optional(),
+  ENVIRONMENT: z.enum(["dev", "prod", "test"]).optional(),
 });
 
 export function serverEnv(env: Env) {
@@ -30,3 +30,6 @@ export function serverEnv(env: Env) {
 
   return result.data;
 }
+
+export const isNotInProduction = (env: Env) =>
+  serverEnv(env).ENVIRONMENT === "test" || serverEnv(env).ENVIRONMENT === "dev";

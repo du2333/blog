@@ -1,4 +1,4 @@
-import { serverEnv } from "@/lib/env/server.env";
+import { isNotInProduction, serverEnv } from "@/lib/env/server.env";
 
 interface PurgeOptions {
   urls?: Array<string>; // 精确匹配的URL
@@ -6,14 +6,10 @@ interface PurgeOptions {
 }
 
 export async function purgeCDNCache(env: Env, options: PurgeOptions) {
-  const {
-    CLOUDFLARE_ZONE_ID,
-    CLOUDFLARE_PURGE_API_TOKEN,
-    DOMAIN,
-    ENVIRONMENT,
-  } = serverEnv(env);
+  const { CLOUDFLARE_ZONE_ID, CLOUDFLARE_PURGE_API_TOKEN, DOMAIN } =
+    serverEnv(env);
 
-  if (ENVIRONMENT === "dev") {
+  if (isNotInProduction(env)) {
     console.log("Skipping CDN cache purge in development environment");
     return;
   }

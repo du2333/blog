@@ -10,7 +10,7 @@ import { generateUnsubscribeToken } from "@/features/email/email.utils";
 import { ReplyNotificationEmail } from "@/features/email/templates/ReplyNotificationEmail";
 import { getDb } from "@/lib/db";
 import { convertToPlainText } from "@/features/posts/utils/content";
-import { serverEnv } from "@/lib/env/server.env";
+import { isNotInProduction, serverEnv } from "@/lib/env/server.env";
 
 interface Params {
   commentId: number;
@@ -77,7 +77,7 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
         },
       },
       async () => {
-        if (serverEnv(this.env).ENVIRONMENT === "dev") {
+        if (isNotInProduction(this.env)) {
           return {
             safe: true,
             reason: "开发环境，自动通过",

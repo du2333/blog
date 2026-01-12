@@ -1,7 +1,7 @@
 import type { TestEmailConnectionInput } from "@/features/email/email.schema";
 import { getSystemConfig } from "@/features/config/config.data";
 import { createEmailClient } from "@/features/email/email.utils";
-import { serverEnv } from "@/lib/env/server.env";
+import { isNotInProduction, serverEnv } from "@/lib/env/server.env";
 
 export async function testEmailConnection(
   context: Context,
@@ -42,9 +42,7 @@ export async function sendEmail(
     headers?: Record<string, string>;
   },
 ) {
-  const { ENVIRONMENT } = serverEnv(context.env);
-
-  if (ENVIRONMENT === "dev") {
+  if (isNotInProduction(context.env)) {
     console.log(
       `[EMAIL_SERVICE] 开发环境跳过发送至 ${options.to} 的邮件：${options.subject}`,
     );
