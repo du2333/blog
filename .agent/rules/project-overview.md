@@ -1,6 +1,5 @@
 ---
 trigger: always_on
-description: 当你需要了解项目的宏观架构、技术栈选型、全栈数据流向或注入上下文（RequestContext）的实现细节时，参考此 Rule。
 ---
 
 # 项目架构概览：Flare Stack Blog

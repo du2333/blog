@@ -1,6 +1,5 @@
 ---
 trigger: always_on
-description: 当项目发生结构性调整、技术栈变更或出现新的最佳实践需要同步更新文档时，参考此 Rule。
 ---
 
 # Rules 维护规范
