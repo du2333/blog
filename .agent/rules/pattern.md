@@ -1,5 +1,5 @@
 ---
-trigger: model_decision
+trigger: always_on
 description: 当你需要添加新功能模块、编写 Server Functions、处理 KV/CDN 缓存失效逻辑、实现无限滚动或编写自动化测试时，参考此 Rule。
 ---
 
