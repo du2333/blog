@@ -3,6 +3,11 @@ name: CI
 on:
   pull_request:
     branches: [main]
+    paths-ignore:
+      - "**.md"
+      - ".agent/**"
+      - ".vscode/**"
+      - ".gitignore"
   workflow_dispatch:
 
 jobs:
