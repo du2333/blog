@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Link, getRouteApi } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
 import { rootCommentsByPostIdInfiniteQuery } from "../../comments.query";
 import { useComments } from "../../hooks/use-comments";
@@ -12,12 +12,15 @@ import { authClient } from "@/lib/auth/auth.client";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 
+const routeApi = getRouteApi("/_public/post/$slug");
+
 interface CommentSectionProps {
   postId: number;
 }
 
 export const CommentSection = ({ postId }: CommentSectionProps) => {
   const { data: session } = authClient.useSession();
+  const { rootId, highlightCommentId } = routeApi.useSearch();
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery(
       rootCommentsByPostIdInfiniteQuery(postId, session?.user.id),
@@ -66,6 +69,42 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
     }
   };
 
+  /* New Enhancement: Handle Anchor Navigation for CSR */
+  useEffect(() => {
+    if (isLoading || !data) return;
+
+    const handleAnchor = () => {
+      const hash = window.location.hash;
+      if (!hash || !hash.startsWith("#comment-")) return;
+
+      const commentId = parseInt(hash.replace("#comment-", ""), 10);
+      if (isNaN(commentId)) return;
+
+      // Robust retry mechanism to find the element as it might be rendered after data load/expansion
+      let retries = 0;
+      const maxRetries = 20;
+
+      const attemptScroll = () => {
+        const element = document.getElementById(`comment-${commentId}`);
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+          return;
+        }
+
+        if (retries < maxRetries) {
+          retries++;
+          setTimeout(attemptScroll, 200);
+        }
+      };
+
+      attemptScroll();
+    };
+
+    handleAnchor();
+    window.addEventListener("hashchange", handleAnchor);
+    return () => window.removeEventListener("hashchange", handleAnchor);
+  }, [isLoading, data]);
+
   if (isLoading || !data) {
     return <CommentSectionSkeleton />;
   }
@@ -112,14 +151,16 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
       <CommentList
         rootComments={rootComments}
         postId={postId}
-        onReply={(rootId, commentId, userName) =>
-          setReplyTarget({ rootId, commentId, userName })
+        onReply={(rootIdArg, commentId, userName) =>
+          setReplyTarget({ rootId: rootIdArg, commentId, userName })
         }
         onDelete={(id) => setCommentToDelete(id)}
         replyTarget={replyTarget}
         onCancelReply={() => setReplyTarget(null)}
         onSubmitReply={handleCreateReply}
         isSubmittingReply={isCreating}
+        initialExpandedRootId={rootId}
+        highlightCommentId={highlightCommentId}
       />
 
       {/* Load More Root Comments */}

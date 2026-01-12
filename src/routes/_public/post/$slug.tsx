@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { z } from "zod";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
@@ -25,7 +26,13 @@ import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
+const searchSchema = z.object({
+  highlightCommentId: z.number().optional(),
+  rootId: z.number().optional(),
+});
+
 export const Route = createFileRoute("/_public/post/$slug")({
+  validateSearch: searchSchema,
   component: RouteComponent,
   loader: async ({ context, params }) => {
     const post = await context.queryClient.ensureQueryData(

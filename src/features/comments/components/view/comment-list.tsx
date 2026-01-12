@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronUp, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
@@ -22,6 +22,8 @@ interface CommentListProps {
   onCancelReply?: () => void;
   onSubmitReply?: (content: JSONContent) => Promise<void>;
   isSubmittingReply?: boolean;
+  initialExpandedRootId?: number;
+  highlightCommentId?: number;
 }
 
 export const CommentList = ({
@@ -33,17 +35,25 @@ export const CommentList = ({
   onCancelReply,
   onSubmitReply,
   isSubmittingReply,
+  initialExpandedRootId,
+  highlightCommentId,
 }: CommentListProps) => {
   const { data: session } = authClient.useSession();
   const [expandedRoots, setExpandedRoots] = useState<Set<number>>(new Set());
 
-  const toggleExpand = (rootId: number) => {
+  useEffect(() => {
+    if (initialExpandedRootId) {
+      setExpandedRoots((prev) => new Set(prev).add(initialExpandedRootId));
+    }
+  }, [initialExpandedRootId]);
+
+  const toggleExpand = (targetRootId: number) => {
     setExpandedRoots((prev) => {
       const next = new Set(prev);
-      if (next.has(rootId)) {
-        next.delete(rootId);
+      if (next.has(targetRootId)) {
+        next.delete(targetRootId);
       } else {
-        next.add(rootId);
+        next.add(targetRootId);
       }
       return next;
     });
@@ -75,6 +85,7 @@ export const CommentList = ({
           onSubmitReply={onSubmitReply}
           isSubmittingReply={isSubmittingReply}
           session={session}
+          highlightCommentId={highlightCommentId}
         />
       ))}
     </div>
@@ -93,6 +104,7 @@ interface RootCommentWithRepliesProps {
   onSubmitReply?: (content: JSONContent) => Promise<void>;
   isSubmittingReply?: boolean;
   session: AuthContext["session"] | null;
+  highlightCommentId?: number;
 }
 
 function RootCommentWithReplies({
@@ -107,6 +119,7 @@ function RootCommentWithReplies({
   onSubmitReply,
   isSubmittingReply,
   session,
+  highlightCommentId,
 }: RootCommentWithRepliesProps) {
   const {
     data: repliesData,
@@ -133,6 +146,7 @@ function RootCommentWithReplies({
           }
         }}
         onDelete={onDelete}
+        highlightCommentId={highlightCommentId}
       />
 
       {isReplyingToRoot && (
@@ -220,6 +234,7 @@ function RootCommentWithReplies({
                       onDelete={onDelete}
                       isReply
                       replyToName={reply.replyTo?.name}
+                      highlightCommentId={highlightCommentId}
                     />
                     {isReplyingToThis && (
                       <div className="py-8 ml-12 px-6 border border-dashed border-border/50 rounded-sm bg-accent/5">

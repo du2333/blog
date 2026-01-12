@@ -154,3 +154,4 @@ export type StartCommentModerationInput = z.infer<
 export type RootCommentWithReplyCount = z.infer<
   typeof RootCommentWithReplyCountSchema
 >;
+export type CommentWithUser = z.infer<typeof CommentWithUserSchema>;

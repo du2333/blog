@@ -213,3 +213,19 @@ pre.shiki {
     @apply bg-accent;
   }
 }
+
+/* Comment Highlight for Anchor Navigation */
+@keyframes highlight-fade {
+  0% {
+    background-color: var(--muted);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+.highlight-active {
+  animation: highlight-fade 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  position: relative;
+  scroll-margin-top: 100px;
+}

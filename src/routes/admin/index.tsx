@@ -1,14 +1,21 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Activity, Database, Shield, Users } from "lucide-react";
+import { Link, createFileRoute } from "@tanstack/react-router";
+import { Activity, Database, FileText, MessageSquare } from "lucide-react";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { StatCard } from "@/components/stat-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ADMIN_STATS } from "@/lib/constants";
+import { dashboardStatsQuery } from "@/features/dashboard/dashboard.query";
+import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton";
 
 export const Route = createFileRoute("/admin/")({
   component: DashboardOverview,
-  loader: () => ({
-    title: "概览",
-  }),
+  pendingComponent: DashboardSkeleton,
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(dashboardStatsQuery());
+
+    return {
+      title: "概览",
+    };
+  },
   head: ({ loaderData }) => ({
     meta: [
       {
@@ -18,7 +25,35 @@ export const Route = createFileRoute("/admin/")({
   }),
 });
 
+function formatBytes(bytes: number, decimals = 2) {
+  if (!+bytes) return "0 Bytes";
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+}
+
+function formatTimeAgo(date: Date | null | string) {
+  if (!date) return "";
+  const now = new Date();
+  const diffInSeconds = Math.floor(
+    (now.getTime() - new Date(date).getTime()) / 1000,
+  );
+
+  if (diffInSeconds < 60) return "Just now";
+  const diffInMinutes = Math.floor(diffInSeconds / 60);
+  if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+  const diffInHours = Math.floor(diffInMinutes / 60);
+  if (diffInHours < 24) return `${diffInHours}h ago`;
+  const diffInDays = Math.floor(diffInHours / 24);
+  return `${diffInDays}d ago`;
+}
+
 function DashboardOverview() {
+  const { data } = useSuspenseQuery(dashboardStatsQuery());
+  const { stats, activities } = data;
+
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       <header className="flex justify-between items-end">
@@ -34,34 +69,40 @@ function DashboardOverview() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <Link to="/admin/comments" search={{ status: "pending" }}>
+          <StatCard
+            label="待审核评论"
+            value={stats.pendingComments.toString()}
+            icon={<MessageSquare size={18} strokeWidth={1.5} />}
+            trend="需要处理"
+            color="zinc"
+          />
+        </Link>
+        <Link to="/admin/posts" search={{ status: "PUBLISHED" }}>
+          <StatCard
+            label="已发布文章"
+            value={stats.publishedPosts.toString()}
+            icon={<FileText size={18} strokeWidth={1.5} />}
+            trend="活跃内容"
+            color="zinc"
+          />
+        </Link>
         <StatCard
-          label="访客统计"
-          value={ADMIN_STATS.totalViews.toLocaleString()}
-          icon={<Users size={18} strokeWidth={1.5} />}
-          trend="+12% Since last month"
-          color="zinc"
-        />
-        <StatCard
-          label="系统稳定性"
-          value={`${ADMIN_STATS.etherStability}%`}
-          icon={<Shield size={18} strokeWidth={1.5} />}
-          trend="Operational"
-          color="zinc"
-        />
-        <StatCard
-          label="数据库容量"
-          value={ADMIN_STATS.databaseSize}
+          label="媒体库占用"
+          value={formatBytes(stats.mediaSize)}
           icon={<Database size={18} strokeWidth={1.5} />}
-          trend="Growing stable"
+          trend="存储使用"
           color="zinc"
         />
-        <StatCard
-          label="性能指标"
-          value="Good"
-          icon={<Activity size={18} strokeWidth={1.5} />}
-          trend="Clear of issues"
-          color="zinc"
-        />
+        <Link to="/admin/posts" search={{ status: "DRAFT" }}>
+          <StatCard
+            label="草稿箱"
+            value={stats.drafts.toString()}
+            icon={<Activity size={18} strokeWidth={1.5} />}
+            trend="未完成的工作"
+            color="zinc"
+          />
+        </Link>
       </div>
 
       {/* Visuals Row */}
@@ -116,58 +157,51 @@ function DashboardOverview() {
           </CardHeader>
           <CardContent className="px-0 pt-6">
             <div className="space-y-6 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
-              {[
-                {
-                  type: "success",
-                  text: "Auth success: User established",
-                  time: "Just now",
-                },
-                {
-                  type: "info",
-                  text: "Database backup completed",
-                  time: "12m ago",
-                },
-                {
-                  type: "info",
-                  text: "Cache synchronized (12ms)",
-                  time: "45m ago",
-                },
-                {
-                  type: "warning",
-                  text: "Low bandwidth on storage node",
-                  time: "1h ago",
-                },
-                {
-                  type: "success",
-                  text: "Article published: #2049",
-                  time: "3h ago",
-                },
-                {
-                  type: "info",
-                  text: "New media asset indexed",
-                  time: "5h ago",
-                },
-              ].map((log, i) => (
-                <div key={i} className="flex gap-4 group cursor-default">
-                  <div
-                    className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
-                      log.type === "success"
-                        ? "bg-green-500"
-                        : log.type === "warning"
-                          ? "bg-amber-500"
-                          : "bg-muted-foreground/30"
-                    }`}
-                  ></div>
-                  <div className="space-y-1">
-                    <p className="text-xs font-light leading-snug group-hover:text-foreground transition-colors">
-                      {log.text}
-                    </p>
-                    <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
-                      {log.time}
-                    </p>
-                  </div>
-                </div>
-              ))}
+              {activities.length > 0 ? (
+                activities.map((log, i) => {
+                  const content = (
+                    <div
+                      key={i}
+                      className="flex gap-4 p-3 -m-3 rounded-lg hover:bg-muted/50 transition-all duration-300 group/item relative overflow-hidden"
+                    >
+                      <div
+                        className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+                          log.type === "comment"
+                            ? "bg-amber-500"
+                            : log.type === "post"
+                              ? "bg-green-500"
+                              : "bg-blue-500"
+                        }`}
+                      ></div>
+                      <div className="space-y-1">
+                        <p className="text-xs font-light leading-snug group-hover/item:text-foreground transition-colors pr-6">
+                          {log.text}
+                        </p>
+                        <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
+                          {formatTimeAgo(log.time)}
+                        </p>
+                      </div>
+                      {log.link && (
+                        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 group-hover/item:opacity-100 group-hover/item:scale-110 transition-all duration-300">
+                          <Activity size={14} />
+                        </div>
+                      )}
+                    </div>
+                  );
+
+                  if (log.link) {
+                    return (
+                      <Link key={i} to={log.link} className="block">
+                        {content}
+                      </Link>
+                    );
+                  }
+
+                  return content;
+                })
+              ) : (
+                <div className="text-xs text-muted-foreground">暂无活动</div>
+              )}
             </div>
           </CardContent>
         </Card>

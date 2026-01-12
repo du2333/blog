@@ -1,40 +1,35 @@
 import { memo, useMemo } from "react";
-import { MessageSquare, Trash2 } from "lucide-react";
+import { Link2, MessageSquare, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 import { ExpandableContent } from "./expandable-content";
-import type { JSONContent } from "@tiptap/react";
+import type { CommentWithUser } from "../../comments.schema";
 import { authClient } from "@/lib/auth/auth.client";
-import { formatDate } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 
 interface CommentItemProps {
-  comment: {
-    id: number;
-    content: JSONContent | null;
-    rootId: number | null;
-    replyToCommentId: number | null;
-    postId: number;
-    userId: string;
-    status: string;
-    aiReason: string | null;
-    createdAt: Date;
-    updatedAt: Date;
-    user: {
-      id: string;
-      name: string;
-      image: string | null;
-      role: string | null;
-    } | null;
-  };
+  comment: CommentWithUser;
   onReply?: (rootId: number, commentId: number, userName: string) => void;
   onDelete?: (commentId: number) => void;
   isReply?: boolean;
   replyToName?: string | null;
+  highlightCommentId?: number;
 }
 
 export const CommentItem = memo(
-  ({ comment, onReply, onDelete, isReply, replyToName }: CommentItemProps) => {
+  ({
+    comment,
+    onReply,
+    onDelete,
+    isReply,
+    replyToName,
+    highlightCommentId,
+  }: CommentItemProps) => {
+    const isHighlighted = highlightCommentId === comment.id;
+
     const { data: session } = authClient.useSession();
+
     const isAuthor = session?.user.id === comment.userId;
     const isAdmin = session?.user.role === "admin";
     const isBlogger = comment.user?.role === "admin";
@@ -58,7 +53,14 @@ export const CommentItem = memo(
 
     return (
       <div
-        className={`group flex gap-4 py-6 ${isReply ? "ml-12 border-l border-border/50 pl-6" : "border-b border-border/30"}`}
+        id={`comment-${comment.id}`}
+        className={cn(
+          "group flex gap-4 py-6 scroll-mt-24",
+          isReply
+            ? "ml-12 border-l border-border/50 pl-6"
+            : "border-b border-border/30",
+          isHighlighted && "highlight-active",
+        )}
       >
         {/* Avatar */}
         <div className="shrink-0">
@@ -131,6 +133,23 @@ export const CommentItem = memo(
               >
                 <MessageSquare size={12} className="mr-1.5" />
                 回复
+              </Button>
+
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => {
+                  const url = new URL(window.location.href);
+                  url.hash = `comment-${comment.id}`;
+                  navigator.clipboard.writeText(url.toString());
+                  toast.success("链接已复制", {
+                    description: "评论直链已复制到剪贴板",
+                  });
+                }}
+                className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
+              >
+                <Link2 size={12} className="mr-1.5" />
+                链接
               </Button>
 
               {(isAuthor || isAdmin) && (
