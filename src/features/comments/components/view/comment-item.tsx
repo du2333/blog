@@ -56,9 +56,7 @@ export const CommentItem = memo(
         id={`comment-${comment.id}`}
         className={cn(
           "group flex gap-4 py-6 scroll-mt-24",
-          isReply
-            ? "ml-12 border-l border-border/50 pl-6"
-            : "border-b border-border/30",
+          isReply ? "ml-12" : "border-b border-border/30",
           isHighlighted && "highlight-active",
         )}
       >
