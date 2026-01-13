@@ -1,9 +1,11 @@
 import { Hono } from "hono";
 import handler from "@tanstack/react-start/server-entry";
-import { cacheMiddleware, rateLimitMiddleware } from "./middlewares";
+import {
+  baseMiddleware,
+  cacheMiddleware,
+  rateLimitMiddleware,
+} from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
-import { getAuth } from "@/lib/auth/auth.server";
-import { getDb } from "@/lib/db";
 
 export const app = new Hono<{ Bindings: Env }>();
 
@@ -25,39 +27,37 @@ app.get("/images/:key{.+}", async (c) => {
 
 app.get(
   "/api/auth/*",
+  baseMiddleware,
   rateLimitMiddleware({
     capacity: 100,
     interval: "1m",
     identifier: (c) => c.req.header("cf-connecting-ip") ?? "unknown",
   }),
   (c) => {
-    const db = getDb(c.env);
-    const auth = getAuth({ db, env: c.env });
+    const auth = c.get("auth");
     return auth.handler(c.req.raw);
   },
 );
 
 app.post(
   "/api/auth/*",
+  baseMiddleware,
   rateLimitMiddleware({
     capacity: 10,
     interval: "1m",
     identifier: (c) => c.req.header("cf-connecting-ip") ?? "unknown",
   }),
   (c) => {
-    const db = getDb(c.env);
-    const auth = getAuth({ db, env: c.env });
+    const auth = c.get("auth");
     return auth.handler(c.req.raw);
   },
 );
 
-app.all("*", (c) => {
-  const db = getDb(c.env);
-  const auth = getAuth({ db, env: c.env });
+app.all("*", baseMiddleware, (c) => {
   return handler.fetch(c.req.raw, {
     context: {
-      db,
-      auth,
+      db: c.get("db"),
+      auth: c.get("auth"),
       env: c.env,
       executionCtx: c.executionCtx,
     },

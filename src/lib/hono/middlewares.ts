@@ -1,7 +1,26 @@
 import { createMiddleware } from "hono/factory";
 import type { Context } from "hono";
 import type { Duration } from "@/lib/duration";
+import { getDb } from "@/lib/db";
+import { getAuth } from "@/lib/auth/auth.server";
 import { CACHE_CONTROL } from "@/lib/constants";
+
+declare module "hono" {
+  interface ContextVariableMap {
+    db: ReturnType<typeof getDb>;
+    auth: ReturnType<typeof getAuth>;
+  }
+}
+
+export const baseMiddleware = createMiddleware<{ Bindings: Env }>(
+  async (c, next) => {
+    const db = getDb(c.env);
+    const auth = getAuth({ db, env: c.env });
+    c.set("db", db);
+    c.set("auth", auth);
+    return next();
+  },
+);
 
 const tryCacheResponse = (c: Context, cache: Cache) => {
   let strategy:
