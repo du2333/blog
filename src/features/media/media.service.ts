@@ -9,6 +9,7 @@ import {
   buildTransformOptions,
   getContentTypeFromKey,
 } from "@/features/media/media.utils";
+import { CACHE_CONTROL } from "@/lib/constants";
 
 export async function upload(context: Context, file: File) {
   const uploaded = await Storage.putToR2(context.env, file);
@@ -132,9 +133,10 @@ export async function handleImageRequest(
     // 4. 返回处理后的图片
     const newHeaders = new Headers(response.headers);
 
-    // 清理掉可能存在的上游缓存头，确保干净
-    newHeaders.delete("Cache-Control");
-    newHeaders.delete("CDN-Cache-Control");
+    // 设置缓存头
+    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) => {
+      newHeaders.set(k, v);
+    });
     if (!newHeaders.has("Vary")) {
       newHeaders.set("Vary", "Accept");
     }
