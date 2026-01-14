@@ -101,6 +101,7 @@ function EditPost() {
     queryClient.invalidateQueries({ queryKey: POSTS_KEYS.counts });
 
     queryClient.invalidateQueries({ queryKey: TAGS_KEYS.postTags(postId) });
+    queryClient.invalidateQueries({ queryKey: TAGS_KEYS.admin });
     // Replaces predicate: matches ["media", "linked-keys", ...]
     queryClient.invalidateQueries({
       queryKey: MEDIA_KEYS.linked,
