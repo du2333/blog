@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Radio } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { PostEditorData } from "@/features/posts/components/post-editor/types";
 import type { JSONContent } from "@tiptap/react";
@@ -18,6 +18,7 @@ import { TAGS_KEYS } from "@/features/tags/queries";
 interface UsePostActionsOptions {
   postId: number;
   post: PostEditorData;
+  initialData: PostEditorData;
   setPost: React.Dispatch<React.SetStateAction<PostEditorData>>;
   setError: (error: string | null) => void;
   allTags: Array<Tag>;
@@ -26,6 +27,7 @@ interface UsePostActionsOptions {
 export function usePostActions({
   postId,
   post,
+  initialData,
   setPost,
   setError,
   allTags,
@@ -37,18 +39,29 @@ export function usePostActions({
   const [processState, setProcessState] = useState<
     "IDLE" | "PROCESSING" | "SUCCESS"
   >("IDLE");
-  const [isDirty, setIsDirty] = useState(false);
+  // Track the last successfully saved/published state
+  const [savedPost, setSavedPost] = useState<PostEditorData>(initialData);
 
-  // Mark as dirty whenever the post object changes
-  // This satisfies: "Even if the final change is the same as the original, it stays dirty"
-  const isFirstRender = useRef(true);
+  // Update saved state when initialData changes (e.g. navigation or refetch)
   useEffect(() => {
-    if (isFirstRender.current) {
-      isFirstRender.current = false;
-      return;
-    }
-    setIsDirty(true);
-  }, [post]);
+    setSavedPost(initialData);
+  }, [initialData]);
+
+  // Compare current post to savedPost to determine if user made changes
+  // Uses reference comparison for most fields (O(1)), only tagIds needs stringify
+  const isDirty = useMemo(() => {
+    return (
+      post.title !== savedPost.title ||
+      post.slug !== savedPost.slug ||
+      post.status !== savedPost.status ||
+      post.summary !== savedPost.summary ||
+      post.readTimeInMinutes !== savedPost.readTimeInMinutes ||
+      post.publishedAt?.getTime() !== savedPost.publishedAt?.getTime() ||
+      post.contentJson !== savedPost.contentJson ||
+      JSON.stringify(post.tagIds) !== JSON.stringify(savedPost.tagIds)
+    );
+  }, [post, savedPost]);
+
   // Keep track of how slug was requested to control noisy toasts
   const slugGenerationMode = useRef<"manual" | "auto">("manual");
   // Track previous values to detect actual changes & skip first mount
@@ -59,7 +72,7 @@ export function usePostActions({
 
   // Debounced values
   const debouncedTitle = useDebounce(post.title, 500);
-  const debouncedContentJson = useDebounce(post.contentJson, 800);
+  const debouncedContentJson = useDebounce(post.contentJson, 500);
 
   const processDataMutation = useMutation({
     mutationFn: startPostProcessWorkflowFn,
@@ -84,7 +97,11 @@ export function usePostActions({
       });
 
       setProcessState("SUCCESS");
-      setIsDirty(false); // Reset only on successful publish
+
+      // Update saved state to match what we just published
+      // Note: We use 'post' from closure here, which is the state at the time user clicked publish.
+      // This is generally correct as that's what we are processing.
+      setSavedPost(post);
 
       // Reset after cooldown
       setTimeout(() => {
