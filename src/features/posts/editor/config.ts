@@ -90,9 +90,7 @@ export const extensions = [
     levels: [1, 2, 3, 4],
   }),
   BlockQuoteExtension,
-  CodeBlockExtension.configure({
-    defaultTheme: "vitesse-dark",
-  }),
+  CodeBlockExtension,
   ImageExtension,
   ImageUpload.configure({
     onUpload: handleImageUpload,

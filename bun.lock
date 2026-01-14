@@ -44,7 +44,6 @@
         "sonner": "^2.0.7",
         "tailwind-merge": "^3.0.2",
         "tailwindcss": "^4.0.6",
-        "tiptap-extension-code-block-shiki": "^1.0.0",
         "tw-animate-css": "^1.3.6",
         "vite-tsconfig-paths": "^5.1.4",
         "workers-ai-provider": "^3.0.2",
@@ -1442,8 +1441,6 @@
     "tinyrainbow": ["tinyrainbow@2.0.0", "", {}, "sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw=="],
 
     "tinyspy": ["tinyspy@4.0.4", "", {}, "sha512-azl+t0z7pw/z958Gy9svOTuzqIk6xq+NSheJzn5MMWtWTFywIacg2wUlzKFGtt3cthx0r2SxMK0yzJOR0IES7Q=="],
-
-    "tiptap-extension-code-block-shiki": ["tiptap-extension-code-block-shiki@1.0.0", "", { "peerDependencies": { "@tiptap/core": "3.13.0", "@tiptap/pm": "3.13.0", "shiki": "3.15.0" } }, "sha512-auY3zD2V6mD4VY2umwlZ8khbbj8cMh0pkXSzgtQ+yS5xJMMcC0ez8p3TYuGYmOjQlYELpRByFaxQ+VpXBfbfZw=="],
 
     "tldts": ["tldts@7.0.17", "", { "dependencies": { "tldts-core": "7.0.17" }, "bin": { "tldts": "bin/cli.js" } }, "sha512-Y1KQBgDd/NUc+LfOtKS6mNsC9CCaH+m2P1RoIZy7RAPo3C3/t8X45+zgut31cRZtZ3xKPjfn3TkGTrctC2TQIQ=="],
 

@@ -1,6 +1,6 @@
 import { Check, Copy } from "lucide-react";
 import { memo, useEffect, useState } from "react";
-import { codeToHtml } from "shiki";
+import { highlight as highlightCode } from "@/lib/shiki";
 import { useTheme } from "@/components/common/theme-provider";
 
 // 全局高亮缓存
@@ -29,13 +29,10 @@ export const CodeBlock = memo(({ code, language }: CodeBlockProps) => {
 
     async function highlight() {
       try {
-        const highlighted = await codeToHtml(code.trim(), {
-          lang: language || "text",
-          themes: {
-            dark: "vitesse-dark",
-            light: "vitesse-light",
-          },
-        });
+        const highlighted = await highlightCode(
+          code.trim(),
+          language || "text",
+        );
 
         if (mounted) {
           highlightCache.set(cacheKey, highlighted);

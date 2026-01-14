@@ -1,9 +1,22 @@
 import { ReactNodeViewRenderer } from "@tiptap/react";
-import CodeBlockShiki from "tiptap-extension-code-block-shiki";
+import CodeBlock from "@tiptap/extension-code-block";
 import { CodeBlockView } from "./code-block-view";
+import { createShikiPlugin } from "./shiki-plugin";
 
-export const CodeBlockExtension = CodeBlockShiki.extend({
+export const CodeBlockExtension = CodeBlock.extend({
+  addOptions() {
+    return {
+      ...this.parent?.(),
+      languageClassPrefix: "language-",
+      exitOnTripleEnter: true,
+      exitOnArrowDown: true,
+      defaultLanguage: null,
+    } as ReturnType<NonNullable<typeof this.parent>>;
+  },
   addNodeView() {
     return ReactNodeViewRenderer(CodeBlockView);
+  },
+  addProseMirrorPlugins() {
+    return [...(this.parent?.() || []), createShikiPlugin({ name: this.name })];
   },
 });
