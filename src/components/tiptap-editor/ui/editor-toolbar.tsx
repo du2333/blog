@@ -13,6 +13,7 @@ import {
   Quote,
   Redo,
   Strikethrough,
+  Terminal,
   Underline as UnderlineIcon,
   Undo,
 } from "lucide-react";
@@ -68,6 +69,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     isUnderline,
     isStrike,
     isCode,
+    isCodeBlock,
     isBulletList,
     isOrderedList,
     isBlockquote,
@@ -98,6 +100,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         isUnderline: ctx.editor.isActive("underline"),
         isStrike: ctx.editor.isActive("strike"),
         isCode: ctx.editor.isActive("code"),
+        isCodeBlock: ctx.editor.isActive("codeBlock"),
         isBulletList: ctx.editor.isActive("bulletList"),
         isOrderedList: ctx.editor.isActive("orderedList"),
         isBlockquote: ctx.editor.isActive("blockquote"),
@@ -112,6 +115,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
     isUnderline: false,
     isStrike: false,
     isCode: false,
+    isCodeBlock: false,
     isBulletList: false,
     isOrderedList: false,
     isBlockquote: false,
@@ -170,6 +174,12 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         isActive={isCode}
         icon={Code}
         label="行内代码"
+      />
+      <ToolbarButton
+        onClick={() => editor?.chain().focus().toggleCodeBlock().run()}
+        isActive={isCodeBlock}
+        icon={Terminal}
+        label="代码块"
       />
 
       <div className="h-6 w-px bg-border mx-2"></div>

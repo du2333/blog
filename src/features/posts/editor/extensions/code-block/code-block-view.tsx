@@ -19,7 +19,7 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
 
   return (
     <NodeViewWrapper className="my-16 relative group">
-      <div className="overflow-hidden bg-muted transition-all duration-700 border border-border group-hover:border-border">
+      <div className="bg-muted transition-all duration-700 border border-border group-hover:border-border">
         {/* Simple Header */}
         <div className="flex items-center justify-between px-6 py-3 select-none bg-muted/50 border-b border-border/50">
           <div className="flex items-center gap-3">
