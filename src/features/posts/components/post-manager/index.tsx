@@ -15,6 +15,7 @@ import { createEmptyPostFn } from "@/features/posts/api/posts.admin.api";
 import { useDebounce } from "@/hooks/use-debounce";
 
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
+import { POSTS_KEYS } from "@/features/posts/queries";
 
 // Re-export types for external use
 export {
@@ -81,7 +82,9 @@ export function PostManager({
   const createMutation = useMutation({
     mutationFn: () => createEmptyPostFn(),
     onSuccess: (result) => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      // Precise invalidation for new post creation
+      queryClient.invalidateQueries({ queryKey: POSTS_KEYS.adminLists });
+      queryClient.invalidateQueries({ queryKey: POSTS_KEYS.counts });
       navigate({
         to: "/admin/posts/edit/$id",
         params: { id: String(result.id) },

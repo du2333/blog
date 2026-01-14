@@ -16,13 +16,13 @@ import {
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
+import { postBySlugQuery } from "@/features/posts/queries";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
 import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
 
 import { Button } from "@/components/ui/button";
-import { postBySlugQuery } from "@/features/posts/posts.query";
 import { formatDate } from "@/lib/utils";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 

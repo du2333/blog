@@ -9,11 +9,14 @@ import { toast } from "sonner";
 import {
   checkMediaInUseFn,
   deleteImageFn,
-  getLinkedMediaKeysFn,
-  getMediaFn,
-  getTotalMediaSizeFn,
   updateMediaNameFn,
 } from "@/features/media/media.api";
+import {
+  MEDIA_KEYS,
+  linkedMediaKeysQuery,
+  mediaInfiniteQueryOptions,
+  totalMediaSizeQuery,
+} from "@/features/media/queries";
 import { useDebounce } from "@/hooks/use-debounce";
 
 export function useMediaLibrary() {
@@ -41,16 +44,7 @@ export function useMediaLibrary() {
     isPending,
     refetch,
   } = useInfiniteQuery({
-    queryKey: ["media", debouncedSearch],
-    queryFn: ({ pageParam }) =>
-      getMediaFn({
-        data: {
-          cursor: pageParam,
-          search: debouncedSearch || undefined,
-        },
-      }),
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-    initialPageParam: undefined as number | undefined,
+    ...mediaInfiniteQueryOptions(debouncedSearch),
   });
 
   // Flatten all pages into a single array
@@ -61,24 +55,12 @@ export function useMediaLibrary() {
   // Get all visible media keys
   const mediaKeys = useMemo(() => mediaItems.map((m) => m.key), [mediaItems]);
 
-  // Stable query key for linked media; use joined keys to avoid referential changes
-  const linkedQueryKey = useMemo(
-    () => ["linkedMediaKeys", mediaKeys.join("|")],
-    [mediaKeys],
-  );
-
-  // Query linked status for visible media items
   const { data: linkedKeysData } = useQuery({
-    queryKey: linkedQueryKey,
-    queryFn: () => getLinkedMediaKeysFn({ data: { keys: mediaKeys } }),
+    ...linkedMediaKeysQuery(mediaKeys),
     enabled: mediaKeys.length > 0,
-    staleTime: 30000, // Cache for 30 seconds
   });
 
-  const { data: totalMediaSize } = useQuery({
-    queryKey: ["media", "totalSize"],
-    queryFn: () => getTotalMediaSizeFn(),
-  });
+  const { data: totalMediaSize } = useQuery(totalMediaSizeQuery);
 
   // Build linkedMediaIds set
   const linkedMediaIds = useMemo(() => {
@@ -105,7 +87,7 @@ export function useMediaLibrary() {
     },
     onSuccess: (deletedKeys) => {
       // 刷新列表
-      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.invalidateQueries({ queryKey: MEDIA_KEYS.all });
       // 清除选择
       setSelectedKeys((prev) => {
         const next = new Set(prev);
@@ -128,7 +110,7 @@ export function useMediaLibrary() {
   const updateAsset = useMutation({
     mutationFn: updateMediaNameFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["media"] });
+      queryClient.invalidateQueries({ queryKey: MEDIA_KEYS.all });
       toast.success("资源元数据已更新", {
         description: `元数据更改已保存。`,
       });

@@ -7,12 +7,12 @@ import { ChevronDown, ChevronUp, RefreshCw, Tag } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
+import { postsInfiniteQueryOptions } from "@/features/posts/queries";
 import { blogConfig } from "@/blog.config";
 import { LoadingFallback } from "@/components/common/loading-fallback";
 import { Skeleton } from "@/components/ui/skeleton";
 import { PostItem } from "@/features/posts/components/view/post-item";
-import { postsInfiniteQueryOptions } from "@/features/posts/posts.query";
-import { tagsQueryOptions } from "@/features/tags/tags.query";
+import { tagsQueryOptions } from "@/features/tags/queries";
 import { cn } from "@/lib/utils";
 
 const DisplayTagsQueryOptions = {

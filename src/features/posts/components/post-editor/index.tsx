@@ -21,7 +21,7 @@ import { useAutoSave, usePostActions } from "./hooks";
 import type { JSONContent } from "@tiptap/react";
 import type { PostEditorData, PostEditorProps } from "./types";
 import { TagSelector } from "@/features/tags/components/tag-selector";
-import { tagsAdminQueryOptions } from "@/features/tags/tags.query";
+import { tagsAdminQueryOptions } from "@/features/tags/queries";
 import { Editor } from "@/components/tiptap-editor";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";

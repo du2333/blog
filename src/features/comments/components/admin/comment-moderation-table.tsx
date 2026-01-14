@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { AlertTriangle, Loader2, MessageSquareOff } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-import { allCommentsQuery } from "../../comments.query";
+import { COMMENTS_KEYS, allCommentsQuery } from "../../queries";
 import { useAdminComments } from "../../hooks/use-comments";
 
 import { ExpandableContent } from "../view/expandable-content";
@@ -78,7 +78,7 @@ export const CommentModerationTable = ({
       );
       toast.success("批量批准完成", { id: toastId });
       setSelectedIds(new Set());
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: COMMENTS_KEYS.all });
     } catch (error) {
       toast.error("部分操作失败", { id: toastId });
     }
@@ -97,7 +97,7 @@ export const CommentModerationTable = ({
       );
       toast.success("已移入垃圾箱", { id: toastId });
       setSelectedIds(new Set());
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: COMMENTS_KEYS.all });
     } catch (error) {
       toast.error("部分操作失败", { id: toastId });
     }

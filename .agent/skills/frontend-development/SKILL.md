@@ -11,31 +11,62 @@ This skill covers TanStack Query patterns, route loaders, component organization
 
 The project follows **TanStack Start / TanStack Query** standard practices for seamless SSR and client-side caching.
 
-### 1. Query Definition (`[name].query.ts`)
+### 1. Query Definition
 
-Centralize TanStack Query configurations using `queryOptions` and `infiniteQueryOptions` factories:
+Organize query definitions in `features/<name>/queries/index.ts`. Use a **Query Key Factory** pattern to centralize and type-safe your cache keys.
 
 ```typescript
-// posts.query.ts
+// features/posts/queries/index.ts
 import { queryOptions, infiniteQueryOptions } from "@tanstack/react-query";
-import { findPostBySlugFn, getPostsFn } from "./posts.api";
+import { findPostBySlugFn, getPostsFn } from "../api/posts.api";
 
+// 1. Define Query Key Factory (static arrays + functions)
+export const POSTS_KEYS = {
+  all: ["posts"] as const,
+
+  // Parent keys (static arrays for prefix invalidation)
+  lists: ["posts", "list"] as const,
+  details: ["posts", "detail"] as const,
+  adminLists: ["posts", "admin-list"] as const,
+
+  // Child keys (functions for specific queries)
+  list: (filters?: { tagName?: string }) =>
+    ["posts", "list", filters] as const,
+  detail: (idOrSlug: number | string) =>
+    ["posts", "detail", idOrSlug] as const,
+  adminList: (params: GetPostsInput) =>
+    ["posts", "admin-list", params] as const,
+};
+
+// 2. Define Query Options
 export function postBySlugQuery(slug: string) {
   return queryOptions({
-    queryKey: ["post", slug],
+    queryKey: POSTS_KEYS.detail(slug),
     queryFn: () => findPostBySlugFn({ data: { slug } }),
   });
 }
 
 export function postsInfiniteQuery(tag?: string) {
   return infiniteQueryOptions({
-    queryKey: ["posts", { tag }],
+    queryKey: POSTS_KEYS.list({ tagName: tag }),
     queryFn: ({ pageParam }) =>
       getPostsFn({ data: { cursor: pageParam, tag } }),
     getNextPageParam: (lastPage) => lastPage.nextCursor,
     initialPageParam: undefined,
   });
 }
+```
+
+**Key Pattern:**
+- **Parent keys** are static arrays (no `()`) — used for prefix-based cache invalidation
+- **Child keys** are functions — used for specific queries with parameters
+
+```typescript
+// Invalidation (no parentheses - static reference)
+queryClient.invalidateQueries({ queryKey: POSTS_KEYS.adminLists });
+
+// Query (with parentheses - function call)
+useQuery({ queryKey: POSTS_KEYS.detail(postId) });
 ```
 
 ### 2. Route Loader (`routes/<path>.tsx`)

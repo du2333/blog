@@ -17,6 +17,10 @@ import type {
   TrafficData,
 } from "@/features/dashboard/dashboard.schema";
 import {
+  dashboardStatsQuery,
+  refreshDashboardCacheFn,
+} from "@/features/dashboard/queries";
+import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
@@ -24,10 +28,6 @@ import {
 } from "@/components/ui/tooltip";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  dashboardStatsQuery,
-  refreshDashboardCacheFn,
-} from "@/features/dashboard/dashboard.query";
 import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";

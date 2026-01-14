@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
+import { AUTH_KEYS } from "@/features/auth/queries";
 
 const registerSchema = z
   .object({
@@ -55,7 +56,7 @@ export function RegisterForm() {
       return;
     }
 
-    queryClient.removeQueries({ queryKey: ["session"] });
+    queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
     if (isEmailConfigured) {
       setIsSuccess(true);

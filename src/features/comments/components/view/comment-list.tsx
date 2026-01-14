@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { ChevronDown, ChevronUp, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-import { repliesByRootIdInfiniteQuery } from "../../comments.query";
+import { repliesByRootIdInfiniteQuery } from "../../queries";
 import { CommentItem } from "./comment-item";
 import { CommentReplyForm } from "./comment-reply-form";
 import type { RootCommentWithReplyCount } from "../../comments.schema";

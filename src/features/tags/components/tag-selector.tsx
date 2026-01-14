@@ -4,7 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Tag } from "@/lib/db/schema";
 import { Badge } from "@/components/ui/badge";
 import { createTagFn } from "@/features/tags/api/tags.api";
-import { tagsAdminQueryOptions } from "@/features/tags/tags.query";
+import { TAGS_KEYS, tagsAdminQueryOptions } from "@/features/tags/queries";
 import { cn } from "@/lib/utils";
 
 interface TagSelectorProps {
@@ -40,12 +40,12 @@ export function TagSelector({
     onMutate: async (newTagName) => {
       // 1. Cancel any outgoing refetches (so they don't overwrite our optimistic update)
       await queryClient.cancelQueries({
-        queryKey: tagsAdminQueryOptions().queryKey,
+        queryKey: TAGS_KEYS.adminList({}),
       });
 
       // 2. Snapshot the previous value for rollback
       const previousTags = queryClient.getQueryData<Array<Tag>>(
-        tagsAdminQueryOptions().queryKey,
+        TAGS_KEYS.adminList({}),
       );
 
       // 3. Optimistically update the cache with a temporary tag
@@ -57,7 +57,7 @@ export function TagSelector({
       };
 
       queryClient.setQueryData(
-        tagsAdminQueryOptions().queryKey,
+        TAGS_KEYS.adminList({}),
         (old: Array<Tag> | undefined) => {
           if (!old) return [optimisticTag];
           return [...old, optimisticTag].sort((a, b) =>
@@ -78,10 +78,7 @@ export function TagSelector({
     // If mutation fails, roll back to snapshot
     onError: (_err, _newTagName, context) => {
       if (context?.previousTags) {
-        queryClient.setQueryData(
-          tagsAdminQueryOptions().queryKey,
-          context.previousTags,
-        );
+        queryClient.setQueryData(TAGS_KEYS.adminList({}), context.previousTags);
       }
       // Also remove the optimistic tag from selection if it failed
       if (context?.optimisticTagId) {
@@ -93,7 +90,7 @@ export function TagSelector({
     onSuccess: (newTag, _variables, context) => {
       // 1. Update the cache to replace the temp tag with the real one
       queryClient.setQueryData(
-        tagsAdminQueryOptions().queryKey,
+        TAGS_KEYS.adminList({}),
         (old: Array<Tag> | undefined) => {
           if (!old) return [newTag];
           return old
@@ -112,7 +109,7 @@ export function TagSelector({
     // Always refetch after error or success for consistency
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: tagsAdminQueryOptions().queryKey,
+        queryKey: TAGS_KEYS.adminList({}),
       });
     },
   });

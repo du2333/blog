@@ -9,6 +9,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { SearchCommandCenter } from "@/features/search/components/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
 import { CACHE_CONTROL } from "@/lib/constants";
+import { AUTH_KEYS } from "@/features/auth/queries";
 
 export const Route = createFileRoute("/_public")({
   component: PublicLayout,
@@ -39,7 +40,7 @@ function PublicLayout() {
       return;
     }
 
-    queryClient.removeQueries({ queryKey: ["session"] });
+    queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
     toast.success("会话已终止", {
       description: "你已安全退出当前会话。",

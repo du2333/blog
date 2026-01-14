@@ -9,6 +9,7 @@ import {
 } from "@/features/posts/api/posts.admin.api";
 
 import { ADMIN_ITEMS_PER_PAGE } from "@/lib/constants";
+import { POSTS_KEYS } from "@/features/posts/queries";
 
 interface UsePostsOptions {
   page: number;
@@ -20,29 +21,27 @@ interface UsePostsOptions {
 export function usePosts({ page, status, sortDir, search }: UsePostsOptions) {
   const apiStatus = statusFilterToApi(status);
 
+  const listParams = {
+    offset: (page - 1) * ADMIN_ITEMS_PER_PAGE,
+    limit: ADMIN_ITEMS_PER_PAGE,
+    status: apiStatus,
+    sortDir,
+    search: search || undefined,
+  };
+
+  const countParams = {
+    status: apiStatus,
+    search: search || undefined,
+  };
+
   const postsQuery = useQuery({
-    queryKey: ["posts", page, status, sortDir, search],
-    queryFn: () =>
-      getPostsFn({
-        data: {
-          offset: (page - 1) * ADMIN_ITEMS_PER_PAGE,
-          limit: ADMIN_ITEMS_PER_PAGE,
-          status: apiStatus,
-          sortDir,
-          search: search || undefined,
-        },
-      }),
+    queryKey: POSTS_KEYS.adminList(listParams),
+    queryFn: () => getPostsFn({ data: listParams }),
   });
 
   const countQuery = useQuery({
-    queryKey: ["postsCount", status, search],
-    queryFn: () =>
-      getPostsCountFn({
-        data: {
-          status: apiStatus,
-          search: search || undefined,
-        },
-      }),
+    queryKey: POSTS_KEYS.count(countParams),
+    queryFn: () => getPostsCountFn({ data: countParams }),
   });
 
   const totalPages = Math.ceil((countQuery.data ?? 0) / ADMIN_ITEMS_PER_PAGE);
@@ -66,8 +65,8 @@ export function useDeletePost({ onSuccess }: UseDeletePostOptions = {}) {
   return useMutation({
     mutationFn: (post: PostListItem) => deletePostFn({ data: { id: post.id } }),
     onSuccess: (_data, post) => {
-      queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.invalidateQueries({ queryKey: ["postsCount"] });
+      queryClient.invalidateQueries({ queryKey: POSTS_KEYS.adminLists });
+      queryClient.invalidateQueries({ queryKey: POSTS_KEYS.counts });
       toast.success("条目已删除", {
         description: `条目 "${post.title}" 已删除成功`,
       });

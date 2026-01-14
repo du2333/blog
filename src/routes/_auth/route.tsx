@@ -5,7 +5,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { emailConfiguredQuery, sessionQuery } from "@/features/auth/auth.query";
+import { emailConfiguredQuery, sessionQuery } from "@/features/auth/queries";
 import { CACHE_CONTROL } from "@/lib/constants";
 import { blogConfig } from "@/blog.config";
 import { useNavigateBack } from "@/hooks/use-navigate-back";

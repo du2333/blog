@@ -13,7 +13,7 @@ import {
 import { useDebounce } from "@/hooks/use-debounce";
 import { slugify } from "@/features/posts/utils/content";
 import { createTagFn, generateTagsFn } from "@/features/tags/api/tags.api";
-import { tagsAdminQueryOptions } from "@/features/tags/tags.query";
+import { TAGS_KEYS } from "@/features/tags/queries";
 
 interface UsePostActionsOptions {
   postId: number;
@@ -315,7 +315,7 @@ export function usePostActions({
         }));
 
         await queryClient.invalidateQueries({
-          queryKey: tagsAdminQueryOptions().queryKey,
+          queryKey: TAGS_KEYS.adminList({}),
         });
 
         toast.success("AI 标签生成完成", {

@@ -16,6 +16,7 @@ import { ThemeToggle } from "@/components/common/theme-toggle";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
 import { blogConfig } from "@/blog.config";
+import { AUTH_KEYS } from "@/features/auth/queries";
 
 export function SideBar({
   isMobileSidebarOpen,
@@ -49,7 +50,7 @@ export function SideBar({
       return;
     }
 
-    queryClient.removeQueries({ queryKey: ["session"] });
+    queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
     toast.success("已退出登录");
     navigate({ to: "/login" });

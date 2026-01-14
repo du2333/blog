@@ -3,7 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { CornerDownLeft, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
-import { getIndexVersionFn, searchDocsFn } from "@/features/search/search.api";
+import {
+  searchDocsQueryOptions,
+  searchMetaQuery,
+} from "@/features/search/queries";
 import { useDebounce } from "@/hooks/use-debounce";
 
 interface SearchCommandCenterProps {
@@ -23,16 +26,13 @@ export function SearchCommandCenter({
   const debouncedQuery = useDebounce(query, 300);
 
   const { data: meta } = useQuery({
-    queryKey: ["search-meta"],
-    queryFn: () => getIndexVersionFn(),
+    ...searchMetaQuery,
     enabled: isOpen,
     staleTime: 5 * 60 * 1000,
   });
 
   const { data: results, isLoading: isSearching } = useQuery({
-    queryKey: ["search", debouncedQuery, meta?.version],
-    queryFn: () =>
-      searchDocsFn({ data: { q: debouncedQuery, v: meta?.version || "init" } }),
+    ...searchDocsQueryOptions(debouncedQuery, meta?.version || "init"),
     enabled: isOpen && debouncedQuery.length > 0 && !!meta?.version,
     staleTime: Infinity,
     placeholderData: keepPreviousData,

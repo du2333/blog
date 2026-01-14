@@ -5,11 +5,13 @@ import { PostEditor } from "@/features/posts/components/post-editor";
 import { PostEditorSkeleton } from "@/features/posts/components/post-editor/post-editor-skeleton";
 import { updatePostFn as adminUpdatePostFn } from "@/features/posts/api/posts.admin.api";
 import { setPostTagsFn } from "@/features/tags/api/tags.api";
-import { postByIdQuery } from "@/features/posts/posts.query";
+import { POSTS_KEYS, postByIdQuery } from "@/features/posts/queries";
 import {
+  TAGS_KEYS,
   tagsAdminQueryOptions,
   tagsByPostIdQueryOptions,
-} from "@/features/tags/tags.query";
+} from "@/features/tags/queries";
+import { MEDIA_KEYS } from "@/features/media/queries";
 
 export const Route = createFileRoute("/admin/posts/edit/$id")({
   component: EditPost,
@@ -92,11 +94,16 @@ function EditPost() {
     ]);
 
     // Invalidate cache to ensure fresh data on next visit
-    queryClient.invalidateQueries({ queryKey: ["post", postId] });
-    queryClient.invalidateQueries({ queryKey: ["posts"] });
-    queryClient.invalidateQueries({ queryKey: ["post", postId, "tags"] });
+    queryClient.invalidateQueries({ queryKey: POSTS_KEYS.detail(postId) });
+    // Invalidate lists and counts, but keep other details cached
+    queryClient.invalidateQueries({ queryKey: POSTS_KEYS.lists });
+    queryClient.invalidateQueries({ queryKey: POSTS_KEYS.adminLists });
+    queryClient.invalidateQueries({ queryKey: POSTS_KEYS.counts });
+
+    queryClient.invalidateQueries({ queryKey: TAGS_KEYS.postTags(postId) });
+    // Replaces predicate: matches ["media", "linked-keys", ...]
     queryClient.invalidateQueries({
-      predicate: (q) => q.queryKey[0] === "linkedMediaKeys",
+      queryKey: MEDIA_KEYS.linked,
     });
   };
 

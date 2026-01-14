@@ -12,6 +12,7 @@ import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
 import appCss from "@/styles.css?url";
 import { blogConfig } from "@/blog.config";
 import { getPublicConfigFn } from "@/features/config/config.api";
+import { CONFIG_KEYS } from "@/features/config/queries";
 
 interface MyRouterContext {
   queryClient: QueryClient;
@@ -20,7 +21,7 @@ interface MyRouterContext {
 export const Route = createRootRouteWithContext<MyRouterContext>()({
   loader: async ({ context }) => {
     const { umami } = await context.queryClient.fetchQuery({
-      queryKey: ["public-config"],
+      queryKey: CONFIG_KEYS.public,
       queryFn: () => getPublicConfigFn(),
     });
     return { umami };

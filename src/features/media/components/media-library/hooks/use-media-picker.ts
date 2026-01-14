@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useCallback, useMemo, useState } from "react";
-import { getMediaFn } from "@/features/media/media.api";
+import { mediaInfiniteQueryOptions } from "@/features/media/queries";
 import { useDebounce } from "@/hooks/use-debounce";
 
 /**
@@ -14,16 +14,7 @@ export function useMediaPicker() {
   // Infinite Query for media list (images only)
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isPending } =
     useInfiniteQuery({
-      queryKey: ["media", debouncedSearch],
-      queryFn: ({ pageParam }) =>
-        getMediaFn({
-          data: {
-            cursor: pageParam,
-            search: debouncedSearch || undefined,
-          },
-        }),
-      getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
-      initialPageParam: undefined as number | undefined,
+      ...mediaInfiniteQueryOptions(debouncedSearch),
     });
 
   // Flatten all pages and filter to images only

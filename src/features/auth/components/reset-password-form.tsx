@@ -8,6 +8,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { authClient } from "@/lib/auth/auth.client";
+import { AUTH_KEYS } from "@/features/auth/queries";
 
 const resetPasswordSchema = z
   .object({
@@ -56,7 +57,7 @@ export function ResetPasswordForm({
       return;
     }
 
-    queryClient.removeQueries({ queryKey: ["session"] });
+    queryClient.removeQueries({ queryKey: AUTH_KEYS.session });
 
     toast.success("密码已更新", {
       description: "请使用新密码重新登录。",

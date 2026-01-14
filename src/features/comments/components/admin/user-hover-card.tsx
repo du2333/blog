@@ -1,4 +1,5 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
+import { COMMENTS_KEYS } from "@/features/comments/queries";
 import {
   HoverCard,
   HoverCardContent,
@@ -10,7 +11,7 @@ import { formatDate } from "@/lib/utils";
 // Query option for user stats
 const userStatsQuery = (userId: string) =>
   queryOptions({
-    queryKey: ["admin", "user-stats", userId],
+    queryKey: COMMENTS_KEYS.userStats(userId),
     queryFn: () => getUserStatsFn({ data: { userId } }),
     staleTime: 1000 * 60 * 5, // 5 minutes cache
   });

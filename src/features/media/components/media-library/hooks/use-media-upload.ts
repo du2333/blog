@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { UploadItem } from "../types";
 import { uploadImageFn } from "@/features/media/media.api";
+import { MEDIA_KEYS } from "@/features/media/queries";
 import { formatBytes } from "@/lib/utils";
 
 export function useMediaUpload() {
@@ -89,7 +90,7 @@ export function useMediaUpload() {
           );
 
           toast.success(`上传完成: ${item.name}`);
-          queryClient.invalidateQueries({ queryKey: ["media"] });
+          queryClient.invalidateQueries({ queryKey: MEDIA_KEYS.all });
         }
       } catch (error) {
         if (isMountedRef.current) {

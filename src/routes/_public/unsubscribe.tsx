@@ -6,6 +6,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { unsubscribeByTokenFn } from "@/features/email/email.api";
 import { EMAIL_UNSUBSCRIBE_TYPES } from "@/lib/db/schema";
+import { EMAIL_KEYS } from "@/features/email/queries";
 
 const unsubscribeSearchSchema = z
   .object({
@@ -25,7 +26,11 @@ function UnsubscribePage() {
   const hasValidParams = !!(userId && type && token);
 
   const { error, isLoading } = useQuery({
-    queryKey: ["unsubscribe", userId, type, token],
+    queryKey: EMAIL_KEYS.unsubscribe({
+      userId: userId!,
+      type: type!,
+      token: token!,
+    }),
     queryFn: () =>
       unsubscribeByTokenFn({
         data: { userId: userId!, type: type!, token: token! },

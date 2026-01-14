@@ -22,6 +22,8 @@ import {
   toggleReplyNotificationFn,
 } from "@/features/email/email.api";
 import { authClient } from "@/lib/auth/auth.client";
+import { AUTH_KEYS } from "@/features/auth/queries";
+import { EMAIL_KEYS } from "@/features/email/queries";
 
 interface UserProfileModalProps {
   isOpen: boolean;
@@ -83,7 +85,7 @@ export function UserProfileModal({
   });
 
   const { data: hasPassword } = useQuery({
-    queryKey: ["user-has-password", user?.id],
+    queryKey: AUTH_KEYS.hasPassword(user?.id),
     queryFn: () => userHasPasswordFn(),
     enabled: !!user,
   });
@@ -92,7 +94,7 @@ export function UserProfileModal({
 
   const { data: notificationStatus, isLoading: isLoadingNotification } =
     useQuery({
-      queryKey: ["reply-notification-status", user?.id],
+      queryKey: EMAIL_KEYS.replyNotification(user?.id),
       queryFn: () => getReplyNotificationStatusFn(),
       enabled: !!user && isOpen,
     });
@@ -101,7 +103,7 @@ export function UserProfileModal({
     mutationFn: (enabled: boolean) =>
       toggleReplyNotificationFn({ data: { enabled } }),
     onSuccess: (_, enabled) => {
-      queryClient.setQueryData(["reply-notification-status", user?.id], {
+      queryClient.setQueryData(EMAIL_KEYS.replyNotification(user?.id), {
         enabled,
       });
       toast.success(enabled ? "已开启通知" : "已关闭通知");

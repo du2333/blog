@@ -1,9 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
+import { featuredPostsQuery } from "@/features/posts/queries";
 import { PostItem } from "@/features/posts/components/view/post-item";
 import { LoadingFallback } from "@/components/common/loading-fallback";
-import { featuredPostsQuery } from "@/features/posts/posts.query";
 import { blogConfig } from "@/blog.config";
 
 export const Route = createFileRoute("/_public/")({

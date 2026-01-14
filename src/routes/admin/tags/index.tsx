@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { TagManager } from "@/features/tags/components/tag-manager";
-import { tagsWithCountAdminQueryOptions } from "@/features/tags/tags.query";
+import { tagsWithCountAdminQueryOptions } from "@/features/tags/queries";
 
 export const Route = createFileRoute("/admin/tags/")({
   component: TagManagerRoute,

@@ -17,7 +17,10 @@ import {
   deleteTagFn,
   updateTagFn,
 } from "@/features/tags/api/tags.api";
-import { tagsWithCountAdminQueryOptions } from "@/features/tags/tags.query";
+import {
+  TAGS_KEYS,
+  tagsWithCountAdminQueryOptions,
+} from "@/features/tags/queries";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
@@ -57,7 +60,7 @@ export function TagManager() {
     mutationFn: (data: { id: number; name: string }) =>
       updateTagFn({ data: { id: data.id, data: { name: data.name } } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags", "admin"] });
+      queryClient.invalidateQueries({ queryKey: TAGS_KEYS.admin });
       setTagToEdit(null);
       toast.success("标签已重命名");
     },
@@ -69,7 +72,7 @@ export function TagManager() {
   const deleteTagMutation = useMutation({
     mutationFn: (id: number) => deleteTagFn({ data: { id } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags", "admin"] });
+      queryClient.invalidateQueries({ queryKey: TAGS_KEYS.admin });
       setTagToDelete(null);
       toast.success("标签已删除");
     },
@@ -81,7 +84,7 @@ export function TagManager() {
   const createTagMutation = useMutation({
     mutationFn: (name: string) => createTagFn({ data: { name } }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["tags", "admin"] });
+      queryClient.invalidateQueries({ queryKey: TAGS_KEYS.admin });
       setNewTagName("");
       setIsCreating(false);
       toast.success("标签已创建");

@@ -2,7 +2,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Link, getRouteApi } from "@tanstack/react-router";
 import { LogIn } from "lucide-react";
-import { rootCommentsByPostIdInfiniteQuery } from "../../comments.query";
+import { rootCommentsByPostIdInfiniteQuery } from "../../queries";
 import { useComments } from "../../hooks/use-comments";
 import { CommentList } from "./comment-list";
 import { CommentEditor } from "./comment-editor";

@@ -5,6 +5,7 @@ import {
   adminDeleteCommentFn,
   moderateCommentFn,
 } from "../api/comments.admin.api";
+import { COMMENTS_KEYS } from "@/features/comments/queries";
 
 export function useComments(postId?: number) {
   const queryClient = useQueryClient();
@@ -15,22 +16,22 @@ export function useComments(postId?: number) {
       // Invalidate both root comments and all replies queries for this post
       if (postId) {
         queryClient.invalidateQueries({
-          queryKey: ["comments", "roots", "post", postId],
+          queryKey: COMMENTS_KEYS.roots(postId),
           exact: false,
         });
         queryClient.invalidateQueries({
-          queryKey: ["comments", "replies", "post", postId],
+          queryKey: COMMENTS_KEYS.repliesLists(postId),
           exact: false,
         });
       }
       // NEW: Also invalidate admin view queries
       queryClient.invalidateQueries({
-        queryKey: ["comments", "all"],
+        queryKey: COMMENTS_KEYS.admin,
         exact: false,
       });
       // Also invalidate user's own comments list
       queryClient.invalidateQueries({
-        queryKey: ["comments", "mine"],
+        queryKey: COMMENTS_KEYS.mine,
         exact: false,
       });
     },
@@ -45,22 +46,22 @@ export function useComments(postId?: number) {
       // Invalidate both root comments and all replies queries for this post
       if (postId) {
         queryClient.invalidateQueries({
-          queryKey: ["comments", "roots", "post", postId],
+          queryKey: COMMENTS_KEYS.roots(postId),
           exact: false,
         });
         queryClient.invalidateQueries({
-          queryKey: ["comments", "replies", "post", postId],
+          queryKey: COMMENTS_KEYS.repliesLists(postId),
           exact: false,
         });
       }
       // NEW: Also invalidate admin view queries
       queryClient.invalidateQueries({
-        queryKey: ["comments", "all"],
+        queryKey: COMMENTS_KEYS.admin,
         exact: false,
       });
       // Also invalidate user's own comments list
       queryClient.invalidateQueries({
-        queryKey: ["comments", "mine"],
+        queryKey: COMMENTS_KEYS.mine,
         exact: false,
       });
       toast.success("评论已删除");
@@ -86,7 +87,7 @@ export function useAdminComments() {
     onSuccess: () => {
       // Invalidate all comment related queries to be safe since moderation
       // affects visibility in both admin and public views
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: COMMENTS_KEYS.all });
       toast.success("审核操作成功");
     },
     onError: (error) => {
@@ -97,7 +98,7 @@ export function useAdminComments() {
   const adminDeleteMutation = useMutation({
     mutationFn: adminDeleteCommentFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["comments"] });
+      queryClient.invalidateQueries({ queryKey: COMMENTS_KEYS.all });
       toast.success("评论已永久删除");
     },
     onError: (error) => {

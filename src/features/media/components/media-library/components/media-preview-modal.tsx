@@ -20,6 +20,7 @@ import { Input } from "@/components/ui/input";
 import { getLinkedPostsFn } from "@/features/media/media.api";
 import { useDelayUnmount } from "@/hooks/use-delay-unmount";
 import { cn, formatBytes } from "@/lib/utils";
+import { MEDIA_KEYS } from "@/features/media/queries";
 
 interface MediaPreviewModalProps {
   asset: MediaAsset | null;
@@ -68,7 +69,7 @@ export function MediaPreviewModal({
 
   // Query linked posts via server function
   const { data: linkedPosts = [] } = useQuery({
-    queryKey: ["linkedPosts", activeAsset?.key],
+    queryKey: MEDIA_KEYS.linkedPosts(activeAsset?.key || ""),
     queryFn: async () => {
       if (!activeAsset?.key) return [];
       return getLinkedPostsFn({ data: { key: activeAsset.key } });

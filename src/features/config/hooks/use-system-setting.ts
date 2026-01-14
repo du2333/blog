@@ -1,21 +1,17 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  getSystemConfigFn,
-  updateSystemConfigFn,
-} from "@/features/config/config.api";
+import { updateSystemConfigFn } from "@/features/config/config.api";
+
+import { CONFIG_KEYS, systemConfigQuery } from "@/features/config/queries";
 
 export function useSystemSetting() {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: ["systemConfig"],
-    queryFn: getSystemConfigFn,
-  });
+  const { data, isLoading } = useQuery(systemConfigQuery);
 
   const saveMutation = useMutation({
     mutationFn: updateSystemConfigFn,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["systemConfig"] });
+      queryClient.invalidateQueries({ queryKey: CONFIG_KEYS.system });
     },
   });
 
