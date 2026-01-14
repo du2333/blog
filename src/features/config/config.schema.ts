@@ -10,8 +10,8 @@ export const SystemConfigSchema = z.object({
     .optional(),
   umami: z
     .object({
-      websiteId: z.string(),
-      src: z.url(),
+      websiteId: z.string().optional(),
+      src: z.string().optional(),
       apiKey: z.string().optional(),
       username: z.string().optional(),
       password: z.string().optional(),

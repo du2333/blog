@@ -42,8 +42,8 @@ export class UmamiClient {
   private token: string | null = null;
 
   constructor(config: NonNullable<SystemConfig["umami"]>) {
-    this.baseUrl = config.src.replace(/\/$/, "");
-    this.websiteId = config.websiteId;
+    this.baseUrl = (config.src || "").replace(/\/$/, "");
+    this.websiteId = config.websiteId || "";
     this.apiKey = config.apiKey;
     this.username = config.username;
     this.password = config.password;

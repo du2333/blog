@@ -16,11 +16,7 @@ export const refreshDashboardCacheFn = createServerFn()
   .inputValidator(DashboardQuerySchema)
   .handler(async ({ context, data }) => {
     // Delete the KV cache for this specific range
-    await CacheService.deleteKey(context, [
-      "dashboard",
-      "umami",
-      data.range,
-    ]);
+    await CacheService.deleteKey(context, ["dashboard", "umami", data.range]);
     // Refetch fresh data
     return DashboardService.getDashboardStats(context, data);
   });

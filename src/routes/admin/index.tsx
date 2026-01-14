@@ -258,7 +258,29 @@ function DashboardOverview() {
 
           <CardContent className="px-0 pt-8 pb-4">
             <div className="h-64 w-full relative group/chart">
-              {traffic && traffic.length > 0 ? (
+              {/* traffic logic */}
+              {!umamiUrl ? (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground gap-3">
+                  <div className="bg-muted/50 p-3 rounded-full">
+                    <Activity className="opacity-40" size={24} />
+                  </div>
+                  <div className="text-center space-y-1">
+                    <p className="text-xs font-medium text-foreground">
+                      未配置统计服务
+                    </p>
+                    <p className="text-[10px] text-muted-foreground">
+                      请前往设置页面配置 Umami
+                    </p>
+                  </div>
+                  <Link
+                    to="/admin/settings"
+                    search={{}}
+                    className="text-[10px] bg-primary text-primary-foreground px-3 py-1.5 rounded-sm hover:opacity-90 transition-opacity mt-1"
+                  >
+                    去配置
+                  </Link>
+                </div>
+              ) : traffic && traffic.length > 0 ? (
                 <div className="w-full h-full">
                   <TrafficChart data={traffic} />
                 </div>
@@ -387,8 +409,16 @@ function TrafficChart({ data }: { data: Array<TrafficData> }) {
         <AreaChart data={data}>
           <defs>
             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
-              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+              <stop
+                offset="5%"
+                stopColor="var(--muted-foreground)"
+                stopOpacity={0.3}
+              />
+              <stop
+                offset="95%"
+                stopColor="var(--muted-foreground)"
+                stopOpacity={0}
+              />
             </linearGradient>
           </defs>
           <Tooltip
@@ -406,7 +436,7 @@ function TrafficChart({ data }: { data: Array<TrafficData> }) {
                       })}
                     </div>
                     <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <div className="w-1.5 h-1.5 rounded-full bg-muted-foreground" />
                       <span className="font-medium text-foreground">
                         {point.views} 访问
                       </span>
@@ -426,7 +456,7 @@ function TrafficChart({ data }: { data: Array<TrafficData> }) {
           <Area
             type="monotone"
             dataKey="views"
-            stroke="var(--primary)"
+            stroke="var(--muted-foreground)"
             strokeWidth={2}
             fillOpacity={1}
             fill="url(#colorViews)"

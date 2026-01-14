@@ -37,6 +37,7 @@ export function CacheMaintenance() {
           </p>
         </div>
         <Button
+          type="button"
           onClick={() => setIsModalOpen(true)}
           className="h-12 px-10 text-[10px] uppercase tracking-[0.25em] font-bold shadow-xl shadow-red-500/10 rounded-sm gap-4 bg-red-600 hover:bg-red-700 text-white"
         >
