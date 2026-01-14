@@ -18,5 +18,4 @@ export const invalidateSiteCacheFn = createServerFn()
     ];
 
     await Promise.all([purgeTask, ...kvTasks]);
-  },
-);
+  });

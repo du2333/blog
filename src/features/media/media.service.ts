@@ -11,7 +11,10 @@ import {
 } from "@/features/media/media.utils";
 import { CACHE_CONTROL } from "@/lib/constants";
 
-export async function upload(context: DbContext & { executionCtx: ExecutionContext }, file: File) {
+export async function upload(
+  context: DbContext & { executionCtx: ExecutionContext },
+  file: File,
+) {
   const uploaded = await Storage.putToR2(context.env, file);
 
   try {
@@ -32,14 +35,20 @@ export async function upload(context: DbContext & { executionCtx: ExecutionConte
   }
 }
 
-export async function deleteImage(context: DbContext & { executionCtx: ExecutionContext }, key: string) {
+export async function deleteImage(
+  context: DbContext & { executionCtx: ExecutionContext },
+  key: string,
+) {
   await MediaRepo.deleteMedia(context.db, key);
   context.executionCtx.waitUntil(
     Storage.deleteFromR2(context.env, key).catch(console.error),
   );
 }
 
-export async function getMediaList(context: DbContext, data: GetMediaListInput) {
+export async function getMediaList(
+  context: DbContext,
+  data: GetMediaListInput,
+) {
   return await MediaRepo.getMediaList(context.db, data);
 }
 

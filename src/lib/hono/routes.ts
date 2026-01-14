@@ -7,7 +7,6 @@ import {
 } from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
 
-
 export const app = new Hono<{ Bindings: Env }>();
 
 app.get("*", cacheMiddleware);

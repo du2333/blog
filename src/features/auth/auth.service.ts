@@ -11,7 +11,9 @@ export async function userHasPassword(context: AuthContext) {
   return await AuthRepo.userHasPassword(context.db, context.session.user.id);
 }
 
-export async function getIsEmailConfigured(context: DbContext & { executionCtx: ExecutionContext }) {
+export async function getIsEmailConfigured(
+  context: DbContext & { executionCtx: ExecutionContext },
+) {
   return CacheService.get(
     context,
     ["isEmailConfigured"],

@@ -4,7 +4,10 @@ import {
   GetPostsCursorInputSchema,
 } from "@/features/posts/posts.schema";
 import * as PostService from "@/features/posts/posts.service";
-import { cachedMiddleware, createRateLimitMiddleware } from "@/lib/middlewares";
+import {
+  createCacheHeaderMiddleware,
+  createRateLimitMiddleware,
+} from "@/lib/middlewares";
 
 export const getPostsCursorFn = createServerFn()
   .middleware([
@@ -13,7 +16,7 @@ export const getPostsCursorFn = createServerFn()
       interval: "1m",
       key: "posts:getCursor",
     }),
-    cachedMiddleware,
+    createCacheHeaderMiddleware("swr"),
   ])
   .inputValidator(GetPostsCursorInputSchema)
   .handler(async ({ data, context }) => {
@@ -27,7 +30,7 @@ export const findPostBySlugFn = createServerFn()
       interval: "1m",
       key: "posts:findBySlug",
     }),
-    cachedMiddleware,
+    createCacheHeaderMiddleware("swr"),
   ])
   .inputValidator(FindPostBySlugInputSchema)
   .handler(async ({ data, context }) => {

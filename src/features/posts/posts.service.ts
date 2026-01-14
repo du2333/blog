@@ -119,7 +119,10 @@ export async function generateSummaryByPostId({
 
 // ============ Admin Service Methods ============
 
-export async function generateSlug(context: DbContext, data: GenerateSlugInput) {
+export async function generateSlug(
+  context: DbContext,
+  data: GenerateSlugInput,
+) {
   const baseSlug = slugify(data.title);
   // 1. 先查有没有完全一样的 (比如 'hello-world')
   const exactMatch = await PostRepo.slugExists(context.db, baseSlug, {

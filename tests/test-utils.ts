@@ -123,7 +123,7 @@ export function createTestContext(
 
 export function createAuthTestContext(
   overrides: Partial<AuthContext & { executionCtx: ExecutionContext }> = {},
-){
+) {
   return {
     ...createTestContext(),
     session: createMockSession(),
@@ -133,7 +133,7 @@ export function createAuthTestContext(
 
 export function createAdminTestContext(
   overrides: Partial<AuthContext & { executionCtx: ExecutionContext }> = {},
-){
+) {
   return {
     ...createTestContext(),
     session: createMockAdminSession(),

@@ -6,34 +6,17 @@ import { getDb } from "@/lib/db";
 import { getAuth } from "@/lib/auth/auth.server";
 
 // ======================= Cache Control ====================== */
-
-export const noCacheMiddleware = createMiddleware().server(async ({ next }) => {
-  const result = await next();
-  Object.entries(CACHE_CONTROL.private).forEach(([k, v]) => {
-    setResponseHeader(k, v);
-  });
-  return result;
-});
-
-export const cachedMiddleware = createMiddleware().server(async ({ next }) => {
-  const result = await next();
-
-  Object.entries(CACHE_CONTROL.swr).forEach(([k, v]) => {
-    setResponseHeader(k, v);
-  });
-
-  return result;
-});
-
-export const immutableCacheMiddleware = createMiddleware().server(
-  async ({ next }) => {
+export const createCacheHeaderMiddleware = (
+  strategy: "private" | "immutable" | "swr",
+) => {
+  return createMiddleware().server(async ({ next }) => {
     const result = await next();
-    Object.entries(CACHE_CONTROL.immutable).forEach(([k, v]) => {
+    Object.entries(CACHE_CONTROL[strategy]).forEach(([k, v]) => {
       setResponseHeader(k, v);
     });
     return result;
-  },
-);
+  });
+};
 
 /* ======================= Infrastructure ====================== */
 
@@ -68,7 +51,7 @@ export const sessionMiddleware = createMiddleware()
   });
 
 export const authMiddleware = createMiddleware()
-  .middleware([noCacheMiddleware, sessionMiddleware])
+  .middleware([createCacheHeaderMiddleware("private"), sessionMiddleware])
   .server(async ({ next, context }) => {
     const session = context.session;
 

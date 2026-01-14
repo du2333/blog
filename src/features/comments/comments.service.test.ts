@@ -27,7 +27,9 @@ describe("CommentService", () => {
 
   beforeEach(async () => {
     // Setup admin context
-    adminContext = createAdminTestContext({executionCtx: createMockExecutionCtx()});
+    adminContext = createAdminTestContext({
+      executionCtx: createMockExecutionCtx(),
+    });
     await seedUser(adminContext.db, adminContext.session.user);
 
     // Setup normal user context

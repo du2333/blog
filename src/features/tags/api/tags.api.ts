@@ -12,7 +12,7 @@ import * as TagService from "@/features/tags/tags.service";
 import * as AIService from "@/features/ai/ai.service";
 import {
   adminMiddleware,
-  cachedMiddleware,
+  createCacheHeaderMiddleware,
   createRateLimitMiddleware,
 } from "@/lib/middlewares";
 
@@ -25,7 +25,7 @@ export const getTagsFn = createServerFn()
       interval: "1m",
       key: "tags:getAll",
     }),
-    cachedMiddleware,
+    createCacheHeaderMiddleware("swr"),
   ])
   .handler(async ({ context }) => {
     return await TagService.getPublicTags(context);

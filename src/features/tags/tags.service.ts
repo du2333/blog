@@ -43,9 +43,11 @@ const PUBLIC_TAGS_TTL = 60 * 60 * 24 * 7;
  * Get public tags list (KV-only, populated by publish workflow)
  * This ensures public site only shows "published" tag associations.
  */
-export async function getPublicTags(context: DbContext & {
-  executionCtx: ExecutionContext;
-}) {
+export async function getPublicTags(
+  context: DbContext & {
+    executionCtx: ExecutionContext;
+  },
+) {
   return await CacheService.get(
     context,
     [...PUBLIC_TAGS_CACHE_KEY],
@@ -138,7 +140,10 @@ export const createTag = async (context: DbContext, data: CreateTagInput) => {
 /**
  * Update a tag
  */
-export async function updateTag(context: DbContext & { executionCtx: ExecutionContext }, data: UpdateTagInput) {
+export async function updateTag(
+  context: DbContext & { executionCtx: ExecutionContext },
+  data: UpdateTagInput,
+) {
   const existingTag = await TagRepo.findTagById(context.db, data.id);
   if (!existingTag) {
     throw new Error("Tag not found");
@@ -173,7 +178,10 @@ export async function updateTag(context: DbContext & { executionCtx: ExecutionCo
 /**
  * Delete a tag
  */
-export async function deleteTag(context: DbContext & { executionCtx: ExecutionContext }, data: DeleteTagInput) {
+export async function deleteTag(
+  context: DbContext & { executionCtx: ExecutionContext },
+  data: DeleteTagInput,
+) {
   const tag = await TagRepo.findTagById(context.db, data.id);
   if (!tag) return;
 
