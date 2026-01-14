@@ -4,7 +4,10 @@ import type {
   DashboardQuery,
   DashboardResponse,
 } from "@/features/dashboard/dashboard.schema";
-import { TrafficDataSchema } from "@/features/dashboard/dashboard.schema";
+import {
+  DASHBOARD_CACHE_KEYS,
+  TrafficDataSchema,
+} from "@/features/dashboard/dashboard.schema";
 import * as DashboardRepo from "@/features/dashboard/data/dashboard.data";
 import * as MediaRepo from "@/features/media/data/media.data";
 import * as ConfigService from "@/features/config/config.service";
@@ -150,7 +153,7 @@ export async function getDashboardStats(
 
       const cachedData = await CacheService.get(
         context,
-        ["dashboard", "umami", range],
+        DASHBOARD_CACHE_KEYS.umamiStats(range),
         CachedUmamiDataSchema,
         fetcher,
         { ttl },

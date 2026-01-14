@@ -74,7 +74,7 @@ The project uses a layered dependency injection pattern:
 
 | Directory         | Responsibility                                                                           |
 | :---------------- | :--------------------------------------------------------------------------------------- |
-| `src/features/`   | Feature-based business modules. Each contains `api/`, `services/`, `data/`, `schemas.ts` |
+| `src/features/`   | Feature modules. Each contains `api/`, `services/`, `data/`, and `schemas.ts` (validation + cache key factories) |
 | `src/routes/`     | TanStack file routes with page components and loaders                                    |
 | `src/lib/`        | Infrastructure: database (`db/`), env (`env/`), middlewares                              |
 | `src/components/` | Shared UI components: `ui/` (atomic), `common/`, `layout/`                               |

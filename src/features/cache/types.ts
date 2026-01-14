@@ -1,6 +1,6 @@
 export type CacheKey =
   | string
-  | Array<string | number | boolean | null | undefined>;
+  | ReadonlyArray<string | number | boolean | null | undefined>;
 
 export const CACHE_NAMESPACES = {
   POSTS_LIST: "posts:list",

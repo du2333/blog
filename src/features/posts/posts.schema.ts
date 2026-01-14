@@ -100,3 +100,9 @@ export type UpdatePostInput = z.infer<typeof UpdatePostInputSchema>;
 export type DeletePostInput = z.infer<typeof DeletePostInputSchema>;
 export type PreviewSummaryInput = z.infer<typeof PreviewSummaryInputSchema>;
 export type StartPostProcessInput = z.infer<typeof StartPostProcessInputSchema>;
+
+export const POSTS_CACHE_KEYS = {
+  list: (version: string, limit: number, cursor: number, tagName: string) =>
+    ["posts", "list", version, limit, cursor, tagName] as const,
+  detail: (version: string, slug: string) => [version, "post", slug] as const,
+} as const;

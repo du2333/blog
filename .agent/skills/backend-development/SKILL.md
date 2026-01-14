@@ -36,13 +36,15 @@ export const PostRepo = {
 
 ```typescript
 // posts.service.ts
+import { POSTS_CACHE_KEYS } from "./posts.schema";
+
 export async function findPostBySlug(
   context: DbContext & { executionCtx: ExecutionContext },
   data: { slug: string }
 ) {
   const fetcher = () => PostRepo.findPostBySlug(context.db, data.slug);
   const version = await CacheService.getVersion(context, "posts:detail");
-  return CacheService.get(context, [version, data.slug], PostSchema, fetcher);
+  return CacheService.get(context, POSTS_CACHE_KEYS.detail(version, data.slug), PostSchema, fetcher);
 }
 
 export async function createEmptyPost(context: DbContext) {
@@ -118,6 +120,18 @@ export const PostResponseSchema = PostSelectSchema.extend({
 // Type exports
 export type Post = z.infer<typeof PostSelectSchema>;
 export type CreatePostInput = z.infer<typeof CreatePostInputSchema>;
+```
+
+### Cache Key Factories
+
+Define factories for KV cache keys to ensure consistency and type safety across the service and API layers.
+
+```typescript
+export const POSTS_CACHE_KEYS = {
+  detail: (version: string, slug: string) => [version, "post", slug] as const,
+  list: (version: string, limit: number, cursor: number) =>
+    ["posts", "list", version, limit, cursor] as const,
+} as const;
 ```
 
 ## TanStack Middlewares (`lib/middlewares.ts`)

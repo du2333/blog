@@ -63,6 +63,45 @@ await purgePostCDNCache(context, post.slug);
 
 Used for persistent caching of longer-lived data (post lists, details).
 
+### Cache Key Definition
+
+The `CacheKey` type supports both strings and `readonly` arrays (tuples), allowing for type-safe key construction using `as const`.
+
+```typescript
+// features/cache/types.ts
+export type CacheKey =
+  | string
+  | readonly (string | number | boolean | null | undefined)[];
+```
+
+### Cache Key Factory Pattern
+
+Instead of hardcoding key arrays in services, define **Cache Key Factories** in the feature's `schema.ts`. This provides a single source of truth and ensures types match the requirements of the cache key.
+
+#### 1. Define Factory in `schema.ts`
+
+```typescript
+// features/posts/posts.schema.ts
+export const POSTS_CACHE_KEYS = {
+  /** Post detail cache key (includes version) */
+  detail: (version: string, slug: string) => [version, "post", slug] as const,
+} as const;
+```
+
+#### 2. Use in Service Layer
+
+Pass the tuple directly to `CacheService` functions. No spread (`[...]`) is needed since `CacheKey` supports `readonly` arrays.
+
+```typescript
+const version = await CacheService.getVersion(context, "posts:detail");
+return await CacheService.get(
+  context,
+  POSTS_CACHE_KEYS.detail(version, data.slug),
+  PostSchema,
+  fetcher,
+);
+```
+
 ### Versioned Key Invalidation Strategy
 
 This pattern enables efficient bulk invalidation without iterating through keys:
@@ -71,57 +110,32 @@ This pattern enables efficient bulk invalidation without iterating through keys:
 
 ```typescript
 const version = await CacheService.getVersion(context, "posts:detail");
-// Returns something like "v1", "v2"
+// Returns "v1", "v2", etc.
 ```
 
-#### 2. Include Version in Cache Key
-
-The version becomes the first element of the cache key array:
-
-```typescript
-return CacheService.get(
-  context,
-  [version, "post", slug], // Key: ["v1", "post", "hello-world"]
-  PostSchema,
-  fetcher,
-);
-```
-
-#### 3. Bump Version to Invalidate
+#### 2. Bump Version to Invalidate
 
 When data changes, increment the version number:
 
 ```typescript
 await CacheService.bumpVersion(context, "posts:detail");
-// Version changes from "v1" to "v2"
-// All old keys with "v1" become orphaned (TTL expiry or miss)
+// All old keys with the previous version become unreachable
 ```
 
-#### 4. Direct Key Deletion
+#### 3. Direct Key Deletion
 
-For single-record invalidation, delete the specific key:
+For single-record invalidation, delete the specific key using the factory:
 
 ```typescript
-await CacheService.deleteKey(context, ["post", slug]);
+const version = await CacheService.getVersion(context, "posts:detail");
+await CacheService.deleteKey(context, POSTS_CACHE_KEYS.detail(version, slug));
 ```
 
 ## Complete Example
 
 ```typescript
 // posts.service.ts
-export async function findPostBySlug(
-  context: DbContext & { executionCtx: ExecutionContext },
-  data: { slug: string },
-) {
-  // 1. Define the data fetcher
-  const fetcher = () => PostRepo.findPostBySlug(context.db, data.slug);
-
-  // 2. Get current cache version
-  const version = await CacheService.getVersion(context, "posts:detail");
-
-  // 3. Get from cache or fetch
-  return CacheService.get(context, [version, data.slug], PostSchema, fetcher);
-}
+import { POSTS_CACHE_KEYS } from "./posts.schema";
 
 export async function updatePost(
   context: DbContext & { executionCtx: ExecutionContext },
@@ -130,10 +144,10 @@ export async function updatePost(
   // 1. Update in database
   const post = await PostRepo.updatePost(context.db, data);
 
-  // 2. Invalidate KV cache (bump version for list, delete specific for detail)
+  // 2. Invalidate KV cache
   await CacheService.bumpVersion(context, "posts:list");
   const version = await CacheService.getVersion(context, "posts:detail");
-  await CacheService.deleteKey(context, [version, "post", post.slug]);
+  await CacheService.deleteKey(context, POSTS_CACHE_KEYS.detail(version, post.slug));
 
   // 3. Purge CDN cache
   await purgePostCDNCache(context.env, post.slug);

@@ -2,7 +2,8 @@ import { WorkflowEntrypoint } from "cloudflare:workers";
 import type { WorkflowEvent, WorkflowStep } from "cloudflare:workers";
 import * as CacheService from "@/features/cache/cache.service";
 import * as PostService from "@/features/posts/posts.service";
-import * as TagService from "@/features/tags/tags.service";
+import { POSTS_CACHE_KEYS } from "@/features/posts/posts.schema";
+import { TAGS_CACHE_KEYS } from "@/features/tags/tags.schema";
 import { getDb } from "@/lib/db";
 import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
@@ -102,17 +103,14 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           "posts:detail",
         );
         const tasks = [
-          CacheService.deleteKey({ env: this.env }, [
-            version,
-            "post",
-            updatedPost.slug,
-          ]),
+          CacheService.deleteKey(
+            { env: this.env },
+            POSTS_CACHE_KEYS.detail(version, updatedPost.slug),
+          ),
           purgePostCDNCache(this.env, updatedPost.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
           // Invalidate public tags list (tag counts may have changed)
-          CacheService.deleteKey({ env: this.env }, [
-            ...TagService.PUBLIC_TAGS_CACHE_KEY,
-          ]),
+          CacheService.deleteKey({ env: this.env }, TAGS_CACHE_KEYS.publicList),
         ];
         await Promise.all(tasks);
       });
@@ -161,17 +159,14 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           "posts:detail",
         );
         const tasks = [
-          CacheService.deleteKey({ env: this.env }, [
-            version,
-            "post",
-            post.slug,
-          ]),
+          CacheService.deleteKey(
+            { env: this.env },
+            POSTS_CACHE_KEYS.detail(version, post.slug),
+          ),
           purgePostCDNCache(this.env, post.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
           // Invalidate public tags list (tag counts may have changed)
-          CacheService.deleteKey({ env: this.env }, [
-            ...TagService.PUBLIC_TAGS_CACHE_KEY,
-          ]),
+          CacheService.deleteKey({ env: this.env }, TAGS_CACHE_KEYS.publicList),
         ];
         await Promise.all(tasks);
       });

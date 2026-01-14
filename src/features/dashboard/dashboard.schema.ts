@@ -43,3 +43,8 @@ export type ActivityLogItem = z.infer<typeof ActivityLogItemSchema>;
 export type TrafficData = z.infer<typeof TrafficDataSchema>;
 export type DashboardResponse = z.infer<typeof DashboardResponseSchema>;
 export type DashboardQuery = z.infer<typeof DashboardQuerySchema>;
+export type DashboardRange = DashboardQuery["range"];
+
+export const DASHBOARD_CACHE_KEYS = {
+  umamiStats: (range: DashboardRange) => ["dashboard", "umami", range] as const,
+} as const;

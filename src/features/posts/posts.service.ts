@@ -14,6 +14,7 @@ import * as CacheService from "@/features/cache/cache.service";
 import { syncPostMedia } from "@/features/posts/data/post-media.data";
 import * as PostRepo from "@/features/posts/data/posts.data";
 import {
+  POSTS_CACHE_KEYS,
   PostListResponseSchema,
   PostWithTocSchema,
 } from "@/features/posts/posts.schema";
@@ -36,14 +37,12 @@ export async function getPostsCursor(
     });
 
   const version = await CacheService.getVersion(context, "posts:list");
-  const cacheKey = [
-    "posts",
-    "list",
+  const cacheKey = POSTS_CACHE_KEYS.list(
     version,
     data.limit ?? 10,
     data.cursor ?? 0,
     data.tagName ?? "all",
-  ];
+  );
 
   return await CacheService.get(
     context,
@@ -72,7 +71,7 @@ export async function findPostBySlug(
   };
 
   const version = await CacheService.getVersion(context, "posts:detail");
-  const cacheKey = [version, "post", data.slug];
+  const cacheKey = POSTS_CACHE_KEYS.detail(version, data.slug);
   return await CacheService.get(context, cacheKey, PostWithTocSchema, fetcher, {
     ttl: 60 * 60 * 24 * 7, // 7 days
   });
@@ -247,7 +246,12 @@ export async function deletePost(
   if (post.status === "published") {
     const tasks = [];
     const version = await CacheService.getVersion(context, "posts:detail");
-    tasks.push(CacheService.deleteKey(context, [version, "post", post.slug]));
+    tasks.push(
+      CacheService.deleteKey(
+        context,
+        POSTS_CACHE_KEYS.detail(version, post.slug),
+      ),
+    );
     tasks.push(CacheService.bumpVersion(context, "posts:list"));
     tasks.push(SearchService.deleteIndex(context, { id: data.id }));
     tasks.push(purgePostCDNCache(context.env, post.slug));

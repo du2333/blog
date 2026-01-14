@@ -29,3 +29,8 @@ export const DEFAULT_CONFIG: SystemConfig = {
     senderAddress: "",
   },
 };
+
+export const CONFIG_CACHE_KEYS = {
+  system: ["system"] as const,
+  isEmailConfigured: ["isEmailConfigured"] as const,
+} as const;

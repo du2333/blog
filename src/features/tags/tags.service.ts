@@ -7,7 +7,11 @@ import type {
   SetPostTagsInput,
   UpdateTagInput,
 } from "@/features/tags/tags.schema";
-import { TagWithCountSchema } from "@/features/tags/tags.schema";
+import {
+  TAGS_CACHE_KEYS,
+  TagWithCountSchema,
+} from "@/features/tags/tags.schema";
+import { POSTS_CACHE_KEYS } from "@/features/posts/posts.schema";
 import * as TagRepo from "@/features/tags/data/tags.data";
 import * as CacheService from "@/features/cache/cache.service";
 import { purgeCDNCache } from "@/lib/invalidate";
@@ -36,9 +40,6 @@ export async function getTags(context: DbContext, data: GetTagsInput = {}) {
   });
 }
 
-export const PUBLIC_TAGS_CACHE_KEY = ["public", "tags", "list"] as const;
-const PUBLIC_TAGS_TTL = 60 * 60 * 24 * 7;
-
 /**
  * Get public tags list (KV-only, populated by publish workflow)
  * This ensures public site only shows "published" tag associations.
@@ -50,7 +51,7 @@ export async function getPublicTags(
 ) {
   return await CacheService.get(
     context,
-    [...PUBLIC_TAGS_CACHE_KEY],
+    TAGS_CACHE_KEYS.publicList,
     z.array(TagWithCountSchema),
     async () => {
       return await TagRepo.getAllTagsWithCount(context.db, {
@@ -59,7 +60,7 @@ export async function getPublicTags(
         sortDir: "desc",
       });
     },
-    { ttl: PUBLIC_TAGS_TTL },
+    { ttl: 60 * 60 * 24 * 7 }, // 7 days
   );
 }
 
@@ -106,7 +107,12 @@ async function invalidateTagRelatedCache(
     // Invalidate each affected post's detail cache
     const version = await CacheService.getVersion(context, "posts:detail");
     for (const post of affectedPosts) {
-      tasks.push(CacheService.deleteKey(context, [version, "post", post.slug]));
+      tasks.push(
+        CacheService.deleteKey(
+          context,
+          POSTS_CACHE_KEYS.detail(version, post.slug),
+        ),
+      );
     }
 
     // Purge CDN for affected posts and list pages
@@ -117,7 +123,7 @@ async function invalidateTagRelatedCache(
     tasks.push(purgeCDNCache(context.env, { urls: cdnUrls }));
 
     // Invalidate public tags list (counts changed)
-    tasks.push(CacheService.deleteKey(context, [...PUBLIC_TAGS_CACHE_KEY]));
+    tasks.push(CacheService.deleteKey(context, TAGS_CACHE_KEYS.publicList));
   }
 
   await Promise.all(tasks);
