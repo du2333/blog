@@ -7,6 +7,7 @@ import type {
   SetPostTagsInput,
   UpdateTagInput,
 } from "@/features/tags/tags.schema";
+
 import {
   TAGS_CACHE_KEYS,
   TagWithCountSchema,
@@ -92,16 +93,25 @@ export async function getTagsByPostId(
  */
 
 /**
- * Helper to invalidate caches related to tags and their associated posts
+ * Helper to invalidate caches related to tags and their associated posts.
+ *
+ * 采用保守策略：
+ * 1. 无论如何都清除 publicList（标签变动必然影响标签云）
+ * 2. 如果有受影响的文章，精确失效这些文章的缓存
+ * 3. 如果没有受影响的文章（可能是 DB/KV 不同步），bump 所有版本号
  */
 async function invalidateTagRelatedCache(
   context: DbContext,
   affectedPosts: Array<{ id: number; slug: string }>,
 ) {
-  const tasks: Array<Promise<void>> = [];
+  // 1. 无论如何都清除 publicList
+  await CacheService.deleteKey(context, TAGS_CACHE_KEYS.publicList);
 
   if (affectedPosts.length > 0) {
-    // Invalidate post list (since tags are displayed in lists)
+    // 2. 精确失效受影响的文章
+    const tasks: Array<Promise<void>> = [];
+
+    // Bump post list version
     tasks.push(CacheService.bumpVersion(context, "posts:list"));
 
     // Invalidate each affected post's detail cache
@@ -122,11 +132,15 @@ async function invalidateTagRelatedCache(
     }
     tasks.push(purgeCDNCache(context.env, { urls: cdnUrls }));
 
-    // Invalidate public tags list (counts changed)
-    tasks.push(CacheService.deleteKey(context, TAGS_CACHE_KEYS.publicList));
+    await Promise.all(tasks);
+  } else {
+    // 3. 保守策略：可能是 DB/KV 不同步，bump 所有版本号
+    await Promise.all([
+      CacheService.bumpVersion(context, "posts:detail"),
+      CacheService.bumpVersion(context, "posts:list"),
+      purgeCDNCache(context.env, { urls: ["/", "/post"] }),
+    ]);
   }
-
-  await Promise.all(tasks);
 }
 
 export const createTag = async (context: DbContext, data: CreateTagInput) => {
@@ -173,7 +187,6 @@ export async function updateTag(
 
   const tag = await TagRepo.updateTag(context.db, data.id, data.data);
 
-  // Granular invalidation
   context.executionCtx.waitUntil(
     invalidateTagRelatedCache(context, affectedPosts),
   );
@@ -199,14 +212,16 @@ export async function deleteTag(
 
   await TagRepo.deleteTag(context.db, data.id);
 
-  // Granular invalidation
   context.executionCtx.waitUntil(
     invalidateTagRelatedCache(context, affectedPosts),
   );
 }
 
 /**
- * Set tags for a post
+ * Set tags for a post (edit only, no cache invalidation)
+ *
+ * 编辑页面改标签只影响 DB，不触发 KV 变化。
+ * KV 只在"发布"时刷新。
  */
 export async function setPostTags(context: DbContext, data: SetPostTagsInput) {
   await TagRepo.setPostTags(context.db, data.postId, data.tagIds);
