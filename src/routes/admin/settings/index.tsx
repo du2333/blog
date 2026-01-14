@@ -8,6 +8,7 @@ import { MaintenanceSection } from "@/features/config/components/maintenance-sec
 import { useSystemSetting } from "@/features/config/hooks/use-system-setting";
 import { useEmailConnection } from "@/features/email/hooks/use-email-connection";
 import { SectionSkeleton } from "@/features/config/components/settings-skeleton";
+import { UmamiSection } from "@/features/config/components/umami-section";
 import { Button } from "@/components/ui/button";
 import { DEFAULT_CONFIG } from "@/features/config/config.schema";
 
@@ -104,6 +105,22 @@ function RouteComponent() {
               setConfig({ ...config, email: emailConfig })
             }
             testEmailConnection={testEmailConnection}
+          />
+        </section>
+
+        <section>
+          <div className="flex items-center gap-3 mb-8">
+            <div className="h-px flex-1 bg-border/50"></div>
+            <span className="text-[9px] uppercase tracking-[0.2em] font-semibold text-muted-foreground">
+              统计服务
+            </span>
+            <div className="h-px flex-1 bg-border/50"></div>
+          </div>
+          <UmamiSection
+            value={config.umami || { websiteId: "", src: "", apiKey: "" }}
+            onChange={(umamiConfig) =>
+              setConfig({ ...config, umami: umamiConfig })
+            }
           />
         </section>
 

@@ -11,13 +11,21 @@ import Toaster from "@/components/ui/toaster";
 import TanStackQueryDevtools from "@/integrations/tanstack-query/devtools";
 import appCss from "@/styles.css?url";
 import { blogConfig } from "@/blog.config";
+import { getPublicConfigFn } from "@/features/config/config.api";
 
 interface MyRouterContext {
   queryClient: QueryClient;
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  head: () => ({
+  loader: async ({ context }) => {
+    const { umami } = await context.queryClient.fetchQuery({
+      queryKey: ["public-config"],
+      queryFn: () => getPublicConfigFn(),
+    });
+    return { umami };
+  },
+  head: ({ loaderData }) => ({
     meta: [
       {
         charSet: "utf-8",
@@ -65,6 +73,15 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         href: appCss,
       },
     ],
+    scripts: loaderData?.umami
+      ? [
+          {
+            src: "/stats.js",
+            defer: true,
+            "data-website-id": loaderData.umami.websiteId,
+          },
+        ]
+      : [],
   }),
   shellComponent: RootDocument,
 });

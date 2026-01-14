@@ -1,5 +1,6 @@
 import { Hono } from "hono";
 import handler from "@tanstack/react-start/server-entry";
+import { proxy } from "hono/proxy";
 import {
   baseMiddleware,
   cacheMiddleware,
@@ -7,11 +8,43 @@ import {
 } from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
 
+import * as ConfigService from "@/features/config/config.service";
+
 export const app = new Hono<{ Bindings: Env }>();
 
 app.get("*", cacheMiddleware);
 
 /* ================================ 路由开始 ================================ */
+app.get("/stats.js", baseMiddleware, async (c) => {
+  const config = await ConfigService.getSystemConfig({
+    db: c.get("db"),
+    env: c.env,
+    executionCtx: c.executionCtx,
+  });
+  if (!config?.umami?.src) {
+    return c.text("Not Found", 404);
+  }
+  const scriptUrl = new URL("/script.js", config.umami.src).toString();
+  const response = await proxy(scriptUrl);
+  response.headers.set(
+    "Cache-Control",
+    "public, max-age=3600, stale-while-revalidate=86400",
+  );
+  return response;
+});
+
+app.all("/api/send", baseMiddleware, async (c) => {
+  const config = await ConfigService.getSystemConfig({
+    db: c.get("db"),
+    env: c.env,
+    executionCtx: c.executionCtx,
+  });
+  if (!config?.umami?.src) {
+    return c.text("Not Found", 404);
+  }
+  const sendUrl = new URL("/api/send", config.umami.src).toString();
+  return proxy(sendUrl, c.req);
+});
 
 app.get("/images/:key{.+}", async (c) => {
   const key = c.req.param("key");

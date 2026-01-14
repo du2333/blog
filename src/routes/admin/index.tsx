@@ -1,16 +1,50 @@
-import { Link, createFileRoute } from "@tanstack/react-router";
-import { Activity, Database, FileText, MessageSquare } from "lucide-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { StatCard } from "@/components/stat-card";
+import { useMemo } from "react";
+import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
+import {
+  Activity,
+  Database,
+  ExternalLink,
+  FileText,
+  MessageSquare,
+  RefreshCw,
+} from "lucide-react";
+import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import { z } from "zod";
+import type {
+  ActivityLogItem,
+  DashboardQuery,
+  TrafficData,
+} from "@/features/dashboard/dashboard.schema";
+import {
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+  Tooltip as UITooltip,
+} from "@/components/ui/tooltip";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { dashboardStatsQuery } from "@/features/dashboard/dashboard.query";
+import {
+  dashboardStatsQuery,
+  refreshDashboardCacheFn,
+} from "@/features/dashboard/dashboard.query";
 import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { cn } from "@/lib/utils";
+
+const SearchSchema = z.object({
+  range: z.enum(["24h", "7d", "30d", "90d"]).default("24h").optional(),
+});
 
 export const Route = createFileRoute("/admin/")({
   component: DashboardOverview,
   pendingComponent: DashboardSkeleton,
-  loader: async ({ context }) => {
-    await context.queryClient.ensureQueryData(dashboardStatsQuery());
+  validateSearch: (search) => SearchSchema.parse(search),
+  loaderDeps: ({ search: { range } }) => ({ range }),
+  loader: async ({ context, deps: { range } }) => {
+    await context.queryClient.ensureQueryData(
+      dashboardStatsQuery({ range: range || "24h" }),
+    );
 
     return {
       title: "概览",
@@ -51,8 +85,40 @@ function formatTimeAgo(date: Date | null | string) {
 }
 
 function DashboardOverview() {
-  const { data } = useSuspenseQuery(dashboardStatsQuery());
-  const { stats, activities } = data;
+  const { range } = Route.useSearch();
+  const navigate = useNavigate({ from: Route.fullPath });
+  const queryClient = useQueryClient();
+  const { data, isFetching } = useSuspenseQuery(
+    dashboardStatsQuery({ range: range || "24h" }),
+  );
+  const { stats, activities, traffic, umamiUrl, lastUpdated } = data;
+
+  const lastUpdatedTime = lastUpdated
+    ? new Date(lastUpdated).toLocaleTimeString("zh-CN", {
+        hour: "2-digit",
+        minute: "2-digit",
+      })
+    : "";
+
+  const rangeLabel = {
+    "24h": "24小时",
+    "7d": "7天",
+    "30d": "30天",
+    "90d": "90天",
+  };
+
+  const axisLabels = useMemo(() => {
+    switch (range) {
+      case "7d":
+        return ["7天前", "3天前", "现在"];
+      case "30d":
+        return ["30天前", "15天前", "现在"];
+      case "90d":
+        return ["90天前", "45天前", "现在"];
+      default:
+        return ["24小时", "12小时", "现在"];
+    }
+  }, [range]);
 
   return (
     <div className="space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
@@ -75,7 +141,6 @@ function DashboardOverview() {
             value={stats.pendingComments.toString()}
             icon={<MessageSquare size={18} strokeWidth={1.5} />}
             trend="需要处理"
-            color="zinc"
           />
         </Link>
         <Link to="/admin/posts" search={{ status: "PUBLISHED" }}>
@@ -84,7 +149,6 @@ function DashboardOverview() {
             value={stats.publishedPosts.toString()}
             icon={<FileText size={18} strokeWidth={1.5} />}
             trend="活跃内容"
-            color="zinc"
           />
         </Link>
         <StatCard
@@ -92,7 +156,6 @@ function DashboardOverview() {
           value={formatBytes(stats.mediaSize)}
           icon={<Database size={18} strokeWidth={1.5} />}
           trend="存储使用"
-          color="zinc"
         />
         <Link to="/admin/posts" search={{ status: "DRAFT" }}>
           <StatCard
@@ -100,7 +163,6 @@ function DashboardOverview() {
             value={stats.drafts.toString()}
             icon={<Activity size={18} strokeWidth={1.5} />}
             trend="未完成的工作"
-            color="zinc"
           />
         </Link>
       </div>
@@ -109,41 +171,108 @@ function DashboardOverview() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         {/* Main Graph */}
         <Card className="lg:col-span-2 border-none! bg-transparent! shadow-none!">
-          <CardHeader className="flex flex-row justify-between items-baseline border-b border-border/50 pb-4 px-0">
-            <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
-              流量趋势
-            </CardTitle>
-            <span className="text-[9px] text-muted-foreground uppercase tracking-widest">
-              24小时流量分析
-            </span>
+          <CardHeader className="flex flex-row justify-between items-center border-b border-border/50 pb-4 px-0">
+            <div className="flex items-center gap-3">
+              <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
+                流量趋势
+              </CardTitle>
+              {umamiUrl && (
+                <TooltipProvider>
+                  <UITooltip>
+                    <TooltipTrigger asChild>
+                      <a
+                        href={umamiUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground transition-colors"
+                      >
+                        <ExternalLink size={14} />
+                      </a>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>查看详细统计</p>
+                    </TooltipContent>
+                  </UITooltip>
+                </TooltipProvider>
+              )}
+            </div>
+            <div className="flex items-center gap-4">
+              <Tabs
+                value={range || "24h"}
+                onValueChange={(val) =>
+                  navigate({
+                    search: (prev) => ({
+                      ...prev,
+                      range: val as DashboardQuery["range"],
+                    }),
+                  })
+                }
+                className="h-6"
+              >
+                <TabsList className="h-6 p-0 bg-transparent gap-2">
+                  {Object.entries(rangeLabel).map(([key, label]) => (
+                    <TabsTrigger
+                      key={key}
+                      value={key}
+                      className="text-[9px] px-2 py-0.5 h-full data-[state=active]:bg-muted data-[state=active]:text-foreground rounded-sm transition-all text-muted-foreground"
+                    >
+                      {label}
+                    </TabsTrigger>
+                  ))}
+                </TabsList>
+              </Tabs>
+              <TooltipProvider>
+                <UITooltip>
+                  <TooltipTrigger asChild>
+                    <button
+                      onClick={async () => {
+                        const freshData = await refreshDashboardCacheFn({
+                          data: { range: range || "24h" },
+                        });
+                        queryClient.setQueryData(
+                          ["dashboard", "stats", range || "24h"],
+                          freshData,
+                        );
+                      }}
+                      disabled={isFetching}
+                      className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+                    >
+                      <RefreshCw
+                        size={12}
+                        className={isFetching ? "animate-spin" : ""}
+                      />
+                    </button>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>刷新数据</p>
+                  </TooltipContent>
+                </UITooltip>
+              </TooltipProvider>
+              {lastUpdated && (
+                <span className="text-[9px] text-muted-foreground/60 font-mono border-l border-border/50 pl-4">
+                  最后更新于 {lastUpdatedTime}
+                </span>
+              )}
+            </div>
           </CardHeader>
 
-          <CardContent className="px-0 pt-10 space-y-6">
-            <div className="h-72 w-full flex items-end gap-1.5 md:gap-3 group/chart relative">
-              {Array.from({ length: 24 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="flex-1 bg-accent hover:bg-primary transition-all duration-500 relative group/bar rounded-t-[1px]"
-                  style={{ height: `${Math.random() * 70 + 10}%` }}
-                >
-                  <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground text-[10px] py-1 px-2 opacity-0 group-hover/bar:opacity-100 transition-all duration-300 pointer-events-none rounded-sm">
-                    {Math.floor(Math.random() * 100)}
-                  </div>
+          <CardContent className="px-0 pt-8 pb-4">
+            <div className="h-64 w-full relative group/chart">
+              {traffic && traffic.length > 0 ? (
+                <div className="w-full h-full">
+                  <TrafficChart data={traffic} />
                 </div>
-              ))}
-
-              {/* Minimal Background Grid */}
-              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
-                <div className="border-t border-border/30 w-full"></div>
-                <div className="border-t border-border/30 w-full"></div>
-                <div className="border-t border-border/30 w-full"></div>
-                <div className="h-0"></div>
-              </div>
+              ) : (
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground text-xs gap-2">
+                  <Activity className="opacity-20" size={32} />
+                  <p>暂无流量数据</p>
+                </div>
+              )}
             </div>
-            <div className="flex justify-between text-[9px] text-muted-foreground font-mono uppercase tracking-[0.3em]">
-              <span>00:00</span>
-              <span>12:00</span>
-              <span>23:59</span>
+            <div className="flex justify-between text-[9px] text-muted-foreground font-mono uppercase tracking-[0.3em] mt-2 px-1 opacity-60">
+              <span>{axisLabels[0]}</span>
+              <span>{axisLabels[1]}</span>
+              <span>{axisLabels[2]}</span>
             </div>
           </CardContent>
         </Card>
@@ -158,7 +287,7 @@ function DashboardOverview() {
           <CardContent className="px-0 pt-6">
             <div className="space-y-1 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
               {activities.length > 0 ? (
-                activities.map((log, i) => {
+                activities.map((log: ActivityLogItem, i: number) => {
                   const content = (
                     <div className="flex gap-4 p-3 rounded-lg group-hover/item:bg-muted/50 transition-all duration-300 relative overflow-hidden">
                       <div
@@ -211,6 +340,101 @@ function DashboardOverview() {
           </CardContent>
         </Card>
       </div>
+    </div>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon,
+  trend,
+  className,
+}: {
+  label: string;
+  value: string;
+  icon: React.ReactNode;
+  trend?: string;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn(
+        "bg-background/5 border border-white/5 rounded-xl p-6 relative overflow-hidden group hover:border-white/10 transition-colors",
+        className,
+      )}
+    >
+      <div className="absolute top-0 right-0 p-6 opacity-20 group-hover:opacity-30 transition-opacity">
+        {icon}
+      </div>
+      <div className="space-y-2 relative z-10">
+        <div className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+          {label}
+        </div>
+        <div className="text-3xl font-serif font-medium tracking-tight">
+          {value}
+        </div>
+        {trend && <div className="text-xs text-muted-foreground">{trend}</div>}
+      </div>
+    </div>
+  );
+}
+
+function TrafficChart({ data }: { data: Array<TrafficData> }) {
+  return (
+    <div className="w-full h-full">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.3} />
+              <stop offset="95%" stopColor="var(--primary)" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <Tooltip
+            content={({ active, payload }) => {
+              if (active && payload.length) {
+                const point = payload[0].payload as TrafficData;
+                return (
+                  <div className="bg-background/80 backdrop-blur-sm border border-border/50 rounded-lg shadow-xl p-3 text-xs">
+                    <div className="text-muted-foreground mb-1 font-mono">
+                      {new Date(point.date).toLocaleDateString("zh-CN", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "numeric",
+                        minute: "2-digit",
+                      })}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-1.5 h-1.5 rounded-full bg-primary" />
+                      <span className="font-medium text-foreground">
+                        {point.views} 访问
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+              return null;
+            }}
+            cursor={{
+              stroke: "var(--muted-foreground)",
+              strokeWidth: 1,
+              strokeDasharray: "4 4",
+              opacity: 0.5,
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey="views"
+            stroke="var(--primary)"
+            strokeWidth={2}
+            fillOpacity={1}
+            fill="url(#colorViews)"
+            isAnimationActive={true}
+            animationDuration={1000}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 }

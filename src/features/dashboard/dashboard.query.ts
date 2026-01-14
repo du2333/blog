@@ -1,9 +1,15 @@
 import { queryOptions } from "@tanstack/react-query";
-import { getDashboardStatsFn } from "@/features/dashboard/dashboard.api";
+import type { DashboardQuery } from "@/features/dashboard/dashboard.schema";
+import {
+  getDashboardStatsFn,
+  refreshDashboardCacheFn,
+} from "@/features/dashboard/dashboard.api";
 
-export function dashboardStatsQuery() {
+export { refreshDashboardCacheFn };
+
+export function dashboardStatsQuery(query: DashboardQuery = { range: "24h" }) {
   return queryOptions({
-    queryKey: ["dashboard", "stats"],
-    queryFn: () => getDashboardStatsFn(),
+    queryKey: ["dashboard", "stats", query.range],
+    queryFn: () => getDashboardStatsFn({ data: query }),
   });
 }

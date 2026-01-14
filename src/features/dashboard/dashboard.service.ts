@@ -1,11 +1,32 @@
-import type { DashboardResponse } from "@/features/dashboard/dashboard.schema";
+import { z } from "zod";
+import { UmamiClient } from "./services/umami-client";
+import type {
+  DashboardQuery,
+  DashboardResponse,
+} from "@/features/dashboard/dashboard.schema";
+import { TrafficDataSchema } from "@/features/dashboard/dashboard.schema";
 import * as DashboardRepo from "@/features/dashboard/data/dashboard.data";
 import * as MediaRepo from "@/features/media/data/media.data";
+import * as ConfigService from "@/features/config/config.service";
+import * as CacheService from "@/features/cache/cache.service";
+
+const CachedUmamiDataSchema = z.object({
+  traffic: z.array(TrafficDataSchema).optional(),
+  overview: z
+    .object({
+      visitors: z.number(),
+      pageViews: z.number(),
+    })
+    .optional(),
+  lastUpdated: z.number(),
+});
 
 export async function getDashboardStats(
-  context: DbContext,
+  context: DbContext & { executionCtx: ExecutionContext },
+  query: DashboardQuery,
 ): Promise<DashboardResponse> {
   const { db } = context;
+  const { range } = query;
 
   const [
     pendingComments,
@@ -24,6 +45,122 @@ export async function getDashboardStats(
     DashboardRepo.getRecentPosts(db, 10),
     DashboardRepo.getRecentUsers(db, 10),
   ]);
+
+  const config = await ConfigService.getSystemConfig(context);
+  let traffic;
+  let overview;
+
+  let umamiUrl;
+  let lastUpdated;
+
+  if (config?.umami) {
+    const { websiteId, src } = config.umami;
+    if (websiteId && src) {
+      // Construct external link
+      umamiUrl = `${src.replace(/\/$/, "")}/websites/${websiteId}`;
+
+      // define fetcher for cache
+      const fetcher = async () => {
+        const umami = new UmamiClient(config.umami!);
+        const now = new Date();
+        const endAt = now.getTime();
+        let startAt: number;
+
+        // Use if/else to avoid any switch scope ambiguity
+        if (range === "24h") {
+          const d = new Date(now);
+          d.setHours(d.getHours() - 24, 0, 0, 0);
+          startAt = d.getTime();
+        } else if (range === "7d") {
+          const d = new Date(now);
+          d.setDate(d.getDate() - 7);
+          d.setHours(0, 0, 0, 0);
+          startAt = d.getTime();
+        } else if (range === "30d") {
+          const d = new Date(now);
+          d.setDate(d.getDate() - 30);
+          d.setHours(0, 0, 0, 0);
+          startAt = d.getTime();
+        } else {
+          // 90d (default)
+          const d = new Date(now);
+          d.setDate(d.getDate() - 90);
+          d.setHours(0, 0, 0, 0);
+          startAt = d.getTime();
+        }
+
+        const unit = range === "24h" ? "hour" : "day";
+
+        const [stats, pageViews] = await Promise.all([
+          umami.getStats(startAt, endAt),
+          umami.getPageViews(startAt, endAt, unit),
+        ]);
+
+        let cachedOverview;
+        const cachedTraffic: Array<{ date: number; views: number }> = [];
+
+        if (stats) {
+          cachedOverview = {
+            visitors: stats.visitors,
+            pageViews: stats.pageviews,
+          };
+        }
+
+        if (pageViews?.pageviews) {
+          const rawData = new Map<number, number>();
+          pageViews.pageviews.forEach((p: { x: string; y: number }) => {
+            const d = new Date(p.x);
+            if (range === "24h") d.setMinutes(0, 0, 0);
+            else d.setHours(0, 0, 0, 0);
+            rawData.set(d.getTime(), p.y);
+          });
+
+          // Fill gaps using Date increment to handle DST correctly
+          const loopEnd =
+            range === "24h"
+              ? new Date(now).setMinutes(0, 0, 0)
+              : new Date(now).setHours(0, 0, 0, 0);
+
+          const current = new Date(startAt);
+          while (current.getTime() <= loopEnd) {
+            const t = current.getTime();
+            cachedTraffic.push({
+              date: t,
+              views: rawData.get(t) || 0,
+            });
+
+            if (range === "24h") {
+              current.setHours(current.getHours() + 1);
+            } else {
+              current.setDate(current.getDate() + 1);
+              current.setHours(0, 0, 0, 0); // Ensure midnight alignment
+            }
+          }
+        }
+
+        return {
+          overview: cachedOverview,
+          traffic: cachedTraffic,
+          lastUpdated: Date.now(),
+        };
+      };
+
+      // 3 hours TTL for 24h, 6h for others
+      const ttl = range === "24h" ? 3 * 60 * 60 : 6 * 60 * 60;
+
+      const cachedData = await CacheService.get(
+        context,
+        ["dashboard", "umami", range],
+        CachedUmamiDataSchema,
+        fetcher,
+        { ttl },
+      );
+
+      overview = cachedData.overview;
+      traffic = cachedData.traffic;
+      lastUpdated = cachedData.lastUpdated;
+    }
+  }
 
   const activities = [
     ...recentComments
@@ -62,5 +199,9 @@ export async function getDashboardStats(
       mediaSize,
     },
     activities,
+    traffic,
+    overview,
+    umamiUrl,
+    lastUpdated,
   };
 }
