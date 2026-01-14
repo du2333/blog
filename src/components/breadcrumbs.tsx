@@ -5,7 +5,10 @@ export function Breadcrumbs() {
   const matches = useRouterState({ select: (s) => s.matches });
 
   const breadcrumbs = matches.flatMap(({ pathname, loaderData }) => {
-    const title = loaderData?.title;
+    const title =
+      typeof loaderData === "object" && "title" in loaderData
+        ? loaderData.title
+        : undefined;
     return title ? [{ title, path: pathname }] : [];
   });
 

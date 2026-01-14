@@ -11,7 +11,7 @@ import {
 } from "@/features/media/media.utils";
 import { CACHE_CONTROL } from "@/lib/constants";
 
-export async function upload(context: Context, file: File) {
+export async function upload(context: DbContext & { executionCtx: ExecutionContext }, file: File) {
   const uploaded = await Storage.putToR2(context.env, file);
 
   try {
@@ -32,38 +32,38 @@ export async function upload(context: Context, file: File) {
   }
 }
 
-export async function deleteImage(context: Context, key: string) {
+export async function deleteImage(context: DbContext & { executionCtx: ExecutionContext }, key: string) {
   await MediaRepo.deleteMedia(context.db, key);
   context.executionCtx.waitUntil(
     Storage.deleteFromR2(context.env, key).catch(console.error),
   );
 }
 
-export async function getMediaList(context: Context, data: GetMediaListInput) {
+export async function getMediaList(context: DbContext, data: GetMediaListInput) {
   return await MediaRepo.getMediaList(context.db, data);
 }
 
-export async function isMediaInUse(context: Context, key: string) {
+export async function isMediaInUse(context: DbContext, key: string) {
   return await PostMediaRepo.isMediaInUse(context.db, key);
 }
 
-export async function getLinkedPosts(context: Context, key: string) {
+export async function getLinkedPosts(context: DbContext, key: string) {
   return await PostMediaRepo.getPostsByMediaKey(context.db, key);
 }
 
 export async function getLinkedMediaKeys(
-  context: Context,
+  context: DbContext,
   keys: Array<string>,
 ) {
   return await PostMediaRepo.getLinkedMediaKeys(context.db, keys);
 }
 
-export async function getTotalMediaSize(context: Context) {
+export async function getTotalMediaSize(context: DbContext) {
   return await MediaRepo.getTotalMediaSize(context.db);
 }
 
 export async function updateMediaName(
-  context: Context,
+  context: DbContext,
   data: UpdateMediaNameInput,
 ) {
   return await MediaRepo.updateMediaName(context.db, data.key, data.name);

@@ -1,6 +1,5 @@
 import { and, count, desc, eq, inArray, like, lt, ne, or } from "drizzle-orm";
 import type { SortDirection } from "@/features/posts/data/helper";
-import type { DB } from "@/lib/db";
 import type { PostListItem, PostStatus, Tag } from "@/lib/db/schema";
 import {
   buildPostOrderByClause,

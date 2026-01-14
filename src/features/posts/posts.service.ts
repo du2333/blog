@@ -24,7 +24,7 @@ import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
 
 export async function getPostsCursor(
-  context: Context,
+  context: DbContext & { executionCtx: ExecutionContext },
   data: GetPostsCursorInput,
 ) {
   const fetcher = async () =>
@@ -57,7 +57,7 @@ export async function getPostsCursor(
 }
 
 export async function findPostBySlug(
-  context: Context,
+  context: DbContext & { executionCtx: ExecutionContext },
   data: FindPostBySlugInput,
 ) {
   const fetcher = async () => {
@@ -82,10 +82,7 @@ export async function generateSummaryByPostId({
   context,
   postId,
 }: {
-  context: {
-    db: Context["db"];
-    env: Env;
-  };
+  context: DbContext;
   postId: number;
 }) {
   const post = await PostRepo.findPostById(context.db, postId);
@@ -122,7 +119,7 @@ export async function generateSummaryByPostId({
 
 // ============ Admin Service Methods ============
 
-export async function generateSlug(context: Context, data: GenerateSlugInput) {
+export async function generateSlug(context: DbContext, data: GenerateSlugInput) {
   const baseSlug = slugify(data.title);
   // 1. 先查有没有完全一样的 (比如 'hello-world')
   const exactMatch = await PostRepo.slugExists(context.db, baseSlug, {
@@ -156,7 +153,7 @@ export async function generateSlug(context: Context, data: GenerateSlugInput) {
   return { slug: `${baseSlug}-${maxSuffix + 1}` };
 }
 
-export async function createEmptyPost(context: Context) {
+export async function createEmptyPost(context: DbContext) {
   const { slug } = await generateSlug(context, { title: "" });
 
   const post = await PostRepo.insertPost(context.db, {
@@ -173,7 +170,7 @@ export async function createEmptyPost(context: Context) {
   return { id: post.id };
 }
 
-export async function getPosts(context: Context, data: GetPostsInput) {
+export async function getPosts(context: DbContext, data: GetPostsInput) {
   return await PostRepo.getPosts(context.db, {
     offset: data.offset ?? 0,
     limit: data.limit ?? 10,
@@ -185,7 +182,7 @@ export async function getPosts(context: Context, data: GetPostsInput) {
 }
 
 export async function getPostsCount(
-  context: Context,
+  context: DbContext,
   data: GetPostsCountInput,
 ) {
   return await PostRepo.getPostsCount(context.db, {
@@ -196,7 +193,7 @@ export async function getPostsCount(
 }
 
 export async function findPostBySlugAdmin(
-  context: Context,
+  context: DbContext,
   data: FindPostBySlugInput,
 ) {
   const post = await PostRepo.findPostBySlug(context.db, data.slug, {
@@ -210,13 +207,16 @@ export async function findPostBySlugAdmin(
 }
 
 export async function findPostById(
-  context: { db: Context["db"] },
+  context: DbContext,
   data: FindPostByIdInput,
 ) {
   return await PostRepo.findPostById(context.db, data.id);
 }
 
-export async function updatePost(context: Context, data: UpdatePostInput) {
+export async function updatePost(
+  context: DbContext & { executionCtx: ExecutionContext },
+  data: UpdatePostInput,
+) {
   const post = await PostRepo.updatePost(context.db, data.id, data.data);
   if (!post) {
     throw new Error("Post not found");
@@ -231,7 +231,10 @@ export async function updatePost(context: Context, data: UpdatePostInput) {
   return post;
 }
 
-export async function deletePost(context: Context, data: DeletePostInput) {
+export async function deletePost(
+  context: DbContext & { executionCtx: ExecutionContext },
+  data: DeletePostInput,
+) {
   const post = await PostRepo.findPostById(context.db, data.id);
   if (!post) return;
 
@@ -251,7 +254,7 @@ export async function deletePost(context: Context, data: DeletePostInput) {
 }
 
 export async function previewSummary(
-  context: Context,
+  context: DbContext,
   data: PreviewSummaryInput,
 ) {
   const plainText = convertToPlainText(data.contentJson);
@@ -267,7 +270,7 @@ export async function previewSummary(
 }
 
 export async function startPostProcessWorkflow(
-  context: Context,
+  context: DbContext,
   data: StartPostProcessInput,
 ) {
   await context.env.POST_PROCESS_WORKFLOW.create({

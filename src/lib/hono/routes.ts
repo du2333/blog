@@ -7,11 +7,13 @@ import {
 } from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
 
+
 export const app = new Hono<{ Bindings: Env }>();
 
 app.get("*", cacheMiddleware);
 
 /* ================================ 路由开始 ================================ */
+
 app.get("/images/:key{.+}", async (c) => {
   const key = c.req.param("key");
 
@@ -53,11 +55,9 @@ app.post(
   },
 );
 
-app.all("*", baseMiddleware, (c) => {
+app.all("*", (c) => {
   return handler.fetch(c.req.raw, {
     context: {
-      db: c.get("db"),
-      auth: c.get("auth"),
       env: c.env,
       executionCtx: c.executionCtx,
     },

@@ -3,12 +3,12 @@ import {
   env,
   waitOnExecutionContext,
 } from "cloudflare:test";
-import { drizzle } from "drizzle-orm/d1";
 import { vi } from "vitest";
 import * as schema from "@/lib/db/schema";
+import { getDb } from "@/lib/db";
 
 export function createTestDb() {
-  return drizzle(env.DB, { schema });
+  return getDb(env);
 }
 
 export function createMockAuth() {
@@ -16,7 +16,7 @@ export function createMockAuth() {
     api: {
       getSession: vi.fn(async () => null),
     },
-  } as unknown as Context["auth"];
+  } as unknown as Auth;
 }
 
 export function createMockSession(
@@ -86,7 +86,9 @@ export async function waitForBackgroundTasks(ctx: ExecutionContext) {
   await waitOnExecutionContext(ctx);
 }
 
-export function createTestContext(overrides: Partial<Context> = {}): Context {
+export function createTestContext(
+  overrides: Partial<AuthContext & { executionCtx: ExecutionContext }> = {},
+) {
   const context = {
     db: createTestDb(),
     env: env,
@@ -120,8 +122,8 @@ export function createTestContext(overrides: Partial<Context> = {}): Context {
 }
 
 export function createAuthTestContext(
-  overrides: Partial<AuthContext> = {},
-): AuthContext {
+  overrides: Partial<AuthContext & { executionCtx: ExecutionContext }> = {},
+){
   return {
     ...createTestContext(),
     session: createMockSession(),
@@ -130,8 +132,8 @@ export function createAuthTestContext(
 }
 
 export function createAdminTestContext(
-  overrides: Partial<AuthContext> = {},
-): AuthContext {
+  overrides: Partial<AuthContext & { executionCtx: ExecutionContext }> = {},
+){
   return {
     ...createTestContext(),
     session: createMockAdminSession(),

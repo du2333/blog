@@ -17,7 +17,7 @@ import { serverEnv } from "@/lib/env/server.env";
 // ============ Public Service Methods ============
 
 export async function getRootCommentsByPostId(
-  context: Context,
+  context: DbContext,
   data: GetCommentsByPostIdInput & { viewerId?: string },
 ) {
   const [items, total] = await Promise.all([
@@ -53,7 +53,7 @@ export async function getRootCommentsByPostId(
 }
 
 export async function getRepliesByRootId(
-  context: Context,
+  context: DbContext,
   data: { postId: number; rootId: number; offset?: number; limit?: number } & {
     viewerId?: string;
   },
@@ -221,7 +221,7 @@ export async function getMyComments(
 // ============ Admin Service Methods ============
 
 export async function getAllComments(
-  context: Context,
+  context: DbContext,
   data: GetAllCommentsInput,
 ) {
   const [items, total] = await Promise.all([
@@ -245,7 +245,7 @@ export async function getAllComments(
 }
 
 export async function moderateComment(
-  context: Context,
+  context: DbContext,
   data: ModerateCommentInput,
 ) {
   const comment = await CommentRepo.findCommentById(context.db, data.id);
@@ -262,7 +262,7 @@ export async function moderateComment(
 }
 
 export async function adminDeleteComment(
-  context: Context,
+  context: DbContext,
   data: DeleteCommentInput,
 ) {
   const comment = await CommentRepo.findCommentById(context.db, data.id);
@@ -280,7 +280,7 @@ export async function adminDeleteComment(
 // ============ Workflow Methods ============
 
 export async function startCommentModerationWorkflow(
-  context: Context,
+  context: DbContext,
   data: StartCommentModerationInput,
 ) {
   await context.env.COMMENT_MODERATION_WORKFLOW.create({
@@ -291,14 +291,14 @@ export async function startCommentModerationWorkflow(
 }
 
 export async function findCommentById(
-  context: { db: Context["db"] },
+  context: DbContext,
   commentId: number,
 ) {
   return await CommentRepo.findCommentById(context.db, commentId);
 }
 
 export async function updateCommentStatus(
-  context: { db: Context["db"] },
+  context: DbContext,
   commentId: number,
   status: "published" | "pending" | "deleted",
   aiReason?: string,
@@ -309,6 +309,6 @@ export async function updateCommentStatus(
   });
 }
 
-export async function getUserCommentStats(context: Context, userId: string) {
+export async function getUserCommentStats(context: DbContext, userId: string) {
   return await CommentRepo.getUserCommentStats(context.db, userId);
 }

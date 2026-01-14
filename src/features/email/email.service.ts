@@ -4,7 +4,7 @@ import { createEmailClient } from "@/features/email/email.utils";
 import { isNotInProduction, serverEnv } from "@/lib/env/server.env";
 
 export async function testEmailConnection(
-  context: Context,
+  context: DbContext,
   data: TestEmailConnectionInput,
 ): Promise<{ success: boolean; error?: string }> {
   try {
@@ -31,10 +31,7 @@ export async function testEmailConnection(
 }
 
 export async function sendEmail(
-  context: {
-    db: Context["db"];
-    env: Env;
-  },
+  context: DbContext,
   options: {
     to: string;
     subject: string;

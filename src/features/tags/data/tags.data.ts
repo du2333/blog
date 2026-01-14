@@ -1,6 +1,5 @@
 import { and, asc, count, desc, eq, gt, lte, ne, sql } from "drizzle-orm";
 import type { BatchItem } from "drizzle-orm/batch";
-import type { DB } from "@/lib/db";
 import { PostTagsTable, PostsTable, TagsTable } from "@/lib/db/schema";
 
 /**

@@ -31,7 +31,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
         "check sync status",
         async () => {
           const db = getDb(this.env);
-          const p = await PostService.findPostById({ db }, { id: postId });
+          const p = await PostService.findPostById(
+            { db, env: this.env },
+            { id: postId },
+          );
           if (!p) return { post: null, shouldSkip: true };
 
           // Elements that define the public state
@@ -117,7 +120,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       // Update sync hash in KV
       await step.do("update sync hash", async () => {
         const db = getDb(this.env);
-        const p = await PostService.findPostById({ db }, { id: postId });
+        const p = await PostService.findPostById(
+          { db, env: this.env },
+          { id: postId },
+        );
         if (!p) return;
 
         const stateToHash = {
@@ -134,7 +140,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
       // Unpublish workflow: remove from index and caches
       const post = await step.do("fetch post", async () => {
         const db = getDb(this.env);
-        return await PostService.findPostById({ db }, { id: postId });
+        return await PostService.findPostById(
+          { db, env: this.env },
+          { id: postId },
+        );
       });
 
       if (!post) return;

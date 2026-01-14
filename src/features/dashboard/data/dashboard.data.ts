@@ -1,5 +1,4 @@
 import { count, desc, eq } from "drizzle-orm";
-import type { DB } from "@/lib/db";
 import { CommentsTable, PostsTable, user as UserTable } from "@/lib/db/schema";
 
 export async function getPendingCommentsCount(db: DB) {

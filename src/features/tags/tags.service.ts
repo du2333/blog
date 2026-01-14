@@ -15,7 +15,7 @@ import { purgeCDNCache } from "@/lib/invalidate";
 /**
  * Get all tags (cached)
  */
-export async function getTags(context: Context, data: GetTagsInput = {}) {
+export async function getTags(context: DbContext, data: GetTagsInput = {}) {
   const {
     sortBy = "name",
     sortDir = "asc",
@@ -43,9 +43,7 @@ const PUBLIC_TAGS_TTL = 60 * 60 * 24 * 7;
  * Get public tags list (KV-only, populated by publish workflow)
  * This ensures public site only shows "published" tag associations.
  */
-export async function getPublicTags(context: {
-  env: Env;
-  db: Context["db"];
+export async function getPublicTags(context: DbContext & {
   executionCtx: ExecutionContext;
 }) {
   return await CacheService.get(
@@ -67,7 +65,7 @@ export async function getPublicTags(context: {
  * Get all tags with counts
  */
 export async function getTagsWithCount(
-  context: Context,
+  context: DbContext,
   data: GetTagsInput = {},
 ) {
   // We don't cache this for now as it's for admin management
@@ -78,7 +76,7 @@ export async function getTagsWithCount(
  * Get tags for a specific post
  */
 export async function getTagsByPostId(
-  context: Context,
+  context: DbContext,
   data: GetTagsByPostIdInput,
 ) {
   return await TagRepo.getTagsByPostId(context.db, data.postId);
@@ -94,7 +92,7 @@ export async function getTagsByPostId(
  * Helper to invalidate caches related to tags and their associated posts
  */
 async function invalidateTagRelatedCache(
-  context: Context,
+  context: DbContext,
   affectedPosts: Array<{ id: number; slug: string }>,
 ) {
   const tasks: Array<Promise<void>> = [];
@@ -123,7 +121,7 @@ async function invalidateTagRelatedCache(
   await Promise.all(tasks);
 }
 
-export const createTag = async (context: Context, data: CreateTagInput) => {
+export const createTag = async (context: DbContext, data: CreateTagInput) => {
   // Check if name already exists
   const exists = await TagRepo.nameExists(context.db, data.name);
   if (exists) {
@@ -140,7 +138,7 @@ export const createTag = async (context: Context, data: CreateTagInput) => {
 /**
  * Update a tag
  */
-export async function updateTag(context: Context, data: UpdateTagInput) {
+export async function updateTag(context: DbContext & { executionCtx: ExecutionContext }, data: UpdateTagInput) {
   const existingTag = await TagRepo.findTagById(context.db, data.id);
   if (!existingTag) {
     throw new Error("Tag not found");
@@ -175,7 +173,7 @@ export async function updateTag(context: Context, data: UpdateTagInput) {
 /**
  * Delete a tag
  */
-export async function deleteTag(context: Context, data: DeleteTagInput) {
+export async function deleteTag(context: DbContext & { executionCtx: ExecutionContext }, data: DeleteTagInput) {
   const tag = await TagRepo.findTagById(context.db, data.id);
   if (!tag) return;
 
@@ -196,6 +194,6 @@ export async function deleteTag(context: Context, data: DeleteTagInput) {
 /**
  * Set tags for a post
  */
-export async function setPostTags(context: Context, data: SetPostTagsInput) {
+export async function setPostTags(context: DbContext, data: SetPostTagsInput) {
   await TagRepo.setPostTags(context.db, data.postId, data.tagIds);
 }

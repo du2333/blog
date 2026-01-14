@@ -1,6 +1,7 @@
-import { createAdminFn } from "@/lib/middlewares";
+import { createServerFn } from "@tanstack/react-start";
+import { adminMiddleware } from "@/lib/middlewares";
 import * as DashboardService from "@/features/dashboard/dashboard.service";
 
-export const getDashboardStatsFn = createAdminFn().handler(({ context }) =>
-  DashboardService.getDashboardStats(context),
-);
+export const getDashboardStatsFn = createServerFn()
+  .middleware([adminMiddleware])
+  .handler(({ context }) => DashboardService.getDashboardStats(context));

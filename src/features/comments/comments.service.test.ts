@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import {
   createAdminTestContext,
   createAuthTestContext,
+  createMockExecutionCtx,
   createMockSession,
   seedUser,
 } from "tests/test-utils";
@@ -26,7 +27,7 @@ describe("CommentService", () => {
 
   beforeEach(async () => {
     // Setup admin context
-    adminContext = createAdminTestContext();
+    adminContext = createAdminTestContext({executionCtx: createMockExecutionCtx()});
     await seedUser(adminContext.db, adminContext.session.user);
 
     // Setup normal user context

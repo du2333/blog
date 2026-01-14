@@ -1,11 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { and, eq, lte } from "drizzle-orm";
 import { PostsTable } from "@/lib/db/schema";
+import { getDb } from "@/lib/db";
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
-      GET: async ({ context: { db, env } }) => {
+      GET: async ({ context: { env } }) => {
+        const db = getDb(env);
         // Only fetch published posts that are publicly viewable
         const posts = await db
           .select({

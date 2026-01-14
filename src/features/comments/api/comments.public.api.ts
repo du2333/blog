@@ -11,7 +11,7 @@ import {
   GetRepliesByRootIdInputSchema,
 } from "@/features/comments/comments.schema";
 import * as CommentService from "@/features/comments/comments.service";
-import { createAuthedFn, createRateLimitMiddleware } from "@/lib/middlewares";
+import { authMiddleware, createRateLimitMiddleware } from "@/lib/middlewares";
 import { CACHE_CONTROL } from "@/lib/constants";
 
 // Public API - Get root comments by post ID (published + viewer's pending)
@@ -83,7 +83,7 @@ export const getRepliesByRootIdFn = createServerFn()
   });
 
 // Authed User APIs
-export const createCommentFn = createAuthedFn({
+export const createCommentFn = createServerFn({
   method: "POST",
 })
   .middleware([
@@ -92,13 +92,14 @@ export const createCommentFn = createAuthedFn({
       interval: "1m",
       key: "comments:create",
     }),
+    authMiddleware,
   ])
   .inputValidator(CreateCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.createComment(context, data);
   });
 
-export const deleteCommentFn = createAuthedFn({
+export const deleteCommentFn = createServerFn({
   method: "POST",
 })
   .middleware([
@@ -107,19 +108,21 @@ export const deleteCommentFn = createAuthedFn({
       interval: "1m",
       key: "comments:delete",
     }),
+    authMiddleware,
   ])
   .inputValidator(DeleteCommentInputSchema)
   .handler(async ({ data, context }) => {
     return await CommentService.deleteComment(context, data);
   });
 
-export const getMyCommentsFn = createAuthedFn()
+export const getMyCommentsFn = createServerFn()
   .middleware([
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
       key: "comments:getMine",
     }),
+    authMiddleware,
   ])
   .inputValidator(GetMyCommentsInputSchema)
   .handler(async ({ data, context }) => {

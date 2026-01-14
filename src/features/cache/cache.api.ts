@@ -1,10 +1,12 @@
+import { createServerFn } from "@tanstack/react-start";
 import * as CacheService from "@/features/cache/cache.service";
 import * as TagService from "@/features/tags/tags.service";
 import { purgeSiteCDNCache } from "@/lib/invalidate";
-import { createAdminFn } from "@/lib/middlewares";
+import { adminMiddleware } from "@/lib/middlewares";
 
-export const invalidateSiteCacheFn = createAdminFn().handler(
-  async ({ context }) => {
+export const invalidateSiteCacheFn = createServerFn()
+  .middleware([adminMiddleware])
+  .handler(async ({ context }) => {
     // 1. Purge CDN
     const purgeTask = purgeSiteCDNCache(context.env);
 

@@ -1,5 +1,4 @@
 import { and, eq } from "drizzle-orm";
-import type { DB } from "@/lib/db";
 import type { EmailUnsubscribeType } from "@/lib/db/schema";
 import { EmailUnsubscriptionsTable } from "@/lib/db/schema";
 

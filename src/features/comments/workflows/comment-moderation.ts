@@ -23,7 +23,10 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
     // Step 1: Fetch the comment
     const comment = await step.do("fetch comment", async () => {
       const db = getDb(this.env);
-      return await CommentService.findCommentById({ db }, commentId);
+      return await CommentService.findCommentById(
+        { db, env: this.env },
+        commentId,
+      );
     });
 
     if (!comment) {
@@ -41,7 +44,10 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
 
     const post = await step.do("fetch post", async () => {
       const db = getDb(this.env);
-      return await PostService.findPostById({ db }, { id: comment.postId });
+      return await PostService.findPostById(
+        { db, env: this.env },
+        { id: comment.postId },
+      );
     });
 
     if (!post) {
@@ -57,7 +63,7 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
       await step.do("mark empty comment as pending", async () => {
         const db = getDb(this.env);
         await CommentService.updateCommentStatus(
-          { db },
+          { db, env: this.env },
           commentId,
           "pending",
           "评论内容为空，需人工审核",
@@ -111,14 +117,14 @@ export class CommentModerationWorkflow extends WorkflowEntrypoint<Env, Params> {
 
       if (moderationResult.safe) {
         await CommentService.updateCommentStatus(
-          { db },
+          { db, env: this.env },
           commentId,
           "published",
           moderationResult.reason,
         );
       } else {
         await CommentService.updateCommentStatus(
-          { db },
+          { db, env: this.env },
           commentId,
           "pending",
           moderationResult.reason,

@@ -8,7 +8,10 @@ export { RateLimiter } from "@/lib/rate-limiter";
 declare module "@tanstack/react-start" {
   interface Register {
     server: {
-      requestContext: Context;
+      requestContext: {
+        env: Env;
+        executionCtx: ExecutionContext;
+      };
     };
   }
 }

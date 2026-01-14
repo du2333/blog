@@ -1,3 +1,4 @@
+import { createServerFn } from "@tanstack/react-start";
 import {
   CreateTagInputSchema,
   DeleteTagInputSchema,
@@ -10,20 +11,21 @@ import {
 import * as TagService from "@/features/tags/tags.service";
 import * as AIService from "@/features/ai/ai.service";
 import {
-  createAdminFn,
-  createCachedFn,
+  adminMiddleware,
+  cachedMiddleware,
   createRateLimitMiddleware,
 } from "@/lib/middlewares";
 
 // ============ Public API ============
 
-export const getTagsFn = createCachedFn()
+export const getTagsFn = createServerFn()
   .middleware([
     createRateLimitMiddleware({
       capacity: 60,
       interval: "1m",
       key: "tags:getAll",
     }),
+    cachedMiddleware,
   ])
   .handler(async ({ context }) => {
     return await TagService.getPublicTags(context);
@@ -32,49 +34,57 @@ export const getTagsFn = createCachedFn()
 // ============ Admin API ============
 
 // Admin version without function-level caching (uses service-level KV cache)
-export const getTagsAdminFn = createAdminFn()
+export const getTagsAdminFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(GetTagsInputSchema)
   .handler(async ({ data, context }) => {
     return await TagService.getTags(context, data);
   });
 
-export const createTagFn = createAdminFn({
+export const createTagFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(CreateTagInputSchema)
   .handler(({ data, context }) => TagService.createTag(context, data));
 
-export const updateTagFn = createAdminFn({
+export const updateTagFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(UpdateTagInputSchema)
   .handler(({ data, context }) => TagService.updateTag(context, data));
 
-export const deleteTagFn = createAdminFn({
+export const deleteTagFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(DeleteTagInputSchema)
   .handler(({ data, context }) => TagService.deleteTag(context, data));
 
-export const setPostTagsFn = createAdminFn({
+export const setPostTagsFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(SetPostTagsInputSchema)
   .handler(({ data, context }) => TagService.setPostTags(context, data));
 
-export const getTagsByPostIdFn = createAdminFn()
+export const getTagsByPostIdFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(GetTagsByPostIdInputSchema)
   .handler(({ data, context }) => TagService.getTagsByPostId(context, data));
 
-export const getTagsWithCountAdminFn = createAdminFn()
+export const getTagsWithCountAdminFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(GetTagsInputSchema)
   .handler(async ({ data, context }) => {
     return await TagService.getTagsWithCount(context, data);
   });
 
-export const generateTagsFn = createAdminFn({
+export const generateTagsFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(GenerateTagsInputSchema)
   .handler(async ({ data, context }) => {
     return await AIService.generateTags(

@@ -1,5 +1,4 @@
 import { and, eq, isNotNull } from "drizzle-orm";
-import type { DB } from "@/lib/db";
 import { account, user } from "@/lib/db/schema";
 
 export async function userHasPassword(db: DB, userId: string) {

@@ -1,7 +1,6 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { betterAuth } from "better-auth/minimal";
-import type { DB } from "@/lib/db";
 import { AuthEmail } from "@/features/email/templates/AuthEmail";
 import { authConfig } from "@/lib/auth/auth.config";
 import * as authSchema from "@/lib/db/schema/auth.schema";

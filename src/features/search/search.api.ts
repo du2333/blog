@@ -6,21 +6,23 @@ import {
 } from "@/features/search/search.schema";
 import * as SearchService from "@/features/search/search.service";
 import {
-  createAdminFn,
+  adminMiddleware,
   createRateLimitMiddleware,
   immutableCacheMiddleware,
   noCacheMiddleware,
 } from "@/lib/middlewares";
 
-export const buildSearchIndexFn = createAdminFn().handler(({ context }) =>
-  SearchService.rebuildIndex(context),
-);
+export const buildSearchIndexFn = createServerFn()
+  .middleware([adminMiddleware])
+  .handler(({ context }) => SearchService.rebuildIndex(context));
 
-export const upsertSearchDocFn = createAdminFn({ method: "POST" })
+export const upsertSearchDocFn = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .inputValidator(UpsertSearchDocSchema)
   .handler(({ data, context }) => SearchService.upsert(context, data));
 
-export const deleteSearchDocFn = createAdminFn({ method: "POST" })
+export const deleteSearchDocFn = createServerFn({ method: "POST" })
+  .middleware([adminMiddleware])
   .inputValidator(DeleteSearchDocSchema)
   .handler(({ data, context }) => SearchService.deleteIndex(context, data));
 

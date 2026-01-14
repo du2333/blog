@@ -21,7 +21,7 @@ export const SNIPPET_CONTEXT = 60;
 export const SCAN_LIMIT = CONTENT_SLICE;
 export const FUZZY_MAX_DISTANCE = 1;
 
-export async function search(context: Context, data: SearchQueryInput) {
+export async function search(context: DbContext, data: SearchQueryInput) {
   const db = await getOramaDb(context.env);
   const result = await oramaSearch(db, {
     term: data.q,
@@ -105,7 +105,7 @@ export async function deleteIndex(
   return { id: data.id };
 }
 
-export async function rebuildIndex(context: Context) {
+export async function rebuildIndex(context: DbContext) {
   const { env, db } = context;
   const start = Date.now();
   console.log("[search] Start backfilling index...");
@@ -156,6 +156,6 @@ export async function rebuildIndex(context: Context) {
   return { indexed: posts.length, duration };
 }
 
-export async function getIndexVersion(context: Context) {
+export async function getIndexVersion(context: DbContext) {
   return await getOramaMeta(context.env);
 }

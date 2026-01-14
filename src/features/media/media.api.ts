@@ -1,21 +1,24 @@
 import { z } from "zod";
+import { createServerFn } from "@tanstack/react-start";
 import {
   GetMediaListInputSchema,
   UpdateMediaNameInputSchema,
   UploadMediaInputSchema,
 } from "@/features/media/media.schema";
 import * as MediaService from "@/features/media/media.service";
-import { createAdminFn } from "@/lib/middlewares";
+import { adminMiddleware } from "@/lib/middlewares";
 
-export const uploadImageFn = createAdminFn({
+export const uploadImageFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(UploadMediaInputSchema)
   .handler(({ data: file, context }) => MediaService.upload(context, file));
 
-export const deleteImageFn = createAdminFn({
+export const deleteImageFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -23,11 +26,13 @@ export const deleteImageFn = createAdminFn({
   )
   .handler(({ data, context }) => MediaService.deleteImage(context, data.key));
 
-export const getMediaFn = createAdminFn()
+export const getMediaFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(GetMediaListInputSchema)
   .handler(({ data, context }) => MediaService.getMediaList(context, data));
 
-export const checkMediaInUseFn = createAdminFn()
+export const checkMediaInUseFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -35,7 +40,8 @@ export const checkMediaInUseFn = createAdminFn()
   )
   .handler(({ data, context }) => MediaService.isMediaInUse(context, data.key));
 
-export const getLinkedPostsFn = createAdminFn()
+export const getLinkedPostsFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       key: z.string().min(1, "Image key is required"),
@@ -45,7 +51,8 @@ export const getLinkedPostsFn = createAdminFn()
     MediaService.getLinkedPosts(context, data.key),
   );
 
-export const getLinkedMediaKeysFn = createAdminFn()
+export const getLinkedMediaKeysFn = createServerFn()
+  .middleware([adminMiddleware])
   .inputValidator(
     z.object({
       keys: z.array(z.string()),
@@ -55,12 +62,13 @@ export const getLinkedMediaKeysFn = createAdminFn()
     MediaService.getLinkedMediaKeys(context, data.keys),
   );
 
-export const getTotalMediaSizeFn = createAdminFn().handler(({ context }) =>
-  MediaService.getTotalMediaSize(context),
-);
+export const getTotalMediaSizeFn = createServerFn()
+  .middleware([adminMiddleware])
+  .handler(({ context }) => MediaService.getTotalMediaSize(context));
 
-export const updateMediaNameFn = createAdminFn({
+export const updateMediaNameFn = createServerFn({
   method: "POST",
 })
+  .middleware([adminMiddleware])
   .inputValidator(UpdateMediaNameInputSchema)
   .handler(({ data, context }) => MediaService.updateMediaName(context, data));

@@ -3,7 +3,7 @@ import * as CacheService from "@/features/cache/cache.service";
 import * as ConfigRepo from "@/features/config/config.data";
 import { SystemConfigSchema } from "@/features/config/config.schema";
 
-export async function getSystemConfig(context: Context) {
+export async function getSystemConfig(context: DbContext & { executionCtx: ExecutionContext }) {
   return await CacheService.get(
     context,
     ["system"],
@@ -12,7 +12,7 @@ export async function getSystemConfig(context: Context) {
   );
 }
 
-export async function updateSystemConfig(context: Context, data: SystemConfig) {
+export async function updateSystemConfig(context: DbContext, data: SystemConfig) {
   await ConfigRepo.upsertSystemConfig(context.db, data);
   await CacheService.deleteKey(context, ["system"], ["isEmailConfigured"]);
 

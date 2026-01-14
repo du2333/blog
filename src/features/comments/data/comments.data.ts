@@ -1,6 +1,5 @@
 import { alias } from "drizzle-orm/sqlite-core";
 import { and, count, desc, eq, like, sql } from "drizzle-orm";
-import type { DB } from "@/lib/db";
 import type { CommentStatus } from "@/lib/db/schema";
 import { buildCommentWhereClause } from "@/features/comments/data/helper";
 import { CommentsTable, PostsTable, user } from "@/lib/db/schema";

@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
   createAdminTestContext,
+  createMockExecutionCtx,
   createTestContext,
   seedUser,
   waitForBackgroundTasks,
@@ -14,7 +15,9 @@ describe("TagService", () => {
   let publicContext: ReturnType<typeof createTestContext>;
 
   beforeEach(async () => {
-    adminContext = createAdminTestContext();
+    adminContext = createAdminTestContext({
+      executionCtx: createMockExecutionCtx(),
+    });
     publicContext = createTestContext();
     await seedUser(adminContext.db, adminContext.session.user);
   });

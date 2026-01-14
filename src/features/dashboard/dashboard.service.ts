@@ -3,7 +3,7 @@ import * as DashboardRepo from "@/features/dashboard/data/dashboard.data";
 import * as MediaRepo from "@/features/media/data/media.data";
 
 export async function getDashboardStats(
-  context: Context,
+  context: DbContext,
 ): Promise<DashboardResponse> {
   const { db } = context;
 

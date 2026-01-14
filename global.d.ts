@@ -1,5 +1,8 @@
-import type { DB } from "@/lib/db";
-import type { Auth, Session } from "@/lib/auth/auth.server";
+import type { DB as DBType } from "@/lib/db";
+import type {
+  Auth as AuthType,
+  Session as SessionType,
+} from "@/lib/auth/auth.server";
 
 declare global {
   interface PostProcessWorkflowParams {
@@ -24,14 +27,24 @@ declare global {
     SEND_EMAIL_WORKFLOW: Workflow<SendEmailWorkflowParams>;
   }
 
-  type Context = {
-    db: DB;
+  type DB = DBType;
+  type Auth = AuthType;
+  type Session = SessionType;
+
+  type BaseContext = {
     env: Env;
-    executionCtx: ExecutionContext;
-    auth: Auth;
   };
 
-  type AuthContext = Context & {
+  type DbContext = BaseContext & {
+    db: DB;
+  };
+
+  type SessionContext = DbContext & {
+    auth: Auth;
+    session: Session | null;
+  };
+
+  type AuthContext = Omit<SessionContext, "session"> & {
     session: Session;
   };
 }
