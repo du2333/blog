@@ -80,7 +80,7 @@ function RouteComponent() {
         className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-12"
       >
         {/* Header Area */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border/40">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border/40 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
           <div className="space-y-1.5">
             <h1 className="text-3xl font-serif font-medium tracking-tight text-foreground">
               系统设置
@@ -111,7 +111,7 @@ function RouteComponent() {
         {/* Main Content with Tabs */}
         <Tabs
           defaultValue="service"
-          className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-12 lg:gap-20 items-start"
+          className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-12 lg:gap-20 items-start animate-in fade-in duration-1000 delay-100 fill-mode-both"
         >
           <TabsList className="flex flex-row md:flex-col h-auto bg-transparent p-0 gap-1 md:w-full overflow-x-auto md:overflow-visible justify-start">
             <TabsTrigger
@@ -134,8 +134,11 @@ function RouteComponent() {
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 min-w-0 animate-in fade-in slide-in-from-right-4 duration-500">
-            <TabsContent value="service" className="mt-0 space-y-8">
+          <div className="flex-1 min-w-0">
+            <TabsContent
+              value="service"
+              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+            >
               <div className="space-y-2 mb-8">
                 <h2 className="text-xl font-medium tracking-tight">服务连接</h2>
                 <p className="text-sm text-muted-foreground">
@@ -145,7 +148,10 @@ function RouteComponent() {
               <EmailServiceSection testEmailConnection={testEmailConnection} />
             </TabsContent>
 
-            <TabsContent value="analytics" className="mt-0 space-y-8">
+            <TabsContent
+              value="analytics"
+              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-1000 fill-mode-both"
+            >
               <div className="space-y-2 mb-8">
                 <h2 className="text-xl font-medium tracking-tight">流量统计</h2>
                 <p className="text-sm text-muted-foreground">
@@ -155,7 +161,10 @@ function RouteComponent() {
               <UmamiSection />
             </TabsContent>
 
-            <TabsContent value="maintenance" className="mt-0 space-y-8">
+            <TabsContent
+              value="maintenance"
+              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+            >
               <div className="space-y-2 mb-8">
                 <h2 className="text-xl font-medium tracking-tight">数据维护</h2>
                 <p className="text-sm text-muted-foreground">
