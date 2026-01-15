@@ -49,9 +49,10 @@ describe("PostService", () => {
         },
       });
 
-      expect(updatedPost.title).toBe("Updated Title");
-      expect(updatedPost.slug).toBe("updated-title");
-      expect(updatedPost.status).toBe("published");
+      expect(updatedPost).not.toBeNull();
+      expect(updatedPost!.title).toBe("Updated Title");
+      expect(updatedPost!.slug).toBe("updated-title");
+      expect(updatedPost!.status).toBe("published");
     });
 
     it("should find a published post by slug", async () => {

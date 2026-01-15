@@ -39,28 +39,47 @@ export function usePostActions({
   const [processState, setProcessState] = useState<
     "IDLE" | "PROCESSING" | "SUCCESS"
   >("IDLE");
-  // Track the last successfully saved/published state
-  const [savedPost, setSavedPost] = useState<PostEditorData>(initialData);
+  // kvSnapshot tracks what is currently in the public KV storage.
+  // It is only updated on initial load or after a successful manual publish/sync.
+  const [kvSnapshot, setKvSnapshot] = useState<PostEditorData>(initialData);
+  const [sessionSynced, setSessionSynced] = useState(false);
 
-  // Update saved state when initialData changes (e.g. navigation or refetch)
+  // Sync state when initialData changes ONLY IF we haven't synced to KV yet
+  // but wait, if the post was already published and we just loaded it,
+  // initialData is our best guess for what's in KV.
+  const [hasInitializedSnapshot, setHasInitializedSnapshot] = useState(false);
   useEffect(() => {
-    setSavedPost(initialData);
-  }, [initialData]);
+    if (!hasInitializedSnapshot) {
+      setKvSnapshot(initialData);
+      setHasInitializedSnapshot(true);
+    }
+  }, [initialData, hasInitializedSnapshot]);
 
-  // Compare current post to savedPost to determine if user made changes
-  // Uses reference comparison for most fields (O(1)), only tagIds needs stringify
+  // Compare current post to kvSnapshot to determine if KV needs an update.
+  // This is INDEPENDENT of the auto-save state.
   const isDirty = useMemo(() => {
+    const compareTags = (a: Array<number>, b: Array<number>) => {
+      return JSON.stringify([...a].sort()) === JSON.stringify([...b].sort());
+    };
+
+    // If backend reports not synced, and we haven't synced in this session, it's dirty.
+    if (!initialData.isSynced && !sessionSynced) {
+      return true;
+    }
+
     return (
-      post.title !== savedPost.title ||
-      post.slug !== savedPost.slug ||
-      post.status !== savedPost.status ||
-      post.summary !== savedPost.summary ||
-      post.readTimeInMinutes !== savedPost.readTimeInMinutes ||
-      post.publishedAt?.getTime() !== savedPost.publishedAt?.getTime() ||
-      post.contentJson !== savedPost.contentJson ||
-      JSON.stringify(post.tagIds) !== JSON.stringify(savedPost.tagIds)
+      post.title !== kvSnapshot.title ||
+      post.slug !== kvSnapshot.slug ||
+      post.status !== kvSnapshot.status ||
+      post.summary !== kvSnapshot.summary ||
+      post.readTimeInMinutes !== kvSnapshot.readTimeInMinutes ||
+      post.publishedAt?.getTime() !== kvSnapshot.publishedAt?.getTime() ||
+      // For content, referential comparison is usually enough since Tiptap
+      // returns a new object on change, but we'll stick to it.
+      post.contentJson !== kvSnapshot.contentJson ||
+      !compareTags(post.tagIds, kvSnapshot.tagIds)
     );
-  }, [post, savedPost]);
+  }, [post, kvSnapshot, initialData.isSynced, sessionSynced]);
 
   // Keep track of how slug was requested to control noisy toasts
   const slugGenerationMode = useRef<"manual" | "auto">("manual");
@@ -98,10 +117,10 @@ export function usePostActions({
 
       setProcessState("SUCCESS");
 
-      // Update saved state to match what we just published
-      // Note: We use 'post' from closure here, which is the state at the time user clicked publish.
-      // This is generally correct as that's what we are processing.
-      setSavedPost(post);
+      // Update the KV snapshot to match what we just published.
+      // This effectively 'resets' the isDirty state for the sync UI.
+      setSessionSynced(true);
+      setKvSnapshot(post);
 
       // Reset after cooldown
       setTimeout(() => {

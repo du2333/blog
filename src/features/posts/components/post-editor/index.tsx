@@ -6,6 +6,7 @@ import {
   Clock,
   Cpu,
   Eye,
+  EyeOff,
   FileText,
   Globe,
   Link as LinkIcon,
@@ -30,7 +31,6 @@ import DatePicker from "@/components/ui/date-picker";
 import { Input } from "@/components/ui/input";
 import { POST_STATUSES } from "@/lib/db/schema";
 import { extensions } from "@/features/posts/editor/config";
-import { isPostPubliclyViewable } from "@/features/posts/components/post-manager/types";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
 export function PostEditor({ initialData, onSave }: PostEditorProps) {
@@ -44,6 +44,8 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     contentJson: initialData.contentJson ?? null,
     publishedAt: initialData.publishedAt,
     tagIds: initialData.tagIds,
+    isSynced: initialData.isSynced,
+    hasPublicCache: initialData.hasPublicCache,
   }));
 
   // Sync state when initialData updates (e.g. after background refetch/invalidation)
@@ -60,6 +62,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
     setPost((prev) => ({
       ...prev,
       tagIds: initialData.tagIds,
+      isSynced: initialData.isSynced,
     }));
   }
 
@@ -121,8 +124,10 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       />
 
       {/* Control Header */}
-      <header className="h-20 flex items-center justify-between px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50">
-        <Breadcrumbs />
+      <header className="min-h-16 md:h-20 flex items-center justify-between px-4 md:px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50 gap-4">
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <Breadcrumbs />
+        </div>
 
         <div className="flex items-center gap-3">
           <Button
@@ -130,21 +135,15 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             onClick={() => {
               if (post.slug) window.open(`/post/${post.slug}`, "_blank");
             }}
-            disabled={!isPostPubliclyViewable(post)}
-            title={
-              !isPostPubliclyViewable(post)
-                ? post.status === "draft"
-                  ? "草稿无法直接预览"
-                  : "尚未公开发布"
-                : "预览文章"
-            }
-            className="px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group disabled:opacity-30"
+            disabled={!post.hasPublicCache}
+            title={!post.hasPublicCache ? "前台暂无此文章" : "预览前台文章"}
+            className="px-3 md:px-6 h-9 md:h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group disabled:opacity-30"
           >
             <Eye
               size={14}
               className="group-hover:scale-110 transition-transform"
             />
-            <span>预览</span>
+            <span className="hidden md:inline">预览</span>
           </Button>
 
           <Button
@@ -152,12 +151,21 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
             disabled={
               processState !== "IDLE" || saveStatus === "SAVING" || !isPostDirty
             }
+            title={
+              !isPostDirty
+                ? "内容已与前台同步"
+                : !initialData.isSynced
+                  ? "数据库已有待发布更新"
+                  : "当前有未保存或未发布的改动"
+            }
             className={`
-              px-6 h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold transition-all gap-2 shadow-lg shadow-black/5
+              px-3 md:px-6 h-9 md:h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold transition-all gap-2 shadow-lg shadow-black/5
               ${
                 processState === "SUCCESS"
                   ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/10"
-                  : "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
+                  : post.status === "draft" && post.hasPublicCache
+                    ? "bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-20"
+                    : "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
               }
             `}
           >
@@ -165,15 +173,23 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
               <Loader2 size={14} className="animate-spin" />
             ) : processState === "SUCCESS" ? (
               <Check size={14} strokeWidth={3} />
+            ) : post.status === "draft" && post.hasPublicCache ? (
+              <EyeOff size={14} />
             ) : (
               <Cpu size={14} />
             )}
-            <span>
+            <span className="hidden md:inline">
               {processState === "PROCESSING"
-                ? "发布中"
+                ? post.status === "draft" && post.hasPublicCache
+                  ? "下架中"
+                  : "发布中"
                 : processState === "SUCCESS"
-                  ? "已发布"
-                  : "发布"}
+                  ? post.status === "draft" && post.hasPublicCache
+                    ? "已下架"
+                    : "已发布"
+                  : post.status === "draft" && post.hasPublicCache
+                    ? "下架"
+                    : "发布"}
             </span>
           </Button>
         </div>

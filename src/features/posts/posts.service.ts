@@ -23,6 +23,7 @@ import { generateTableOfContents } from "@/features/posts/utils/toc";
 import { convertToPlainText, slugify } from "@/features/posts/utils/content";
 import { purgePostCDNCache } from "@/lib/invalidate";
 import * as SearchService from "@/features/search/search.service";
+import { calculatePostHash } from "@/features/posts/utils/sync";
 
 export async function getPostsCursor(
   context: DbContext & { executionCtx: ExecutionContext },
@@ -212,25 +213,47 @@ export async function findPostById(
   context: DbContext,
   data: FindPostByIdInput,
 ) {
-  return await PostRepo.findPostById(context.db, data.id);
+  const post = await PostRepo.findPostById(context.db, data.id);
+  if (!post) return null;
+
+  const kvHash = await context.env.KV.get(`post_hash:${post.id}`);
+  const hasPublicCache = kvHash !== null;
+
+  let isSynced: boolean;
+  if (post.status === "draft") {
+    // 草稿：同步 = KV 中没有旧缓存
+    isSynced = !hasPublicCache;
+  } else {
+    // 已发布：同步 = 内容 hash 一致
+    const dbHash = await calculatePostHash({
+      title: post.title,
+      contentJson: post.contentJson,
+      summary: post.summary,
+      tagIds: post.tags.map((t) => t.id),
+      slug: post.slug,
+    });
+    isSynced = dbHash === kvHash;
+  }
+
+  return { ...post, isSynced, hasPublicCache };
 }
 
 export async function updatePost(
-  context: DbContext & { executionCtx: ExecutionContext },
+  context: DbContext & { executionCtx: ExecutionContext; env?: Env },
   data: UpdatePostInput,
 ) {
-  const post = await PostRepo.updatePost(context.db, data.id, data.data);
-  if (!post) {
+  const updatedPost = await PostRepo.updatePost(context.db, data.id, data.data);
+  if (!updatedPost) {
     throw new Error("Post not found");
   }
 
   if (data.data.contentJson !== undefined) {
     context.executionCtx.waitUntil(
-      syncPostMedia(context.db, post.id, data.data.contentJson),
+      syncPostMedia(context.db, updatedPost.id, data.data.contentJson),
     );
   }
 
-  return post;
+  return findPostById(context, { id: updatedPost.id });
 }
 
 export async function deletePost(

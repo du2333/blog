@@ -10,6 +10,8 @@ export interface PostEditorData {
   contentJson: JSONContent | null;
   publishedAt: Date | null;
   tagIds: Array<number>;
+  isSynced: boolean;
+  hasPublicCache: boolean;
 }
 
 export interface PostEditorProps {
@@ -28,4 +30,6 @@ export const defaultPostData: PostEditorData = {
   contentJson: null,
   publishedAt: null,
   tagIds: [],
+  isSynced: true,
+  hasPublicCache: false,
 };

@@ -68,6 +68,8 @@ function EditPost() {
     contentJson: post.contentJson,
     publishedAt: post.publishedAt,
     tagIds: tags.map((t) => t.id),
+    isSynced: post.isSynced,
+    hasPublicCache: post.hasPublicCache,
   };
 
   const handleSave = async (data: PostEditorData) => {

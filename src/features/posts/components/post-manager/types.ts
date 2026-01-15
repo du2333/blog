@@ -1,4 +1,4 @@
-import type { Post, PostStatus } from "@/lib/db/schema";
+import type { Post } from "@/lib/db/schema";
 
 /** Post without contentJson for list views */
 export type PostListItem = Omit<Post, "contentJson">;
@@ -10,16 +10,6 @@ export type StatusFilter = (typeof STATUS_FILTERS)[number];
 /** Sort direction options */
 export const SORT_DIRECTIONS = ["ASC", "DESC"] as const;
 export type SortDirection = (typeof SORT_DIRECTIONS)[number];
-
-/** Check if a post is publicly viewable */
-export function isPostPubliclyViewable(post: {
-  status: PostStatus;
-  publishedAt: Date | null;
-}): boolean {
-  if (post.status !== "published") return false;
-  if (!post.publishedAt) return false;
-  return post.publishedAt <= new Date();
-}
 
 /** Convert StatusFilter to API status param */
 export function statusFilterToApi(

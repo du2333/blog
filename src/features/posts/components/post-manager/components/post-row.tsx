@@ -1,10 +1,9 @@
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
-import { Calendar, Edit3, Eye, MoreVertical, Trash2 } from "lucide-react";
-import { useState } from "react";
-import { isPostPubliclyViewable } from "../types";
+import { Calendar, Edit3, MoreVertical, Trash2 } from "lucide-react";
 import type { PostListItem } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import Dropdown from "@/components/ui/dropdown";
 
 import { formatDate } from "@/lib/utils";
 
@@ -15,25 +14,12 @@ interface PostRowProps {
 
 export function PostRow({ post, onDelete }: PostRowProps) {
   const navigate = useNavigate();
-  const [showMobileActions, setShowMobileActions] = useState(false);
-
-  const viewTitle = !isPostPubliclyViewable(post)
-    ? post.status === "draft"
-      ? "草稿无法直接预览"
-      : "计划发布 - 尚未公开"
-    : "查看文章";
 
   const handleEdit = () => {
     navigate({
       to: "/admin/posts/edit/$id",
       params: { id: String(post.id) },
     });
-  };
-
-  const handleView = () => {
-    if (isPostPubliclyViewable(post)) {
-      navigate({ to: "/post/$slug", params: { slug: post.slug } });
-    }
   };
 
   return (
@@ -45,14 +31,30 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         </span>
         <div className="md:hidden flex items-center gap-3">
           <StatusBadge status={post.status} />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setShowMobileActions(!showMobileActions)}
-            className="h-9 w-9 text-zinc-400"
-          >
-            <MoreVertical size={18} />
-          </Button>
+          <Dropdown
+            trigger={
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-9 w-9 text-zinc-400"
+              >
+                <MoreVertical size={18} />
+              </Button>
+            }
+            items={[
+              {
+                label: "编辑",
+                icon: <Edit3 size={14} strokeWidth={1.5} />,
+                onClick: handleEdit,
+              },
+              {
+                label: "删除",
+                icon: <Trash2 size={14} strokeWidth={1.5} />,
+                onClick: () => onDelete(post),
+                danger: true,
+              },
+            ]}
+          />
         </div>
       </div>
 
@@ -84,24 +86,13 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         </div>
       </div>
 
-      {/* Actions (Desktop: Hover, Mobile: Expandable) */}
+      {/* Actions (Desktop: Hover, Mobile: Hidden) */}
       <div
-        className={`
-        md:col-span-1 flex items-center justify-end gap-3 w-full md:w-auto
-        ${showMobileActions ? "flex mt-4 pt-4 border-t border-border" : "hidden md:flex"}
+        className="
+        md:col-span-1 hidden md:flex items-center justify-end gap-3 w-full md:w-auto
         md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 transition-all duration-500
-      `}
+      "
       >
-        <Button
-          variant="ghost"
-          size="icon"
-          disabled={!isPostPubliclyViewable(post)}
-          onClick={handleView}
-          className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-10"
-          title={viewTitle}
-        >
-          <Eye size={18} strokeWidth={1.5} />
-        </Button>
         <Button
           variant="ghost"
           size="icon"

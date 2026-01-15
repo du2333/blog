@@ -6,20 +6,6 @@ import { PostsTable } from "@/lib/db/schema";
 export type SortField = "DATE";
 export type SortDirection = "ASC" | "DESC";
 
-/**
- * Check if a post is publicly viewable
- * - Must be published
- * - publishedAt must be in the past (or now)
- */
-export function isPostPubliclyViewable(post: {
-  status: PostStatus;
-  publishedAt: Date | null;
-}): boolean {
-  if (post.status !== "published") return false;
-  if (!post.publishedAt) return false;
-  return post.publishedAt <= new Date();
-}
-
 export function buildPostWhereClause(options: {
   status?: PostStatus;
   publicOnly?: boolean; // For public pages - checks publishedAt <= now
