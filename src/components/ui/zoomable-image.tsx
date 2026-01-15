@@ -81,8 +81,8 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
         {/* Hover Hint Overlay */}
         {showHint && (
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-            <div className="bg-popover/90 backdrop-blur-sm p-4 rounded-full border border-border transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-xl">
-              <ZoomIn size={20} />
+            <div className="bg-popover/90 backdrop-blur-md p-4 rounded-full border border-border/50 transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-2xl">
+              <ZoomIn size={20} className="text-foreground/70" />
             </div>
           </div>
         )}
@@ -110,7 +110,7 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
             }`}
           >
             <div className="flex flex-col">
-              <span className="text-[10px] font-mono font-medium text-muted-foreground uppercase tracking-[0.4em]">
+              <span className="text-[10px] font-mono font-medium text-muted-foreground tracking-[0.3em]">
                 {alt || "Untitled"}
               </span>
             </div>
