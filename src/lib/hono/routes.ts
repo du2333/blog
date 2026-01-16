@@ -8,24 +8,20 @@ import {
   shieldMiddleware,
 } from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
-
-import * as ConfigService from "@/features/config/config.service";
+import { serverEnv } from "@/lib/env/server.env";
 
 export const app = new Hono<{ Bindings: Env }>();
 
 app.get("*", cacheMiddleware);
 
 /* ================================ 路由开始 ================================ */
-app.get("/stats.js", baseMiddleware, async (c) => {
-  const config = await ConfigService.getSystemConfig({
-    db: c.get("db"),
-    env: c.env,
-    executionCtx: c.executionCtx,
-  });
-  if (!config?.umami?.src) {
+app.get("/stats.js", async (c) => {
+  const env = serverEnv(c.env);
+  const umamiSrc = env.VITE_UMAMI_SRC;
+  if (!umamiSrc) {
     return c.text("Not Found", 404);
   }
-  const scriptUrl = new URL("/script.js", config.umami.src).toString();
+  const scriptUrl = new URL("/script.js", umamiSrc).toString();
   const response = await proxy(scriptUrl);
   response.headers.set(
     "Cache-Control",
@@ -34,16 +30,13 @@ app.get("/stats.js", baseMiddleware, async (c) => {
   return response;
 });
 
-app.all("/api/send", baseMiddleware, async (c) => {
-  const config = await ConfigService.getSystemConfig({
-    db: c.get("db"),
-    env: c.env,
-    executionCtx: c.executionCtx,
-  });
-  if (!config?.umami?.src) {
+app.all("/api/send", async (c) => {
+  const env = serverEnv(c.env);
+  const umamiSrc = env.VITE_UMAMI_SRC;
+  if (!umamiSrc) {
     return c.text("Not Found", 404);
   }
-  const sendUrl = new URL("/api/send", config.umami.src).toString();
+  const sendUrl = new URL("/api/send", umamiSrc).toString();
   return proxy(sendUrl, c.req);
 });
 

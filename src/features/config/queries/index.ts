@@ -6,7 +6,6 @@ export const CONFIG_KEYS = {
 
   // Leaf keys (static arrays - no child queries)
   system: ["config", "system"] as const,
-  public: ["config", "public"] as const,
 };
 
 export const systemConfigQuery = queryOptions({

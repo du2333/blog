@@ -14,7 +14,6 @@ import { MaintenanceSection } from "@/features/config/components/maintenance-sec
 import { useSystemSetting } from "@/features/config/hooks/use-system-setting";
 import { useEmailConnection } from "@/features/email/hooks/use-email-connection";
 import { SectionSkeleton } from "@/features/config/components/settings-skeleton";
-import { UmamiSection } from "@/features/config/components/umami-section";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -121,12 +120,6 @@ function RouteComponent() {
               服务配置
             </TabsTrigger>
             <TabsTrigger
-              value="analytics"
-              className="w-full md:justify-start justify-center px-4 py-3 rounded-md text-muted-foreground data-[state=active]:bg-muted/50 data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-none transition-all duration-200 border border-transparent data-[state=active]:border-border/40"
-            >
-              统计分析
-            </TabsTrigger>
-            <TabsTrigger
               value="maintenance"
               className="w-full md:justify-start justify-center px-4 py-3 rounded-md text-muted-foreground data-[state=active]:bg-muted/50 data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-none transition-all duration-200 border border-transparent data-[state=active]:border-border/40"
             >
@@ -146,19 +139,6 @@ function RouteComponent() {
                 </p>
               </div>
               <EmailServiceSection testEmailConnection={testEmailConnection} />
-            </TabsContent>
-
-            <TabsContent
-              value="analytics"
-              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-1000 fill-mode-both"
-            >
-              <div className="space-y-2 mb-8">
-                <h2 className="text-xl font-medium tracking-tight">流量统计</h2>
-                <p className="text-sm text-muted-foreground">
-                  集成 Umami 等隐私友好的统计工具
-                </p>
-              </div>
-              <UmamiSection />
             </TabsContent>
 
             <TabsContent

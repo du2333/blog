@@ -1,5 +1,4 @@
 import { z } from "zod";
-import type { SystemConfig } from "@/features/config/config.schema";
 
 // --- Schemas ---
 const UmamiMetricSchema = z
@@ -31,6 +30,15 @@ export const UmamiPageViewsResponseSchema = z.object({
 export type UmamiStats = z.infer<typeof UmamiStatsResponseSchema>;
 export type UmamiChartData = z.infer<typeof UmamiChartDataSchema>;
 
+// --- Client Config ---
+export interface UmamiClientConfig {
+  websiteId: string;
+  src: string;
+  apiKey?: string;
+  username?: string;
+  password?: string;
+}
+
 // --- Client ---
 
 export class UmamiClient {
@@ -41,9 +49,9 @@ export class UmamiClient {
   private password?: string;
   private token: string | null = null;
 
-  constructor(config: NonNullable<SystemConfig["umami"]>) {
-    this.baseUrl = (config.src || "").replace(/\/$/, "");
-    this.websiteId = config.websiteId || "";
+  constructor(config: UmamiClientConfig) {
+    this.baseUrl = config.src.replace(/\/$/, "");
+    this.websiteId = config.websiteId;
     this.apiKey = config.apiKey;
     this.username = config.username;
     this.password = config.password;

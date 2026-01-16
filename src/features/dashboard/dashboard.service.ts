@@ -10,8 +10,8 @@ import {
 } from "@/features/dashboard/dashboard.schema";
 import * as DashboardRepo from "@/features/dashboard/data/dashboard.data";
 import * as MediaRepo from "@/features/media/data/media.data";
-import * as ConfigService from "@/features/config/config.service";
 import * as CacheService from "@/features/cache/cache.service";
+import { serverEnv } from "@/lib/env/server.env";
 
 const CachedUmamiDataSchema = z.object({
   traffic: z.array(TrafficDataSchema).optional(),
@@ -49,120 +49,126 @@ export async function getDashboardStats(
     DashboardRepo.getRecentUsers(db, 10),
   ]);
 
-  const config = await ConfigService.getSystemConfig(context);
+  const env = serverEnv(context.env);
   let traffic;
   let overview;
 
   let umamiUrl;
   let lastUpdated;
 
-  if (config?.umami) {
-    const { websiteId, src } = config.umami;
-    if (websiteId && src) {
-      // Construct external link
-      umamiUrl = `${src.replace(/\/$/, "")}/websites/${websiteId}`;
+  const umamiWebsiteId = env.VITE_UMAMI_WEBSITE_ID;
+  const umamiSrc = env.VITE_UMAMI_SRC;
 
-      // define fetcher for cache
-      const fetcher = async () => {
-        const umami = new UmamiClient(config.umami!);
-        const now = new Date();
-        const endAt = now.getTime();
-        let startAt: number;
+  if (umamiWebsiteId && umamiSrc) {
+    // Construct external link
+    umamiUrl = `${umamiSrc.replace(/\/$/, "")}/websites/${umamiWebsiteId}`;
 
-        // Use if/else to avoid any switch scope ambiguity
-        if (range === "24h") {
-          const d = new Date(now);
-          d.setHours(d.getHours() - 24, 0, 0, 0);
-          startAt = d.getTime();
-        } else if (range === "7d") {
-          const d = new Date(now);
-          d.setDate(d.getDate() - 7);
-          d.setHours(0, 0, 0, 0);
-          startAt = d.getTime();
-        } else if (range === "30d") {
-          const d = new Date(now);
-          d.setDate(d.getDate() - 30);
-          d.setHours(0, 0, 0, 0);
-          startAt = d.getTime();
-        } else {
-          // 90d (default)
-          const d = new Date(now);
-          d.setDate(d.getDate() - 90);
-          d.setHours(0, 0, 0, 0);
-          startAt = d.getTime();
-        }
+    // define fetcher for cache
+    const fetcher = async () => {
+      const umami = new UmamiClient({
+        websiteId: umamiWebsiteId,
+        src: umamiSrc,
+        apiKey: env.UMAMI_API_KEY,
+        username: env.UMAMI_USERNAME,
+        password: env.UMAMI_PASSWORD,
+      });
+      const now = new Date();
+      const endAt = now.getTime();
+      let startAt: number;
 
-        const unit = range === "24h" ? "hour" : "day";
+      // Use if/else to avoid any switch scope ambiguity
+      if (range === "24h") {
+        const d = new Date(now);
+        d.setHours(d.getHours() - 24, 0, 0, 0);
+        startAt = d.getTime();
+      } else if (range === "7d") {
+        const d = new Date(now);
+        d.setDate(d.getDate() - 7);
+        d.setHours(0, 0, 0, 0);
+        startAt = d.getTime();
+      } else if (range === "30d") {
+        const d = new Date(now);
+        d.setDate(d.getDate() - 30);
+        d.setHours(0, 0, 0, 0);
+        startAt = d.getTime();
+      } else {
+        // 90d (default)
+        const d = new Date(now);
+        d.setDate(d.getDate() - 90);
+        d.setHours(0, 0, 0, 0);
+        startAt = d.getTime();
+      }
 
-        const [stats, pageViews] = await Promise.all([
-          umami.getStats(startAt, endAt),
-          umami.getPageViews(startAt, endAt, unit),
-        ]);
+      const unit = range === "24h" ? "hour" : "day";
 
-        let cachedOverview;
-        const cachedTraffic: Array<{ date: number; views: number }> = [];
+      const [stats, pageViews] = await Promise.all([
+        umami.getStats(startAt, endAt),
+        umami.getPageViews(startAt, endAt, unit),
+      ]);
 
-        if (stats) {
-          cachedOverview = {
-            visitors: stats.visitors,
-            pageViews: stats.pageviews,
-          };
-        }
+      let cachedOverview;
+      const cachedTraffic: Array<{ date: number; views: number }> = [];
 
-        if (pageViews?.pageviews) {
-          const rawData = new Map<number, number>();
-          pageViews.pageviews.forEach((p: { x: string; y: number }) => {
-            const d = new Date(p.x);
-            if (range === "24h") d.setMinutes(0, 0, 0);
-            else d.setHours(0, 0, 0, 0);
-            rawData.set(d.getTime(), p.y);
+      if (stats) {
+        cachedOverview = {
+          visitors: stats.visitors,
+          pageViews: stats.pageviews,
+        };
+      }
+
+      if (pageViews?.pageviews) {
+        const rawData = new Map<number, number>();
+        pageViews.pageviews.forEach((p: { x: string; y: number }) => {
+          const d = new Date(p.x);
+          if (range === "24h") d.setMinutes(0, 0, 0);
+          else d.setHours(0, 0, 0, 0);
+          rawData.set(d.getTime(), p.y);
+        });
+
+        // Fill gaps using Date increment to handle DST correctly
+        const loopEnd =
+          range === "24h"
+            ? new Date(now).setMinutes(0, 0, 0)
+            : new Date(now).setHours(0, 0, 0, 0);
+
+        const current = new Date(startAt);
+        while (current.getTime() <= loopEnd) {
+          const t = current.getTime();
+          cachedTraffic.push({
+            date: t,
+            views: rawData.get(t) || 0,
           });
 
-          // Fill gaps using Date increment to handle DST correctly
-          const loopEnd =
-            range === "24h"
-              ? new Date(now).setMinutes(0, 0, 0)
-              : new Date(now).setHours(0, 0, 0, 0);
-
-          const current = new Date(startAt);
-          while (current.getTime() <= loopEnd) {
-            const t = current.getTime();
-            cachedTraffic.push({
-              date: t,
-              views: rawData.get(t) || 0,
-            });
-
-            if (range === "24h") {
-              current.setHours(current.getHours() + 1);
-            } else {
-              current.setDate(current.getDate() + 1);
-              current.setHours(0, 0, 0, 0); // Ensure midnight alignment
-            }
+          if (range === "24h") {
+            current.setHours(current.getHours() + 1);
+          } else {
+            current.setDate(current.getDate() + 1);
+            current.setHours(0, 0, 0, 0); // Ensure midnight alignment
           }
         }
+      }
 
-        return {
-          overview: cachedOverview,
-          traffic: cachedTraffic,
-          lastUpdated: Date.now(),
-        };
+      return {
+        overview: cachedOverview,
+        traffic: cachedTraffic,
+        lastUpdated: Date.now(),
       };
+    };
 
-      // 3 hours TTL for 24h, 6h for others
-      const ttl = range === "24h" ? "3h" : "6h";
+    // 3 hours TTL for 24h, 6h for others
+    const ttl = range === "24h" ? "3h" : "6h";
 
-      const cachedData = await CacheService.get(
-        context,
-        DASHBOARD_CACHE_KEYS.umamiStats(range),
-        CachedUmamiDataSchema,
-        fetcher,
-        { ttl },
-      );
+    const cachedData = await CacheService.get(
+      context,
+      DASHBOARD_CACHE_KEYS.umamiStats(range),
+      CachedUmamiDataSchema,
+      fetcher,
+      { ttl },
+    );
 
-      overview = cachedData.overview;
-      traffic = cachedData.traffic;
-      lastUpdated = cachedData.lastUpdated;
-    }
+    overview = cachedData.overview;
+    traffic = cachedData.traffic;
+    lastUpdated = cachedData.lastUpdated;
   }
 
   const activities = [

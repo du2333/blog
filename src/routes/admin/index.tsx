@@ -269,16 +269,9 @@ function DashboardOverview() {
                       未配置统计服务
                     </p>
                     <p className="text-[10px] text-muted-foreground">
-                      请前往设置页面配置 Umami
+                      请通过环境变量配置 Umami
                     </p>
                   </div>
-                  <Link
-                    to="/admin/settings"
-                    search={{}}
-                    className="text-[10px] bg-primary text-primary-foreground px-3 py-1.5 rounded-sm hover:opacity-90 transition-opacity mt-1"
-                  >
-                    去配置
-                  </Link>
                 </div>
               ) : traffic && traffic.length > 0 ? (
                 <div className="w-full h-full">
