@@ -2,23 +2,36 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import { useCallback, useState } from "react";
 import InsertModal from "./ui/insert-modal";
 import EditorToolbar from "./ui/editor-toolbar";
-import type { Extensions, JSONContent } from "@tiptap/react";
+import type {
+  Extensions,
+  JSONContent,
+  Editor as TiptapEditor,
+} from "@tiptap/react";
 import type { ModalType } from "./ui/insert-modal";
 import { normalizeLinkHref } from "@/lib/links/normalize-link-href";
 
 interface EditorProps {
   content?: JSONContent | string;
   onChange?: (json: JSONContent) => void;
+  onCreated?: (editor: TiptapEditor) => void;
   extensions: Extensions;
 }
 
-export function Editor({ content, onChange, extensions }: EditorProps) {
+export function Editor({
+  content,
+  onChange,
+  onCreated,
+  extensions,
+}: EditorProps) {
   const [modalOpen, setModalOpen] = useState<ModalType>(null);
   const [modalInitialUrl, setModalInitialUrl] = useState("");
 
   const editor = useEditor({
     extensions,
     content,
+    onCreate: ({ editor: currentEditor }) => {
+      onCreated?.(currentEditor);
+    },
     onUpdate: ({ editor: currentEditor }) => {
       onChange?.(currentEditor.getJSON());
     },

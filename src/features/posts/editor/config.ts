@@ -2,6 +2,7 @@ import { toast } from "sonner";
 import FileHandler from "@tiptap/extension-file-handler";
 import Placeholder from "@tiptap/extension-placeholder";
 import StarterKit from "@tiptap/starter-kit";
+import TableOfContents from "@tiptap/extension-table-of-contents";
 import type { Editor as TiptapEditor } from "@tiptap/react";
 import { CodeBlockExtension } from "@/features/posts/editor/extensions/code-block";
 import { ImageExtension } from "@/features/posts/editor/extensions/images";
@@ -14,6 +15,7 @@ import {
 } from "@/features/posts/editor/extensions/typography/list";
 import { ImageUpload } from "@/features/posts/editor/extensions/upload-image";
 import { uploadImageFn } from "@/features/media/media.api";
+import { slugify } from "@/features/posts/utils/content";
 
 const ALLOWED_IMAGE_MIME_TYPES = [
   "image/png",
@@ -108,5 +110,8 @@ export const extensions = [
   Placeholder.configure({
     placeholder: "开始记录...",
     emptyEditorClass: "is-editor-empty",
+  }),
+  TableOfContents.configure({
+    getId: (text) => slugify(text),
   }),
 ];

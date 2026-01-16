@@ -38,6 +38,7 @@
     "@tiptap/extension-image": "^3.13.0",
     "@tiptap/extension-list": "^3.13.0",
     "@tiptap/extension-placeholder": "^3.13.0",
+    "@tiptap/extension-table-of-contents": "^3.15.3",
     "@tiptap/pm": "^3.13.0",
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",

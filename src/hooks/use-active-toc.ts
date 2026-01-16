@@ -1,29 +1,61 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { TableOfContentsItem } from "@/features/posts/utils/toc";
 
-export function useActiveTOC(headers: Array<TableOfContentsItem>) {
+interface UseActiveTOCOptions {
+  containerId?: string;
+  topOffset?: number;
+  bottomOffsetFactor?: number;
+}
+
+export function useActiveTOC(
+  headers: Array<TableOfContentsItem>,
+  options: UseActiveTOCOptions = {},
+) {
+  const {
+    containerId,
+    topOffset = 0.1, // 10% of height
+    bottomOffsetFactor = 0.65, // 65% of height
+  } = options;
+
   const [activeId, setActiveId] = useState<string>("");
   const headersRef = useRef(headers);
   headersRef.current = headers;
 
-  // 检测当前视口中的第一个可见标题
   const detectActiveHeader = useCallback(() => {
-    const viewportHeight = window.innerHeight;
-    const topBound = viewportHeight * 0.1;
-    const bottomBound = viewportHeight * 0.65;
+    const scrollContainer = containerId
+      ? document.getElementById(containerId)
+      : null;
+
+    const viewportHeight = scrollContainer
+      ? scrollContainer.clientHeight
+      : window.innerHeight;
+
+    const topBound = viewportHeight * topOffset;
+    const bottomBound = viewportHeight * bottomOffsetFactor;
 
     for (const header of headersRef.current) {
       const element = document.getElementById(header.id);
       if (element) {
         const rect = element.getBoundingClientRect();
-        // 元素底部在 topBound 以下，且元素顶部在 bottomBound 以上
-        if (rect.bottom >= topBound && rect.top <= bottomBound) {
+
+        // If using a custom container, we need to adjust rect.top/bottom
+        // relative to the container's top if the container is not the window.
+        let top = rect.top;
+        let bottom = rect.bottom;
+
+        if (scrollContainer) {
+          const containerRect = scrollContainer.getBoundingClientRect();
+          top = rect.top - containerRect.top;
+          bottom = rect.bottom - containerRect.top;
+        }
+
+        if (bottom >= topBound && top <= bottomBound) {
           return header.id;
         }
       }
     }
     return null;
-  }, []);
+  }, [containerId, topOffset, bottomOffsetFactor]);
 
   useEffect(() => {
     let rafId: number | null = null;
@@ -42,22 +74,25 @@ export function useActiveTOC(headers: Array<TableOfContentsItem>) {
       }
     };
 
-    // 初始检测（延迟执行确保 DOM 渲染完成）
-    const initialRafId = requestAnimationFrame(() => {
-      const activeHeader = detectActiveHeader();
-      if (activeHeader) {
-        setActiveId(activeHeader);
-      }
-    });
+    const scrollTarget = containerId
+      ? document.getElementById(containerId)
+      : window;
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
+    if (!scrollTarget && containerId) return;
+
+    scrollTarget?.addEventListener("scroll", handleScroll, { passive: true });
+    // Also listen to resize
+    window.addEventListener("resize", handleScroll);
+
+    // Initial check
+    handleScroll();
 
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      scrollTarget?.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("resize", handleScroll);
       if (rafId) cancelAnimationFrame(rafId);
-      cancelAnimationFrame(initialRafId);
     };
-  }, [detectActiveHeader]);
+  }, [detectActiveHeader, containerId, headers]); // Re-bind if headers change for initial detect
 
   return activeId;
 }
