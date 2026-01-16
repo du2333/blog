@@ -70,7 +70,7 @@ export async function set(
 ): Promise<void> {
   const serializedKey = serializeKey(key);
   const putOptions = options?.ttl
-    ? { expirationTtl: ms(options.ttl) }
+    ? { expirationTtl: Math.floor(ms(options.ttl) / 1000) }
     : undefined;
 
   await context.env.KV.put(serializedKey, value, putOptions)
