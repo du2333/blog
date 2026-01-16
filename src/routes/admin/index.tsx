@@ -9,17 +9,18 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { z } from "zod";
 import type {
   ActivityLogItem,
-  DashboardQuery,
+  DashboardRange,
   TrafficData,
 } from "@/features/dashboard/dashboard.schema";
-import {
-  dashboardStatsQuery,
-  refreshDashboardCacheFn,
-} from "@/features/dashboard/queries";
+import { dashboardStatsQuery } from "@/features/dashboard/queries";
 import {
   TooltipContent,
   TooltipProvider,
@@ -31,6 +32,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
+import { refreshDashboardCacheFn } from "@/features/dashboard/dashboard.api";
 
 const SearchSchema = z.object({
   range: z.enum(["24h", "7d", "30d", "90d"]).default("24h").optional(),
@@ -40,15 +42,9 @@ export const Route = createFileRoute("/admin/")({
   component: DashboardOverview,
   pendingComponent: DashboardSkeleton,
   validateSearch: (search) => SearchSchema.parse(search),
-  loaderDeps: ({ search: { range } }) => ({ range }),
-  loader: async ({ context, deps: { range } }) => {
-    await context.queryClient.ensureQueryData(
-      dashboardStatsQuery({ range: range || "24h" }),
-    );
-
-    return {
-      title: "概览",
-    };
+  loader: async ({ context }) => {
+    await context.queryClient.ensureQueryData(dashboardStatsQuery);
+    return { title: "概览" };
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -85,13 +81,22 @@ function formatTimeAgo(date: Date | null | string) {
 }
 
 function DashboardOverview() {
-  const { range } = Route.useSearch();
+  const { range = "24h" } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
   const queryClient = useQueryClient();
-  const { data, isFetching } = useSuspenseQuery(
-    dashboardStatsQuery({ range: range || "24h" }),
-  );
-  const { stats, activities, traffic, umamiUrl, lastUpdated } = data;
+  const { data, isFetching } = useSuspenseQuery(dashboardStatsQuery);
+  const { stats, activities, trafficByRange, umamiUrl } = data;
+  const refreshDashboardCacheMutation = useMutation({
+    mutationFn: refreshDashboardCacheFn,
+    onSuccess: () => {
+      queryClient.invalidateQueries(dashboardStatsQuery);
+    },
+  });
+
+  // Get current range data
+  const currentRangeData = trafficByRange?.[range];
+  const traffic = currentRangeData?.traffic;
+  const lastUpdated = currentRangeData?.lastUpdated;
 
   const lastUpdatedTime = lastUpdated
     ? new Date(lastUpdated).toLocaleTimeString("zh-CN", {
@@ -198,12 +203,12 @@ function DashboardOverview() {
             </div>
             <div className="flex items-center gap-4">
               <Tabs
-                value={range || "24h"}
+                value={range}
                 onValueChange={(val) =>
                   navigate({
                     search: (prev) => ({
                       ...prev,
-                      range: val as DashboardQuery["range"],
+                      range: val as DashboardRange,
                     }),
                   })
                 }
@@ -225,15 +230,7 @@ function DashboardOverview() {
                 <UITooltip>
                   <TooltipTrigger asChild>
                     <button
-                      onClick={async () => {
-                        const freshData = await refreshDashboardCacheFn({
-                          data: { range: range || "24h" },
-                        });
-                        queryClient.setQueryData(
-                          ["dashboard", "stats", range || "24h"],
-                          freshData,
-                        );
-                      }}
+                      onClick={() => refreshDashboardCacheMutation.mutate({})}
                       disabled={isFetching}
                       className="text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
                     >

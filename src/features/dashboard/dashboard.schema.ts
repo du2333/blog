@@ -23,28 +23,32 @@ export const TrafficDataSchema = z.object({
 export const DashboardResponseSchema = z.object({
   stats: DashboardStatsSchema,
   activities: z.array(ActivityLogItemSchema),
-  traffic: z.array(TrafficDataSchema).optional(),
-  overview: z
-    .object({
-      visitors: z.number(),
-      pageViews: z.number(),
-    })
+  trafficByRange: z
+    .record(
+      z.enum(["24h", "7d", "30d", "90d"]),
+      z.object({
+        traffic: z.array(TrafficDataSchema),
+        overview: z
+          .object({
+            visitors: z.number(),
+            pageViews: z.number(),
+          })
+          .optional(),
+        lastUpdated: z.number(),
+      }),
+    )
     .optional(),
   umamiUrl: z.string().optional(),
-  lastUpdated: z.number().optional(),
-});
-
-export const DashboardQuerySchema = z.object({
-  range: z.enum(["24h", "7d", "30d", "90d"]).default("24h"),
 });
 
 export type DashboardStats = z.infer<typeof DashboardStatsSchema>;
 export type ActivityLogItem = z.infer<typeof ActivityLogItemSchema>;
 export type TrafficData = z.infer<typeof TrafficDataSchema>;
 export type DashboardResponse = z.infer<typeof DashboardResponseSchema>;
-export type DashboardQuery = z.infer<typeof DashboardQuerySchema>;
-export type DashboardRange = DashboardQuery["range"];
+export type DashboardRange = "24h" | "7d" | "30d" | "90d";
+
+export const ALL_RANGES: Array<DashboardRange> = ["24h", "7d", "30d", "90d"];
 
 export const DASHBOARD_CACHE_KEYS = {
-  umamiStats: (range: DashboardRange) => ["dashboard", "umami", range] as const,
+  umamiStats: ["dashboard", "umami"] as const,
 } as const;

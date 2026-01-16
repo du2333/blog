@@ -266,7 +266,7 @@ export const CommentModerationTable = ({
                       <span className="opacity-30 group-hover/post:opacity-100 transition-opacity">
                         跳至评论 /
                       </span>
-                      <span className="truncate max-w-[200px]">
+                      <span className="truncate max-w-50">
                         {comment.post.title}
                       </span>
                     </Link>
