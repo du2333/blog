@@ -13,6 +13,10 @@ export const CACHE_CONTROL = {
     "Cache-Control": "public, max-age=31536000, immutable",
     "CDN-Cache-Control": "public, max-age=31536000, immutable",
   },
+  forbidden: {
+    "Cache-Control": "public, max-age=0, must-revalidate",
+    "CDN-Cache-Control": "public, s-maxage=3600",
+  },
   notFound: {
     "Cache-Control": "public, max-age=0, must-revalidate",
     "CDN-Cache-Control": "public, s-maxage=10",

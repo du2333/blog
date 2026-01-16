@@ -28,6 +28,7 @@ const tryCacheResponse = (c: Context, cache: Cache) => {
   let strategy:
     | typeof CACHE_CONTROL.notFound
     | typeof CACHE_CONTROL.serverError
+    | typeof CACHE_CONTROL.forbidden
     | null = null;
   if (c.res.status === 404) {
     strategy = CACHE_CONTROL.notFound;
@@ -133,6 +134,10 @@ export const shieldMiddleware = createMiddleware(async (c, next) => {
   if (isPathValid(path)) {
     return next();
   }
-  console.warn(`[Shield] Blocked unknown path: ${path}`);
-  return c.text("Forbidden", 403);
+  const response = c.text("Forbidden", 403);
+  // 只缓存 Shield 拦截的 403，保护正常 403
+  Object.entries(CACHE_CONTROL.forbidden).forEach(([k, v]) => {
+    response.headers.set(k, v);
+  });
+  return response;
 });
