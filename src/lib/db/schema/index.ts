@@ -5,7 +5,8 @@ import {
   sqliteTable,
   text,
 } from "drizzle-orm/sqlite-core";
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
+import { createdAt, id, updatedAt } from "./helper";
 import type { AnySQLiteColumn } from "drizzle-orm/sqlite-core";
 import type { SystemConfig } from "@/features/config/config.schema";
 import type { JSONContent } from "@tiptap/react";
@@ -14,10 +15,6 @@ import { user } from "@/lib/db/schema/auth.schema";
 export * from "./auth.schema";
 
 export const POST_STATUSES = ["draft", "published"] as const;
-// published: 所有人可见
-// verifying: 刚入库，AI 还没跑完 (仅作者可见)
-// pending: AI 觉得有风险，等人工 (仅作者/管理员可见)
-// deleted: 软删
 export const COMMENT_STATUSES = [
   "pending",
   "published",
@@ -28,7 +25,7 @@ export const COMMENT_STATUSES = [
 export const PostsTable = sqliteTable(
   "posts",
   {
-    id: integer().primaryKey({ autoIncrement: true }),
+    id,
     title: text().notNull(),
     summary: text(),
     readTimeInMinutes: integer("read_time_in_minutes").default(1).notNull(),
@@ -37,13 +34,8 @@ export const PostsTable = sqliteTable(
     contentJson: text("content_json", { mode: "json" }).$type<JSONContent>(),
     status: text("status", { enum: POST_STATUSES }).notNull().default("draft"),
     publishedAt: integer("published_at", { mode: "timestamp" }),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
-    updatedAt: integer("updated_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`)
-      .$onUpdate(() => new Date()),
+    createdAt,
+    updatedAt,
   },
   (table) => [
     index("published_at_idx").on(table.publishedAt, table.status),
@@ -54,7 +46,7 @@ export const PostsTable = sqliteTable(
 export const MediaTable = sqliteTable(
   "media",
   {
-    id: integer().primaryKey({ autoIncrement: true }),
+    id,
     key: text().notNull().unique(),
     url: text().notNull(),
     fileName: text("file_name").notNull(),
@@ -62,9 +54,7 @@ export const MediaTable = sqliteTable(
     height: integer("height"),
     mimeType: text("mime_type").notNull(),
     sizeInBytes: integer("size_in_bytes").notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
+    createdAt,
   },
   (table) => [index("created_at_idx_media").on(table.createdAt)],
 );
@@ -83,11 +73,9 @@ export const PostMediaTable = sqliteTable(
 );
 
 export const TagsTable = sqliteTable("tags", {
-  id: integer().primaryKey({ autoIncrement: true }),
+  id,
   name: text().notNull().unique(),
-  createdAt: integer("created_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`),
+  createdAt,
 });
 
 export const PostTagsTable = sqliteTable(
@@ -107,37 +95,15 @@ export const PostTagsTable = sqliteTable(
 );
 
 export const SystemConfigTable = sqliteTable("system_config", {
-  id: integer().primaryKey({ autoIncrement: true }),
+  id,
   configJson: text("config_json", { mode: "json" }).$type<SystemConfig>(),
-  updatedAt: integer("updated_at", { mode: "timestamp" })
-    .notNull()
-    .default(sql`(unixepoch())`)
-    .$onUpdate(() => new Date()),
+  updatedAt,
 });
-
-export const postsRelations = relations(PostsTable, ({ many }) => ({
-  postTags: many(PostTagsTable),
-}));
-
-export const tagsRelations = relations(TagsTable, ({ many }) => ({
-  postTags: many(PostTagsTable),
-}));
-
-export const postTagsRelations = relations(PostTagsTable, ({ one }) => ({
-  post: one(PostsTable, {
-    fields: [PostTagsTable.postId],
-    references: [PostsTable.id],
-  }),
-  tag: one(TagsTable, {
-    fields: [PostTagsTable.tagId],
-    references: [TagsTable.id],
-  }),
-}));
 
 export const CommentsTable = sqliteTable(
   "comments",
   {
-    id: integer().primaryKey({ autoIncrement: true }),
+    id,
     content: text({ mode: "json" }).$type<JSONContent>(),
     rootId: integer("root_id").references(
       (): AnySQLiteColumn => CommentsTable.id,
@@ -161,13 +127,8 @@ export const CommentsTable = sqliteTable(
       .notNull()
       .references(() => user.id, { onDelete: "set null" }),
 
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
-    updatedAt: integer("updated_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`)
-      .$onUpdate(() => new Date()),
+    createdAt,
+    updatedAt,
   },
   (table) => [
     index("comments_post_root_created_idx").on(
@@ -190,13 +151,32 @@ export const EmailUnsubscriptionsTable = sqliteTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     type: text("type", { enum: EMAIL_UNSUBSCRIBE_TYPES }).notNull(),
-    createdAt: integer("created_at", { mode: "timestamp" })
-      .notNull()
-      .default(sql`(unixepoch())`),
+    createdAt,
   },
   (table) => [primaryKey({ columns: [table.userId, table.type] })],
 );
 
+// ==================== relations ====================
+export const postsRelations = relations(PostsTable, ({ many }) => ({
+  postTags: many(PostTagsTable),
+}));
+
+export const tagsRelations = relations(TagsTable, ({ many }) => ({
+  postTags: many(PostTagsTable),
+}));
+
+export const postTagsRelations = relations(PostTagsTable, ({ one }) => ({
+  post: one(PostsTable, {
+    fields: [PostTagsTable.postId],
+    references: [PostsTable.id],
+  }),
+  tag: one(TagsTable, {
+    fields: [PostTagsTable.tagId],
+    references: [TagsTable.id],
+  }),
+}));
+
+// ==================== types ====================
 export type Tag = typeof TagsTable.$inferSelect;
 export type Post = typeof PostsTable.$inferSelect;
 export type PostListItem = Omit<Post, "contentJson"> & {
