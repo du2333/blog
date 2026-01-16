@@ -1,6 +1,8 @@
 import { serializeKey } from "./cache.utils";
 import type { z } from "zod";
 import type { CacheKey, CacheNamespace } from "./types";
+import type { Duration } from "@/lib/duration";
+import { ms } from "@/lib/duration";
 
 /**
  * 缓存数据
@@ -11,9 +13,9 @@ export async function get<T extends z.ZodTypeAny>(
   key: CacheKey,
   schema: T,
   fetcher: () => Promise<z.infer<T>>,
-  options: { ttl?: number } = {},
+  options: { ttl?: Duration } = {},
 ): Promise<z.infer<T>> {
-  const { ttl = 3600 } = options;
+  const { ttl = "1h" } = options;
   const { env } = context;
   const serializedKey = serializeKey(key);
 
@@ -62,10 +64,12 @@ export async function set(
   context: BaseContext,
   key: CacheKey,
   value: string,
-  options?: { ttl?: number },
+  options?: { ttl?: Duration },
 ): Promise<void> {
   const serializedKey = serializeKey(key);
-  const putOptions = options?.ttl ? { expirationTtl: options.ttl } : undefined;
+  const putOptions = options?.ttl
+    ? { expirationTtl: ms(options.ttl) }
+    : undefined;
 
   await context.env.KV.put(serializedKey, value, putOptions)
     .then(() => console.log(`[Cache] SET: ${serializedKey}`))

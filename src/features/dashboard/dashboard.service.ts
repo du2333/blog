@@ -149,7 +149,7 @@ export async function getDashboardStats(
       };
 
       // 3 hours TTL for 24h, 6h for others
-      const ttl = range === "24h" ? 3 * 60 * 60 : 6 * 60 * 60;
+      const ttl = range === "24h" ? "3h" : "6h";
 
       const cachedData = await CacheService.get(
         context,

@@ -51,7 +51,7 @@ export async function getPostsCursor(
     PostListResponseSchema,
     fetcher,
     {
-      ttl: 60 * 60 * 24 * 7, // 7 days
+      ttl: "7d",
     },
   );
 }
@@ -74,7 +74,7 @@ export async function findPostBySlug(
   const version = await CacheService.getVersion(context, "posts:detail");
   const cacheKey = POSTS_CACHE_KEYS.detail(version, data.slug);
   return await CacheService.get(context, cacheKey, PostWithTocSchema, fetcher, {
-    ttl: 60 * 60 * 24 * 7, // 7 days
+    ttl: "7d",
   });
 }
 
