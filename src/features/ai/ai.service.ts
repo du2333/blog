@@ -66,12 +66,7 @@ ${content.comment}
   };
 }
 
-export async function summarizeText(
-  context: {
-    env: Env;
-  },
-  text: string,
-) {
+export async function summarizeText(context: { env: Env }, text: string) {
   const workersAI = createWorkersAI({ binding: context.env.AI });
 
   const result = await generateText({

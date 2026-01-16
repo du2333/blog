@@ -99,22 +99,13 @@ export async function generateSummaryByPostId({
     return post;
   }
 
-  try {
-    const { summary } = await AiService.summarizeText(context, plainText);
+  const { summary } = await AiService.summarizeText(context, plainText);
 
-    const updatedPost = await PostRepo.updatePost(context.db, post.id, {
-      summary,
-    });
+  const updatedPost = await PostRepo.updatePost(context.db, post.id, {
+    summary,
+  });
 
-    return updatedPost;
-  } catch (error) {
-    // 如果 AI 服务未配置，静默跳过，返回原 post
-    if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
-      return post;
-    }
-    // 其他错误继续抛出
-    throw error;
-  }
+  return updatedPost;
 }
 
 // ============ Admin Service Methods ============
@@ -300,15 +291,8 @@ export async function previewSummary(
   data: PreviewSummaryInput,
 ) {
   const plainText = convertToPlainText(data.contentJson);
-  try {
-    const { summary } = await AiService.summarizeText(context, plainText);
-    return { summary };
-  } catch (error) {
-    if (error instanceof Error && error.message === "AI_NOT_CONFIGURED") {
-      return { error: "AI 服务未配置" };
-    }
-    throw error;
-  }
+  const { summary } = await AiService.summarizeText(context, plainText);
+  return { summary };
 }
 
 export async function startPostProcessWorkflow(
