@@ -216,7 +216,10 @@ export async function findPostById(
   const post = await PostRepo.findPostById(context.db, data.id);
   if (!post) return null;
 
-  const kvHash = await context.env.KV.get(`post_hash:${post.id}`);
+  const kvHash = await CacheService.getRaw(
+    context,
+    POSTS_CACHE_KEYS.syncHash(post.id),
+  );
   const hasPublicCache = kvHash !== null;
 
   let isSynced: boolean;
@@ -278,8 +281,16 @@ export async function deletePost(
     tasks.push(CacheService.bumpVersion(context, "posts:list"));
     tasks.push(SearchService.deleteIndex(context, { id: data.id }));
     tasks.push(purgePostCDNCache(context.env, post.slug));
+    tasks.push(
+      CacheService.deleteKey(context, POSTS_CACHE_KEYS.syncHash(data.id)),
+    );
 
     context.executionCtx.waitUntil(Promise.all(tasks));
+  } else {
+    // Even for drafts, clean up hash if exists
+    context.executionCtx.waitUntil(
+      CacheService.deleteKey(context, POSTS_CACHE_KEYS.syncHash(data.id)),
+    );
   }
 }
 

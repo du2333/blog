@@ -14,7 +14,7 @@ export async function get<T extends z.ZodTypeAny>(
   options: { ttl?: number } = {},
 ): Promise<z.infer<T>> {
   const { ttl = 3600 } = options;
-  const { env, executionCtx } = context;
+  const { env } = context;
   const serializedKey = serializeKey(key);
 
   const kvData = await env.KV.get(serializedKey, "json").catch((err) =>
@@ -33,16 +33,45 @@ export async function get<T extends z.ZodTypeAny>(
 
   if (data === null || data === undefined) return data;
 
-  executionCtx.waitUntil(
-    env.KV.put(serializedKey, JSON.stringify(data), {
-      expirationTtl: ttl,
-    }).catch((err) =>
-      console.error(`[Cache] Failed to put key ${serializedKey}:`, err),
-    ),
-  );
+  set(context, key, JSON.stringify(data), { ttl });
 
   console.log(`[Cache] MISS: ${serializedKey}`);
   return data;
+}
+
+/**
+ * 读取单个缓存 key (不带 fetcher 回源逻辑)
+ */
+export async function getRaw(
+  context: BaseContext,
+  key: CacheKey,
+): Promise<string | null> {
+  const serializedKey = serializeKey(key);
+  const value = await context.env.KV.get(serializedKey).catch((err) => {
+    console.error(`[Cache] Failed to get key ${serializedKey}:`, err);
+    return null;
+  });
+  return value;
+}
+
+/**
+ * 设置缓存数据
+ * @param options.ttl - 缓存时间 (秒)，不设置则永久
+ */
+export async function set(
+  context: BaseContext,
+  key: CacheKey,
+  value: string,
+  options?: { ttl?: number },
+): Promise<void> {
+  const serializedKey = serializeKey(key);
+  const putOptions = options?.ttl ? { expirationTtl: options.ttl } : undefined;
+
+  await context.env.KV.put(serializedKey, value, putOptions)
+    .then(() => console.log(`[Cache] SET: ${serializedKey}`))
+    .catch((err) =>
+      console.error(`[Cache] Failed to set key ${serializedKey}:`, err),
+    );
 }
 
 export async function deleteKey(

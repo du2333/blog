@@ -105,4 +105,5 @@ export const POSTS_CACHE_KEYS = {
   list: (version: string, limit: number, cursor: number, tagName: string) =>
     ["posts", "list", version, limit, cursor, tagName] as const,
   detail: (version: string, slug: string) => [version, "post", slug] as const,
+  syncHash: (id: number) => `post_hash:${id}` as const,
 } as const;

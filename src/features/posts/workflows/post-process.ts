@@ -37,7 +37,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
             tagIds: p.tags.map((t) => t.id),
             slug: p.slug,
           });
-          const oldHash = await this.env.KV.get(`post_hash:${postId}`);
+          const oldHash = await CacheService.getRaw(
+            { env: this.env },
+            POSTS_CACHE_KEYS.syncHash(postId),
+          );
 
           if (newHash === oldHash) {
             console.log(
@@ -120,7 +123,11 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           tagIds: p.tags.map((t) => t.id),
           slug: p.slug,
         });
-        await this.env.KV.put(`post_hash:${postId}`, hash);
+        await CacheService.set(
+          { env: this.env },
+          POSTS_CACHE_KEYS.syncHash(postId),
+          hash,
+        );
       });
     } else {
       // Unpublish workflow: remove from index and caches
@@ -150,6 +157,10 @@ export class PostProcessWorkflow extends WorkflowEntrypoint<Env, Params> {
           CacheService.deleteKey(
             { env: this.env },
             POSTS_CACHE_KEYS.detail(version, post.slug),
+          ),
+          CacheService.deleteKey(
+            { env: this.env },
+            POSTS_CACHE_KEYS.syncHash(postId),
           ),
           purgePostCDNCache(this.env, post.slug),
           CacheService.bumpVersion({ env: this.env }, "posts:list"),
