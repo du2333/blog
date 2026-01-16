@@ -20,6 +20,7 @@ export default defineWorkersConfig(async () => {
       setupFiles: ["./tests/apply-migrations.ts"],
       poolOptions: {
         workers: {
+          singleWorker: true,
           wrangler: {
             configPath: "./wrangler.jsonc",
             environment: "test",
