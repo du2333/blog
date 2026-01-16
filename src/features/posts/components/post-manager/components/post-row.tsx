@@ -60,7 +60,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 
       {/* Title & Summary */}
       <div
-        className="md:col-span-6 min-w-0 cursor-pointer group/title w-full"
+        className="md:col-span-8 min-w-0 cursor-pointer group/title w-full"
         onClick={handleEdit}
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
@@ -77,7 +77,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
       </div>
 
       {/* Date (Responsive stacking) */}
-      <div className="md:col-span-4 flex md:justify-end items-center gap-6 w-full text-zinc-400">
+      <div className="md:col-span-2 flex md:justify-start items-center gap-6 w-full text-zinc-400">
         <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
           <Calendar size={10} strokeWidth={1.5} className="opacity-40" />
           <ClientOnly fallback={<span>-</span>}>

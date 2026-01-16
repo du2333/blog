@@ -79,7 +79,13 @@ export function PostsToolbar({
             `}
           >
             <Filter size={12} strokeWidth={1.5} />
-            {status === "ALL" ? "所有状态" : status}
+            {
+              {
+                ALL: "所有状态",
+                PUBLISHED: "已发布",
+                DRAFT: "草稿",
+              }[status]
+            }
             <ChevronDown
               size={12}
               className={`transition-transform duration-500 opacity-40 ${
@@ -102,7 +108,13 @@ export function PostsToolbar({
                       : "text-muted-foreground"
                   }`}
                 >
-                  {s}
+                  {
+                    {
+                      ALL: "所有状态",
+                      PUBLISHED: "已发布",
+                      DRAFT: "草稿",
+                    }[s]
+                  }
                 </button>
               ))}
             </div>

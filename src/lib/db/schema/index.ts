@@ -13,7 +13,7 @@ import { user } from "@/lib/db/schema/auth.schema";
 
 export * from "./auth.schema";
 
-export const POST_STATUSES = ["draft", "published", "archived"] as const;
+export const POST_STATUSES = ["draft", "published"] as const;
 // published: 所有人可见
 // verifying: 刚入库，AI 还没跑完 (仅作者可见)
 // pending: AI 觉得有风险，等人工 (仅作者/管理员可见)

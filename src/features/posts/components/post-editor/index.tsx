@@ -246,11 +246,12 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                       }
                     `}
                     >
-                      {s === "published"
-                        ? "公开"
-                        : s === "draft"
-                          ? "草稿"
-                          : "归档"}
+                      {
+                        {
+                          draft: "草稿",
+                          published: "公开",
+                        }[s]
+                      }
                     </Button>
                   ))}
                 </div>
