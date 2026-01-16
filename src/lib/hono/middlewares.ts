@@ -1,6 +1,8 @@
 import { createMiddleware } from "hono/factory";
+import { isPathValid } from "./path-manifest.generated";
 import type { Context } from "hono";
 import type { Duration } from "@/lib/duration";
+import { serverEnv } from "@/lib/env/server.env";
 import { getDb } from "@/lib/db";
 import { getAuth } from "@/lib/auth/auth.server";
 import { CACHE_CONTROL } from "@/lib/constants";
@@ -109,3 +111,28 @@ export const rateLimitMiddleware = (options: RateLimitOptions) =>
 
     return next();
   });
+
+export const shieldMiddleware = createMiddleware(async (c, next) => {
+  if (serverEnv(c.env).ENVIRONMENT === "dev") return next();
+
+  const path = c.req.path;
+
+  if (
+    // 静态资源
+    path.startsWith("/assets/") ||
+    path.startsWith("/favicon") ||
+    path.startsWith("/site.webmanifest") ||
+    path.startsWith("/apple-touch-icon") ||
+    path.startsWith("/web-app-manifest") ||
+    // Server Function
+    path.startsWith("/_serverFn/")
+  ) {
+    return next();
+  }
+
+  if (isPathValid(path)) {
+    return next();
+  }
+  console.warn(`[Shield] Blocked unknown path: ${path}`);
+  return c.text("Forbidden", 403);
+});

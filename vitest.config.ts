@@ -26,8 +26,19 @@ export default defineWorkersConfig(async () => {
             environment: "test",
           },
           miniflare: {
-            // 将迁移文件绑定到 TEST_MIGRATIONS，供 applyMigrations() 使用
-            bindings: { TEST_MIGRATIONS: migrations },
+            bindings: {
+              TEST_MIGRATIONS: migrations,
+              BETTER_AUTH_SECRET:
+                "a-very-long-test-secret-that-is-at-least-32-chars-long",
+              BETTER_AUTH_URL: "http://localhost:3000",
+              ADMIN_EMAIL: "admin@example.com",
+              GITHUB_CLIENT_ID: "test-id",
+              GITHUB_CLIENT_SECRET: "test-secret",
+              CLOUDFLARE_ZONE_ID: "test-zone",
+              CLOUDFLARE_PURGE_API_TOKEN: "test-token",
+              DOMAIN: "example.com",
+              ENVIRONMENT: "test",
+            },
           },
         },
       },

@@ -5,6 +5,7 @@ import {
   baseMiddleware,
   cacheMiddleware,
   rateLimitMiddleware,
+  shieldMiddleware,
 } from "./middlewares";
 import { handleImageRequest } from "@/features/media/media.service";
 
@@ -86,6 +87,9 @@ app.post(
     return auth.handler(c.req.raw);
   },
 );
+
+// Router之前的防护
+app.all("*", shieldMiddleware);
 
 app.all("*", (c) => {
   return handler.fetch(c.req.raw, {
