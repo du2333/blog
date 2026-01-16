@@ -35,7 +35,9 @@ export async function get<T extends z.ZodTypeAny>(
 
   if (data === null || data === undefined) return data;
 
-  set(context, key, JSON.stringify(data), { ttl });
+  context.executionCtx.waitUntil(
+    set(context, key, JSON.stringify(data), { ttl }),
+  );
 
   console.log(`[Cache] MISS: ${serializedKey}`);
   return data;
