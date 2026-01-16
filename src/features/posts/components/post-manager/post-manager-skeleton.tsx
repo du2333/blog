@@ -1,27 +1,25 @@
 import { memo } from "react";
 
 export const PostRowSkeleton = memo(() => (
-  <div className="px-6 py-10 flex flex-col md:grid md:grid-cols-12 gap-8 items-start md:items-center border-b border-border animate-pulse">
-    {/* ID */}
-    <div className="md:col-span-1">
-      <div className="h-3 w-8 bg-muted rounded"></div>
-    </div>
-
+  <div className="px-6 py-6 flex flex-col md:grid md:grid-cols-12 gap-4 items-start md:items-center border-b border-border animate-pulse">
     {/* Title & Summary */}
     <div className="md:col-span-6 space-y-3 w-full">
-      <div className="h-6 w-2/3 bg-muted rounded"></div>
-      <div className="h-3 w-1/2 bg-muted rounded opacity-50"></div>
+      <div className="h-5 w-2/3 bg-muted rounded"></div>
+      <div className="h-2.5 w-1/2 bg-muted rounded opacity-50"></div>
     </div>
 
-    {/* Category & Date */}
-    <div className="md:col-span-4 grid grid-cols-2 gap-6 w-full">
-      <div className="h-3 w-20 bg-muted rounded"></div>
-      <div className="h-3 w-24 bg-muted rounded"></div>
+    {/* Status */}
+    <div className="md:col-span-3 w-full">
+      <div className="h-8 w-20 bg-muted rounded-full"></div>
     </div>
 
-    {/* Actions */}
-    <div className="md:col-span-1 flex justify-end gap-2">
-      <div className="w-8 h-8 rounded-full bg-muted"></div>
+    {/* Date & Actions */}
+    <div className="md:col-span-3 flex justify-between items-center w-full">
+      <div className="space-y-2">
+        <div className="h-2.5 w-24 bg-muted rounded"></div>
+        <div className="h-2 w-20 bg-muted rounded opacity-40"></div>
+      </div>
+      <div className="w-8 h-8 rounded-sm bg-muted"></div>
     </div>
   </div>
 ));
@@ -42,11 +40,11 @@ export function PostManagerSkeleton() {
       </div>
 
       {/* List Header Skeleton */}
-      <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 border-b border-border">
-        {[1, 6, 2, 2, 1].map((span, i) => (
+      <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-border bg-secondary/10">
+        {[6, 3, 3].map((span, i) => (
           <div
             key={i}
-            className={`col-span-${span} h-2 bg-muted rounded opacity-30`}
+            className={`col-span-${span} h-2.5 bg-muted rounded opacity-30`}
           ></div>
         ))}
       </div>

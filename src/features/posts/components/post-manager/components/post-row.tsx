@@ -23,30 +23,117 @@ export function PostRow({ post, onDelete }: PostRowProps) {
   };
 
   return (
-    <div className="group px-4 sm:px-6 py-6 sm:py-8 flex flex-col md:grid md:grid-cols-12 gap-4 sm:gap-6 items-start md:items-center hover:bg-accent/50 transition-all duration-500 relative">
-      {/* ID & Status (Combined for mobile) */}
-      <div className="md:col-span-1 flex items-center justify-between w-full md:block">
-        <span className="font-mono text-muted-foreground text-[10px] tracking-widest">
-          #{post.id}
-        </span>
-        <div className="md:hidden flex items-center gap-3">
-          <StatusBadge status={post.status} />
+    <div className="group px-4 sm:px-6 py-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-accent/50 transition-all duration-500 relative border-b border-border/40 last:border-0">
+      {/* Main Content: Info Block */}
+      <div
+        className="md:col-span-6 min-w-0 cursor-pointer group/title w-full flex flex-col gap-1.5"
+        onClick={handleEdit}
+      >
+        {/* Metadata Header: ID & Status */}
+        <div className="flex items-center gap-3">
+          <span className="font-mono text-muted-foreground text-[10px] tracking-widest opacity-50">
+            #{post.id.toString().padStart(2, "0")}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="font-sans font-medium text-lg text-foreground tracking-tight group-hover/title:text-primary transition-colors duration-300 truncate">
+          {post.title}
+        </h3>
+
+        {/* Summary */}
+        <p className="text-xs text-muted-foreground truncate max-w-3xl font-light">
+          {post.summary}
+        </p>
+      </div>
+
+      {/* Middle side: Status & Info */}
+      <div className="md:col-span-3 flex items-center gap-4">
+        <StatusBadge status={post.status} />
+      </div>
+
+      {/* Right Side: Date & Actions */}
+      <div className="md:col-span-3 flex md:justify-end items-center gap-6 w-full md:w-auto mt-2 md:mt-0">
+        {/* Smart Date Display */}
+        <div className="flex flex-col items-end gap-1">
+          <div
+            className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest cursor-help text-muted-foreground transition-colors hover:text-foreground"
+            title={`发布于: ${post.publishedAt ? formatDate(post.publishedAt) : "未发布"}\n修改于: ${formatDate(post.updatedAt)}`}
+          >
+            {post.status === "published" ? (
+              <Calendar
+                size={10}
+                strokeWidth={1.5}
+                className="text-emerald-500"
+              />
+            ) : (
+              <Edit3 size={10} strokeWidth={1.5} className="text-amber-500" />
+            )}
+            <span className="opacity-70">
+              {post.status === "published" ? "发布于" : "修改于"}
+            </span>
+            <ClientOnly fallback={<span>-</span>}>
+              {post.status === "published"
+                ? formatDate(post.publishedAt || post.createdAt)
+                : formatDate(post.updatedAt)}
+            </ClientOnly>
+          </div>
+          <div
+            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-tighter cursor-help text-muted-foreground/40 transition-colors hover:text-muted-foreground/60"
+            title={`${post.status === "published" ? "更新于" : "创建于"}: ${formatDate(post.status === "published" ? post.updatedAt : post.createdAt)}`}
+          >
+            <span className="opacity-70 italic">
+              {post.status === "published" ? "更新于" : "创建于"}
+            </span>
+            <ClientOnly fallback={<span>-</span>}>
+              {formatDate(
+                post.status === "published" ? post.updatedAt : post.createdAt,
+              )}
+            </ClientOnly>
+          </div>
+        </div>
+
+        {/* Actions */}
+        <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 ml-auto">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={(e) => {
+              e.stopPropagation();
+              handleEdit();
+            }}
+            className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+            title="编辑"
+          >
+            <Edit3 size={14} strokeWidth={1.5} />
+          </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10"
+            title="删除"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(post);
+            }}
+          >
+            <Trash2 size={14} strokeWidth={1.5} />
+          </Button>
+        </div>
+
+        {/* Mobile Dropdown (Hidden on Desktop) */}
+        <div className="md:hidden ml-auto">
           <Dropdown
             trigger={
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-9 w-9 text-zinc-400"
+                className="h-8 w-8 text-muted-foreground"
               >
-                <MoreVertical size={18} />
+                <MoreVertical size={16} />
               </Button>
             }
             items={[
-              {
-                label: "编辑",
-                icon: <Edit3 size={14} strokeWidth={1.5} />,
-                onClick: handleEdit,
-              },
               {
                 label: "删除",
                 icon: <Trash2 size={14} strokeWidth={1.5} />,
@@ -56,61 +143,6 @@ export function PostRow({ post, onDelete }: PostRowProps) {
             ]}
           />
         </div>
-      </div>
-
-      {/* Title & Summary */}
-      <div
-        className="md:col-span-8 min-w-0 cursor-pointer group/title w-full"
-        onClick={handleEdit}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-3">
-          <h3 className="font-serif text-xl sm:text-2xl leading-tight group-hover/title:translate-x-1 transition-transform duration-500 truncate min-w-0 flex-1">
-            {post.title}
-          </h3>
-          <div className="hidden md:block shrink-0">
-            <StatusBadge status={post.status} />
-          </div>
-        </div>
-        <div className="text-xs text-muted-foreground font-normal truncate max-w-2xl">
-          {post.summary}
-        </div>
-      </div>
-
-      {/* Date (Responsive stacking) */}
-      <div className="md:col-span-2 flex md:justify-start items-center gap-6 w-full text-zinc-400">
-        <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest">
-          <Calendar size={10} strokeWidth={1.5} className="opacity-40" />
-          <ClientOnly fallback={<span>-</span>}>
-            {formatDate(post.createdAt)}
-          </ClientOnly>
-        </div>
-      </div>
-
-      {/* Actions (Desktop: Hover, Mobile: Hidden) */}
-      <div
-        className="
-        md:col-span-1 hidden md:flex items-center justify-end gap-3 w-full md:w-auto
-        md:opacity-0 md:group-hover:opacity-100 md:translate-x-4 md:group-hover:translate-x-0 transition-all duration-500
-      "
-      >
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={handleEdit}
-          className="h-9 w-9 text-muted-foreground hover:text-foreground transition-colors"
-          title="编辑"
-        >
-          <Edit3 size={18} strokeWidth={1.5} />
-        </Button>
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-9 w-9 text-zinc-400 hover:text-red-500 transition-colors"
-          title="删除"
-          onClick={() => onDelete(post)}
-        >
-          <Trash2 size={18} strokeWidth={1.5} />
-        </Button>
       </div>
     </div>
   );

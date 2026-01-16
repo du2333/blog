@@ -1,11 +1,9 @@
-import { ArrowUpDown, ChevronDown, Filter, Search, X } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpDown, Filter, Search, X } from "lucide-react";
 import { STATUS_FILTERS } from "../types";
-import type { SortDirection, StatusFilter } from "../types";
+import type { SortDirection, SortField, StatusFilter } from "../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-
-type DropdownType = "STATUS" | "SORT" | null;
+import Dropdown from "@/components/ui/dropdown";
 
 interface PostsToolbarProps {
   searchTerm: string;
@@ -13,7 +11,8 @@ interface PostsToolbarProps {
   status: StatusFilter;
   onStatusChange: (status: StatusFilter) => void;
   sortDir: SortDirection;
-  onSortChange: (dir: SortDirection) => void;
+  sortBy: SortField;
+  onSortUpdate: (update: { dir?: SortDirection; sortBy?: SortField }) => void;
   onResetFilters: () => void;
 }
 
@@ -23,166 +22,150 @@ export function PostsToolbar({
   status,
   onStatusChange,
   sortDir,
-  onSortChange,
+  sortBy,
+  onSortUpdate,
   onResetFilters,
 }: PostsToolbarProps) {
-  const [activeDropdown, setActiveDropdown] = useState<DropdownType>(null);
-
   const hasActiveFilters =
-    status !== "ALL" || sortDir !== "DESC" || searchTerm !== "";
+    status !== "ALL" ||
+    sortDir !== "DESC" ||
+    sortBy !== "updatedAt" ||
+    searchTerm !== "";
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 mb-12 items-start lg:items-center">
-      {/* Search */}
-      <div className="relative w-full lg:max-w-md">
+    <div className="flex flex-col lg:flex-row gap-4 mb-8 items-stretch lg:items-center w-full">
+      {/* Search Input Group */}
+      <div className="relative flex-1 group">
         <Search
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground z-10"
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-foreground transition-colors"
           size={16}
-          strokeWidth={1.5}
+          strokeWidth={2}
         />
         <Input
           type="text"
           placeholder="检索文章标题..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-8 pr-10 py-3 bg-transparent border-b border-border rounded-none font-serif text-sm placeholder:text-muted-foreground/50 focus-visible:border-foreground transition-all h-12 shadow-none"
+          className="w-full pl-10 pr-10 h-10 bg-secondary/40 border-transparent hover:bg-secondary/60 focus:bg-background focus:border-border transition-all rounded-md font-sans text-sm shadow-sm"
         />
         {searchTerm && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onSearchChange("")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-sm"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-sm"
           >
             <X size={14} />
           </Button>
         )}
       </div>
 
-      {/* Filters Container */}
-      <div className="flex flex-wrap gap-4 w-full lg:w-auto">
+      {/* Filters Group */}
+      <div className="flex items-center gap-2 flex-wrap lg:flex-nowrap">
+        <div className="h-6 w-px bg-border mx-2 hidden lg:block" />
+
         {/* 1. Status Filter */}
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setActiveDropdown(activeDropdown === "STATUS" ? null : "STATUS")
-            }
-            className={`
-                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all px-4 rounded-sm
-                ${
-                  status !== "ALL"
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }
-            `}
-          >
-            <Filter size={12} strokeWidth={1.5} />
-            {
-              {
-                ALL: "所有状态",
-                PUBLISHED: "已发布",
-                DRAFT: "草稿",
-              }[status]
-            }
-            <ChevronDown
-              size={12}
-              className={`transition-transform duration-500 opacity-40 ${
-                activeDropdown === "STATUS" ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-          {activeDropdown === "STATUS" && (
-            <div className="absolute top-full left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
-              {STATUS_FILTERS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    onStatusChange(s);
-                    setActiveDropdown(null);
-                  }}
-                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
-                    status === s
-                      ? "font-bold bg-accent"
-                      : "text-muted-foreground"
-                  }`}
-                >
+        <Dropdown
+          align="left"
+          trigger={
+            <Button
+              variant="outline"
+              size="sm"
+              className={`
+                    h-10 border-dashed border-border hover:border-foreground/30
+                    flex items-center gap-2 text-[11px] font-medium transition-all px-3 rounded-md shadow-sm
+                    ${
+                      status !== "ALL"
+                        ? "bg-secondary text-foreground border-solid border-secondary-foreground/20"
+                        : "bg-background text-muted-foreground hover:text-foreground"
+                    }
+                `}
+            >
+              <Filter size={14} strokeWidth={1.5} />
+              <span className="uppercase tracking-wider">
+                {
                   {
-                    {
-                      ALL: "所有状态",
-                      PUBLISHED: "已发布",
-                      DRAFT: "草稿",
-                    }[s]
-                  }
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+                    ALL: "状态",
+                    PUBLISHED: "已发布",
+                    DRAFT: "草稿",
+                  }[status]
+                }
+              </span>
+              {status !== "ALL" && (
+                <span className="flex h-1.5 w-1.5 rounded-full bg-primary ml-1" />
+              )}
+            </Button>
+          }
+          items={STATUS_FILTERS.map((s) => ({
+            label: {
+              ALL: "显示所有",
+              PUBLISHED: "已发布",
+              DRAFT: "草稿",
+            }[s],
+            onClick: () => onStatusChange(s),
+            className: status === s ? "bg-accent text-accent-foreground" : "",
+            icon:
+              status === s ? (
+                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+              ) : undefined,
+          }))}
+        />
 
         {/* 2. Sort Dropdown */}
-        <div className="relative">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() =>
-              setActiveDropdown(activeDropdown === "SORT" ? null : "SORT")
-            }
-            className={`
-                h-10 flex items-center gap-3 text-[10px] uppercase tracking-[0.2em] font-medium transition-all px-4 rounded-sm
-                ${
-                  sortDir !== "DESC"
-                    ? "bg-accent text-foreground"
-                    : "text-muted-foreground hover:text-foreground"
-                }
-            `}
-          >
-            <ArrowUpDown size={12} strokeWidth={1.5} />
-            {sortDir === "DESC" ? "最新发布" : "最早发布"}
-            <ChevronDown
-              size={12}
-              className={`transition-transform duration-500 opacity-40 ${
-                activeDropdown === "SORT" ? "rotate-180" : ""
-              }`}
-            />
-          </Button>
-          {activeDropdown === "SORT" && (
-            <div className="absolute top-full right-0 lg:left-0 mt-2 w-48 bg-popover border border-border shadow-2xl z-30 animate-in fade-in slide-in-from-top-2 duration-300 rounded-sm overflow-hidden">
-              {[
-                { label: "最新发布", dir: "DESC" as SortDirection },
-                { label: "最早发布", dir: "ASC" as SortDirection },
-              ].map((opt) => (
-                <button
-                  key={opt.label}
-                  onClick={() => {
-                    onSortChange(opt.dir);
-                    setActiveDropdown(null);
-                  }}
-                  className={`w-full text-left px-5 py-3 text-[10px] uppercase tracking-[0.2em] hover:bg-accent transition-colors ${
-                    sortDir === opt.dir
-                      ? "font-bold bg-accent"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
-          )}
-        </div>
+        <Dropdown
+          align="right"
+          trigger={
+            <Button
+              variant="outline"
+              size="sm"
+              className={`
+                    h-10 border-dashed border-border hover:border-foreground/30
+                    flex items-center gap-2 text-[11px] font-medium transition-all px-3 rounded-md shadow-sm
+                    ${
+                      sortDir !== "DESC" || sortBy !== "updatedAt"
+                        ? "bg-secondary text-foreground border-solid border-secondary-foreground/20"
+                        : "bg-background text-muted-foreground hover:text-foreground"
+                    }
+                `}
+            >
+              <ArrowUpDown size={14} strokeWidth={1.5} />
+              <span className="uppercase tracking-wider">
+                {sortBy === "publishedAt" ? "最近发布" : "最近修改"}
+              </span>
+            </Button>
+          }
+          items={[
+            {
+              label: "最近发布",
+              onClick: () =>
+                onSortUpdate({ sortBy: "publishedAt", dir: "DESC" }),
+              isActive: sortBy === "publishedAt" && sortDir === "DESC",
+            },
+            {
+              label: "最近修改",
+              onClick: () => onSortUpdate({ sortBy: "updatedAt", dir: "DESC" }),
+              isActive: sortBy === "updatedAt" && sortDir === "DESC",
+            },
+          ].map((opt) => ({
+            label: opt.label,
+            onClick: opt.onClick,
+            className: opt.isActive ? "bg-accent text-accent-foreground" : "",
+            icon: opt.isActive ? (
+              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
+            ) : undefined,
+          }))}
+        />
 
         {/* Reset Button */}
         {hasActiveFilters && (
           <Button
             variant="ghost"
-            size="sm"
+            size="icon"
             onClick={onResetFilters}
-            className="h-10 flex items-center gap-2 px-4 text-[10px] uppercase tracking-[0.2em] text-red-500 hover:text-red-600 hover:bg-red-500/5 transition-colors animate-in fade-in slide-in-from-left-2 duration-500 rounded-sm"
+            className="h-10 w-10 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
             title="重置所有筛选"
           >
-            <X size={14} />
-            <span>重置</span>
+            <X size={16} />
           </Button>
         )}
       </div>

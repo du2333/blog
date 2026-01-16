@@ -66,6 +66,7 @@ export const GetPostsInputSchema = z.object({
   publicOnly: z.boolean().optional(),
   search: z.string().optional(),
   sortDir: z.enum(["ASC", "DESC"]).optional(),
+  sortBy: z.enum(["publishedAt", "updatedAt"]).optional(),
 });
 
 export const GetPostsCountInputSchema = GetPostsInputSchema.omit({

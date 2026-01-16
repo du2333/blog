@@ -7,6 +7,10 @@ export type PostListItem = Omit<Post, "contentJson">;
 export const STATUS_FILTERS = ["ALL", "PUBLISHED", "DRAFT"] as const;
 export type StatusFilter = (typeof STATUS_FILTERS)[number];
 
+/** Sort fields options */
+export const SORT_FIELDS = ["publishedAt", "updatedAt"] as const;
+export type SortField = (typeof SORT_FIELDS)[number];
+
 /** Sort direction options */
 export const SORT_DIRECTIONS = ["ASC", "DESC"] as const;
 export type SortDirection = (typeof SORT_DIRECTIONS)[number];

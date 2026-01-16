@@ -181,6 +181,7 @@ export async function getPosts(context: DbContext, data: GetPostsInput) {
     publicOnly: data.publicOnly,
     search: data.search,
     sortDir: data.sortDir,
+    sortBy: data.sortBy,
   });
 }
 

@@ -6,7 +6,12 @@ import { toast } from "sonner";
 import { PostRow, PostsToolbar } from "./components";
 import { useDeletePost, usePosts } from "./hooks";
 import { PostManagerSkeleton } from "./post-manager-skeleton";
-import type { PostListItem, SortDirection, StatusFilter } from "./types";
+import type {
+  PostListItem,
+  SortDirection,
+  SortField,
+  StatusFilter,
+} from "./types";
 import { ErrorPage } from "@/components/common/error-page";
 import { Button } from "@/components/ui/button";
 import { AdminPagination } from "@/components/admin/admin-pagination";
@@ -21,6 +26,8 @@ import { POSTS_KEYS } from "@/features/posts/queries";
 export {
   SORT_DIRECTIONS,
   type SortDirection,
+  SORT_FIELDS,
+  type SortField,
   STATUS_FILTERS,
   type StatusFilter,
 } from "./types";
@@ -29,10 +36,11 @@ interface PostManagerProps {
   page: number;
   status: StatusFilter;
   sortDir: SortDirection;
+  sortBy: SortField;
   search: string;
   onPageChange: (page: number) => void;
   onStatusChange: (status: StatusFilter) => void;
-  onSortChange: (dir: SortDirection) => void;
+  onSortUpdate: (update: { dir?: SortDirection; sortBy?: SortField }) => void;
   onSearchChange: (search: string) => void;
   onResetFilters: () => void;
 }
@@ -41,10 +49,11 @@ export function PostManager({
   page,
   status,
   sortDir,
+  sortBy,
   search,
   onPageChange,
   onStatusChange,
-  onSortChange,
+  onSortUpdate,
   onSearchChange,
   onResetFilters,
 }: PostManagerProps) {
@@ -75,6 +84,7 @@ export function PostManager({
     page,
     status,
     sortDir,
+    sortBy,
     search: debouncedSearch,
   });
 
@@ -142,7 +152,8 @@ export function PostManager({
           status={status}
           onStatusChange={onStatusChange}
           sortDir={sortDir}
-          onSortChange={onSortChange}
+          sortBy={sortBy}
+          onSortUpdate={onSortUpdate}
           onResetFilters={() => {
             setSearchInput("");
             onResetFilters();
@@ -172,11 +183,10 @@ export function PostManager({
             ) : (
               <>
                 {/* Desktop Header (Simplified) */}
-                <div className="hidden md:grid grid-cols-12 gap-6 px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border">
-                  <div className="col-span-1">ID</div>
-                  <div className="col-span-8">文章摘要</div>
-                  <div className="col-span-2">日期</div>
-                  <div className="col-span-1 text-right">操作</div>
+                <div className="hidden md:grid grid-cols-12 gap-4 px-4 sm:px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border bg-secondary/20">
+                  <div className="col-span-6">文章内容</div>
+                  <div className="col-span-3 text-left">状态 / 信息</div>
+                  <div className="col-span-3 text-left">日期 (发布 & 更新)</div>
                 </div>
 
                 <div className="divide-y divide-border">

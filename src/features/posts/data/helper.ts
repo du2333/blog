@@ -3,7 +3,7 @@ import type { SQL } from "drizzle-orm";
 import type { PostStatus } from "@/lib/db/schema";
 import { PostsTable } from "@/lib/db/schema";
 
-export type SortField = "DATE";
+export type SortField = "publishedAt" | "updatedAt";
 export type SortDirection = "ASC" | "DESC";
 
 export function buildPostWhereClause(options: {
@@ -34,8 +34,12 @@ export function buildPostWhereClause(options: {
   return whereClauses.length > 0 ? and(...whereClauses) : undefined;
 }
 
-export function buildPostOrderByClause(sortDir?: SortDirection): SQL {
+export function buildPostOrderByClause(
+  sortDir?: SortDirection,
+  sortBy?: SortField,
+): SQL {
   const direction = sortDir ?? "DESC";
+  const field = sortBy ?? "updatedAt";
   const orderFn = direction === "DESC" ? desc : asc;
-  return orderFn(PostsTable.createdAt);
+  return orderFn(PostsTable[field]);
 }

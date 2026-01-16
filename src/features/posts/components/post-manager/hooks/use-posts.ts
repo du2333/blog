@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { statusFilterToApi } from "../types";
-import type { PostListItem, SortDirection, StatusFilter } from "../types";
+import type {
+  PostListItem,
+  SortDirection,
+  SortField,
+  StatusFilter,
+} from "../types";
 import {
   deletePostFn,
   getPostsCountFn,
@@ -15,10 +20,17 @@ interface UsePostsOptions {
   page: number;
   status: StatusFilter;
   sortDir: SortDirection;
+  sortBy: SortField;
   search: string;
 }
 
-export function usePosts({ page, status, sortDir, search }: UsePostsOptions) {
+export function usePosts({
+  page,
+  status,
+  sortDir,
+  sortBy,
+  search,
+}: UsePostsOptions) {
   const apiStatus = statusFilterToApi(status);
 
   const listParams = {
@@ -26,6 +38,7 @@ export function usePosts({ page, status, sortDir, search }: UsePostsOptions) {
     limit: ADMIN_ITEMS_PER_PAGE,
     status: apiStatus,
     sortDir,
+    sortBy,
     search: search || undefined,
   };
 
