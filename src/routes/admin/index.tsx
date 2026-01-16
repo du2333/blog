@@ -307,7 +307,7 @@ function DashboardOverview() {
             </CardTitle>
           </CardHeader>
           <CardContent className="px-0 pt-6">
-            <div className="space-y-1 max-h-[400px] overflow-y-auto custom-scrollbar pr-4">
+            <div className="space-y-1 max-h-100 overflow-y-auto custom-scrollbar pr-4">
               {activities.length > 0 ? (
                 activities.map((log: ActivityLogItem, i: number) => {
                   const content = (

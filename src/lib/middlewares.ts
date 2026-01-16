@@ -1,4 +1,4 @@
-import { createMiddleware, json } from "@tanstack/react-start";
+import { createMiddleware } from "@tanstack/react-start";
 import { setResponseHeader } from "@tanstack/react-start/server";
 import type { RateLimitOptions } from "@/lib/rate-limiter";
 import { CACHE_CONTROL } from "@/lib/constants";
@@ -56,7 +56,7 @@ export const authMiddleware = createMiddleware()
     const session = context.session;
 
     if (!session) {
-      throw json({ message: "UNAUTHENTICATED" }, { status: 401 });
+      return Response.json({ message: "UNAUTHENTICATED" }, { status: 401 });
     }
 
     return next({
@@ -68,11 +68,11 @@ export const authMiddleware = createMiddleware()
 
 export const adminMiddleware = createMiddleware()
   .middleware([authMiddleware])
-  .server(async ({ next, context }) => {
+  .server(async ({ context, next }) => {
     const session = context.session;
 
     if (session.user.role !== "admin") {
-      throw json({ message: "PERMISSION_DENIED" }, { status: 403 });
+      return Response.json({ message: "PERMISSION_DENIED" }, { status: 403 });
     }
 
     return next({
@@ -104,7 +104,7 @@ export const createRateLimitMiddleware = (
       const result = await rateLimiter.checkLimit(options);
 
       if (!result.allowed) {
-        throw json(
+        return Response.json(
           {
             message: "Too Many Requests",
             retryAfterSeconds: result.retryAfterMs / 1000,

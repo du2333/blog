@@ -187,7 +187,7 @@ export function UserProfileModal({
         </Button>
 
         {/* Left: Identity Summary */}
-        <div className="w-full md:w-[380px] p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-border bg-muted/30">
+        <div className="w-full md:w-95 p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-border bg-muted/30">
           <div className="space-y-12">
             <div className="space-y-6">
               <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-border p-1">
