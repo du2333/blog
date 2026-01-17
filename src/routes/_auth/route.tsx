@@ -1,13 +1,6 @@
-import {
-  Link,
-  Outlet,
-  createFileRoute,
-  redirect,
-} from "@tanstack/react-router";
-import { ArrowLeft } from "lucide-react";
+import { Outlet, createFileRoute, redirect } from "@tanstack/react-router";
 import { emailConfiguredQuery, sessionQuery } from "@/features/auth/queries";
 import { CACHE_CONTROL } from "@/lib/constants";
-import { blogConfig } from "@/blog.config";
 import { useNavigateBack } from "@/hooks/use-navigate-back";
 
 export const Route = createFileRoute("/_auth")({
@@ -31,53 +24,26 @@ export const Route = createFileRoute("/_auth")({
 function RouteComponent() {
   const navigateBack = useNavigateBack();
   return (
-    <div className="min-h-screen w-full flex flex-col relative overflow-hidden transition-colors duration-500">
-      {/* --- Background Decorative Elements --- */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden opacity-40 in-[.dark]:opacity-100">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(0,0,0,0.02)_0%,transparent_100%)] in-[.dark]:bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.02)_0%,transparent_100%)]"></div>
-      </div>
-
+    <div className="min-h-screen w-full flex flex-col">
       {/* --- Header --- */}
-      <header className="relative z-50 h-24 flex items-center px-6 md:px-12">
-        <div
+      <header className="h-16 flex items-center px-6 md:px-12">
+        <button
           onClick={navigateBack}
-          className="group flex items-center gap-3 text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+          className="text-[10px] font-mono text-muted-foreground/60 hover:text-foreground transition-colors"
         >
-          <ArrowLeft
-            size={18}
-            strokeWidth={1.5}
-            className="group-hover:-translate-x-1 transition-transform"
-          />
-          <span className="text-[10px] uppercase tracking-[0.4em]">
-            返回上一页
-          </span>
-        </div>
+          [ ← 返回 ]
+        </button>
       </header>
 
       {/* --- Main Content --- */}
-      <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">
-        <div className="w-full max-w-sm space-y-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-          {/* Shared Logo */}
-          <div className="flex justify-center">
-            <Link to="/" className="group">
-              <div className="w-12 h-12 relative">
-                <img
-                  src={blogConfig.logo}
-                  alt={blogConfig.name}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-            </Link>
-          </div>
-
-          <div className="space-y-8">
-            <Outlet />
-          </div>
+      <main className="flex-1 flex flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm animate-in fade-in duration-500">
+          <Outlet />
         </div>
       </main>
 
       {/* --- Footer --- */}
-      <footer className="h-24 flex items-center justify-center relative z-10 px-6"></footer>
+      <footer className="h-16"></footer>
     </div>
   );
 }

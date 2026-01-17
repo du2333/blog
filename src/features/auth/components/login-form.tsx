@@ -1,12 +1,11 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate, useRouteContext } from "@tanstack/react-router";
-import { AlertCircle, ArrowRight, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
@@ -90,20 +89,17 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
       {errors.root && (
-        <div className="bg-red-50 dark:bg-red-950/10 border-l-2 border-red-500 p-4 flex flex-col gap-2 animate-in fade-in slide-in-from-top-2 duration-500">
-          <div className="flex items-center gap-3">
-            <AlertCircle size={14} className="text-red-500 shrink-0" />
-            <div className="text-[11px] font-medium text-red-500 uppercase tracking-widest">
-              {errors.root.message}
-            </div>
-          </div>
+        <div className="border-l-2 border-destructive p-4 space-y-2 animate-in fade-in duration-300">
+          <p className="text-[10px] font-mono text-destructive uppercase tracking-widest">
+            {errors.root.message}
+          </p>
           {isUnverifiedEmail && (
             <button
               type="button"
               onClick={handleResendVerification}
-              className="text-[10px] underline underline-offset-4 hover:opacity-70 transition-opacity ml-7 text-left"
+              className="text-[9px] font-mono text-muted-foreground hover:text-foreground transition-colors"
             >
-              重新发送验证邮件
+              [ 重新发送验证邮件 ]
             </button>
           )}
         </div>
@@ -111,19 +107,19 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
       <div className="space-y-6">
         <div className="space-y-2 group">
-          <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+          <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
             邮箱地址
           </label>
           <Input
             type="email"
             {...register("email")}
-            className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+            className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
             placeholder="example@mail.com"
             autoComplete="username"
             disabled={isSubmitting || loginStep !== "IDLE"}
           />
           {errors.email && (
-            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+            <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
               {errors.email.message}
             </span>
           )}
@@ -131,52 +127,46 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
 
         <div className="space-y-2 group">
           <div className="flex justify-between items-center">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors">
+            <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
               登录密码
             </label>
             {isEmailConfigured && (
               <Link
                 to="/forgot-password"
                 tabIndex={-1}
-                className="text-[9px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
+                className="text-[9px] font-mono text-muted-foreground/40 hover:text-foreground transition-colors"
               >
-                找回密码
+                [ 找回密码 ]
               </Link>
             )}
           </div>
           <Input
             type="password"
             {...register("password")}
-            className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+            className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
             placeholder="••••••••"
             autoComplete="current-password"
             disabled={isSubmitting || loginStep !== "IDLE"}
           />
           {errors.password && (
-            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+            <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
               {errors.password.message}
             </span>
           )}
         </div>
       </div>
 
-      <Button
+      <button
         type="submit"
         disabled={isSubmitting || loginStep !== "IDLE"}
-        className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group rounded-sm"
+        className="w-full py-4 bg-foreground text-background text-[10px] font-mono uppercase tracking-[0.3em] hover:opacity-80 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
       >
         {loginStep === "VERIFYING" ? (
-          <Loader2 className="animate-spin" size={16} />
+          <Loader2 className="animate-spin" size={14} />
         ) : (
-          <>
-            <span>登录</span>
-            <ArrowRight
-              size={14}
-              className="group-hover:translate-x-1 transition-transform"
-            />
-          </>
+          <span>登录</span>
         )}
-      </Button>
+      </button>
     </form>
   );
 }

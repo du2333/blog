@@ -17,14 +17,17 @@ function RouteComponent() {
   const { isEmailConfigured } = useRouteContext({ from: "/_auth" });
 
   return (
-    <div className={isEmailConfigured ? "space-y-10" : "space-y-6 pt-4"}>
-      <header className="text-center space-y-2">
-        <h1 className="text-4xl font-serif font-medium tracking-tight">
+    <div className="space-y-12">
+      <header className="text-center space-y-3">
+        <p className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/60">
+          [ {isEmailConfigured ? "LOGIN" : "AUTH"} ]
+        </p>
+        <h1 className="text-2xl font-serif font-medium tracking-tight">
           {isEmailConfigured ? "登录" : "身份验证"}
         </h1>
         {!isEmailConfigured && (
-          <p className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground opacity-50">
-            目前仅支持受信任的第三方提供商
+          <p className="text-[10px] font-mono text-muted-foreground/40 tracking-wider">
+            仅支持第三方提供商
           </p>
         )}
       </header>
@@ -35,14 +38,14 @@ function RouteComponent() {
         <SocialLogin showDivider={isEmailConfigured} />
 
         {isEmailConfigured && (
-          <div className="text-center pt-6">
-            <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">
+          <div className="text-center pt-8">
+            <p className="text-[10px] font-mono text-muted-foreground/50 tracking-wider">
               没有账户?{" "}
               <Link
                 to="/register"
-                className="text-foreground font-medium hover:underline underline-offset-4 ml-2"
+                className="text-foreground hover:opacity-70 transition-opacity ml-1"
               >
-                立即注册
+                [ 立即注册 ]
               </Link>
             </p>
           </div>

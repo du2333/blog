@@ -40,11 +40,11 @@ export function SocialLogin({
     <div className="space-y-6">
       {showDivider && (
         <div className="relative flex items-center">
-          <div className="grow h-px bg-border"></div>
-          <span className="shrink-0 mx-4 text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
-            或者通过
+          <div className="grow h-px bg-border/30"></div>
+          <span className="shrink-0 mx-4 text-[9px] font-mono uppercase tracking-widest text-muted-foreground/40">
+            或者
           </span>
-          <div className="grow h-px bg-border"></div>
+          <div className="grow h-px bg-border/30"></div>
         </div>
       )}
 
@@ -52,27 +52,27 @@ export function SocialLogin({
         type="button"
         onClick={handleGithubLogin}
         disabled={isLoading}
-        className={`group w-full h-14 border border-border flex items-center justify-center gap-3 transition-all hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`group w-full py-4 border border-border/30 flex items-center justify-center gap-3 transition-all hover:border-foreground disabled:opacity-50 disabled:cursor-not-allowed ${
           !showDivider
-            ? "bg-primary text-primary-foreground border-transparent hover:opacity-90"
+            ? "bg-foreground text-background border-transparent hover:opacity-80"
             : ""
         }`}
       >
         {isLoading ? (
           <Loader2
-            size={18}
-            className={`${showDivider ? "text-zinc-400" : "text-primary-foreground"} animate-spin`}
+            size={14}
+            className={`${showDivider ? "text-muted-foreground" : "text-background"} animate-spin`}
           />
         ) : (
-          <Github size={18} />
+          <Github size={14} strokeWidth={1.5} />
         )}
 
-        <span className="text-[11px] uppercase tracking-[0.4em] font-medium">
-          {isLoading ? "正在连接..." : "Github 账号登录"}
+        <span className="text-[10px] font-mono uppercase tracking-widest">
+          {isLoading ? "正在连接..." : "GitHub 登录"}
         </span>
       </button>
       {!showDivider && (
-        <p className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 text-center mt-4">
+        <p className="text-[9px] font-mono text-muted-foreground/30 text-center">
           Powered by GitHub OAuth
         </p>
       )}
