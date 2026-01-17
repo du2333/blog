@@ -105,7 +105,7 @@ function UploadModalInternal({
             onDragLeave={onDragLeave}
             onDrop={onDrop}
             className={`
-              relative border-2 border-dashed aspect-21/9 min-h-[200px] flex flex-col items-center justify-center cursor-pointer transition-all duration-700 gap-4 rounded-sm
+              relative border-2 border-dashed aspect-21/9 min-h-50 flex flex-col items-center justify-center cursor-pointer transition-all duration-700 gap-4 rounded-sm
               ${
                 isDragging
                   ? "border-foreground bg-muted scale-[0.99]"
