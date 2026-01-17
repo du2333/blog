@@ -175,19 +175,21 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
         {/* Header */}
         <div className="flex justify-between items-center p-6 border-b border-border/50 bg-muted/5">
           <div className="flex items-center gap-3">
-             <div className="flex items-center justify-center w-8 h-8 border border-border bg-background text-foreground">
-                {activeType === "LINK" ? (
-                    <LinkIcon size={14} />
-                ) : (
-                    <ImageIcon size={14} />
-                )}
-             </div>
-             <div className="flex flex-col">
-                <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground leading-none mb-1">COMMAND</span>
-                <span className="text-sm font-bold font-mono tracking-wider text-foreground uppercase">
-                    {activeType === "LINK" ? "插入链接" : "选择媒体"}
-                </span>
-             </div>
+            <div className="flex items-center justify-center w-8 h-8 border border-border bg-background text-foreground">
+              {activeType === "LINK" ? (
+                <LinkIcon size={14} />
+              ) : (
+                <ImageIcon size={14} />
+              )}
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground leading-none mb-1">
+                COMMAND
+              </span>
+              <span className="text-sm font-bold font-mono tracking-wider text-foreground uppercase">
+                {activeType === "LINK" ? "插入链接" : "选择媒体"}
+              </span>
+            </div>
           </div>
           <button
             type="button"
@@ -264,26 +266,26 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 
           {/* URL Input Area */}
           <div className="p-6 space-y-4 border-t border-border/50 bg-background">
-             <div className="flex items-center gap-2 mb-2">
-                 <Globe size={12} className="text-muted-foreground" />
-                 <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
-                    {activeType === "IMAGE" ? "外部链接" : "目标地址"}
-                 </label>
-             </div>
+            <div className="flex items-center gap-2 mb-2">
+              <Globe size={12} className="text-muted-foreground" />
+              <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
+                {activeType === "IMAGE" ? "外部链接" : "目标地址"}
+              </label>
+            </div>
             <div className="group relative">
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-xs pointer-events-none group-focus-within:text-foreground transition-colors"></span>
-                <input
+              <span className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-xs pointer-events-none group-focus-within:text-foreground transition-colors"></span>
+              <input
                 type="text"
                 autoFocus={activeType === "LINK"}
                 value={inputUrl}
                 onChange={(e) => {
-                    setInputUrl(e.target.value);
-                    if (selectedMediaKey) setSelectedMediaKey(null);
+                  setInputUrl(e.target.value);
+                  if (selectedMediaKey) setSelectedMediaKey(null);
                 }}
                 onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                 placeholder="https://..."
                 className="w-full bg-transparent border-b border-border text-foreground font-mono text-sm py-2 pl-4 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/20"
-                />
+              />
             </div>
           </div>
         </div>
