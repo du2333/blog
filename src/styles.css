@@ -2,7 +2,6 @@
 @import "tw-animate-css";
 
 @import "@fontsource-variable/inter";
-@import "@fontsource-variable/playfair-display";
 @import "@fontsource-variable/noto-sans-sc";
 @import "@fontsource-variable/jetbrains-mono";
 
@@ -94,7 +93,7 @@ mark {
   --tw-transition-duration: 0.3s;
 
   /* Awwwards Style Font Families */
-  --font-serif: "Playfair Display Variable", "Noto Serif SC Variable", serif;
+  --font-serif: "Noto Serif SC Variable", serif;
   --font-sans: "Inter Variable", "Noto Sans SC Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 

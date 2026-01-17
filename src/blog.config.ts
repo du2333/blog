@@ -1,4 +1,5 @@
 export const blogConfig = {
+  title: "冷静的阿旷",
   name: "akuang",
   author: "阿旷",
   description:

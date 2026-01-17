@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { LayoutDashboard, Search, UserIcon } from "lucide-react";
+import { Search, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FileRoutesByTo } from "@/routeTree.gen";
 import { ThemeToggle } from "@/components/common/theme-toggle";
@@ -90,7 +90,7 @@ export function Navbar({
             </div>
 
             {/* Profile / Menu Toggle */}
-            <div className="flex items-center gap-3 pl-3 border-l border-border/50">
+            <div className="flex items-center gap-3 pl-3">
               <div className="hidden md:flex items-center">
                 {isLoading ? (
                   <Skeleton className="w-8 h-8 rounded-full" />
@@ -98,15 +98,6 @@ export function Navbar({
                   <div className="flex items-center gap-3 animate-in fade-in">
                     {user ? (
                       <>
-                        {user.role === "admin" && (
-                          <Link
-                            to="/admin"
-                            className="text-muted-foreground hover:text-foreground transition-colors"
-                            title="Admin"
-                          >
-                            <LayoutDashboard size={16} />
-                          </Link>
-                        )}
                         <button
                           onClick={onOpenProfile}
                           className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-border hover:ring-foreground transition-all"
@@ -140,7 +131,7 @@ export function Navbar({
               </div>
 
               <button
-                className="w-8 h-8 flex flex-col items-center justify-center gap-1.5 group"
+                className="w-8 h-8 flex flex-col items-center justify-center gap-1.5 group lg:hidden"
                 onClick={onMenuClick}
               >
                 <div className="w-5 h-px bg-foreground transition-all group-hover:w-3"></div>

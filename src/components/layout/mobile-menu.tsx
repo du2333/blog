@@ -1,8 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { LogOut, UserIcon, X } from "lucide-react";
 import type { FileRoutesByTo } from "@/routeTree.gen";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 import { blogConfig } from "@/blog.config";
 
 interface MobileMenuProps {
@@ -58,24 +57,26 @@ export function MobileMenu({
             </span>
           </div>
           <Button
-            variant="outline"
+            variant="ghost"
             size="icon"
             onClick={onClose}
-            className="w-12 h-12 rounded-full border border-border text-muted-foreground hover:text-foreground hover:bg-accent transition-all"
+            className="w-12 h-12 rounded-full text-muted-foreground hover:text-foreground hover:bg-transparent transition-all"
           >
             <X size={24} strokeWidth={1.5} />
           </Button>
         </div>
 
-        {/* Links */}
-        <nav className="flex-1 flex flex-col justify-center space-y-8 md:space-y-12">
+        {/* Links: Terminal Style */}
+        <nav className="flex-1 flex flex-col justify-center space-y-6 md:space-y-8 font-mono">
           {navOptions.map((item, idx) => (
             <Link
               key={item.id}
               to={item.to}
               onClick={onClose}
-              className={`group flex items-baseline gap-6 transition-all duration-500 ${
-                isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
+              className={`group flex items-center gap-4 transition-all duration-500 ${
+                isOpen
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-8 opacity-0"
               }`}
               activeProps={{
                 className: "!text-foreground",
@@ -85,14 +86,18 @@ export function MobileMenu({
               {({ isActive }) => (
                 <>
                   <span
-                    className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}
+                    className={`text-sm md:text-base text-muted-foreground/50 transition-colors ${
+                      isActive
+                        ? "text-foreground"
+                        : "group-hover:text-foreground"
+                    }`}
                   >
-                    0{idx + 1}
+                    &gt;_
                   </span>
-                  <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative">
+                  <span className="text-3xl md:text-5xl font-bold tracking-tight text-muted-foreground transition-colors group-hover:text-foreground">
                     {item.label}
                     {isActive && (
-                      <span className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2 w-4 md:w-6 h-px bg-current animate-in slide-in-from-left-4 duration-500" />
+                      <span className="animate-pulse ml-2 inline-block w-3 h-8 bg-foreground -mb-1 align-middle" />
                     )}
                   </span>
                 </>
@@ -104,8 +109,10 @@ export function MobileMenu({
             <Link
               to="/admin"
               onClick={onClose}
-              className={`group flex items-baseline gap-6 transition-all duration-500 ${
-                isOpen ? "translate-y-0 opacity-100" : "translate-y-8 opacity-0"
+              className={`group flex items-center gap-4 transition-all duration-500 ${
+                isOpen
+                  ? "translate-x-0 opacity-100"
+                  : "-translate-x-8 opacity-0"
               }`}
               activeProps={{
                 className: "!text-foreground",
@@ -116,92 +123,71 @@ export function MobileMenu({
                   : "0ms",
               }}
             >
-              {({ isActive }) => (
-                <>
-                  <span
-                    className={`font-mono text-[10px] transition-opacity duration-500 ${isActive ? "opacity-100" : "opacity-20 group-hover:opacity-100"}`}
-                  >
-                    0{navOptions.length + 1}
-                  </span>
-                  <span className="text-5xl md:text-8xl font-serif font-medium tracking-tight group-hover:translate-x-4 transition-all duration-700 relative">
-                    控制台
-                    {isActive && (
-                      <span className="absolute -left-8 md:-left-12 top-1/2 -translate-y-1/2 w-4 md:w-6 h-px bg-current animate-in slide-in-from-left-4 duration-500" />
-                    )}
-                  </span>
-                </>
-              )}
+              <span className="text-sm md:text-base text-muted-foreground/50 group-hover:text-foreground transition-colors">
+                &gt;_
+              </span>
+              <span className="text-3xl md:text-5xl font-bold tracking-tight text-muted-foreground group-hover:text-foreground transition-colors">
+                管理
+              </span>
             </Link>
           )}
         </nav>
 
-        {/* Footer: User Info */}
+        {/* Footer: User Info / Login */}
         <div
-          className={`transition-all duration-500 ${
+          className={`transition-all duration-500 border-t border-border/40 pt-8 ${
             isOpen
               ? "opacity-100 translate-y-0 delay-500"
               : "opacity-0 translate-y-4"
           }`}
         >
           {user ? (
-            <div className="flex flex-col md:flex-row md:items-end justify-between items-start gap-8 pt-12 border-t border-border">
-              <button
-                onClick={() => {
-                  onOpenProfile();
-                  onClose();
-                }}
-                className="flex items-center gap-6 group"
-              >
-                <div className="w-16 h-16 rounded-full overflow-hidden border border-border p-1 grayscale group-hover:grayscale-0 transition-all duration-700">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-full bg-muted overflow-hidden">
                   {user.image ? (
                     <img
                       src={user.image}
                       alt={user.name}
-                      className="w-full h-full rounded-full object-cover"
+                      className="w-full h-full object-cover"
                     />
                   ) : (
-                    <div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-zinc-300">
-                      <UserIcon size={24} strokeWidth={1} />
+                    <div className="flex items-center justify-center w-full h-full">
+                      <UserIcon size={16} />
                     </div>
                   )}
                 </div>
-                <div className="text-left">
-                  <div className="text-2xl font-serif font-medium text-foreground">
-                    {user.name}
-                  </div>
-                  <div className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold">
+                <div className="flex flex-col">
+                  <span className="font-mono text-sm text-foreground">
+                    @{user.name}
+                  </span>
+                  <button
+                    onClick={onOpenProfile}
+                    className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground text-left"
+                  >
                     个人资料
-                  </div>
+                  </button>
                 </div>
-              </button>
+              </div>
 
-              <Button
-                variant="ghost"
+              <button
                 onClick={() => {
                   logout();
                   onClose();
                 }}
-                className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground hover:text-red-500 transition-colors py-4 h-auto p-0 bg-transparent hover:bg-transparent"
+                className="text-muted-foreground hover:text-destructive transition-colors"
               >
-                <LogOut size={14} />
-                <span>退出登录</span>
-              </Button>
+                <LogOut size={20} strokeWidth={1.5} />
+              </button>
             </div>
           ) : (
             <Link
               to="/login"
               onClick={onClose}
-              className="inline-block pt-12 border-t border-border w-full"
+              className="group flex items-center gap-2 font-mono text-xl md:text-2xl text-muted-foreground hover:text-foreground transition-colors"
             >
-              <span
-                className={cn(
-                  "text-4xl md:text-6xl font-serif font-medium tracking-tight transition-all block",
-                  buttonVariants({ variant: "link" }),
-                  "h-auto p-0 text-foreground",
-                )}
-              >
-                登录 / Login
-              </span>
+              <span>$ login</span>
+              <span className="w-2.5 h-5 bg-foreground opacity-0 group-hover:opacity-100 animate-pulse transition-opacity" />
             </Link>
           )}
         </div>

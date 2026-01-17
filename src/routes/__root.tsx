@@ -30,7 +30,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           content: "width=device-width, initial-scale=1",
         },
         {
-          title: blogConfig.name,
+          title: blogConfig.title,
         },
         {
           name: "description",
