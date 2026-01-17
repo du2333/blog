@@ -36,6 +36,15 @@ export function Footer() {
           >
             Email
           </a>
+          <a
+            href="/admin"
+            className="hover:text-foreground transition-colors"
+            title="Admin"
+          >
+            <span className="font-mono opacity-50 hover:opacity-100 transition-opacity">
+              ./admin
+            </span>
+          </a>
         </nav>
       </div>
     </footer>
