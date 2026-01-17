@@ -37,8 +37,8 @@ const HoverCardContent = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "absolute z-50 w-64 rounded-md border bg-popover text-popover-foreground shadow-md outline-none",
-        "invisible opacity-0 group-hover/hovercard:visible group-hover/hovercard:opacity-100 transition-all duration-300",
+        "absolute z-50 w-64 border border-border/30 bg-popover text-popover-foreground",
+        "invisible opacity-0 group-hover/hovercard:visible group-hover/hovercard:opacity-100 transition-all duration-200",
         "top-full mt-2",
         alignClass,
         className,

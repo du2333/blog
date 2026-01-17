@@ -21,7 +21,7 @@ export function Breadcrumbs() {
           {index > 0 && <span className="opacity-30 shrink-0">/</span>}
           <Link
             to={crumb.path}
-            className={`transition-colors hover:text-foreground truncate max-w-20 sm:max-w-[120px] md:max-w-none ${
+            className={`transition-colors hover:text-foreground truncate max-w-20 sm:max-w-30 md:max-w-none ${
               index === breadcrumbs.length - 1
                 ? "text-foreground font-bold tracking-widest shrink-0 sm:shrink"
                 : index < breadcrumbs.length - 2

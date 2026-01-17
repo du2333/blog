@@ -1,7 +1,6 @@
 import { ClientOnly } from "@tanstack/react-router";
-import { AlertTriangle, Check, Loader2, Trash2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { createPortal } from "react-dom";
-import { Button } from "./button";
 import type React from "react";
 
 interface ConfirmationModalProps {
@@ -27,7 +26,7 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
 }) => {
   return createPortal(
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-300 ${
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -35,92 +34,79 @@ const ConfirmationModalInternal: React.FC<ConfirmationModalProps> = ({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/90 backdrop-blur-sm"
         onClick={isLoading ? undefined : onClose}
       />
 
       {/* Modal Content */}
       <div
         className={`
-          relative w-full max-w-lg bg-background border border-border
-          flex flex-col shadow-2xl transform transition-all duration-500 ease-in-out rounded-sm
-          ${
-            isOpen
-              ? "translate-y-0 scale-100 opacity-100"
-              : "translate-y-8 scale-[0.99] opacity-0"
-          }
+          relative w-full max-w-md bg-background border border-border/30
+          flex flex-col transform transition-all duration-300
+          ${isOpen ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"}
         `}
       >
         {/* Header */}
-        <div className="px-8 pt-10 pb-6 flex items-start justify-between">
+        <div className="px-6 pt-8 pb-4 flex items-start justify-between">
           <div className="space-y-2">
-            <div
-              className={`flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold ${
-                isDanger ? "text-red-500" : "text-muted-foreground"
+            <p
+              className={`text-[10px] font-mono uppercase tracking-widest ${
+                isDanger ? "text-destructive" : "text-muted-foreground/60"
               }`}
             >
-              <AlertTriangle size={14} strokeWidth={1.5} />
-              <span>系统确认</span>
-            </div>
-            <h2 className="text-3xl font-serif font-medium text-foreground">
+              [ {isDanger ? "DANGER" : "CONFIRM"} ]
+            </p>
+            <h2 className="text-xl font-serif font-medium text-foreground">
               {title}
             </h2>
           </div>
           <button
             onClick={onClose}
             disabled={isLoading}
-            className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50"
+            className="p-2 -mr-2 text-muted-foreground/50 hover:text-foreground transition-colors disabled:opacity-50"
           >
-            <X size={20} strokeWidth={1} />
+            <X size={16} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Body */}
-        <div className="px-8 pb-10">
-          <p className="text-base text-muted-foreground leading-relaxed font-light">
+        <div className="px-6 pb-6">
+          <p className="text-sm text-muted-foreground/70 leading-relaxed font-light">
             {message}
           </p>
 
           {isDanger && (
-            <div className="mt-8 p-4 bg-red-500/5 border-l-2 border-red-500 text-[11px] font-sans uppercase tracking-widest text-red-500/80">
-              此操作无法撤销。数据将永久移除。
+            <div className="mt-6 p-3 border-l-2 border-destructive/50 text-[9px] font-mono uppercase tracking-widest text-destructive/70">
+              此操作无法撤销
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-8 pb-10 flex flex-col sm:flex-row justify-end gap-4">
-          <Button
-            variant="ghost"
+        <div className="px-6 pb-6 flex justify-end gap-3">
+          <button
             onClick={onClose}
             disabled={isLoading}
-            className="px-8 h-14 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 border border-transparent hover:bg-accent"
+            className="px-4 py-2.5 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors disabled:opacity-50"
           >
             取消
-          </Button>
-          <Button
+          </button>
+          <button
             onClick={onConfirm}
             disabled={isLoading}
-            variant={isDanger ? "destructive" : "default"}
             className={`
-              flex items-center justify-center gap-3 px-10 h-14 text-[10px] font-bold uppercase tracking-[0.3em] transition-all duration-500
+              flex items-center justify-center gap-2 px-6 py-2.5 text-[10px] font-mono uppercase tracking-widest transition-all
               ${
                 isDanger
-                  ? "shadow-lg shadow-red-500/20"
-                  : "shadow-lg shadow-black/10"
+                  ? "bg-destructive text-destructive-foreground hover:opacity-80"
+                  : "bg-foreground text-background hover:opacity-80"
               }
-              disabled:opacity-50 disabled:cursor-not-allowed
+              disabled:opacity-40 disabled:cursor-not-allowed
             `}
           >
-            {isLoading ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : isDanger ? (
-              <Trash2 size={14} />
-            ) : (
-              <Check size={14} />
-            )}
+            {isLoading && <Loader2 size={12} className="animate-spin" />}
             <span>{isLoading ? "处理中..." : confirmLabel}</span>
-          </Button>
+          </button>
         </div>
       </div>
     </div>,

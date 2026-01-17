@@ -48,7 +48,7 @@ const Dropdown: React.FC<DropdownProps> = ({
       {isOpen && (
         <div
           className={cn(
-            "absolute top-full mt-2 w-48 bg-popover/95 backdrop-blur-xl border border-border rounded-sm shadow-2xl z-50 py-1 animate-in fade-in slide-in-from-top-1 duration-200",
+            "absolute top-full mt-2 w-40 bg-popover border border-border/30 z-50 py-1 animate-in fade-in duration-200",
             align === "right" ? "right-0" : "left-0",
           )}
         >
@@ -60,14 +60,14 @@ const Dropdown: React.FC<DropdownProps> = ({
                 setIsOpen(false);
               }}
               className={cn(
-                "w-full text-left px-4 py-2 text-[10px] uppercase tracking-widest font-bold transition-colors flex items-center gap-3",
+                "w-full text-left px-3 py-2 text-[9px] font-mono uppercase tracking-widest transition-colors flex items-center gap-2",
                 item.danger
-                  ? "text-red-500 hover:bg-red-500/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent",
+                  ? "text-destructive hover:bg-destructive/10"
+                  : "text-muted-foreground/60 hover:text-foreground hover:bg-accent/30",
                 item.className,
               )}
             >
-              {item.icon && <span className="opacity-70">{item.icon}</span>}
+              {item.icon && <span className="opacity-60">{item.icon}</span>}
               <span>{item.label}</span>
             </button>
           ))}

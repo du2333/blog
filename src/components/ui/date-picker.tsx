@@ -93,7 +93,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const slots = [];
 
     for (let i = 0; i < firstDay; i++) {
-      slots.push(<div key={`empty-${i}`} className="w-9 h-9"></div>);
+      slots.push(<div key={`empty-${i}`} className="w-8 h-8"></div>);
     }
 
     for (let i = 1; i <= daysInMonth; i++) {
@@ -105,18 +105,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
           key={i}
           onClick={() => handleDayClick(i)}
           className={`
-            w-9 h-9 text-[11px] font-medium flex items-center justify-center transition-all duration-300 rounded-sm relative group
+            w-8 h-8 text-[11px] font-mono flex items-center justify-center transition-all relative
             ${
               selected
-                ? "bg-primary text-primary-foreground shadow-lg"
-                : "text-muted-foreground hover:text-foreground hover:bg-accent"
+                ? "bg-foreground text-background"
+                : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
             }
-            ${today && !selected ? "text-foreground font-bold" : ""}
+            ${today && !selected ? "text-foreground font-medium" : ""}
           `}
         >
           {i}
           {today && !selected && (
-            <div className="absolute bottom-1.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></div>
+            <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-1 h-px bg-foreground"></div>
           )}
         </button>,
       );
@@ -130,17 +130,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <div
         onClick={() => setIsOpen(!isOpen)}
         className={`
-            relative w-full bg-muted/30 text-foreground text-xs font-light pl-11 pr-4 py-4 cursor-pointer select-none transition-all rounded-sm group
-            ${isOpen ? "ring-1 ring-primary shadow-sm" : "hover:bg-accent"}
+            relative w-full bg-transparent border-b border-border/40 text-sm font-light pl-8 pr-4 py-3 cursor-pointer select-none transition-all
+            ${isOpen ? "border-foreground" : "hover:border-foreground/50"}
         `}
       >
         <CalendarIcon
-          className={`absolute left-4 top-1/2 -translate-y-1/2 transition-colors ${
-            isOpen
-              ? "text-foreground"
-              : "text-muted-foreground group-hover:text-foreground"
+          className={`absolute left-0 top-1/2 -translate-y-1/2 transition-colors ${
+            isOpen ? "text-foreground" : "text-muted-foreground/50"
           }`}
-          size={16}
+          size={14}
           strokeWidth={1.5}
         />
         <span className={value ? "opacity-100" : "opacity-40"}>
@@ -149,10 +147,10 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute top-full left-0 z-50 mt-2 bg-popover border border-border shadow-2xl p-6 w-[320px] animate-in fade-in zoom-in-95 duration-300 rounded-sm">
+        <div className="absolute top-full left-0 z-50 mt-2 bg-popover border border-border/30 p-4 w-70 animate-in fade-in duration-200">
           {/* Header */}
-          <div className="flex items-center justify-between mb-6">
-            <h4 className="text-sm font-serif font-medium text-foreground tracking-tight">
+          <div className="flex items-center justify-between mb-4">
+            <h4 className="text-sm font-serif font-medium text-foreground">
               {viewDate.toLocaleString("zh-CN", {
                 month: "long",
                 year: "numeric",
@@ -161,25 +159,25 @@ const DatePicker: React.FC<DatePickerProps> = ({
             <div className="flex items-center gap-1">
               <button
                 onClick={() => changeMonth(-1)}
-                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-sm"
+                className="text-muted-foreground/50 hover:text-foreground transition-colors p-1"
               >
-                <ChevronLeft size={18} strokeWidth={1.5} />
+                <ChevronLeft size={14} strokeWidth={1.5} />
               </button>
               <button
                 onClick={() => changeMonth(1)}
-                className="text-muted-foreground hover:text-foreground transition-colors p-2 hover:bg-accent rounded-sm"
+                className="text-muted-foreground/50 hover:text-foreground transition-colors p-1"
               >
-                <ChevronRight size={18} strokeWidth={1.5} />
+                <ChevronRight size={14} strokeWidth={1.5} />
               </button>
             </div>
           </div>
 
           {/* Grid Header (Days) */}
-          <div className="grid grid-cols-7 gap-1 mb-2">
+          <div className="grid grid-cols-7 gap-0.5 mb-1">
             {daysOfWeek.map((d) => (
               <div
                 key={d}
-                className="w-9 text-center text-[10px] font-bold text-muted-foreground/30 uppercase tracking-widest"
+                className="w-8 text-center text-[9px] font-mono text-muted-foreground/40 uppercase"
               >
                 {d}
               </div>
@@ -187,7 +185,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           </div>
 
           {/* Grid Body */}
-          <div className="grid grid-cols-7 gap-1">{renderCalendar()}</div>
+          <div className="grid grid-cols-7 gap-0.5">{renderCalendar()}</div>
         </div>
       )}
     </div>

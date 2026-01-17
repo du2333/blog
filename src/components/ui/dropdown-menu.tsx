@@ -44,17 +44,17 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
+        className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors"
       >
         <span>{selectedOption.label}</span>
         <ChevronDown
-          size={12}
-          className={`transition-transform duration-300 ${isOpen ? "rotate-180" : ""}`}
+          size={10}
+          className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full left-0 mt-2 w-48 bg-popover/95 backdrop-blur-xl border border-border rounded-sm shadow-2xl z-50 py-1 animate-in fade-in slide-in-from-top-1 duration-200 max-h-64 overflow-y-auto custom-scrollbar">
+        <div className="absolute top-full left-0 mt-2 w-40 bg-popover border border-border/30 z-50 py-1 animate-in fade-in duration-200 max-h-64 overflow-y-auto custom-scrollbar">
           {options.map((option) => (
             <button
               key={option.value}
@@ -62,10 +62,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-3 py-2 text-[10px] uppercase tracking-widest font-bold transition-colors ${
+              className={`w-full text-left px-3 py-2 text-[9px] font-mono uppercase tracking-widest transition-colors ${
                 value === option.value
-                  ? "text-foreground bg-accent"
-                  : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                  ? "text-foreground bg-accent/50"
+                  : "text-muted-foreground/60 hover:text-foreground hover:bg-accent/30"
               }`}
             >
               {option.label}
