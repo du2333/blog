@@ -22,12 +22,14 @@ const Checkbox = React.forwardRef<
     />
     <div
       className={cn(
-        "flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground",
-        checked ? "bg-primary text-primary-foreground" : "bg-transparent",
+        "flex h-4 w-4 shrink-0 items-center justify-center border border-border/50 transition-colors",
+        checked
+          ? "bg-foreground border-foreground text-background"
+          : "bg-transparent",
         className,
       )}
     >
-      {checked && <Check className="h-3 w-3" />}
+      {checked && <Check className="h-3 w-3" strokeWidth={2} />}
     </div>
   </div>
 ));

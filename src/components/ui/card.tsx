@@ -10,7 +10,7 @@ function Card({
     <div
       ref={ref}
       className={cn(
-        "rounded-sm border border-border bg-card text-card-foreground shadow-xs",
+        "border border-border/30 bg-card text-card-foreground",
         className,
       )}
       {...props}
@@ -44,10 +44,7 @@ function CardTitle({
   return (
     <h3
       ref={ref}
-      className={cn(
-        "text-2xl font-semibold leading-none tracking-tight",
-        className,
-      )}
+      className={cn("text-lg font-serif font-medium tracking-tight", className)}
       {...props}
     />
   );
@@ -64,7 +61,7 @@ function CardDescription({
   return (
     <p
       ref={ref}
-      className={cn("text-sm text-muted-foreground", className)}
+      className={cn("text-sm text-muted-foreground/70", className)}
       {...props}
     />
   );
