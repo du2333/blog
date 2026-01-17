@@ -68,7 +68,7 @@ const TooltipContent = React.forwardRef<
     <div
       ref={ref}
       className={cn(
-        "absolute z-50 overflow-hidden rounded-md border bg-popover px-3 py-1.5 text-xs text-popover-foreground shadow-md whitespace-nowrap",
+        "absolute z-50 overflow-hidden border border-border/30 bg-popover px-2 py-1 text-[9px] font-mono uppercase tracking-widest text-popover-foreground whitespace-nowrap",
         // Simple positioning (bottom center by default for this custom impl)
         "top-full left-1/2 -translate-x-1/2 mt-2",
         className,
