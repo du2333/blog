@@ -26,9 +26,12 @@ function RouteComponent() {
   const { token, error } = Route.useSearch();
 
   return (
-    <div className="space-y-10">
-      <header className="text-center space-y-2">
-        <h1 className="text-4xl font-serif font-medium tracking-tight">
+    <div className="space-y-12">
+      <header className="text-center space-y-3">
+        <p className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/60">
+          [ RESET_PASSWORD ]
+        </p>
+        <h1 className="text-2xl font-serif font-medium tracking-tight">
           重置密码
         </h1>
       </header>
