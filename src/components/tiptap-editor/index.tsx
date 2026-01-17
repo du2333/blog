@@ -80,7 +80,7 @@ export function Editor({
         onImageClick={openImageModal}
       />
 
-      <div className="relative min-h-[500px]">
+      <div className="relative min-h-125">
         <EditorContent editor={editor} />
       </div>
 
