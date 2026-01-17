@@ -1,12 +1,11 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useRouteContext } from "@tanstack/react-router";
-import { ArrowRight, Check, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { usePreviousLocation } from "@/hooks/use-previous-location";
 import { authClient } from "@/lib/auth/auth.client";
@@ -73,25 +72,24 @@ export function RegisterForm() {
 
   if (isSuccess) {
     return (
-      <div className="text-center space-y-10 animate-in fade-in zoom-in-95 duration-700">
+      <div className="text-center space-y-8 animate-in fade-in duration-500">
         <div className="space-y-4">
-          <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto border border-border">
-            <Check size={24} />
-          </div>
-          <h3 className="text-2xl font-serif font-medium tracking-tight">
+          <p className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60">
+            [ EMAIL_SENT ]
+          </p>
+          <h3 className="text-xl font-serif font-medium tracking-tight">
             验证您的邮箱
           </h3>
-          <p className="text-sm font-light text-muted-foreground leading-relaxed max-w-[280px] mx-auto">
+          <p className="text-sm text-muted-foreground/70 font-light leading-relaxed">
             一封验证邮件已发送至您的邮箱。请点击邮件中的链接以激活账户。
           </p>
         </div>
-        <Button
+        <button
           onClick={() => navigate({ to: "/login" })}
-          variant="outline"
-          className="w-full h-14 text-[11px] uppercase tracking-[0.4em] font-medium"
+          className="w-full py-4 border border-border/40 text-[10px] font-mono uppercase tracking-[0.3em] hover:border-foreground transition-all"
         >
           返回登录
-        </Button>
+        </button>
       </div>
     );
   }
@@ -101,17 +99,17 @@ export function RegisterForm() {
       <div className="space-y-6">
         {/* Name */}
         <div className="space-y-2 group">
-          <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
+          <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
             用户昵称
           </label>
           <Input
             type="text"
             {...register("name")}
-            className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+            className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
             placeholder="输入您的昵称"
           />
           {errors.name && (
-            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+            <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
               {errors.name.message}
             </span>
           )}
@@ -119,17 +117,17 @@ export function RegisterForm() {
 
         {/* Email */}
         <div className="space-y-2 group">
-          <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
+          <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
             邮箱地址
           </label>
           <Input
             type="email"
             {...register("email")}
-            className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+            className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
             placeholder="example@mail.com"
           />
           {errors.email && (
-            <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+            <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
               {errors.email.message}
             </span>
           )}
@@ -138,33 +136,33 @@ export function RegisterForm() {
         {/* Passwords */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2 group">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
+            <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
               密码
             </label>
             <Input
               type="password"
               {...register("password")}
-              className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+              className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
               placeholder="••••••••"
             />
             {errors.password && (
-              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+              <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
                 {errors.password.message}
               </span>
             )}
           </div>
           <div className="space-y-2 group">
-            <label className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground group-focus-within:text-foreground transition-colors pl-1">
+            <label className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground/60 group-focus-within:text-foreground transition-colors">
               确认密码
             </label>
             <Input
               type="password"
               {...register("confirmPassword")}
-              className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-3 text-lg font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground shadow-none px-0"
+              className="w-full bg-transparent border-0 border-b border-border/40 rounded-none py-3 text-sm font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/30 shadow-none px-0"
               placeholder="••••••••"
             />
             {errors.confirmPassword && (
-              <span className="text-[9px] text-red-500 uppercase tracking-widest mt-1 block">
+              <span className="text-[9px] font-mono text-destructive uppercase tracking-widest mt-1 block">
                 {errors.confirmPassword.message}
               </span>
             )}
@@ -172,23 +170,17 @@ export function RegisterForm() {
         </div>
       </div>
 
-      <Button
+      <button
         type="submit"
         disabled={isSubmitting}
-        className="w-full h-14 bg-primary text-primary-foreground text-[11px] uppercase tracking-[0.4em] font-medium hover:opacity-90 transition-all disabled:opacity-30 flex items-center justify-center gap-3 group rounded-sm"
+        className="w-full py-4 bg-foreground text-background text-[10px] font-mono uppercase tracking-[0.3em] hover:opacity-80 transition-all disabled:opacity-30 flex items-center justify-center gap-3"
       >
         {isSubmitting ? (
-          <Loader2 className="animate-spin" size={16} />
+          <Loader2 className="animate-spin" size={14} />
         ) : (
-          <>
-            <span>创建账户</span>
-            <ArrowRight
-              size={14}
-              className="group-hover:translate-x-1 transition-transform"
-            />
-          </>
+          <span>创建账户</span>
         )}
-      </Button>
+      </button>
     </form>
   );
 }

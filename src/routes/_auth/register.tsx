@@ -19,22 +19,25 @@ export const Route = createFileRoute("/_auth/register")({
 
 function RouteComponent() {
   return (
-    <div className="space-y-10">
-      <header className="text-center space-y-2">
-        <h1 className="text-4xl font-serif font-medium tracking-tight">注册</h1>
+    <div className="space-y-12">
+      <header className="text-center space-y-3">
+        <p className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground/60">
+          [ REGISTER ]
+        </p>
+        <h1 className="text-2xl font-serif font-medium tracking-tight">注册</h1>
       </header>
 
       <div className="space-y-10">
         <RegisterForm />
 
-        <div className="text-center pt-6">
-          <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-400">
+        <div className="text-center pt-4">
+          <p className="text-[10px] font-mono text-muted-foreground/50 tracking-wider">
             已有账户?{" "}
             <Link
               to="/login"
-              className="text-foreground font-medium hover:underline underline-offset-4 ml-2"
+              className="text-foreground hover:opacity-70 transition-opacity ml-1"
             >
-              前往登录
+              [ 前往登录 ]
             </Link>
           </p>
         </div>
