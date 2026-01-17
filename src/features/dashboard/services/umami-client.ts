@@ -191,6 +191,7 @@ export class UmamiClient {
       | "device"
       | "country" = "path",
     limit: number = 10,
+    filters: Record<string, string> = {},
   ): Promise<Array<{ x: string; y: number }> | null> {
     const schema = z.array(z.object({ x: z.string(), y: z.number() }));
     return this.request("/metrics", schema, {
@@ -198,6 +199,7 @@ export class UmamiClient {
       endAt,
       type,
       limit,
+      ...filters,
     });
   }
 }

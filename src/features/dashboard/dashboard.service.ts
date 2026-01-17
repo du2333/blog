@@ -92,7 +92,7 @@ async function fetchUmamiDataForRange(
     umami.getStats(startAt, endAt),
     umami.getStats(prevStartAt, startAt),
     umami.getPageViews(startAt, endAt, unit),
-    umami.getMetrics(startAt, endAt, "path", 200),
+    umami.getMetrics(startAt, endAt, "path", 10, { path: "c./post/" }),
   ]);
 
   // Normalize and aggregate
@@ -109,7 +109,6 @@ async function fetchUmamiDataForRange(
   // Filter and convert to array of objects
   const mergedPages = Array.from(aggregated.entries())
     .map(([x, y]) => ({ x, y }))
-    .filter((p) => p.x.startsWith("/post/"))
     .sort((a, b) => b.y - a.y)
     .slice(0, 5);
 
