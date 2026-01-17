@@ -20,63 +20,61 @@ export function MediaToolbar({
   onDelete,
 }: MediaToolbarProps) {
   return (
-    <div className="flex flex-col lg:flex-row gap-6 mb-8 items-start lg:items-center">
+    <div className="flex flex-col md:flex-row gap-6 mb-8 items-start md:items-end justify-between border-b border-border/30 pb-6">
       {/* Search */}
-      <div className="relative w-full lg:max-w-md">
+      <div className="relative group w-full md:w-64">
         <Search
-          className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground z-10"
-          size={16}
-          strokeWidth={1.5}
+          className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors"
+          size={14}
         />
         <Input
           type="text"
           placeholder="检索媒体文件..."
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-8 pr-10 py-3 bg-transparent border-b border-border rounded-none font-serif text-sm placeholder:text-muted-foreground/50 focus-visible:border-foreground transition-all h-12 shadow-none"
+          className="w-full pl-10 pr-8 h-9 bg-transparent border-b border-border/50 rounded-none font-mono text-xs placeholder:text-muted-foreground/50 focus:border-foreground transition-all shadow-none"
         />
         {searchQuery && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onSearchChange("")}
-            className="absolute right-0 top-1/2 -translate-y-1/2 h-7 w-7 text-muted-foreground hover:text-foreground rounded-sm"
+            className="absolute right-0 top-1/2 -translate-y-1/2 h-6 w-6 text-muted-foreground hover:text-foreground rounded-none"
           >
-            <X size={14} />
+            <X size={12} />
           </Button>
         )}
       </div>
 
-      <div className="flex items-center gap-6 w-full lg:w-auto">
+      <div className="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
         <Button
           variant="ghost"
           size="sm"
           onClick={onSelectAll}
-          className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-medium transition-colors h-auto py-2 px-3 rounded-sm ${
+          className={`h-9 px-3 text-[10px] uppercase tracking-[0.2em] font-medium rounded-none gap-2 ${
             selectedCount > 0
-              ? "bg-accent text-foreground"
+              ? "text-foreground bg-accent/10"
               : "text-muted-foreground hover:text-foreground"
           }`}
         >
           {selectedCount > 0 && selectedCount === totalCount ? (
-            <CheckSquare size={14} strokeWidth={1.5} />
+            <CheckSquare size={12} />
           ) : (
-            <Square size={14} strokeWidth={1.5} />
+            <Square size={12} />
           )}
           {selectedCount > 0 && selectedCount === totalCount
-            ? "取消全选"
-            : "全选"}
+            ? "[ 取消全选 ]"
+            : "[ 全选 ]"}
         </Button>
 
         {selectedCount > 0 && (
           <Button
-            variant="destructive"
+            variant="ghost"
             size="sm"
             onClick={onDelete}
-            className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold py-2 px-4 rounded-sm transition-all animate-in fade-in slide-in-from-left-2 duration-500"
+            className="h-9 px-3 text-[10px] uppercase tracking-[0.2em] font-medium rounded-none gap-2 text-red-500 hover:text-red-600 hover:bg-red-500/10 animate-in fade-in slide-in-from-left-2 duration-300"
           >
-            <Trash2 size={14} strokeWidth={1.5} />
-            删除选中 ({selectedCount})
+            <Trash2 size={12} />[ 删除选中 ({selectedCount}) ]
           </Button>
         )}
       </div>

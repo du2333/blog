@@ -1,4 +1,4 @@
-import { Check, Film, Image as ImageIcon, Link2, Loader2 } from "lucide-react";
+import { Check, Film, Image as ImageIcon } from "lucide-react";
 import { memo, useEffect, useRef, useState } from "react";
 import { useLongPress } from "../hooks";
 import type { MediaAsset } from "../types";
@@ -60,89 +60,73 @@ const MediaCard = memo(
     return (
       <div
         {...longPressHandlers}
-        className={`
-        group relative flex flex-col cursor-pointer transition-all duration-500 touch-manipulation select-none overflow-hidden rounded-sm border
-        ${
+        className={`group relative flex flex-col cursor-pointer transition-all duration-300 touch-manipulation select-none overflow-hidden rounded-none border ${
           isSelected
-            ? "border-foreground ring-4 ring-foreground/5 scale-[0.98]"
+            ? "border-foreground bg-accent/20"
             : isLinked
-              ? "border-primary/30 bg-primary/5 shadow-sm"
-              : "border-border hover:border-border"
-        }
-      `}
+              ? "border-emerald-500/50 bg-emerald-500/5"
+              : "border-border/50 hover:border-foreground/50"
+        }`}
       >
-        {/* Selection Overlay */}
+        {/* Selection Indicator (Top Left) */}
         <div
-          className={`absolute top-3 left-3 z-30 w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-500 ${
+          className={`absolute top-0 left-0 z-30 p-1.5 transition-all duration-300 ${
             isSelected
-              ? "bg-primary border-transparent scale-110"
-              : "bg-background/40 border-border/20 opacity-0 group-hover:opacity-100"
+              ? "bg-foreground text-background"
+              : "text-muted-foreground opacity-0 group-hover:opacity-100"
           }`}
-          onMouseDown={(e) => e.stopPropagation()}
-          onMouseUp={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
             onToggleSelect(asset.key);
           }}
         >
-          {isSelected && (
-            <Check
-              size={12}
-              className="text-primary-foreground"
-              strokeWidth={3}
-            />
-          )}
+          <div
+            className={`w-3 h-3 border ${isSelected ? "border-transparent bg-background" : "border-foreground"}`}
+          >
+            {isSelected && (
+              <Check size={12} className="text-foreground -mt-px -ml-px" />
+            )}
+          </div>
         </div>
 
         {/* Linked Indicator */}
-        {isLinked && !isSelected && (
-          <div className="absolute top-2.5 right-2.5 z-20 flex items-center gap-1 px-2 py-0.5 bg-primary/90 text-primary-foreground rounded-sm shadow-lg backdrop-blur-sm transition-all duration-300">
-            <Link2 size={10} strokeWidth={3} />
-            <span className="text-[10px] font-bold tracking-tight">已引用</span>
+        {isLinked && (
+          <div className="absolute top-0 right-0 z-20 px-2 py-1 bg-emerald-500 text-white text-[9px] font-mono tracking-wider uppercase">
+            已引用
           </div>
         )}
 
         {/* Preview */}
-        <div className="aspect-square relative overflow-hidden bg-muted">
+        <div className="aspect-square relative overflow-hidden bg-muted/20 border-b border-border/30">
           {isImage ? (
             <>
               {!isLoaded && (
-                <div className="absolute inset-0 flex items-center justify-center bg-muted animate-pulse">
-                  <ImageIcon size={24} className="text-muted-foreground" />
+                <div className="absolute inset-0 flex items-center justify-center bg-muted/20 animate-pulse">
+                  <ImageIcon size={20} className="text-muted-foreground/30" />
                 </div>
               )}
               <img
                 src={thumbnailUrl}
                 alt={asset.fileName}
-                className={`w-full h-full object-cover transition-all duration-1000 ${
+                className={`w-full h-full object-cover transition-all duration-500 grayscale hover:grayscale-0 ${
                   isLoaded ? "opacity-100" : "opacity-0"
-                } ${
-                  isSelected
-                    ? "scale-110 blur-[2px] opacity-40"
-                    : "group-hover:scale-105"
-                }`}
+                } ${isSelected ? "grayscale-0 opacity-50" : ""}`}
                 onLoad={() => setIsLoaded(true)}
               />
             </>
           ) : (
             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
-              <Film size={32} strokeWidth={1} />
+              <Film size={24} strokeWidth={1} />
             </div>
           )}
         </div>
 
         {/* Info */}
-        <div className="p-4 space-y-1 bg-popover">
-          <div className="text-[11px] font-medium truncate flex items-center gap-2">
-            {isLinked && (
-              <div
-                className="w-1.5 h-1.5 rounded-full bg-primary shrink-0"
-                title="已引用"
-              />
-            )}
-            <span className="truncate">{asset.fileName}</span>
+        <div className="p-3 space-y-1.5 bg-background">
+          <div className="text-[10px] font-mono font-medium truncate text-foreground group-hover:text-foreground transition-colors">
+            {asset.fileName}
           </div>
-          <div className="flex justify-between text-[9px] text-muted-foreground font-mono tracking-wider uppercase">
+          <div className="flex justify-between items-center text-[9px] text-muted-foreground font-mono tracking-wider uppercase border-t border-border/30 pt-1.5">
             <span>{formatBytes(asset.sizeInBytes)}</span>
             <span>{asset.mimeType.split("/")[1]}</span>
           </div>
@@ -193,8 +177,10 @@ export function MediaGrid({
 
   if (media.length === 0) {
     return (
-      <div className="py-32 text-center font-serif italic text-muted-foreground border border-dashed border-border rounded-sm">
-        媒体库中暂无资产
+      <div className="py-24 text-center border border-dashed border-border/50 bg-muted/5 rounded-none">
+        <span className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+          未找到媒体资产
+        </span>
       </div>
     );
   }
@@ -231,18 +217,19 @@ export function MediaGrid({
       >
         {isLoadingMore ? (
           <div className="flex flex-col items-center gap-4">
-            <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center">
-              <Loader2
-                size={16}
-                className="text-muted-foreground animate-spin"
-              />
-            </div>
-            <span className="text-[10px] font-mono uppercase tracking-[0.4em] text-muted-foreground animate-pulse">
-              Syncing
+            <div className="w-8 h-8 rounded-none border-2 border-t-foreground border-r-transparent border-b-transparent border-l-transparent animate-spin" />
+            <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground animate-pulse">
+              加载资产中...
             </span>
           </div>
         ) : !hasMore && media.length > 0 ? (
-          <div className="h-px w-24 bg-border" />
+          <div className="flex items-center gap-2 opacity-50">
+            <div className="h-px w-12 bg-border" />
+            <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">
+              已加载全部
+            </span>
+            <div className="h-px w-12 bg-border" />
+          </div>
         ) : null}
       </div>
     </div>

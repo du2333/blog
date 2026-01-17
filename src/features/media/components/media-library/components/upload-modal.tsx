@@ -1,5 +1,5 @@
 import { ClientOnly } from "@tanstack/react-router";
-import { AlertCircle, Check, Loader2, Upload, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useRef } from "react";
 import { createPortal } from "react-dom";
 import type { UploadItem } from "../types";
@@ -52,40 +52,35 @@ function UploadModalInternal({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/95 backdrop-blur-md"
         onClick={onClose}
       />
 
       <div
         className={`
-          relative w-full max-w-3xl bg-popover border border-border shadow-2xl 
-          flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
+          relative w-full max-w-2xl bg-background border border-border shadow-none 
+          flex flex-col overflow-hidden rounded-none max-h-[85vh] transition-all duration-500 ease-in-out transform
           ${
             isOpen
               ? "translate-y-0 scale-100 opacity-100"
-              : "translate-y-8 scale-[0.99] opacity-0"
+              : "translate-y-4 scale-95 opacity-0"
           }
         `}
       >
         {/* Header */}
-        <div className="h-20 flex items-center justify-between px-8 border-b border-border shrink-0">
+        <div className="h-16 flex items-center justify-between px-6 border-b border-border/30 shrink-0">
           <div className="flex items-center gap-3">
-            <Upload
-              size={18}
-              strokeWidth={1.5}
-              className="text-muted-foreground"
-            />
-            <span className="text-sm font-medium tracking-tight">
-              上传媒体资产
+            <span className="text-sm font-mono tracking-wider uppercase text-foreground">
+              上传管理
             </span>
           </div>
           <Button
             variant="ghost"
             size="icon"
             onClick={onClose}
-            className="h-9 w-9 text-muted-foreground hover:text-foreground rounded-sm"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground rounded-none"
           >
-            <X size={20} strokeWidth={1.5} />
+            <X size={14} />
           </Button>
         </div>
 
@@ -97,7 +92,7 @@ function UploadModalInternal({
           multiple
         />
 
-        <div className="p-8 md:p-12 space-y-8 overflow-y-auto custom-scrollbar flex-1 min-h-0">
+        <div className="p-6 space-y-8 overflow-y-auto custom-scrollbar flex-1 min-h-0 bg-muted/5">
           {/* Drop Zone */}
           <div
             onClick={() => fileInputRef.current?.click()}
@@ -105,27 +100,29 @@ function UploadModalInternal({
             onDragLeave={onDragLeave}
             onDrop={onDrop}
             className={`
-              relative border-2 border-dashed aspect-21/9 min-h-50 flex flex-col items-center justify-center cursor-pointer transition-all duration-700 gap-4 rounded-sm
+              relative border border-dashed aspect-video flex flex-col items-center justify-center cursor-pointer transition-all duration-300 gap-4 rounded-none
               ${
                 isDragging
-                  ? "border-foreground bg-muted scale-[0.99]"
-                  : "border-border bg-muted/50 hover:bg-muted hover:border-border"
+                  ? "border-foreground bg-accent/20"
+                  : "border-border/50 hover:border-foreground/50 hover:bg-accent/5"
               }
             `}
           >
-            <div
-              className={`p-4 rounded-sm border border-current transition-all duration-700 ${
-                isDragging ? "animate-bounce" : "text-muted-foreground"
-              }`}
-            >
-              <Upload size={24} strokeWidth={1.5} />
+            <div className="font-mono text-[10px] text-muted-foreground whitespace-pre text-center leading-none opacity-50 select-none pointer-events-none">
+              {`
+      +-----------------------------+
+      |        在此处释放文件        |
+      |   [ image.png, video.mp4 ]  |
+      +-----------------------------+
+`}
             </div>
+
             <div className="text-center space-y-1">
-              <p className="text-[11px] uppercase tracking-[0.3em] font-bold">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-medium text-foreground">
                 {isDragging ? "松开即可上传" : "点击或拖拽文件至此"}
               </p>
-              <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
-                Max 10MB per file
+              <p className="text-[9px] font-mono text-muted-foreground">
+                最大文件大小: 10MB
               </p>
             </div>
           </div>
@@ -133,74 +130,63 @@ function UploadModalInternal({
           {/* Queue List */}
           <div className="space-y-4">
             {queue.length > 0 && (
-              <div className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-bold border-b border-border pb-4">
-                上传队列 ({queue.length})
+              <div className="flex items-center justify-between border-b border-border/30 pb-2">
+                <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
+                  队列状态
+                </span>
+                <span className="text-[10px] font-mono text-foreground">
+                  {queue.length} 个项目
+                </span>
               </div>
             )}
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               {queue.map((item) => (
                 <div
                   key={item.id}
-                  className="group bg-muted p-4 flex flex-col gap-3 rounded-sm border border-transparent hover:border-border transition-all"
+                  className="group bg-background p-3 border border-border/30 flex flex-col gap-2 transition-all hover:border-border/60"
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-3 min-w-0">
-                      <div className="shrink-0 text-muted-foreground">
-                        {item.status === "COMPLETE" ? (
-                          <Check
-                            size={16}
-                            strokeWidth={3}
-                            className="text-green-500"
-                          />
-                        ) : item.status === "ERROR" ? (
-                          <AlertCircle
-                            size={16}
-                            strokeWidth={2}
-                            className="text-red-500"
-                          />
-                        ) : (
-                          <Loader2
-                            size={16}
-                            strokeWidth={2}
-                            className="animate-spin text-muted-foreground"
-                          />
-                        )}
-                      </div>
-                      <span className="text-xs font-medium truncate">
-                        {item.name}
-                      </span>
-                    </div>
-                    <span className="text-[9px] font-mono text-muted-foreground shrink-0 uppercase tracking-wider">
-                      {item.size}
+                  <div className="flex justify-between items-center text-[10px] font-mono">
+                    <span className="truncate max-w-50 text-foreground">
+                      {item.name}
                     </span>
+                    <span className="text-muted-foreground">{item.size}</span>
                   </div>
 
                   {/* Progress Bar */}
-                  <div className="h-0.5 bg-muted w-full overflow-hidden rounded-sm">
+                  <div className="relative h-2 w-full bg-muted/30 overflow-hidden">
                     <div
-                      className={`h-full transition-all duration-500 ease-out ${
+                      className={`absolute top-0 left-0 h-full transition-all duration-300 ${
                         item.status === "COMPLETE"
-                          ? "bg-green-500"
+                          ? "bg-emerald-500"
                           : item.status === "ERROR"
                             ? "bg-red-500"
-                            : "bg-primary"
+                            : "bg-foreground"
                       }`}
                       style={{ width: `${item.progress}%` }}
-                    ></div>
+                    />
                   </div>
 
-                  {item.log && (
-                    <div
-                      className={`text-[9px] font-mono leading-relaxed ${
+                  <div className="flex justify-between items-center text-[9px] font-mono uppercase">
+                    <span
+                      className={`${
                         item.status === "ERROR"
                           ? "text-red-500"
-                          : "text-muted-foreground opacity-60"
+                          : "text-muted-foreground"
                       }`}
                     >
-                      {item.log}
-                    </div>
-                  )}
+                      {item.status === "COMPLETE"
+                        ? "完成"
+                        : item.status === "ERROR"
+                          ? "失败"
+                          : "上传中..."}
+                    </span>
+                    {item.log && (
+                      <span className="text-red-500 max-w-37.5 truncate">
+                        {item.log}
+                      </span>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -208,23 +194,24 @@ function UploadModalInternal({
         </div>
 
         {/* Footer */}
-        <div className="p-8 border-t border-border flex justify-end gap-4 shrink-0">
+        <div className="p-4 border-t border-border/30 flex justify-end gap-3 shrink-0 bg-background">
           {isAllComplete ? (
             <Button
               onClick={onClose}
               variant={hasErrors ? "destructive" : "default"}
-              className="flex-1 h-14 text-[11px] uppercase tracking-[0.2em] font-bold rounded-sm gap-2"
+              size="sm"
+              className="h-9 px-6 text-[10px] uppercase tracking-[0.2em] font-medium rounded-none gap-2 bg-foreground text-background hover:bg-foreground/90"
             >
-              <Check size={16} strokeWidth={2.5} />
-              {hasErrors ? "任务存在错误 - 确认" : "上传任务已完成"}
+              [ {hasErrors ? "确认 (含错误)" : "完成"} ]
             </Button>
           ) : (
             <Button
               onClick={onClose}
               variant="ghost"
-              className="px-8 h-14 text-[11px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors"
+              size="sm"
+              className="h-9 px-6 text-[10px] uppercase tracking-[0.2em] font-medium text-muted-foreground hover:text-red-500 hover:bg-red-500/10 rounded-none"
             >
-              取消
+              [ 取消 ]
             </Button>
           )}
         </div>
