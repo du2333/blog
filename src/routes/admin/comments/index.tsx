@@ -76,59 +76,55 @@ function CommentAdminPage() {
   ];
 
   return (
-    <div className="space-y-12 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+    <div className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
       {/* Header */}
-      <header className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8">
-        <div className="space-y-1">
-          <h1 className="text-4xl font-serif font-medium tracking-tight text-foreground">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 border-b border-border/30 pb-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-serif font-medium tracking-tight text-foreground">
             评论管理
           </h1>
-          <p className="text-[10px] tracking-[0.4em] text-muted-foreground uppercase">
-            管理 / 审核 / 社区
+          <p className="text-xs font-mono tracking-widest text-muted-foreground uppercase">
+            COMMUNITY_MODERATION
           </p>
         </div>
 
         {/* User Search */}
-        <div className="relative w-full md:w-72 group">
-          <User className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-3.5 h-3.5 transition-colors group-focus-within:text-primary" />
+        <div className="relative w-full md:w-64 group">
+          <User className="absolute left-2 top-1/2 -translate-y-1/2 text-muted-foreground w-3.5 h-3.5 transition-colors group-focus-within:text-foreground" />
           <Input
             placeholder="搜索用户昵称..."
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
-            className="pl-9 h-10 border-none! bg-muted/30 hover:bg-muted/50 focus:bg-background transition-all rounded-none! font-mono text-xs ring-offset-background focus-visible:ring-1 focus-visible:ring-border"
+            className="pl-9 h-9 border-b border-border/50 bg-transparent rounded-none font-mono text-xs focus:border-foreground transition-all"
           />
-          <div className="absolute bottom-0 left-0 w-full h-px bg-border group-focus-within:bg-primary transition-all" />
         </div>
-      </header>
+      </div>
 
-      <div className="space-y-10">
+      <div className="space-y-8">
         {/* Navigation & Tabs */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 border-b border-border/50 pb-px">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <nav className="flex items-center gap-8 overflow-x-auto no-scrollbar">
             {tabs.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => handleStatusChange(tab.key)}
                 className={`
-                  relative pb-4 text-[11px] font-bold uppercase tracking-[0.2em] transition-all whitespace-nowrap
+                  relative text-[10px] uppercase tracking-[0.2em] transition-all whitespace-nowrap font-mono
                   ${
                     status === tab.key
-                      ? "text-foreground"
-                      : "text-muted-foreground hover:text-foreground/80"
+                      ? "text-foreground font-bold"
+                      : "text-muted-foreground hover:text-foreground"
                   }
                 `}
               >
-                {tab.label}
-                {status === tab.key && (
-                  <span className="absolute bottom-0 left-0 w-full h-0.5 bg-primary animate-in fade-in slide-in-from-left-2 duration-500" />
-                )}
+                {status === tab.key ? `[ ${tab.label} ]` : tab.label}
               </button>
             ))}
           </nav>
         </div>
 
         {/* Content Area - Minimal background, focus on content */}
-        <div className="min-h-[400px]">
+        <div className="min-h-100">
           <CommentModerationTable
             status={currentStatus}
             userName={userName}

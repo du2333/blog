@@ -1,11 +1,4 @@
-import {
-  Check,
-  Loader2,
-  MoreHorizontal,
-  RotateCcw,
-  ShieldAlert,
-  Trash2,
-} from "lucide-react";
+import { Check, Loader2, RotateCcw, ShieldAlert, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useAdminComments } from "../../hooks/use-comments";
 import { Button } from "@/components/ui/button";
@@ -55,68 +48,64 @@ export const CommentModerationActions = ({
     <div className="flex items-center justify-end relative" ref={menuRef}>
       <Button
         variant="ghost"
-        size="icon"
-        className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+        size="sm"
+        className="h-6 w-auto px-2 text-[10px] font-mono text-muted-foreground hover:text-foreground rounded-none gap-1"
         disabled={isLoading}
         onClick={() => setIsOpen(!isOpen)}
         title="更多操作"
       >
         {isLoading ? (
-          <Loader2 size={16} className="animate-spin" />
+          <Loader2 size={12} className="animate-spin" />
         ) : (
-          <MoreHorizontal size={16} />
+          <span>[ 操作 ]</span>
         )}
       </Button>
 
       {isOpen && (
-        <div className="absolute right-0 top-full mt-2 w-56 bg-background border border-border rounded-none shadow-2xl z-50 py-2 animate-in fade-in zoom-in-95 slide-in-from-top-2 duration-300">
-          <div className="px-4 py-2 text-[9px] font-bold text-muted-foreground uppercase tracking-[0.2em] border-b border-border/50 mb-2">
-            状态管理
-          </div>
-
-          <div className="space-y-px">
+        <div className="absolute right-0 top-full mt-2 w-48 bg-background border border-border/30 z-50 p-1 animate-in fade-in zoom-in-95 duration-200">
+          <div className="space-y-0.5">
             {status !== "published" && (
               <button
                 onClick={() => handleStatusChange("published")}
-                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-foreground group"
+                className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-mono text-left hover:bg-muted/10 transition-colors text-foreground group"
               >
                 <span>批准发布</span>
-                <Check className="h-3 w-3 text-green-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Check className="h-3 w-3 opacity-0 group-hover:opacity-100" />
               </button>
             )}
 
             {status !== "pending" && (
               <button
                 onClick={() => handleStatusChange("pending")}
-                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-foreground group"
+                className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-mono text-left hover:bg-muted/10 transition-colors text-foreground group"
               >
                 <span>设为待审</span>
-                <RotateCcw className="h-3 w-3 text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <RotateCcw className="h-3 w-3 opacity-0 group-hover:opacity-100" />
               </button>
             )}
 
             {status !== "deleted" && (
               <button
                 onClick={() => handleStatusChange("deleted")}
-                className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-medium text-left hover:bg-muted transition-all text-orange-500 group"
+                className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-mono text-left hover:bg-muted/10 transition-colors text-muted-foreground hover:text-red-500 group"
               >
                 <span>移入垃圾箱</span>
-                <Trash2 className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Trash2 className="h-3 w-3 opacity-0 group-hover:opacity-100" />
               </button>
             )}
           </div>
 
-          <div className="h-px bg-border/50 my-2" />
+          <div className="h-px bg-border/30 my-1" />
 
           <button
             onClick={() => {
               setIsOpen(false);
               setShowDeleteConfirm(true);
             }}
-            className="w-full flex items-center justify-between px-4 py-2.5 text-[11px] font-bold text-left hover:bg-destructive hover:text-white transition-all duration-300 text-destructive group"
+            className="w-full flex items-center justify-between px-3 py-2 text-[10px] font-mono text-left hover:bg-red-500/10 text-red-500 transition-colors group"
           >
             <span>永久销毁</span>
-            <ShieldAlert className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ShieldAlert className="h-3 w-3 opacity-0 group-hover:opacity-100" />
           </button>
         </div>
       )}

@@ -128,59 +128,59 @@ export const CommentModerationTable = ({
     <div className="space-y-6">
       {/* Batch Actions Toolbar */}
       {selectedIds.size > 0 && (
-        <div className="sticky top-4 z-40 flex items-center justify-between p-5 bg-background border border-border rounded-none shadow-2xl animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="sticky top-4 z-40 flex items-center justify-between p-4 bg-background border border-border/30 shadow-none animate-in fade-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-6">
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em]">
-              已选择 / {selectedIds.size}
+            <span className="text-[10px] font-mono font-medium uppercase tracking-[0.2em]">
+              已选 / {selectedIds.size}
             </span>
             <button
               onClick={() => setSelectedIds(new Set())}
-              className="text-[9px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors underline underline-offset-4"
+              className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
             >
-              取消选择
+              [ 取消 ]
             </button>
           </div>
           <div className="flex items-center gap-3">
             <Button
               size="sm"
               onClick={handleBatchApprove}
-              className="h-9 px-6 rounded-none bg-foreground text-background hover:bg-foreground/90 transition-all font-bold text-[10px] uppercase tracking-widest"
+              className="h-8 px-4 rounded-none bg-foreground text-background hover:bg-foreground/90 transition-all font-mono text-[10px] uppercase tracking-widest"
             >
-              批量批准
+              [ 批量批准 ]
             </Button>
             <Button
               size="sm"
               variant="outline"
               onClick={handleBatchTrash}
-              className="h-9 px-6 rounded-none border-border hover:bg-muted transition-all font-bold text-[10px] uppercase tracking-widest"
+              className="h-8 px-4 rounded-none border-border/50 hover:bg-red-500/10 hover:text-red-500 transition-all font-mono text-[10px] uppercase tracking-widest"
             >
-              移入垃圾箱
+              [ 移入垃圾箱 ]
             </Button>
           </div>
         </div>
       )}
 
       {/* List Header (Desktop) */}
-      <div className="hidden md:grid grid-cols-12 gap-8 px-8 py-4 border-b border-border/50 items-center">
+      <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 border-b border-border/30 items-center bg-muted/5">
         <div className="col-span-1 flex justify-center">
           <Checkbox
             checked={allSelected}
             onCheckedChange={handleSelectAll}
-            className="rounded-none border-border"
+            className="rounded-none border-border/50 data-[state=checked]:bg-foreground data-[state=checked]:text-background"
           />
         </div>
-        <div className="col-span-2 text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-          作者
+        <div className="col-span-2 text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          AUTHOR
         </div>
         <div className="col-span-1"></div>
-        <div className="col-span-5 text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-          评论内容 / 上下文
+        <div className="col-span-5 text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          CONTENT / CONTEXT
         </div>
-        <div className="col-span-1 text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-          状态
+        <div className="col-span-1 text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          STATUS
         </div>
-        <div className="col-span-2 text-right text-[9px] font-bold uppercase tracking-[0.3em] text-muted-foreground">
-          操作
+        <div className="col-span-2 text-right text-[9px] font-mono uppercase tracking-[0.2em] text-muted-foreground">
+          ACTIONS
         </div>
       </div>
 
@@ -195,12 +195,12 @@ export const CommentModerationTable = ({
             `}
           >
             {/* Desktop Item */}
-            <div className="hidden md:grid grid-cols-12 gap-8 px-8 py-8 items-start">
-              <div className="col-span-1 flex justify-center pt-2">
+            <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-6 items-start hover:bg-accent/5 transition-colors">
+              <div className="col-span-1 flex justify-center pt-1">
                 <Checkbox
                   checked={selectedIds.has(comment.id)}
                   onCheckedChange={() => handleSelectOne(comment.id)}
-                  className="rounded-none border-border"
+                  className="rounded-none border-border/50 data-[state=checked]:bg-foreground data-[state=checked]:text-background"
                 />
               </div>
 
@@ -214,23 +214,23 @@ export const CommentModerationTable = ({
                   }}
                 >
                   <div className="flex items-center gap-3 cursor-pointer group/user overflow-hidden">
-                    <div className="w-10 h-10 rounded-none bg-muted flex items-center justify-center border border-border shrink-0 grayscale hover:grayscale-0 transition-all duration-700">
+                    <div className="w-8 h-8 rounded-none bg-muted/20 flex items-center justify-center border border-border/30 shrink-0">
                       {comment.user?.image ? (
                         <img
                           src={comment.user.image}
-                          className="w-full h-full object-cover"
+                          className="w-full h-full object-cover grayscale group-hover/user:grayscale-0 transition-all"
                         />
                       ) : (
-                        <span className="text-[10px] font-mono font-bold">
+                        <span className="text-[10px] font-mono">
                           {comment.user?.name.slice(0, 1)}
                         </span>
                       )}
                     </div>
-                    <div className="min-w-0">
-                      <div className="text-[13px] font-bold truncate group-hover/user:text-primary transition-colors tracking-tight">
+                    <div className="min-w-0 space-y-0.5">
+                      <div className="text-xs font-serif font-medium truncate group-hover/user:text-foreground transition-colors">
                         {comment.user?.name}
                       </div>
-                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest mt-0.5">
+                      <div className="text-[9px] font-mono text-muted-foreground uppercase tracking-widest">
                         {formatDate(comment.createdAt).split(" ")[0]}
                       </div>
                     </div>
@@ -246,7 +246,7 @@ export const CommentModerationTable = ({
                   <ExpandableContent
                     content={comment.content as JSONContent}
                     maxLines={3}
-                    className="text-[14px] leading-[1.6] text-foreground/90 font-sans tracking-normal"
+                    className="text-sm font-serif leading-relaxed text-foreground/80 tracking-wide"
                   />
                 </div>
 
@@ -278,9 +278,9 @@ export const CommentModerationTable = ({
                     </div>
                   )}
                   {comment.aiReason && (
-                    <div className="text-[10px] font-serif italic text-orange-600/80 flex items-center gap-2 bg-orange-500/5 px-2 py-1 self-start">
+                    <div className="text-[10px] font-mono text-orange-500 flex items-center gap-2 px-2 py-0.5 border border-orange-500/20 bg-orange-500/5 self-start">
                       <AlertTriangle size={10} />
-                      <span>{comment.aiReason}</span>
+                      <span>AI_FLAG: {comment.aiReason}</span>
                     </div>
                   )}
                 </div>
@@ -402,28 +402,25 @@ export const CommentModerationTable = ({
 };
 
 const StatusBadge = ({ status }: { status: string }) => {
-  const variants: Record<string, string> = {
-    published: "text-foreground",
-    pending: "text-orange-500",
-    verifying: "text-blue-500 font-serif italic",
-    deleted: "text-muted-foreground line-through opacity-50",
-  };
-
   const labels: Record<string, string> = {
     published: "已发布",
     pending: "待审核",
-    verifying: "识别中",
-    deleted: "垃圾箱",
+    verifying: "验证中",
+    deleted: "已删除",
+  };
+
+  const styles: Record<string, string> = {
+    published: "text-foreground",
+    pending: "text-amber-500",
+    verifying: "text-blue-500",
+    deleted: "text-muted-foreground",
   };
 
   return (
     <div
-      className={`font-mono text-[9px] font-bold uppercase tracking-[0.2em] relative inline-flex items-center gap-2 ${variants[status] || ""}`}
+      className={`font-mono text-[9px] uppercase tracking-widest ${styles[status] || ""}`}
     >
-      <span
-        className={`w-1 h-1 rounded-full ${status === "published" ? "bg-green-500" : status === "pending" ? "bg-orange-500" : status === "verifying" ? "bg-blue-500" : "bg-muted-foreground"}`}
-      ></span>
-      {labels[status] || status}
+      [{labels[status] || status}]
     </div>
   );
 };
