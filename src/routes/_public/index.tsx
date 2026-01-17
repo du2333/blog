@@ -20,7 +20,7 @@ function App() {
   return (
     <div className="flex flex-col w-full max-w-3xl mx-auto px-6 md:px-0 py-12 md:py-20 space-y-20">
       {/* Intro Section */}
-      <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out">
+      <section className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both">
         <header className="space-y-6">
           <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight text-foreground flex items-center gap-4">
             你好 <span className="animate-wave origin-[70%_70%]">👋</span>
@@ -80,7 +80,7 @@ function App() {
             className="text-sm font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
           >
             <Terminal size={14} />
-            cd /posts
+            cd /post
           </Link>
         </div>
       </section>
