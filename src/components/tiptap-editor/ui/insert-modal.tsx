@@ -148,7 +148,7 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
 
   return createPortal(
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-300 ease-out ${
         isMounted
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -156,79 +156,81 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
         onClick={onClose}
       />
 
-      {/* Modal Content */}
+      {/* Modal Content - Command Palette Style */}
       <div
         className={`
-            relative w-full max-w-4xl bg-background border border-border shadow-2xl 
-            flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
+            relative w-full max-w-2xl bg-background border border-border shadow-2xl 
+            flex flex-col overflow-hidden rounded-none max-h-[80vh] transition-all duration-300 ease-out transform
             ${
               isMounted
                 ? "translate-y-0 scale-100 opacity-100"
-                : "translate-y-8 scale-[0.99] opacity-0"
+                : "translate-y-4 scale-[0.98] opacity-0"
             }
        `}
       >
         {/* Header */}
-        <div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground">
-              {activeType === "LINK" ? (
-                <LinkIcon size={14} />
-              ) : (
-                <ImageIcon size={14} />
-              )}
-              <span>{activeType === "LINK" ? "超链接" : "媒体资产"}</span>
-            </div>
-            <h2 className="text-3xl font-serif font-medium text-foreground">
-              {activeType === "LINK" ? "插入超链接" : "选择媒体资产"}
-            </h2>
+        <div className="flex justify-between items-center p-6 border-b border-border/50 bg-muted/5">
+          <div className="flex items-center gap-3">
+             <div className="flex items-center justify-center w-8 h-8 border border-border bg-background text-foreground">
+                {activeType === "LINK" ? (
+                    <LinkIcon size={14} />
+                ) : (
+                    <ImageIcon size={14} />
+                )}
+             </div>
+             <div className="flex flex-col">
+                <span className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground leading-none mb-1">COMMAND</span>
+                <span className="text-sm font-bold font-mono tracking-wider text-foreground uppercase">
+                    {activeType === "LINK" ? "插入链接" : "选择媒体"}
+                </span>
+             </div>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="p-2 text-muted-foreground hover:text-foreground transition-colors hover:bg-muted/10"
           >
-            <X size={24} strokeWidth={1} />
+            <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
-        <div className="flex flex-col gap-8 flex-1 overflow-hidden min-h-0 px-8 md:px-12 pb-8">
+        <div className="flex flex-col flex-1 overflow-hidden min-h-0 bg-background">
           {activeType === "IMAGE" && (
-            <div className="flex flex-col gap-6 flex-1 min-h-0">
+            <div className="flex flex-col flex-1 min-h-0">
               {/* Search Bar */}
-              <div className="relative shrink-0 group">
+              <div className="relative shrink-0 border-b border-border/50">
                 <Search
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground/30 group-focus-within:text-foreground transition-colors"
-                  size={16}
-                  strokeWidth={1.5}
+                  className="absolute left-6 top-1/2 -translate-y-1/2 text-muted-foreground"
+                  size={14}
                 />
                 <input
                   type="text"
-                  placeholder="搜索媒体库内容..."
+                  placeholder="搜索媒体资产..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-muted/30 border-none text-foreground text-xs pl-12 pr-4 py-4 focus:ring-1 focus:ring-primary rounded-sm transition-all font-light"
+                  className="w-full bg-transparent border-none text-foreground text-xs font-mono pl-12 pr-6 py-4 focus:ring-0 placeholder:text-muted-foreground/40"
                 />
               </div>
 
               {/* Media Grid */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar border border-border bg-muted/20 p-4 rounded-sm">
+              <div className="flex-1 overflow-y-auto custom-scrollbar p-6 bg-muted/5">
                 {isPending ? (
-                  <div className="grid grid-cols-3 gap-4">
-                    {[1, 2, 3, 4, 5, 6].map((i) => (
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-4">
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
                       <div
                         key={i}
-                        className="aspect-square bg-muted animate-pulse rounded-sm"
+                        className="aspect-square bg-muted/20 animate-pulse border border-border/20"
                       />
                     ))}
                   </div>
                 ) : mediaItems.length === 0 ? (
-                  <div className="h-48 flex items-center justify-center text-muted-foreground font-serif italic text-sm">
-                    未找到相关资产
+                  <div className="h-48 flex flex-col items-center justify-center text-muted-foreground gap-2">
+                    <Search size={24} className="opacity-20" />
+                    <span className="text-xs font-mono">NO_ASSETS_FOUND</span>
                   </div>
                 ) : (
                   <div className="grid grid-cols-3 sm:grid-cols-4 gap-4 content-start pb-4">
@@ -245,12 +247,12 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
                     ))}
                     <div
                       ref={observerTarget}
-                      className="col-span-full h-8 flex items-center justify-center"
+                      className="col-span-full h-8 flex items-center justify-center p-4"
                     >
                       {isLoadingMore && (
                         <Loader2
-                          size={16}
-                          className="animate-spin text-zinc-400"
+                          size={14}
+                          className="animate-spin text-muted-foreground"
                         />
                       )}
                     </div>
@@ -260,35 +262,40 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
             </div>
           )}
 
-          {/* URL Input */}
-          <div className="space-y-4 pb-4">
-            <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-400 flex items-center gap-2">
-              <Globe size={12} strokeWidth={1.5} />
-              {activeType === "IMAGE" ? "或输入外部链接" : "目标链接地址"}
-            </label>
-            <input
-              type="text"
-              autoFocus={activeType === "LINK"}
-              value={inputUrl}
-              onChange={(e) => {
-                setInputUrl(e.target.value);
-                if (selectedMediaKey) setSelectedMediaKey(null);
-              }}
-              onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              placeholder="https://example.com/..."
-              className="w-full bg-transparent border-b border-border text-foreground text-sm py-4 focus:border-foreground focus:outline-none transition-all"
-            />
+          {/* URL Input Area */}
+          <div className="p-6 space-y-4 border-t border-border/50 bg-background">
+             <div className="flex items-center gap-2 mb-2">
+                 <Globe size={12} className="text-muted-foreground" />
+                 <label className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground">
+                    {activeType === "IMAGE" ? "外部链接" : "目标地址"}
+                 </label>
+             </div>
+            <div className="group relative">
+                <span className="absolute left-0 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-xs pointer-events-none group-focus-within:text-foreground transition-colors"></span>
+                <input
+                type="text"
+                autoFocus={activeType === "LINK"}
+                value={inputUrl}
+                onChange={(e) => {
+                    setInputUrl(e.target.value);
+                    if (selectedMediaKey) setSelectedMediaKey(null);
+                }}
+                onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
+                placeholder="https://..."
+                className="w-full bg-transparent border-b border-border text-foreground font-mono text-sm py-2 pl-4 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/20"
+                />
+            </div>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="p-8 md:p-12 py-8 border-t border-border flex flex-col sm:flex-row justify-end gap-4 shrink-0">
+        {/* Actions Footer */}
+        <div className="flex items-center justify-end gap-0 border-t border-border/50">
           <button
             type="button"
             onClick={onClose}
-            className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
+            className="flex-1 px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground hover:bg-muted/10 transition-colors border-r border-border/50"
           >
-            取消
+            [ 取消 ]
           </button>
           <button
             type="button"
@@ -298,11 +305,11 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
                 ? !inputUrl.trim() && !initialUrl.trim()
                 : !inputUrl.trim()
             }
-            className="px-10 py-4 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all shadow-xl shadow-black/10 disabled:opacity-20 disabled:cursor-not-allowed"
+            className="flex-1 px-6 py-4 text-[10px] font-mono font-bold uppercase tracking-widest text-foreground hover:bg-foreground hover:text-background transition-all disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:text-foreground"
           >
             {activeType === "LINK" && !inputUrl.trim() && initialUrl.trim()
-              ? "移除链接"
-              : "确认插入"}
+              ? "[ 移除 ]"
+              : "[ 确认 ]"}
           </button>
         </div>
       </div>

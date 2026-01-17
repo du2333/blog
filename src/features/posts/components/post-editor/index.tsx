@@ -1,21 +1,6 @@
 import { useBlocker } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Calendar,
-  Check,
-  Clock,
-  Cpu,
-  Eye,
-  EyeOff,
-  FileText,
-  Globe,
-  Link as LinkIcon,
-  Loader2,
-  RefreshCw,
-  Sparkles,
-  Tag,
-  X,
-} from "lucide-react";
+import { Loader2, Sparkles } from "lucide-react";
 import { useCallback, useState } from "react";
 import TextareaAutosize from "react-textarea-autosize";
 import { useAutoSave, usePostActions } from "./hooks";
@@ -129,74 +114,59 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
       />
 
       {/* Control Header */}
-      <header className="min-h-16 md:h-20 flex items-center justify-between px-4 md:px-8 shrink-0 z-40 bg-background/80 backdrop-blur-md border-b border-border/50 gap-4">
+      <header className="h-16 flex items-center justify-between px-6 border-b border-border/30 bg-background z-40 sticky top-0">
         <div className="flex-1 min-w-0 overflow-hidden">
           <Breadcrumbs />
         </div>
 
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={() => {
-              if (post.slug) window.open(`/post/${post.slug}`, "_blank");
-            }}
-            disabled={!post.hasPublicCache}
-            title={!post.hasPublicCache ? "前台暂无此文章" : "预览前台文章"}
-            className="px-3 md:px-6 h-9 md:h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-all gap-2 group disabled:opacity-30"
-          >
-            <Eye
-              size={14}
-              className="group-hover:scale-110 transition-transform"
-            />
-            <span className="hidden md:inline">预览</span>
-          </Button>
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              onClick={() => {
+                if (post.slug) window.open(`/post/${post.slug}`, "_blank");
+              }}
+              disabled={!post.hasPublicCache}
+              title={!post.hasPublicCache ? "前台暂无此文章" : "预览前台文章"}
+              className="h-8 px-2 rounded-none text-[10px] font-mono hover:bg-transparent hover:text-foreground text-muted-foreground transition-colors disabled:opacity-30"
+            >
+              <span className="mr-2 opacity-50">[</span>
+              预览
+              <span className="ml-2 opacity-50">]</span>
+            </Button>
 
-          <Button
-            onClick={handleProcessData}
-            disabled={
-              processState !== "IDLE" || saveStatus === "SAVING" || !isPostDirty
-            }
-            title={
-              !isPostDirty
-                ? "内容已与前台同步"
-                : !initialData.isSynced
-                  ? "数据库已有待发布更新"
-                  : "当前有未保存或未发布的改动"
-            }
-            className={`
-              px-3 md:px-6 h-9 md:h-10 rounded-sm text-[10px] uppercase tracking-widest font-bold transition-all gap-2 shadow-lg shadow-black/5
-              ${
-                processState === "SUCCESS"
-                  ? "bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/10"
-                  : post.status === "draft" && post.hasPublicCache
-                    ? "bg-orange-500 text-white hover:bg-orange-600 disabled:opacity-20"
-                    : "bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-20"
+            <div className="h-4 w-px bg-border/30" />
+
+            <Button
+              onClick={handleProcessData}
+              disabled={
+                processState !== "IDLE" ||
+                saveStatus === "SAVING" ||
+                !isPostDirty
               }
-            `}
-          >
-            {processState === "PROCESSING" ? (
-              <Loader2 size={14} className="animate-spin" />
-            ) : processState === "SUCCESS" ? (
-              <Check size={14} strokeWidth={3} />
-            ) : post.status === "draft" && post.hasPublicCache ? (
-              <EyeOff size={14} />
-            ) : (
-              <Cpu size={14} />
-            )}
-            <span className="hidden md:inline">
+              variant="ghost"
+              className={`
+                    h-8 px-2 rounded-none text-[10px] font-mono transition-colors disabled:opacity-30 hover:bg-transparent
+                    ${
+                      processState === "SUCCESS"
+                        ? "text-emerald-500"
+                        : post.status === "draft" && post.hasPublicCache
+                          ? "text-orange-500"
+                          : "text-foreground hover:text-foreground/80"
+                    }
+                `}
+            >
+              <span className="mr-2 opacity-50">[</span>
               {processState === "PROCESSING"
-                ? post.status === "draft" && post.hasPublicCache
-                  ? "下架中"
-                  : "发布中"
+                ? "处理中..."
                 : processState === "SUCCESS"
-                  ? post.status === "draft" && post.hasPublicCache
-                    ? "已下架"
-                    : "已发布"
+                  ? "成功"
                   : post.status === "draft" && post.hasPublicCache
                     ? "下架"
                     : "发布"}
-            </span>
-          </Button>
+              <span className="ml-2 opacity-50">]</span>
+            </Button>
+          </div>
         </div>
       </header>
 
@@ -206,7 +176,7 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         className="flex-1 overflow-y-auto custom-scrollbar relative scroll-smooth animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both delay-100"
       >
         <div className="w-full max-w-7xl mx-auto py-20 px-6 md:px-12 grid grid-cols-1 xl:grid-cols-[1fr_240px] gap-12 items-start">
-          <div className="min-w-0 w-full max-w-3xl mx-auto">
+          <div className="min-w-0 w-full max-w-4xl mx-auto">
             {/* Title Area */}
             <div className="mb-12">
               <TextareaAutosize
@@ -215,120 +185,40 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                   setPost((prev) => ({ ...prev, title: e.target.value }))
                 }
                 minRows={1}
-                placeholder="文章标题..."
-                className="w-full bg-transparent text-5xl md:text-7xl font-serif font-medium tracking-tight text-foreground placeholder:text-muted/50 focus:outline-none transition-all overflow-hidden leading-[1.1] resize-none border-none p-0"
+                placeholder="在此输入文章标题..."
+                className="w-full bg-transparent text-4xl md:text-6xl font-serif font-medium tracking-tight text-foreground placeholder:text-muted-foreground/20 focus:outline-none transition-all overflow-hidden leading-[1.2] resize-none border-none p-0"
               />
             </div>
 
-            {/* Notion-style Properties Section */}
-            <div className="mb-20 space-y-1 py-8 border-y border-border/50">
-              {/* Property Row: Status */}
-              <div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground">
-                  <Globe size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    状态
-                  </span>
-                </div>
-                <div className="flex-1 flex gap-2">
+            {/* Metadata Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-x-12 gap-y-8 mb-16 border-t border-border/30 pt-8">
+              {/* 1. Status */}
+              <div className="space-y-3">
+                <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                  状态
+                </label>
+                <div className="flex items-center gap-4">
                   {POST_STATUSES.map((s) => (
-                    <Button
+                    <button
                       key={s}
-                      variant={post.status === s ? "default" : "ghost"}
-                      size="sm"
                       onClick={() => handlePostChange({ status: s })}
                       className={`
-                      px-3 h-7 text-[10px] uppercase tracking-wider font-bold rounded-sm transition-all
-                      ${
-                        post.status === s
-                          ? ""
-                          : "text-muted-foreground hover:text-foreground hover:bg-accent"
-                      }
-                    `}
+                                text-[10px] uppercase tracking-wider font-mono transition-colors
+                                ${post.status === s ? "text-foreground font-bold border-b border-foreground" : "text-muted-foreground hover:text-foreground"}
+                            `}
                     >
-                      {
-                        {
-                          draft: "草稿",
-                          published: "公开",
-                        }[s]
-                      }
-                    </Button>
+                      {s === "draft" ? "草稿" : "已发布"}
+                    </button>
                   ))}
                 </div>
               </div>
 
-              {/* Property Row: Slug */}
-              <div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground">
-                  <LinkIcon size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    永久链接
-                  </span>
-                </div>
-                <div className="flex-1 flex items-center gap-2">
-                  <Input
-                    type="text"
-                    value={post.slug || ""}
-                    onChange={(e) => handlePostChange({ slug: e.target.value })}
-                    placeholder="文章链接..."
-                    className="flex-1 bg-transparent border-none shadow-none text-xs font-mono text-foreground focus-visible:ring-0 placeholder:text-muted-foreground/30 px-0 h-auto"
-                  />
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleGenerateSlug}
-                    disabled={isGeneratingSlug}
-                    className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm"
-                    title="自动生成"
-                  >
-                    {isGeneratingSlug ? (
-                      <Loader2 size={12} className="animate-spin" />
-                    ) : (
-                      <Sparkles size={12} />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              {/* Property Row: Tags */}
-              <div className="group flex items-start py-3 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground pt-1">
-                  <Tag size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    标签
-                  </span>
-                </div>
-                <div className="flex-1">
-                  <TagSelector
-                    value={post.tagIds}
-                    onChange={(tagIds) => handlePostChange({ tagIds })}
-                  />
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleGenerateTags}
-                  disabled={isGeneratingTags}
-                  className="h-9 w-9 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm ml-2"
-                  title="AI 自动生成标签"
-                >
-                  {isGeneratingTags ? (
-                    <Loader2 size={14} className="animate-spin" />
-                  ) : (
-                    <Sparkles size={14} />
-                  )}
-                </Button>
-              </div>
-
-              {/* Property Row: Date */}
-              <div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground">
-                  <Calendar size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    发布时间
-                  </span>
-                </div>
-                <div className="flex-1">
+              {/* 2. Date */}
+              <div className="space-y-3">
+                <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                  发布时间
+                </label>
+                <div className="font-mono text-xs">
                   <DatePicker
                     value={
                       post.publishedAt
@@ -342,20 +232,17 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                           : null,
                       })
                     }
-                    className="p-0! border-none! bg-transparent! text-xs text-foreground"
+                    className="p-0! border-none! bg-transparent! text-xs text-foreground font-mono h-auto!"
                   />
                 </div>
               </div>
 
-              {/* Property Row: Read Time */}
-              <div className="group flex items-center min-h-10 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground">
-                  <Clock size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    阅读时间
-                  </span>
-                </div>
-                <div className="flex-1 flex items-center gap-2">
+              {/* 3. Read Time */}
+              <div className="space-y-3">
+                <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                  阅读时长
+                </label>
+                <div className="flex items-center gap-2 group">
                   <Input
                     type="number"
                     value={post.readTimeInMinutes}
@@ -364,62 +251,107 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
                         readTimeInMinutes: Number.parseInt(e.target.value) || 0,
                       })
                     }
-                    className="w-16 bg-transparent border-none shadow-none text-xs text-foreground focus-visible:ring-0 px-0 h-auto"
+                    className="w-12 bg-transparent border-none shadow-none text-xs font-mono text-foreground focus-visible:ring-0 px-0 h-auto p-0"
                   />
-                  <span className="text-[10px] text-muted-foreground/50 uppercase tracking-widest font-bold">
+                  <span className="text-[10px] font-mono text-muted-foreground">
                     分钟
                   </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
+                  <button
                     onClick={handleCalculateReadTime}
                     disabled={isCalculatingReadTime}
-                    className="h-7 w-7 text-muted-foreground/50 hover:text-foreground opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all rounded-sm"
-                    title="自动计算"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 text-muted-foreground hover:text-foreground"
                   >
                     {isCalculatingReadTime ? (
-                      <Loader2 size={12} className="animate-spin" />
-                    ) : (
-                      <Sparkles size={12} />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              {/* Property Row: Summary */}
-              <div className="group flex items-start py-3 px-2 hover:bg-accent rounded-sm transition-colors">
-                <div className="w-32 flex items-center gap-2 text-muted-foreground pt-1">
-                  <FileText size={14} strokeWidth={1.5} />
-                  <span className="text-[11px] uppercase tracking-wider font-medium">
-                    摘要
-                  </span>
-                </div>
-                <div className="flex-1 flex flex-col gap-2">
-                  <TextareaAutosize
-                    value={post.summary || ""}
-                    onChange={(e) =>
-                      handlePostChange({ summary: e.target.value })
-                    }
-                    placeholder="简单介绍一下内容..."
-                    className="w-full bg-transparent text-xs leading-relaxed text-foreground focus:outline-none resize-none placeholder:text-muted-foreground/30"
-                  />
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleGenerateSummary}
-                    disabled={isGeneratingSummary}
-                    className="w-fit h-7 px-3 bg-accent text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground rounded-sm transition-all gap-2"
-                  >
-                    {isGeneratingSummary ? (
                       <Loader2 size={10} className="animate-spin" />
                     ) : (
                       <Sparkles size={10} />
                     )}
-                    <span>
-                      {isGeneratingSummary ? "生成中..." : "AI 生成摘要"}
-                    </span>
-                  </Button>
+                  </button>
                 </div>
+              </div>
+
+              {/* 4. Slug (Full Width) */}
+              <div className="col-span-1 md:col-span-3 space-y-3">
+                <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                  链接 slug
+                </label>
+                <div className="flex items-center gap-2 group">
+                  <span className="text-xs text-muted-foreground font-mono">
+                    /post/
+                  </span>
+                  <Input
+                    type="text"
+                    value={post.slug || ""}
+                    onChange={(e) => handlePostChange({ slug: e.target.value })}
+                    className="flex-1 bg-transparent border-none shadow-none text-xs font-mono text-foreground focus-visible:ring-0 px-0 h-auto p-0 placeholder:text-muted-foreground/30"
+                    placeholder="your-post-slug"
+                  />
+                  <button
+                    onClick={handleGenerateSlug}
+                    disabled={isGeneratingSlug}
+                    className="opacity-0 group-hover:opacity-100 transition-opacity ml-2 text-muted-foreground hover:text-foreground"
+                  >
+                    {isGeneratingSlug ? (
+                      <Loader2 size={10} className="animate-spin" />
+                    ) : (
+                      <Sparkles size={10} />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* 5. Tags (Full Width) */}
+              <div className="col-span-1 md:col-span-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                    标签
+                  </label>
+                  <button
+                    onClick={handleGenerateTags}
+                    disabled={isGeneratingTags}
+                    className="text-[9px] font-mono text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                  >
+                    {isGeneratingTags ? (
+                      <Loader2 size={8} className="animate-spin" />
+                    ) : (
+                      <Sparkles size={8} />
+                    )}
+                    自动生成
+                  </button>
+                </div>
+                <TagSelector
+                  value={post.tagIds}
+                  onChange={(tagIds) => handlePostChange({ tagIds })}
+                />
+              </div>
+
+              {/* 6. Summary (Full Width) */}
+              <div className="col-span-1 md:col-span-3 space-y-3">
+                <div className="flex items-center justify-between">
+                  <label className="text-[9px] uppercase tracking-widest text-muted-foreground font-mono">
+                    摘要
+                  </label>
+                  <button
+                    onClick={handleGenerateSummary}
+                    disabled={isGeneratingSummary}
+                    className="text-[9px] font-mono text-muted-foreground hover:text-foreground flex items-center gap-1 transition-colors"
+                  >
+                    {isGeneratingSummary ? (
+                      <Loader2 size={8} className="animate-spin" />
+                    ) : (
+                      <Sparkles size={8} />
+                    )}
+                    自动生成
+                  </button>
+                </div>
+                <TextareaAutosize
+                  value={post.summary || ""}
+                  onChange={(e) =>
+                    handlePostChange({ summary: e.target.value })
+                  }
+                  placeholder="简短的介绍..."
+                  className="w-full bg-transparent text-xs font-mono leading-relaxed text-foreground focus:outline-none resize-none placeholder:text-muted-foreground/30"
+                />
               </div>
             </div>
 
@@ -443,51 +375,34 @@ export function PostEditor({ initialData, onSave }: PostEditorProps) {
         </div>
       </div>
 
-      {/* Floating Status Bar (Bottom Right) */}
-      <div className="fixed bottom-8 right-8 z-40 flex items-center gap-4 px-6 py-3 bg-background/80 backdrop-blur-md border border-border/50 rounded-sm shadow-2xl">
-        <div className="flex items-center gap-4 border-r border-border/50 pr-4 text-[10px] font-medium text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <span className="text-foreground">
-              {JSON.stringify(post.contentJson || "").length}
-            </span>
-            <span className="opacity-40">字符</span>
+      {/* Fixed Terminal Status Bar */}
+      <div className="fixed bottom-0 inset-x-0 h-8 bg-black text-white z-50 flex items-center justify-between px-4 text-[10px] font-mono uppercase tracking-widest border-t border-white/20">
+        <div className="flex items-center gap-6">
+          <div className="flex items-center gap-2">
+            <span className="opacity-50">字符:</span>
+            <span>{JSON.stringify(post.contentJson || "").length}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <span className="text-foreground">
+          <div className="flex items-center gap-2">
+            <span className="opacity-50">单词:</span>
+            <span>
               {Math.ceil(JSON.stringify(post.contentJson || "").length / 5)}
             </span>
-            <span className="opacity-40">单词</span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
+        <div className="flex items-center gap-4">
           {saveStatus === "ERROR" ? (
-            <div className="flex items-center gap-2 text-red-500">
-              <X size={14} />
-              <span>错误</span>
-            </div>
+            <span className="text-red-500 font-bold">保存失败</span>
           ) : saveStatus === "SAVING" ? (
-            <div className="flex items-center gap-2 text-muted-foreground">
-              <RefreshCw size={14} className="animate-spin" />
-              <span>正在保存</span>
-            </div>
+            <span className="animate-pulse">保存中...</span>
           ) : saveStatus === "PENDING" ? (
-            <div className="flex items-center gap-2 text-amber-500">
-              <div className="w-1.5 h-1.5 rounded-full bg-current animate-pulse" />
-              <span>已修改</span>
-            </div>
+            <span className="text-amber-500">有未保存更改</span>
           ) : (
-            <div className="flex items-center gap-2 text-muted-foreground/30">
-              <Check size={14} strokeWidth={3} />
-              <span className="opacity-50">
-                {lastSaved
-                  ? lastSaved.toLocaleTimeString([], {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })
-                  : "已同步"}
-              </span>
-            </div>
+            <span className="text-emerald-500">
+              {lastSaved
+                ? `已保存 ${lastSaved.toLocaleTimeString([], { hour12: false, hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
+                : "已同步"}
+            </span>
           )}
         </div>
       </div>

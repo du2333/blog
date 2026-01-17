@@ -44,15 +44,15 @@ const ToolbarButton: React.FC<ToolbarButtonProps> = ({
   <button
     onClick={onClick}
     className={clsx(
-      "p-2 rounded-md transition-all duration-300 flex items-center justify-center gap-2 group relative",
+      "h-8 w-8 flex items-center justify-center transition-colors duration-200 group relative rounded-none",
       isActive
-        ? "bg-primary text-primary-foreground shadow-sm"
-        : "text-muted-foreground hover:bg-accent hover:text-foreground",
+        ? "bg-foreground text-background"
+        : "text-muted-foreground hover:text-foreground hover:bg-muted/20",
     )}
     title={label}
     type="button"
   >
-    <Icon size={16} />
+    <Icon size={14} strokeWidth={isActive ? 2.5 : 2} />
   </button>
 );
 
@@ -123,7 +123,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
   };
 
   return (
-    <div className="sticky top-0 z-30 mb-12 py-3 bg-background/80 backdrop-blur-xl border-b border-border flex flex-wrap items-center gap-1.5 px-2 transition-all duration-500">
+    <div className="sticky top-0 z-30 mb-8 py-2 bg-background border-b border-border/50 flex flex-wrap items-center gap-1 px-4">
       {/* Headings */}
       <ToolbarButton
         onClick={() =>
@@ -131,7 +131,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         }
         isActive={isHeading2}
         icon={Heading2}
-        label="大标题"
+        label="二级标题"
       />
       <ToolbarButton
         onClick={() =>
@@ -139,10 +139,10 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         }
         isActive={isHeading3}
         icon={Heading3}
-        label="小标题"
+        label="三级标题"
       />
 
-      <div className="h-6 w-px bg-border mx-2"></div>
+      <div className="h-4 w-px bg-border/50 mx-2"></div>
 
       {/* Formatting */}
       <ToolbarButton
@@ -182,7 +182,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         label="代码块"
       />
 
-      <div className="h-6 w-px bg-border mx-2"></div>
+      <div className="h-4 w-px bg-border/50 mx-2"></div>
 
       {/* Lists & Blocks */}
       <ToolbarButton
@@ -204,7 +204,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         label="引用"
       />
 
-      <div className="h-6 w-px bg-border mx-2"></div>
+      <div className="h-4 w-px bg-border/50 mx-2"></div>
 
       {/* Inserts */}
       <ToolbarButton
@@ -220,7 +220,7 @@ const EditorToolbar: React.FC<EditorToolbarProps> = ({
         label="插入图片"
       />
 
-      <div className="ml-auto flex gap-1.5">
+      <div className="ml-auto flex gap-1">
         <ToolbarButton
           onClick={() => editor?.chain().focus().undo().run()}
           icon={Undo}

@@ -62,10 +62,10 @@ export function EditorTableOfContents({ editor }: { editor: Editor }) {
                   handleItemClick(node.id);
                 }}
                 className={cn(
-                  "block text-left w-full text-xs transition-all duration-300 leading-relaxed relative border-l-2 pl-4",
+                  "block text-left w-full text-xs transition-all duration-300 leading-relaxed relative border-l pl-4 font-mono",
                   activeId === node.id
-                    ? "border-foreground text-foreground font-medium"
-                    : "border-transparent text-muted-foreground hover:text-foreground",
+                    ? "border-foreground text-foreground font-bold"
+                    : "border-border/30 text-muted-foreground hover:text-foreground hover:border-border/60",
                 )}
                 style={{ marginLeft: `${(node.level - 1) * 0.5}rem` }}
               >
