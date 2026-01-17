@@ -1,5 +1,4 @@
 import { useNavigate } from "@tanstack/react-router";
-import { AlignLeft } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import type { TableOfContentsItem } from "@/features/posts/utils/toc";
 import { useActiveTOC } from "@/hooks/use-active-toc";
@@ -35,17 +34,11 @@ export default function TableOfContents({
   return (
     <nav
       ref={navRef}
-      className="sticky top-32 self-start hidden lg:block w-[200px] animate-in fade-in duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar fill-mode-backwards"
+      className="sticky top-32 self-start block w-60 animate-in fade-in duration-700 delay-500 max-h-[calc(100vh-10rem)] overflow-y-auto overflow-x-hidden custom-scrollbar fill-mode-backwards"
     >
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-8 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground">
-        <AlignLeft size={12} />
-        <span>目录索引</span>
-      </div>
-
       {/* Root List Container */}
       <div className="relative toc-root">
-        <ul className="space-y-4">
+        <ul className="space-y-3">
           {headers.map((node) => (
             <li key={node.id}>
               <a
@@ -65,14 +58,14 @@ export default function TableOfContents({
                   }
                 }}
                 className={`
-                            block text-xs transition-all duration-300 leading-relaxed relative border-l-2
+                            block text-[11px] transition-all duration-300 leading-relaxed relative border-l-[1.5px] py-0.5
                             ${
                               activeId === node.id
-                                ? "text-foreground border-foreground pl-4 font-medium"
-                                : "text-muted-foreground border-transparent pl-4 hover:text-foreground"
+                                ? "text-foreground border-foreground pl-3 font-medium"
+                                : "text-muted-foreground/60 border-border/30 pl-3 hover:text-foreground hover:border-border/60"
                             }
                         `}
-                style={{ marginLeft: `${(node.level - 2) * 1}rem` }}
+                style={{ marginLeft: `${(node.level - 2) * 0.5}rem` }}
               >
                 {node.text}
               </a>

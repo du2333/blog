@@ -1,5 +1,4 @@
 import { ClientOnly } from "@tanstack/react-router";
-import { Download, X, ZoomIn } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -78,20 +77,22 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
           {...props}
         />
 
-        {/* Hover Hint Overlay */}
+        {/* Hover Hint Overlay - Minimalist */}
         {showHint && (
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
-            <div className="bg-popover/90 backdrop-blur-md p-4 rounded-full border border-border/50 transform scale-90 group-hover:scale-100 transition-all duration-500 shadow-2xl">
-              <ZoomIn size={20} className="text-foreground/70" />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/2 transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100 pointer-events-none">
+            <div className="bg-background/80 backdrop-blur-sm px-3 py-1.5 rounded-full border border-border/20 transform scale-95 group-hover:scale-100 transition-all duration-500">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-foreground/70">
+                点击查看大图
+              </span>
             </div>
           </div>
         )}
       </div>
 
-      {/* Lightbox Portal - Always mounted but controlled via visibility/opacity */}
+      {/* Lightbox Portal */}
       {createPortal(
         <div
-          className={`fixed inset-0 z-200 flex items-center justify-center transition-all duration-500 ease-in-out ${
+          className={`fixed inset-0 z-200 flex items-center justify-center transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
             isOpen
               ? "opacity-100 pointer-events-auto"
               : "opacity-0 pointer-events-none"
@@ -99,59 +100,60 @@ const ZoomableImageInternal: React.FC<ZoomableImageProps> = ({
         >
           {/* Backdrop */}
           <div
-            className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+            className="absolute inset-0 bg-background/98 backdrop-blur-xl"
             onClick={handleClose}
           />
 
           {/* Controls */}
           <div
-            className={`absolute top-0 left-0 right-0 p-10 flex justify-between items-start z-210 transition-all duration-500 ease-in-out ${
+            className={`absolute top-0 left-0 right-0 p-8 flex justify-between items-start z-210 transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] ${
               isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
             }`}
           >
-            <div className="flex flex-col">
-              <span className="text-[10px] font-mono font-medium text-muted-foreground tracking-[0.3em]">
+            <div className="flex flex-col gap-1">
+              <span className="text-xs font-mono font-medium text-foreground tracking-widest uppercase">
+                图片预览
+              </span>
+              <span className="text-[10px] font-mono text-muted-foreground tracking-wider opacity-60">
                 {alt || "Untitled"}
               </span>
             </div>
-            <div className="flex gap-6">
-              <a href={originalSrc} download target="_blank" rel="noreferrer">
-                <button className="p-2 text-muted-foreground hover:text-foreground transition-all duration-300">
-                  <Download size={18} />
-                </button>
+
+            <div className="flex gap-6 items-center">
+              <a
+                href={originalSrc}
+                download
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center gap-2"
+              >
+                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">
+                  下载
+                </span>
               </a>
               <button
                 onClick={handleClose}
-                className="p-2 text-muted-foreground hover:text-foreground transition-all duration-300"
+                className="group flex items-center gap-2"
               >
-                <X size={22} />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground group-hover:text-foreground transition-colors">
+                  关闭
+                </span>
               </button>
             </div>
           </div>
 
           {/* Image */}
           <div
-            className={`relative z-205 p-6 md:p-20 w-full h-full flex items-center justify-center transition-all duration-500 ease-in-out ${
-              isOpen ? "scale-100 opacity-100" : "scale-[1.01] opacity-0"
+            className={`relative z-205 p-6 md:p-12 w-full h-full flex items-center justify-center transition-all duration-700 delay-100 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+              isOpen ? "scale-100 opacity-100" : "scale-[0.98] opacity-0"
             }`}
           >
             <img
               src={src}
               alt={alt}
               loading="eager"
-              className="max-w-full max-h-full object-contain shadow-2xl"
+              className="max-w-full max-h-full object-contain shadow-none"
             />
-          </div>
-
-          {/* Footer Decoration */}
-          <div
-            className={`absolute bottom-12 left-0 right-0 text-center pointer-events-none transition-opacity duration-500 delay-200 ${
-              isOpen ? "opacity-100" : "opacity-0"
-            }`}
-          >
-            <span className="text-[9px] font-mono text-muted-foreground uppercase tracking-[0.8em]">
-              Esc or Click to Return
-            </span>
           </div>
         </div>,
         document.body,
