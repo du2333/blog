@@ -15,14 +15,23 @@ import * as CacheService from "@/features/cache/cache.service";
 import { serverEnv } from "@/lib/env/server.env";
 
 // Schema for single range data
+const MetricSchema = z.object({
+  value: z.number(),
+  prev: z.number().optional(),
+});
+
 const RangeDataSchema = z.object({
   traffic: z.array(TrafficDataSchema),
   overview: z
     .object({
-      visitors: z.number(),
-      pageViews: z.number(),
+      visitors: MetricSchema,
+      pageViews: MetricSchema,
+      visits: MetricSchema,
+      bounces: MetricSchema,
+      totalTime: MetricSchema,
     })
     .optional(),
+  topPages: z.array(z.object({ x: z.string(), y: z.number() })).optional(),
   lastUpdated: z.number(),
 });
 
@@ -41,43 +50,103 @@ async function fetchUmamiDataForRange(
   const now = new Date();
   const endAt = now.getTime();
   let startAt: number;
+  let prevStartAt: number;
 
   if (range === "24h") {
     const d = new Date(now);
     d.setHours(d.getHours() - 24, 0, 0, 0);
     startAt = d.getTime();
+    const prev = new Date(startAt);
+    prev.setHours(prev.getHours() - 24);
+    prevStartAt = prev.getTime();
   } else if (range === "7d") {
     const d = new Date(now);
     d.setDate(d.getDate() - 7);
     d.setHours(0, 0, 0, 0);
     startAt = d.getTime();
+    const prev = new Date(startAt);
+    prev.setDate(prev.getDate() - 7);
+    prevStartAt = prev.getTime();
   } else if (range === "30d") {
     const d = new Date(now);
     d.setDate(d.getDate() - 30);
     d.setHours(0, 0, 0, 0);
     startAt = d.getTime();
+    const prev = new Date(startAt);
+    prev.setDate(prev.getDate() - 30);
+    prevStartAt = prev.getTime();
   } else {
     // 90d
     const d = new Date(now);
     d.setDate(d.getDate() - 90);
     d.setHours(0, 0, 0, 0);
     startAt = d.getTime();
+    const prev = new Date(startAt);
+    prev.setDate(prev.getDate() - 90);
+    prevStartAt = prev.getTime();
   }
 
   const unit = range === "24h" ? "hour" : "day";
 
-  const [stats, pageViews] = await Promise.all([
+  const [stats, prevStats, pageViews, topPagesRaw] = await Promise.all([
     umami.getStats(startAt, endAt),
+    umami.getStats(prevStartAt, startAt),
     umami.getPageViews(startAt, endAt, unit),
+    umami.getMetrics(startAt, endAt, "path", 200),
   ]);
+
+  // Normalize and aggregate
+  const aggregated = new Map<string, number>();
+  (topPagesRaw || []).forEach((p) => {
+    // Normalize: remove query and hash
+    let path = p.x;
+    if (path.includes("#")) path = path.split("#")[0];
+    if (path.includes("?")) path = path.split("?")[0];
+
+    aggregated.set(path, (aggregated.get(path) || 0) + p.y);
+  });
+
+  // Filter and convert to array of objects
+  const mergedPages = Array.from(aggregated.entries())
+    .map(([x, y]) => ({ x, y }))
+    .filter((p) => p.x.startsWith("/post/"))
+    .sort((a, b) => b.y - a.y)
+    .slice(0, 5);
+
+  // Fetch titles for top pages
+  const topPages = mergedPages.map((p) => {
+    const slug = p.x.replace(/^\/post\//, "").replace(/\/$/, "");
+    return {
+      x: slug || p.x, // Use slug
+      y: p.y,
+    };
+  });
 
   let cachedOverview;
   const cachedTraffic: Array<{ date: number; views: number }> = [];
 
   if (stats) {
     cachedOverview = {
-      visitors: stats.visitors,
-      pageViews: stats.pageviews,
+      visitors: {
+        value: stats.visitors.value,
+        prev: prevStats?.visitors.value || 0,
+      },
+      pageViews: {
+        value: stats.pageviews.value,
+        prev: prevStats?.pageviews.value || 0,
+      },
+      visits: {
+        value: stats.visits.value,
+        prev: prevStats?.visits.value || 0,
+      },
+      bounces: {
+        value: stats.bounces.value,
+        prev: prevStats?.bounces.value || 0,
+      },
+      totalTime: {
+        value: stats.totaltime.value,
+        prev: prevStats?.totaltime.value || 0,
+      },
     };
   }
 
@@ -114,6 +183,7 @@ async function fetchUmamiDataForRange(
 
   return {
     overview: cachedOverview,
+    topPages,
     traffic: cachedTraffic,
     lastUpdated: Date.now(),
   };

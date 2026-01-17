@@ -6,8 +6,12 @@ const UmamiMetricSchema = z
     value: z.number(),
     prev: z.number().optional(),
   })
-  .transform((d) => d.value)
-  .or(z.number()); // Fallback if it returns raw number (unlikely in V2 but safe)
+  .or(
+    z.number().transform((n) => ({
+      value: n,
+      prev: 0,
+    })),
+  );
 
 export const UmamiStatsResponseSchema = z.object({
   pageviews: UmamiMetricSchema,
@@ -173,6 +177,27 @@ export class UmamiClient {
       startAt,
       endAt,
       unit,
+    });
+  }
+
+  async getMetrics(
+    startAt: number,
+    endAt: number,
+    type:
+      | "path"
+      | "referrer"
+      | "browser"
+      | "os"
+      | "device"
+      | "country" = "path",
+    limit: number = 10,
+  ): Promise<Array<{ x: string; y: number }> | null> {
+    const schema = z.array(z.object({ x: z.string(), y: z.number() }));
+    return this.request("/metrics", schema, {
+      startAt,
+      endAt,
+      type,
+      limit,
     });
   }
 }

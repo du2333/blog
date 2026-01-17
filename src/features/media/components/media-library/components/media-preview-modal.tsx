@@ -125,7 +125,7 @@ export function MediaPreviewModal({
         </div>
 
         {/* --- Metadata Sidebar (Right/Bottom) --- */}
-        <div className="flex-1 md:w-[400px] md:flex-none flex flex-col min-h-0 bg-popover">
+        <div className="flex-1 md:w-100 md:flex-none flex flex-col min-h-0 bg-popover">
           {/* Header */}
           <div className="p-8 md:p-10 border-b border-border">
             <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em] mb-4">

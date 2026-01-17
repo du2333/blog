@@ -20,6 +20,11 @@ export const TrafficDataSchema = z.object({
   views: z.number(),
 });
 
+const MetricSchema = z.object({
+  value: z.number(),
+  prev: z.number().optional(),
+});
+
 export const DashboardResponseSchema = z.object({
   stats: DashboardStatsSchema,
   activities: z.array(ActivityLogItemSchema),
@@ -30,9 +35,15 @@ export const DashboardResponseSchema = z.object({
         traffic: z.array(TrafficDataSchema),
         overview: z
           .object({
-            visitors: z.number(),
-            pageViews: z.number(),
+            visitors: MetricSchema,
+            pageViews: MetricSchema,
+            visits: MetricSchema,
+            bounces: MetricSchema,
+            totalTime: MetricSchema,
           })
+          .optional(),
+        topPages: z
+          .array(z.object({ x: z.string(), y: z.number() }))
           .optional(),
         lastUpdated: z.number(),
       }),

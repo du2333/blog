@@ -2,11 +2,17 @@ import { useMemo } from "react";
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import {
   Activity,
+  ArrowDown,
+  ArrowUp,
   Database,
   ExternalLink,
+  Eye,
   FileText,
   MessageSquare,
+  Minus,
+  MousePointerClick,
   RefreshCw,
+  Users,
 } from "lucide-react";
 import { Area, AreaChart, ResponsiveContainer, Tooltip } from "recharts";
 import {
@@ -31,7 +37,7 @@ import {
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { DashboardSkeleton } from "@/features/dashboard/components/dashboard-skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { cn } from "@/lib/utils";
+import { cn, formatBytes, formatTimeAgo } from "@/lib/utils";
 import { refreshDashboardCacheFn } from "@/features/dashboard/dashboard.api";
 
 const SearchSchema = z.object({
@@ -55,31 +61,6 @@ export const Route = createFileRoute("/admin/")({
   }),
 });
 
-function formatBytes(bytes: number, decimals = 2) {
-  if (!+bytes) return "0 Bytes";
-  const k = 1024;
-  const dm = decimals < 0 ? 0 : decimals;
-  const sizes = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
-}
-
-function formatTimeAgo(date: Date | null | string) {
-  if (!date) return "";
-  const now = new Date();
-  const diffInSeconds = Math.floor(
-    (now.getTime() - new Date(date).getTime()) / 1000,
-  );
-
-  if (diffInSeconds < 60) return "刚刚";
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  if (diffInMinutes < 60) return `${diffInMinutes} 分钟前`;
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  if (diffInHours < 24) return `${diffInHours} 小时前`;
-  const diffInDays = Math.floor(diffInHours / 24);
-  return `${diffInDays} 天前`;
-}
-
 function DashboardOverview() {
   const { range = "24h" } = Route.useSearch();
   const navigate = useNavigate({ from: Route.fullPath });
@@ -94,8 +75,11 @@ function DashboardOverview() {
   });
 
   // Get current range data
+  // Get current range data
   const currentRangeData = trafficByRange?.[range];
   const traffic = currentRangeData?.traffic;
+  const overview = currentRangeData?.overview;
+  const topPages = currentRangeData?.topPages;
   const lastUpdated = currentRangeData?.lastUpdated;
 
   const lastUpdatedTime = lastUpdated
@@ -172,9 +156,9 @@ function DashboardOverview() {
         </Link>
       </div>
 
-      {/* Visuals Row */}
+      {/* Traffic & Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-        {/* Main Graph */}
+        {/* Left: Traffic Analysis (Chart + Metrics) */}
         <Card className="lg:col-span-2 border-none! bg-transparent! shadow-none!">
           <CardHeader className="flex flex-row justify-between items-center border-b border-border/50 pb-4 px-0">
             <div className="flex items-center gap-3">
@@ -253,7 +237,39 @@ function DashboardOverview() {
             </div>
           </CardHeader>
 
-          <CardContent className="px-0 pt-8 pb-4">
+          <CardContent className="px-0 pt-8 pb-4 space-y-8">
+            {/* Detailed Metrics Grid */}
+            {overview && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <MetricItem
+                  label="访客数"
+                  value={overview.visitors.value}
+                  prev={overview.visitors.prev}
+                  icon={<Users size={14} />}
+                />
+                <MetricItem
+                  label="浏览量"
+                  value={overview.pageViews.value}
+                  prev={overview.pageViews.prev}
+                  icon={<Eye size={14} />}
+                />
+                <MetricItem
+                  label="总访问"
+                  value={overview.visits.value}
+                  prev={overview.visits.prev}
+                  icon={<MousePointerClick size={14} />}
+                />
+                <MetricItem
+                  label="跳出率"
+                  value={overview.bounces.value}
+                  prev={overview.bounces.prev}
+                  total={overview.visits.value} // Calculate rate: bounces / visits
+                  format="percent"
+                  icon={<Activity size={14} />}
+                />
+              </div>
+            )}
+
             <div className="h-64 w-full relative group/chart">
               {/* traffic logic */}
               {!umamiUrl ? (
@@ -289,68 +305,190 @@ function DashboardOverview() {
           </CardContent>
         </Card>
 
-        {/* Activity Log */}
-        <Card className="border-none! bg-transparent! shadow-none!">
-          <CardHeader className="flex flex-row justify-between items-baseline border-b border-border/50 pb-4 px-0">
-            <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
-              系统日志
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="px-0 pt-6">
-            <div className="space-y-1 max-h-100 overflow-y-auto custom-scrollbar pr-4">
-              {activities.length > 0 ? (
-                activities.map((log: ActivityLogItem, i: number) => {
-                  const content = (
-                    <div className="flex gap-4 p-3 rounded-lg group-hover/item:bg-muted/50 transition-all duration-300 relative overflow-hidden">
-                      <div
-                        className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
-                          log.type === "comment"
-                            ? "bg-amber-500"
-                            : log.type === "post"
-                              ? "bg-green-500"
-                              : "bg-blue-500"
-                        }`}
-                      ></div>
-                      <div className="space-y-1">
-                        <p className="text-xs font-light leading-snug group-hover/item:text-foreground transition-colors pr-6 text-muted-foreground/90">
-                          {log.text}
-                        </p>
-                        <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
-                          {formatTimeAgo(log.time)}
-                        </p>
-                      </div>
-                      {log.link && (
-                        <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 group-hover/item:opacity-100 group-hover/item:scale-110 transition-all duration-300">
-                          <Activity size={14} />
+        {/* Right Column: Top Pages & Activity Log */}
+        <div className="space-y-10">
+          {/* Top Pages */}
+          <Card className="border-none! bg-transparent! shadow-none!">
+            <CardHeader className="flex flex-row justify-between items-baseline border-b border-border/50 pb-4 px-0">
+              <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
+                热门文章
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-0 pt-6">
+              <div className="space-y-4">
+                {topPages && topPages.length > 0 ? (
+                  topPages.slice(0, 5).map((page, i) => (
+                    <div
+                      key={i}
+                      className="flex items-center justify-between group"
+                    >
+                      <div className="space-y-1 min-w-0 flex-1 pr-4">
+                        <div className="text-xs font-medium truncate text-foreground/90 group-hover:text-primary transition-colors">
+                          {page.x}
                         </div>
-                      )}
+                        <div className="w-full bg-muted/30 h-1 rounded-full overflow-hidden">
+                          <div
+                            className="bg-primary/50 h-full rounded-full"
+                            style={{
+                              width: `${(page.y / Math.max(...topPages.map((p) => p.y))) * 100}%`,
+                            }}
+                          />
+                        </div>
+                      </div>
+                      <div className="text-xs font-mono text-muted-foreground shrink-0 w-12 text-right">
+                        {page.y}
+                      </div>
                     </div>
-                  );
+                  ))
+                ) : (
+                  <div className="text-xs text-muted-foreground">暂无数据</div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
-                  if (log.link) {
-                    return (
-                      <Link
-                        key={i}
-                        to={log.link}
-                        className="block group/item transition-all"
-                      >
-                        {content}
-                      </Link>
+          {/* Activity Log */}
+          <Card className="border-none! bg-transparent! shadow-none!">
+            <CardHeader className="flex flex-row justify-between items-baseline border-b border-border/50 pb-4 px-0">
+              <CardTitle className="text-sm font-medium uppercase tracking-[0.2em]">
+                系统日志
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="px-0 pt-6">
+              <div className="space-y-1 max-h-60 overflow-y-auto custom-scrollbar pr-4">
+                {activities.length > 0 ? (
+                  activities.map((log: ActivityLogItem, i: number) => {
+                    const content = (
+                      <div className="flex gap-4 p-3 rounded-lg group-hover/item:bg-muted/50 transition-all duration-300 relative overflow-hidden">
+                        <div
+                          className={`w-1.5 h-1.5 rounded-full mt-1.5 shrink-0 ${
+                            log.type === "comment"
+                              ? "bg-amber-500"
+                              : log.type === "post"
+                                ? "bg-green-500"
+                                : "bg-blue-500"
+                          }`}
+                        ></div>
+                        <div className="space-y-1">
+                          <p className="text-xs font-light leading-snug group-hover/item:text-foreground transition-colors pr-6 text-muted-foreground/90">
+                            {log.text}
+                          </p>
+                          <p className="text-[9px] font-mono text-muted-foreground uppercase tracking-wider">
+                            {formatTimeAgo(log.time)}
+                          </p>
+                        </div>
+                        {log.link && (
+                          <div className="absolute right-4 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full bg-primary/10 text-primary opacity-0 group-hover/item:opacity-100 group-hover/item:scale-110 transition-all duration-300">
+                            <Activity size={14} />
+                          </div>
+                        )}
+                      </div>
                     );
-                  }
 
-                  return (
-                    <div key={i} className="group/item">
-                      {content}
-                    </div>
-                  );
-                })
-              ) : (
-                <div className="text-xs text-muted-foreground">暂无活动</div>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+                    if (log.link) {
+                      return (
+                        <Link
+                          key={i}
+                          to={log.link}
+                          className="block group/item transition-all"
+                        >
+                          {content}
+                        </Link>
+                      );
+                    }
+
+                    return (
+                      <div key={i} className="group/item">
+                        {content}
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-xs text-muted-foreground">暂无活动</div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MetricItem({
+  label,
+  value,
+  prev,
+  total,
+  format = "number",
+  icon,
+}: {
+  label: string;
+  value: number;
+  prev?: number;
+  total?: number;
+  format?: "number" | "percent" | "time";
+  icon?: React.ReactNode;
+}) {
+  const displayValue = useMemo(() => {
+    if (format === "percent") {
+      // If total provided, calculate rate: value / total
+      const rate = total ? (value / total) * 100 : value;
+      return `${rate.toFixed(1)}%`;
+    }
+    // format large numbers
+    if (value >= 1000) {
+      return `${(value / 1000).toFixed(1)}k`;
+    }
+    return value.toString();
+  }, [value, total, format]);
+
+  const trend = useMemo(() => {
+    if (prev === undefined || prev === 0) return null;
+    // If format is percent (bounce rate), calculate diff relative to prev rate?
+    // Actually simplicity: if prev is raw count, we need prev total to calc prev rate.
+    // Assuming prev is same unit as value.
+    const diff = value - prev;
+    const percent = (diff / prev) * 100;
+    return {
+      direction: diff > 0 ? "up" : diff < 0 ? "down" : "neutral",
+      percent: Math.abs(percent).toFixed(0),
+    };
+  }, [value, prev]);
+
+  return (
+    <div className="bg-background/40 border border-border/50 rounded-lg p-3 flex flex-col justify-between group hover:border-border/80 transition-colors">
+      <div className="flex justify-between items-start mb-2">
+        <span className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium flex items-center gap-1.5">
+          {icon}
+          {label}
+        </span>
+      </div>
+      <div>
+        <div className="text-lg font-serif font-medium tracking-tight">
+          {displayValue}
+        </div>
+        {trend && (
+          <div
+            className={cn(
+              "text-[9px] flex items-center gap-0.5 mt-1 font-medium",
+              trend.direction === "up"
+                ? "text-emerald-500"
+                : trend.direction === "down"
+                  ? "text-rose-500"
+                  : "text-muted-foreground",
+            )}
+          >
+            {trend.direction === "up" ? (
+              <ArrowUp size={10} />
+            ) : trend.direction === "down" ? (
+              <ArrowDown size={10} />
+            ) : (
+              <Minus size={10} />
+            )}
+            <span>{trend.percent}%</span>
+          </div>
+        )}
       </div>
     </div>
   );
