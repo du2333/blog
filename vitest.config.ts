@@ -6,7 +6,6 @@ import {
 import viteTsConfigPaths from "vite-tsconfig-paths";
 
 export default defineWorkersConfig(async () => {
-  // 读取 migrations 目录下的所有迁移文件
   const migrationsPath = path.join(__dirname, "migrations");
   const migrations = await readD1Migrations(migrationsPath);
 
@@ -16,8 +15,16 @@ export default defineWorkersConfig(async () => {
         projects: ["./tsconfig.json"],
       }),
     ],
+    resolve: {
+      alias: {
+        "@tanstack/react-start/server-entry": path.join(
+          __dirname,
+          "./tests/mocks/tanstack-start-mock.ts",
+        ),
+      },
+    },
     test: {
-      setupFiles: ["./tests/apply-migrations.ts"],
+      setupFiles: ["./tests/apply-migrations.ts", "./tests/setup.ts"],
       poolOptions: {
         workers: {
           singleWorker: true,
