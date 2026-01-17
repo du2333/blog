@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq, lte } from "drizzle-orm";
+import { and, desc, eq, lte } from "drizzle-orm";
 import { PostsTable } from "@/lib/db/schema";
 import { getDb } from "@/lib/db";
 
@@ -20,7 +20,9 @@ export const Route = createFileRoute("/sitemap.xml")({
               eq(PostsTable.status, "published"),
               lte(PostsTable.publishedAt, new Date()),
             ),
-          );
+          )
+          .orderBy(desc(PostsTable.updatedAt))
+          .limit(100);
 
         // Format date to ISO 8601 (required by sitemap spec)
         const formatDate = (date: Date | null) => {
@@ -44,7 +46,7 @@ export const Route = createFileRoute("/sitemap.xml")({
     .map(
       (post) => `
   <url>
-    <loc>https://${env.DOMAIN}/post/${post.slug}</loc>
+    <loc>https://${env.DOMAIN}/post/${encodeURIComponent(post.slug)}</loc>
     <lastmod>${formatDate(post.updatedAt)}</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
