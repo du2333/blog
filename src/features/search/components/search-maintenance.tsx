@@ -23,33 +23,33 @@ export function SearchMaintenance() {
   };
 
   return (
-    <div className="group flex flex-col sm:flex-row py-10 gap-8 sm:gap-0 border-b border-border/30">
-      <div className="w-56 shrink-0 flex flex-col gap-2.5">
-        <span className="text-[11px] uppercase tracking-[0.25em] font-bold text-muted-foreground">
+    <div className="group flex flex-col sm:flex-row py-6 gap-6 sm:gap-8 border-b border-border/30">
+      <div className="w-40 shrink-0 flex flex-col gap-1.5">
+        <span className="text-[9px] font-mono uppercase tracking-widest text-muted-foreground">
           搜索索引
         </span>
       </div>
       <div className="flex-1 space-y-8">
         <div className="max-w-xl">
-          <h4 className="text-base font-medium text-foreground mb-3 tracking-tight">
+          <h4 className="text-sm font-serif font-medium text-foreground mb-2 tracking-tight">
             重建搜索映射
           </h4>
-          <p className="text-[13px] text-muted-foreground leading-relaxed font-light">
-            全量同步数据库记录至搜索映射表。建议在手动修改数据库或执行大批量数据录入后运行此操作，以确保全局检索的准确性。
+          <p className="text-[10px] font-mono text-muted-foreground leading-relaxed">
+            全量同步数据库记录至搜索映射表。建议在手动修改数据库或批量录入后执行。
           </p>
         </div>
         <Button
           type="button"
           onClick={() => setIsModalOpen(true)}
           disabled={isIndexing}
-          className="h-12 px-10 text-[10px] uppercase tracking-[0.25em] font-bold shadow-xl shadow-black/10 rounded-sm gap-4"
+          className="h-8 px-4 text-[10px] font-mono uppercase tracking-widest rounded-none gap-2 bg-foreground text-background hover:bg-foreground/90"
         >
           {isIndexing ? (
-            <RefreshCw size={14} className="animate-spin" />
+            <RefreshCw size={12} className="animate-spin" />
           ) : (
-            <Database size={14} />
+            <Database size={12} />
           )}
-          启动索引重建
+          [ 启动重建 ]
         </Button>
       </div>
 

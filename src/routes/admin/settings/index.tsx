@@ -66,7 +66,7 @@ function RouteComponent() {
 
   if (isLoading) {
     return (
-      <div className="max-w-6xl mx-auto px-6 md:px-10 py-10">
+      <div className="space-y-8 pb-20">
         <SectionSkeleton />
       </div>
     );
@@ -76,32 +76,28 @@ function RouteComponent() {
     <FormProvider {...methods}>
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="max-w-6xl mx-auto px-6 md:px-10 py-10 space-y-12"
+        className="space-y-8 pb-20 animate-in fade-in slide-in-from-bottom-4 duration-1000"
       >
         {/* Header Area */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-border/40 animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
-          <div className="space-y-1.5">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-border/30">
+          <div className="space-y-2">
             <h1 className="text-3xl font-serif font-medium tracking-tight text-foreground">
               系统设置
             </h1>
-            <p className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground font-medium">
-              管理系统配置与参数
+            <p className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
+              系统配置
             </p>
           </div>
 
           <Button
             type="submit"
             disabled={isSubmitting || !isDirty}
-            className={`h-10 px-6 transition-all rounded-sm text-[11px] uppercase tracking-[0.15em] font-bold shadow-sm ${
-              isSubmitting
-                ? "opacity-80"
-                : "hover:scale-[1.01] active:scale-[0.99]"
-            }`}
+            className="h-9 px-6 rounded-none bg-foreground text-background hover:bg-foreground/90 transition-all font-mono text-[10px] uppercase tracking-widest disabled:opacity-50"
           >
             {isSubmitting ? (
-              <Loader2 size={14} className="animate-spin mr-2" />
+              <Loader2 size={12} className="animate-spin mr-2" />
             ) : (
-              <Check size={14} className="mr-2" />
+              <Check size={12} className="mr-2" />
             )}
             {isSubmitting ? "同步中..." : "保存更改"}
           </Button>
@@ -110,32 +106,34 @@ function RouteComponent() {
         {/* Main Content with Tabs */}
         <Tabs
           defaultValue="service"
-          className="flex flex-col md:grid md:grid-cols-[200px_1fr] gap-12 lg:gap-20 items-start animate-in fade-in duration-1000 delay-100 fill-mode-both"
+          className="flex flex-col md:grid md:grid-cols-[180px_1fr] gap-8 lg:gap-12 items-start"
         >
-          <TabsList className="flex flex-row md:flex-col h-auto bg-transparent p-0 gap-1 md:w-full overflow-x-auto md:overflow-visible justify-start">
+          <TabsList className="flex flex-row md:flex-col h-auto bg-transparent p-0 gap-1 md:w-full overflow-x-auto md:overflow-visible justify-start border-b md:border-b-0 md:border-r border-border/30 pb-4 md:pb-0 md:pr-4">
             <TabsTrigger
               value="service"
-              className="w-full md:justify-start justify-center px-4 py-3 rounded-md text-muted-foreground data-[state=active]:bg-muted/50 data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-none transition-all duration-200 border border-transparent data-[state=active]:border-border/40"
+              className="w-full md:justify-start justify-center px-3 py-2 rounded-none text-[10px] font-mono uppercase tracking-widest text-muted-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:font-bold transition-all duration-200 border-none shadow-none"
             >
               服务配置
             </TabsTrigger>
             <TabsTrigger
               value="maintenance"
-              className="w-full md:justify-start justify-center px-4 py-3 rounded-md text-muted-foreground data-[state=active]:bg-muted/50 data-[state=active]:text-foreground data-[state=active]:font-semibold data-[state=active]:shadow-none transition-all duration-200 border border-transparent data-[state=active]:border-border/40"
+              className="w-full md:justify-start justify-center px-3 py-2 rounded-none text-[10px] font-mono uppercase tracking-widest text-muted-foreground data-[state=active]:bg-transparent data-[state=active]:text-foreground data-[state=active]:font-bold transition-all duration-200 border-none shadow-none"
             >
               系统维护
             </TabsTrigger>
           </TabsList>
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 space-y-8">
             <TabsContent
               value="service"
-              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+              className="mt-0 space-y-6 animate-in fade-in duration-500"
             >
-              <div className="space-y-2 mb-8">
-                <h2 className="text-xl font-medium tracking-tight">服务连接</h2>
-                <p className="text-sm text-muted-foreground">
-                  配置邮件发送服务及其他第三方集成
+              <div className="space-y-1 pb-4 border-b border-border/30">
+                <h2 className="text-xl font-serif font-medium tracking-tight">
+                  服务连接
+                </h2>
+                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                  外部服务集成
                 </p>
               </div>
               <EmailServiceSection testEmailConnection={testEmailConnection} />
@@ -143,12 +141,14 @@ function RouteComponent() {
 
             <TabsContent
               value="maintenance"
-              className="mt-0 space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500 fill-mode-both"
+              className="mt-0 space-y-6 animate-in fade-in duration-500"
             >
-              <div className="space-y-2 mb-8">
-                <h2 className="text-xl font-medium tracking-tight">数据维护</h2>
-                <p className="text-sm text-muted-foreground">
-                  缓存管理、索引重建及系统健康检查
+              <div className="space-y-1 pb-4 border-b border-border/30">
+                <h2 className="text-xl font-serif font-medium tracking-tight">
+                  数据维护
+                </h2>
+                <p className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+                  缓存与索引状态
                 </p>
               </div>
               <MaintenanceSection />
