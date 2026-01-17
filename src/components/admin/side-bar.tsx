@@ -129,7 +129,7 @@ export function SideBar({
               key={item.path}
               to={item.path}
               onClick={closeMobileSidebar}
-              activeOptions={{ exact: item.exact }}
+              activeOptions={{ exact: item.exact, includeSearch: false }}
               className="group flex flex-col"
             >
               {({ isActive }) => (
