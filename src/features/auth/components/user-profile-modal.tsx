@@ -1,15 +1,6 @@
 import { standardSchemaResolver } from "@hookform/resolvers/standard-schema";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  Bell,
-  BellOff,
-  Check,
-  Loader2,
-  LogOut,
-  ShieldAlert,
-  User as UserIcon,
-  X,
-} from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -151,7 +142,7 @@ export function UserProfileModal({
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-500 ease-in-out ${
+      className={`fixed inset-0 z-100 flex items-center justify-center p-4 md:p-6 transition-all duration-300 ease-in-out ${
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -159,306 +150,252 @@ export function UserProfileModal({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/90 backdrop-blur-md transition-opacity duration-500"
         onClick={onClose}
       />
 
-      {/* Modal Content */}
+      {/* Modal Content - Minimalist Card */}
       <div
         className={`
-            relative w-full max-w-5xl bg-background shadow-2xl border border-border
-            flex flex-col md:flex-row overflow-hidden rounded-sm
-            max-h-[90vh] transition-all duration-500 ease-in-out transform fill-mode-both
-            ${
-              isOpen
-                ? "translate-y-0 scale-100 opacity-100"
-                : "translate-y-8 scale-[0.99] opacity-0"
-            }
+            relative w-full max-w-2xl bg-background 
+            flex flex-col shadow-2xl overflow-hidden
+            max-h-[85vh] transition-all duration-500 ease-out fill-mode-both
+            ${isOpen ? "translate-y-0 opacity-100 scale-100" : "translate-y-8 opacity-0 scale-95"}
         `}
       >
-        {/* Close Button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={onClose}
-          className="absolute top-8 right-8 z-50 p-2 text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
-        >
-          <X size={24} strokeWidth={1.5} />
-        </Button>
-
-        {/* Left: Identity Summary */}
-        <div className="w-full md:w-95 p-12 md:p-20 flex flex-col border-b md:border-b-0 md:border-r border-border bg-muted/30">
-          <div className="space-y-12">
-            <div className="space-y-6">
-              <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden transition-all duration-1000 border border-border p-1">
-                {user.image ? (
-                  <img
-                    src={user.image}
-                    alt={user.name}
-                    className="w-full h-full rounded-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full rounded-full bg-muted flex items-center justify-center text-muted-foreground/30">
-                    <UserIcon size={40} strokeWidth={1} />
-                  </div>
-                )}
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-4xl font-serif font-medium tracking-tight">
-                  {user.name}
-                </h2>
-                <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.4em]">
-                  {user.role === "admin" ? "管理员" : "用户"}
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-8 pt-12 border-t border-border">
-              <div className="space-y-1">
-                <span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
-                  状态
-                </span>
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
-                  <span className="text-sm font-light">在线</span>
-                </div>
-              </div>
-              <div className="space-y-1">
-                <span className="text-[9px] font-mono uppercase tracking-[0.3em] opacity-30">
-                  邮箱
-                </span>
-                <div className="text-sm font-light opacity-60">
-                  {user.email}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-auto pt-20">
-            <Button
-              variant="ghost"
-              onClick={() => {
-                logout();
-                onClose();
-              }}
-              className="group flex items-center gap-4 text-[11px] uppercase tracking-[0.3em] text-zinc-400 hover:text-red-500 transition-colors h-auto p-0 bg-transparent hover:bg-transparent"
-            >
-              <span>退出登录</span>
-              <LogOut
-                size={14}
-                className="group-hover:translate-x-1 transition-transform"
-              />
-            </Button>
-          </div>
+        {/* Header Bar */}
+        <div className="flex items-center justify-end px-8 py-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onClose}
+            className="text-muted-foreground hover:text-foreground hover:bg-transparent transition-colors"
+          >
+            <X size={24} strokeWidth={1.5} />
+          </Button>
         </div>
 
-        {/* Right: Detailed Settings */}
-        <div className="flex-1 p-8 md:p-16 space-y-20 overflow-y-auto custom-scrollbar">
-          {/* Profile Configuration */}
-          <section className="space-y-12">
-            <header className="space-y-4">
-              <h3 className="text-3xl font-serif font-medium tracking-tight">
-                资料设置
-              </h3>
-            </header>
+        <div className="px-8 pb-12 md:px-16 md:pb-16 overflow-y-auto custom-scrollbar space-y-12">
+          {/* Identity Section */}
+          <section className="flex flex-col items-center text-center space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
+            <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border border-border bg-muted/30">
+              {user.image ? (
+                <img
+                  src={user.image}
+                  alt={user.name}
+                  className="w-full h-full object-cover transition-transform duration-700 hover:scale-110"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-muted-foreground font-serif text-4xl">
+                  {user.name.charAt(0).toUpperCase()}
+                </div>
+              )}
+            </div>
 
+            <div className="space-y-2">
+              <h2 className="text-3xl md:text-4xl font-serif text-foreground tracking-tight">
+                {user.name}
+              </h2>
+              <div className="flex items-center justify-center gap-3 text-xs font-mono text-muted-foreground uppercase tracking-widest">
+                <span>{user.role === "admin" ? "管理员" : "读者"}</span>
+                <span className="w-1 h-1 bg-muted-foreground rounded-full" />
+                <span>{user.email}</span>
+              </div>
+            </div>
+          </section>
+
+          <div className="w-full h-px bg-border/40" />
+
+          {/* Settings Form */}
+          <section className="space-y-12 max-w-lg mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+            {/* Profile Settings */}
             <form
               onSubmit={handleSubmitProfile(onProfileSubmit)}
-              className="space-y-10 max-w-xl"
+              className="space-y-8"
             >
-              <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                  用户昵称
-                </label>
-                <div className="relative group">
+              <div className="space-y-6">
+                <div className="space-y-2 group">
+                  <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider group-focus-within:text-foreground transition-colors">
+                    昵称
+                  </label>
                   <Input
-                    type="text"
                     {...registerProfile("name")}
-                    className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
+                    className="bg-transparent border-0 border-b border-border text-foreground font-serif text-lg px-0 rounded-none focus-visible:ring-0 focus-visible:border-foreground transition-all placeholder:text-muted-foreground/30 shadow-none"
                   />
                   {profileErrors.name && (
-                    <span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+                    <span className="text-[10px] text-destructive font-mono">
                       {profileErrors.name.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className="space-y-2 group">
+                  <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider group-focus-within:text-foreground transition-colors">
+                    头像 URL
+                  </label>
+                  <Input
+                    {...registerProfile("image")}
+                    className="bg-transparent border-0 border-b border-border text-foreground font-mono text-sm px-0 rounded-none focus-visible:ring-0 focus-visible:border-foreground transition-all placeholder:text-muted-foreground/30 shadow-none"
+                    placeholder="https://..."
+                  />
+                  {profileErrors.image && (
+                    <span className="text-[10px] text-destructive font-mono">
+                      {profileErrors.image.message}
                     </span>
                   )}
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                  头像链接
-                </label>
-                <div className="flex gap-4 md:gap-8 items-end">
-                  <Input
-                    type="text"
-                    {...registerProfile("image")}
-                    className="flex-1 min-w-0 bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
-                  />
-                  <Button
-                    type="submit"
-                    disabled={isProfileSubmitting}
-                    size="icon"
-                    variant="outline"
-                    className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
-                  >
-                    {isProfileSubmitting ? (
-                      <Loader2 size={18} className="animate-spin" />
-                    ) : (
-                      <Check size={18} />
-                    )}
-                  </Button>
-                </div>
-                {profileErrors.image && (
-                  <span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
-                    {profileErrors.image.message}
-                  </span>
-                )}
-              </div>
-            </form>
-
-            <div className="space-y-6 pt-10 border-t border-border max-w-xl">
-              <div className="flex items-center justify-between group">
-                <div className="space-y-1">
-                  <h4 className="text-lg font-serif font-medium tracking-tight">
-                    评论回复通知
-                  </h4>
-                  <p className="text-sm font-light text-muted-foreground">
-                    当有人回复您的评论时，通过邮件提醒您
-                  </p>
-                </div>
+              <div className="flex justify-end">
                 <Button
+                  type="submit"
+                  disabled={isProfileSubmitting}
                   variant="ghost"
-                  size="sm"
-                  disabled={
-                    isLoadingNotification ||
-                    toggleNotificationMutation.isPending
-                  }
-                  onClick={() =>
-                    toggleNotificationMutation.mutate(
-                      !notificationStatus?.enabled,
-                    )
-                  }
-                  className={`
-                    flex items-center gap-3 px-4 py-6 rounded-none border border-border transition-all
-                    ${
-                      notificationStatus?.enabled
-                        ? "text-foreground bg-muted/50 border-foreground/20"
-                        : "text-muted-foreground hover:text-foreground"
-                    }
-                  `}
+                  className="font-mono text-xs text-muted-foreground hover:text-foreground hover:bg-transparent p-0 h-auto transition-colors"
                 >
-                  {notificationStatus?.enabled ? (
-                    <>
-                      <Bell size={16} strokeWidth={1.5} />
-                      <span className="text-[10px] uppercase tracking-[0.2em]">
-                        已开启
-                      </span>
-                    </>
+                  {isProfileSubmitting ? (
+                    <span className="flex items-center gap-2">
+                      <Loader2 size={12} className="animate-spin" /> 保存中...
+                    </span>
                   ) : (
-                    <>
-                      <BellOff size={16} strokeWidth={1.5} />
-                      <span className="text-[10px] uppercase tracking-[0.2em]">
-                        已关闭
-                      </span>
-                    </>
+                    "保存更改"
                   )}
                 </Button>
               </div>
-            </div>
-          </section>
+            </form>
 
-          {/* Security Protocol */}
-          <section className="space-y-10 pb-12">
-            <header className="space-y-4">
-              <h3 className="text-3xl font-serif font-medium tracking-tight">
-                修改密码
-              </h3>
-            </header>
+            <div className="w-full h-px bg-border/40" />
 
-            {hasPassword ? (
-              <form
-                onSubmit={handleSubmitPassword(onPasswordSubmit)}
-                className="space-y-10 max-w-2xl"
+            {/* Notification Toggle */}
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <span className="text-sm font-serif text-foreground">
+                  邮件通知
+                </span>
+                <span className="text-[10px] font-mono text-muted-foreground block">
+                  当有针对你评论的回复时
+                </span>
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                disabled={
+                  isLoadingNotification || toggleNotificationMutation.isPending
+                }
+                onClick={() =>
+                  toggleNotificationMutation.mutate(
+                    !notificationStatus?.enabled,
+                  )
+                }
+                className={`
+                    font-mono text-xs tracking-wider h-auto px-3 py-1 border transition-all
+                    ${
+                      notificationStatus?.enabled
+                        ? "border-foreground text-foreground"
+                        : "border-border text-muted-foreground hover:border-foreground/50"
+                    }
+                  `}
               >
-                <div className="space-y-10">
-                  <div className="space-y-3">
-                    <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
+                {notificationStatus?.enabled ? "已启用" : "已禁用"}
+              </Button>
+            </div>
+
+            {/* Security Section (Password) */}
+            {hasPassword && (
+              <div className="space-y-8 pt-4">
+                <div className="space-y-1">
+                  <h3 className="text-sm font-serif text-foreground">
+                    安全设置
+                  </h3>
+                </div>
+
+                <form
+                  onSubmit={handleSubmitPassword(onPasswordSubmit)}
+                  className="space-y-6"
+                >
+                  <div className="space-y-2 group">
+                    <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider group-focus-within:text-foreground transition-colors">
                       当前密码
                     </label>
                     <Input
                       type="password"
                       {...registerPassword("currentPassword")}
-                      className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
+                      className="bg-transparent border-0 border-b border-border text-foreground font-sans text-sm px-0 rounded-none focus-visible:ring-0 focus-visible:border-foreground transition-all placeholder:text-muted-foreground/30 shadow-none"
                     />
                     {passwordErrors.currentPassword && (
-                      <span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+                      <span className="text-[10px] text-destructive font-mono">
                         {passwordErrors.currentPassword.message}
                       </span>
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
-                    <div className="space-y-3">
-                      <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2 group">
+                      <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider group-focus-within:text-foreground transition-colors">
                         新密码
                       </label>
                       <Input
                         type="password"
                         {...registerPassword("newPassword")}
-                        className="w-full bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
+                        className="bg-transparent border-0 border-b border-border text-foreground font-sans text-sm px-0 rounded-none focus-visible:ring-0 focus-visible:border-foreground transition-all placeholder:text-muted-foreground/30 shadow-none"
                       />
                       {passwordErrors.newPassword && (
-                        <span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+                        <span className="text-[10px] text-destructive font-mono">
                           {passwordErrors.newPassword.message}
                         </span>
                       )}
                     </div>
-                    <div className="space-y-3">
-                      <label className="text-[10px] uppercase tracking-[0.2em] opacity-40 pl-1">
-                        确认新密码
+                    <div className="space-y-2 group">
+                      <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider group-focus-within:text-foreground transition-colors">
+                        确认密码
                       </label>
-                      <div className="flex gap-4 items-end">
-                        <Input
-                          type="password"
-                          {...registerPassword("confirmPassword")}
-                          className="flex-1 min-w-0 bg-transparent border-t-0 border-x-0 border-b border-border rounded-none py-4 text-xl font-light focus-visible:ring-0 focus:border-foreground focus:outline-none transition-all shadow-none px-0"
-                        />
-                        <Button
-                          type="submit"
-                          disabled={isPasswordSubmitting}
-                          size="icon"
-                          variant="outline"
-                          className="mb-2 w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all disabled:opacity-30 shrink-0"
-                        >
-                          {isPasswordSubmitting ? (
-                            <Loader2 size={18} className="animate-spin" />
-                          ) : (
-                            <Check size={18} />
-                          )}
-                        </Button>
-                      </div>
+                      <Input
+                        type="password"
+                        {...registerPassword("confirmPassword")}
+                        className="bg-transparent border-0 border-b border-border text-foreground font-sans text-sm px-0 rounded-none focus-visible:ring-0 focus-visible:border-foreground transition-all placeholder:text-muted-foreground/30 shadow-none"
+                      />
                       {passwordErrors.confirmPassword && (
-                        <span className="text-[9px] text-red-500 font-mono uppercase mt-2 block tracking-wider">
+                        <span className="text-[10px] text-destructive font-mono">
                           {passwordErrors.confirmPassword.message}
                         </span>
                       )}
                     </div>
                   </div>
-                </div>
-              </form>
-            ) : (
-              <div className="p-10 border border-border bg-muted/30 space-y-6 max-w-2xl">
-                <div className="flex items-center gap-4 text-muted-foreground">
-                  <ShieldAlert size={24} strokeWidth={1.5} />
-                  <span className="text-xs font-medium uppercase tracking-[0.2em]">
-                    外部账户
-                  </span>
-                </div>
-                <p className="text-sm font-light text-muted-foreground leading-relaxed italic">
-                  此账户通过第三方提供商（如 Github）登录。
-                </p>
+
+                  <div className="flex justify-end">
+                    <Button
+                      type="submit"
+                      disabled={isPasswordSubmitting}
+                      variant="ghost"
+                      className="font-mono text-xs text-muted-foreground hover:text-foreground hover:bg-transparent p-0 h-auto transition-colors"
+                    >
+                      {isPasswordSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 size={12} className="animate-spin" />{" "}
+                          更新中...
+                        </span>
+                      ) : (
+                        "更新密码"
+                      )}
+                    </Button>
+                  </div>
+                </form>
               </div>
             )}
+
+            {/* Logout Action */}
+            <div className="pt-8 flex justify-center">
+              <Button
+                variant="ghost"
+                onClick={() => {
+                  logout();
+                  onClose();
+                }}
+                className="font-mono text-xs text-muted-foreground/50 hover:text-destructive hover:bg-transparent tracking-widest transition-colors scale-90 hover:scale-100"
+              >
+                退出登录
+              </Button>
+            </div>
           </section>
         </div>
       </div>
