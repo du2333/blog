@@ -5,14 +5,7 @@ import {
   createFileRoute,
   notFound,
 } from "@tanstack/react-router";
-import {
-  ArrowUp,
-  Calendar,
-  Clock,
-  RefreshCw,
-  Share2,
-  Tag as TagIcon,
-} from "lucide-react";
+import { ArrowUp, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -81,82 +74,71 @@ function RouteComponent() {
   if (!post) throw notFound();
 
   return (
-    <div className="w-full max-w-7xl mx-auto pb-32 px-6 md:px-12">
+    <div className="w-full max-w-3xl mx-auto pb-20 px-6 md:px-0">
       {/* Back Link */}
-      <nav className="py-12 animate-in fade-in duration-500 fill-mode-both max-w-4xl">
+      <nav className="py-12 animate-in fade-in duration-500 fill-mode-both flex items-center justify-between">
         <Breadcrumbs />
       </nav>
 
       <article className="space-y-16">
         {/* Header Section */}
-        <header className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both max-w-4xl">
+        <header className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both">
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-6 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground/60 tracking-wider uppercase">
               <span className="flex items-center gap-1.5">
-                <Calendar size={12} strokeWidth={1.5} />
                 <ClientOnly fallback={<span>-</span>}>
                   {formatDate(post.publishedAt)}
                 </ClientOnly>
               </span>
-              <span className="flex items-center gap-1.5">
-                <Clock size={12} strokeWidth={1.5} />
-                {post.readTimeInMinutes} 分钟阅读
-              </span>
-
-              {post.publishedAt &&
-                post.updatedAt.getTime() - post.publishedAt.getTime() >
-                  60000 && (
-                  <span className="flex items-center gap-1.5">
-                    <RefreshCw size={12} strokeWidth={1.5} />
-                    最后更新于{" "}
-                    <ClientOnly fallback={<span>-</span>}>
-                      {formatDate(post.updatedAt)}
-                    </ClientOnly>
-                  </span>
-                )}
+              <span className="opacity-30">/</span>
+              <span>{post.readTimeInMinutes} 分钟</span>
 
               {/* Tags */}
               {post.tags && post.tags.length > 0 && (
-                <div className="flex items-center gap-3">
-                  <span className="text-border/40 font-mono">|</span>
-                  <div className="flex flex-wrap items-center gap-2">
+                <>
+                  <span className="opacity-30">/</span>
+                  <div className="flex items-center gap-2">
                     {post.tags.map((tag) => (
                       <Link
                         key={tag.id}
                         to="/post"
                         search={{ tagName: tag.name }}
-                        className="group flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary/50 hover:bg-secondary border border-border/50 hover:border-border transition-all duration-300"
+                        className="hover:text-foreground transition-colors"
                       >
-                        <TagIcon
-                          size={10}
-                          className="text-muted-foreground group-hover:text-foreground transition-colors"
-                        />
-                        <span className="text-[10px] font-mono lowercase text-muted-foreground group-hover:text-foreground transition-colors tracking-tight">
-                          {tag.name}
-                        </span>
+                        #{tag.name}
                       </Link>
                     ))}
                   </div>
-                </div>
+                </>
               )}
             </div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif font-medium leading-[1.1] tracking-tight text-foreground">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-tight text-foreground">
               {post.title}
             </h1>
           </div>
 
-          <p className="text-xl md:text-2xl font-normal leading-relaxed text-muted-foreground border-l border-border pl-8 italic">
+          <p className="text-lg md:text-xl font-light leading-relaxed text-muted-foreground border-l-[1.5px] border-foreground/20 pl-6 italic">
             {post.summary}
           </p>
         </header>
 
         {/* Content Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-20 items-start">
-          <main className="min-w-0 max-w-3xl prose prose-zinc prose-invert prose-lg md:prose-xl animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed">
+        <div className="relative">
+          {/* Floating TOC for Large Screens */}
+          <aside className="hidden xl:block absolute left-full ml-12 top-0 h-full">
+            <div className="sticky top-32 w-60">
+              <TableOfContents headers={post.toc} />
+            </div>
+          </aside>
+
+          <main className="prose prose-zinc prose-invert prose-lg md:prose-xl max-w-none animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed font-serif prose-headings:font-serif prose-code:font-mono prose-pre:border-0 prose-pre:bg-secondary/20">
             <ContentRenderer content={post.contentJson} />
 
-            <footer className="mt-32 pt-12 border-t border-border flex justify-end items-center">
+            <footer className="mt-24 pt-12 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="text-xs font-mono text-muted-foreground/40 uppercase tracking-widest">
+                {/* Footer metadata if needed */}
+              </div>
               <Button
                 variant="ghost"
                 onClick={() => {
@@ -167,24 +149,17 @@ function RouteComponent() {
                     description: "文章链接已复制到剪贴板",
                   });
                 }}
-                className="group h-auto p-0 flex items-center gap-2 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
+                className="group h-auto p-0 flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
               >
                 <Share2 size={14} strokeWidth={1.5} />
                 <span>分享文章</span>
               </Button>
             </footer>
           </main>
-
-          {/* Table of Contents Sidebar */}
-          <aside className="hidden lg:block sticky top-32 animate-in fade-in duration-700 delay-300 fill-mode-both">
-            <div className="pl-8 border-l border-border">
-              <TableOfContents headers={post.toc} />
-            </div>
-          </aside>
         </div>
 
         {/* Comments Section */}
-        <div className="max-w-3xl">
+        <div className="pt-12 border-t border-border/40">
           <CommentSection postId={post.id} />
         </div>
       </article>
@@ -201,11 +176,11 @@ function RouteComponent() {
           size="icon"
           variant="outline"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-all duration-500 group"
+          className="w-10 h-10 rounded-full border border-border/40 bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-foreground hover:text-background transition-all duration-500 group shadow-sm"
         >
           <ArrowUp
-            size={20}
-            className="group-hover:-translate-y-1 transition-transform"
+            size={16}
+            className="group-hover:-translate-y-0.5 transition-transform"
           />
         </Button>
       </div>
