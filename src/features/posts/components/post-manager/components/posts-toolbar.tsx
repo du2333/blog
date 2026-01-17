@@ -100,10 +100,8 @@ export function PostsToolbar({
               DRAFT: "草稿",
             }[s],
             onClick: () => onStatusChange(s),
-            className:
-              status === s
-                ? "bg-foreground text-background font-mono"
-                : "font-mono",
+            isActive: status === s,
+            className: "font-mono",
           }))}
         />
 
@@ -145,9 +143,8 @@ export function PostsToolbar({
           ].map((opt) => ({
             label: opt.label,
             onClick: opt.onClick,
-            className: opt.isActive
-              ? "bg-foreground text-background font-mono"
-              : "font-mono",
+            isActive: opt.isActive,
+            className: "font-mono",
           }))}
         />
 

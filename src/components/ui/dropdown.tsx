@@ -8,6 +8,7 @@ interface DropdownItem {
   onClick: () => void;
   className?: string;
   danger?: boolean;
+  isActive?: boolean;
 }
 
 interface DropdownProps {
@@ -63,7 +64,9 @@ const Dropdown: React.FC<DropdownProps> = ({
                 "w-full text-left px-3 py-2 text-[9px] font-mono uppercase tracking-widest transition-colors flex items-center gap-2",
                 item.danger
                   ? "text-destructive hover:bg-destructive/10"
-                  : "text-muted-foreground/60 hover:text-foreground hover:bg-accent/30",
+                  : item.isActive
+                    ? "bg-foreground text-background hover:bg-foreground/90"
+                    : "text-muted-foreground/60 hover:text-foreground hover:bg-accent/30",
                 item.className,
               )}
             >

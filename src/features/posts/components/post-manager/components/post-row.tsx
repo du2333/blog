@@ -52,10 +52,10 @@ export function PostRow({ post, onDelete }: PostRowProps) {
         <StatusBadge status={post.status} />
       </div>
 
-      {/* Right Side: Date & Actions */}
-      <div className="md:col-span-3 flex md:justify-end items-center gap-6 w-full md:w-auto mt-2 md:mt-0">
+      {/* Right Side: Date & Actions (Desktop Split) */}
+      <div className="w-full flex items-center gap-6 mt-2 md:mt-0 md:contents">
         {/* Smart Date Display */}
-        <div className="flex flex-col items-end gap-1">
+        <div className="md:col-span-2 flex flex-col items-start gap-1 md:justify-self-start">
           <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
             <span className="opacity-50">
               {post.status === "published" ? "发布" : "修改"}
@@ -68,8 +68,8 @@ export function PostRow({ post, onDelete }: PostRowProps) {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-200 ml-auto">
+        {/* Actions (Desktop Only) */}
+        <div className="hidden md:flex md:col-span-1 items-center gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200 justify-end">
           <Button
             variant="ghost"
             size="icon"
@@ -109,6 +109,11 @@ export function PostRow({ post, onDelete }: PostRowProps) {
               </Button>
             }
             items={[
+              {
+                label: "编辑文章",
+                icon: <Edit3 size={14} strokeWidth={1.5} />,
+                onClick: handleEdit,
+              },
               {
                 label: "删除文章",
                 icon: <Trash2 size={14} strokeWidth={1.5} />,

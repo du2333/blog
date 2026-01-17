@@ -186,7 +186,8 @@ export function PostManager({
                 <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-mono border-b border-border/30 bg-muted/10">
                   <div className="col-span-6">文章信息</div>
                   <div className="col-span-3">当前状态</div>
-                  <div className="col-span-3 text-right">时间节点</div>
+                  <div className="col-span-2">时间节点</div>
+                  <div className="col-span-1"></div>
                 </div>
 
                 <div className="divide-y divide-border/30 border-b border-border/30">
