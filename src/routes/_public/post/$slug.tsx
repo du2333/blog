@@ -132,7 +132,7 @@ function RouteComponent() {
             </div>
           </aside>
 
-          <main className="prose prose-zinc prose-invert prose-lg md:prose-xl max-w-none animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed font-serif prose-headings:font-serif prose-code:font-mono prose-pre:border-0 prose-pre:bg-secondary/20">
+          <main className="max-w-none animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed font-serif">
             <ContentRenderer content={post.contentJson} />
 
             <footer className="mt-24 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6">

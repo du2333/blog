@@ -6,24 +6,11 @@ export const BlockQuoteExtension = Blockquote.extend({
     return [
       "blockquote",
       mergeAttributes(this.options.HTMLAttributes, HTMLAttributes, {
-        class: "my-12 relative pl-10 border-l border-border py-4",
+        class:
+          "my-12 pl-8 border-l-[3px] border-foreground py-4 italic text-muted-foreground font-serif text-xl md:text-3xl leading-relaxed tracking-tight",
       }),
-
-      [
-        "div",
-        {
-          class:
-            "italic text-muted-foreground font-serif text-xl md:text-3xl leading-relaxed tracking-tight",
-        },
-        0,
-      ],
-
-      [
-        "div",
-        {
-          class: "absolute -left-[1.5px] top-4 w-[3px] h-12 bg-foreground",
-        },
-      ],
+      // Content renders here (0 = content placeholder, must be only child)
+      0,
     ];
   },
 });

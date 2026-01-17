@@ -38,7 +38,7 @@ export function Editor({
     editorProps: {
       attributes: {
         class:
-          "prose prose-zinc dark:prose-invert max-w-none focus:outline-none text-lg font-body leading-relaxed min-h-[500px]",
+          "max-w-none focus:outline-none text-lg leading-relaxed min-h-[500px]",
       },
     },
     immediatelyRender: false,

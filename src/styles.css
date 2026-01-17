@@ -134,8 +134,8 @@ mark {
   }
 
   ::selection {
-    background-color: var(--selection);
-    color: var(--selection-foreground);
+    background-color: hsl(var(--selection));
+    color: hsl(var(--selection-foreground));
   }
 
   p {
@@ -192,6 +192,15 @@ pre.shiki {
 .tiptap p.is-editor-empty:first-child::before {
   @apply text-muted-foreground font-serif italic float-left h-0 pointer-events-none;
   content: attr(data-placeholder);
+}
+
+/* Tiptap List Item Fix - 移除 <p> 的多余间距，改善点击体验 */
+.ProseMirror li > p {
+  margin: 0;
+}
+
+.ProseMirror li > p:first-child:last-child {
+  display: inline;
 }
 
 @layer utilities {

@@ -34,7 +34,7 @@ export const CommentEditor = ({
     editorProps: {
       attributes: {
         class:
-          "min-h-[80px] w-full bg-transparent py-2 text-sm focus:outline-none placeholder:text-muted-foreground/30 prose prose-sm prose-zinc prose-invert max-w-none",
+          "min-h-[80px] w-full bg-transparent py-2 text-sm focus:outline-none placeholder:text-muted-foreground/30 max-w-none",
       },
     },
   });

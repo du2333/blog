@@ -72,7 +72,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
           type: "application/rss+xml",
           title: "RSS Feed",
           href: "/rss.xml",
-        }
+        },
       ],
       scripts: env.VITE_UMAMI_WEBSITE_ID
         ? [

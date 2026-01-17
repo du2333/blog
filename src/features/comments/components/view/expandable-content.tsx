@@ -34,7 +34,7 @@ export function ExpandableContent({
       <div
         ref={contentRef}
         className={cn(
-          "prose prose-sm prose-zinc prose-invert max-w-none text-sm transition-all duration-300",
+          "max-w-none text-sm transition-all duration-300",
           !expanded && "overflow-hidden",
         )}
         style={{
