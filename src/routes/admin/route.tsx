@@ -7,7 +7,7 @@ import {
 import { ArrowUpRight, Menu, Settings } from "lucide-react";
 import { useState } from "react";
 import { sessionQuery } from "@/features/auth/queries";
-import { SideBar } from "@/components/side-bar";
+import { SideBar } from "@/components/admin/side-bar";
 import { CACHE_CONTROL } from "@/lib/constants";
 import { Breadcrumbs } from "@/components/breadcrumbs";
 
