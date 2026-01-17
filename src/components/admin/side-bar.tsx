@@ -16,6 +16,7 @@ import { ThemeToggle } from "@/components/common/theme-toggle";
 import ConfirmationModal from "@/components/ui/confirmation-modal";
 import { authClient } from "@/lib/auth/auth.client";
 import { AUTH_KEYS } from "@/features/auth/queries";
+import { cn } from "@/lib/utils";
 
 export function SideBar({
   isMobileSidebarOpen,
@@ -65,32 +66,28 @@ export function SideBar({
     {
       path: "/admin/posts" as const,
       icon: FileText,
-      label: "文章",
+      label: "文章管理",
       exact: false,
     },
     {
       path: "/admin/tags" as const,
       icon: Tag,
-      label: "标签",
+      label: "标签管理",
       exact: false,
     },
     {
       path: "/admin/media" as const,
       icon: ImageIcon,
-      label: "媒体",
+      label: "媒体库",
       exact: false,
     },
     {
       path: "/admin/comments" as const,
       icon: MessageSquare,
-      label: "评论",
+      label: "评论管理",
       exact: false,
     },
   ];
-
-  const activeClass = "bg-accent font-bold";
-  const inactiveClass =
-    "text-muted-foreground hover:text-foreground hover:bg-accent/50";
 
   return (
     <>
@@ -103,100 +100,99 @@ export function SideBar({
 
       {/* Sidebar */}
       <aside
-        className={`
-        fixed inset-y-0 left-0 z-70 w-72 md:w-20 lg:w-64 border-r border-border flex flex-col
-        transform transition-all duration-500 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0
-        ${
+        className={cn(
+          "fixed inset-y-0 left-0 z-70 w-72 md:w-64 border-r border-border/30 flex flex-col bg-background transform transition-transform duration-300 ease-in-out md:sticky md:top-0 md:h-screen md:translate-x-0",
           isMobileSidebarOpen
             ? "translate-x-0 shadow-2xl"
-            : "-translate-x-full md:translate-x-0"
-        }
-      `}
+            : "-translate-x-full md:translate-x-0",
+        )}
       >
         {/* Logo Area */}
-        <div className="h-24 flex items-center justify-between px-6 shrink-0 border-b border-border/50">
-          <Link to="/admin" className="flex items-center gap-3">
-            <span className="font-serif text-xl tracking-tight md:hidden lg:block">
-              控制台
+        <div className="h-20 flex items-center justify-between px-6 shrink-0 border-b border-border/30">
+          <Link to="/admin" className="flex items-center gap-3 group">
+            <span className="font-serif font-black text-xl tracking-tighter group-hover:opacity-80 transition-opacity">
+              [ akuang ]
             </span>
           </Link>
           <button
             onClick={closeMobileSidebar}
-            className="md:hidden w-10 h-10 flex items-center justify-center rounded-sm bg-accent text-muted-foreground hover:text-foreground"
+            className="md:hidden p-2 text-muted-foreground hover:text-foreground"
           >
-            <X size={20} />
+            <X size={20} strokeWidth={1.5} />
           </button>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-8 space-y-1.5 overflow-y-auto custom-scrollbar">
+        <nav className="flex-1 px-4 py-8 space-y-2 overflow-y-auto custom-scrollbar">
           {navItems.map((item) => (
             <Link
               key={item.path}
               to={item.path}
               onClick={closeMobileSidebar}
               activeOptions={{ exact: item.exact }}
-              className={`flex items-center justify-center md:justify-center lg:justify-start gap-4 px-4 py-4 text-[10px] uppercase tracking-[0.2em] transition-all rounded-sm group ${inactiveClass}`}
-              activeProps={{
-                className: `${activeClass}`,
-              }}
+              className="group flex flex-col"
             >
               {({ isActive }) => (
-                <>
-                  <item.icon
-                    size={20}
-                    strokeWidth={isActive ? 2.5 : 1.5}
-                    className="shrink-0 transition-transform group-hover:scale-110"
-                  />
-                  <span className="md:hidden lg:block truncate font-bold">
-                    {item.label}
-                  </span>
-                </>
+                <div
+                  className={cn(
+                    "flex items-center gap-4 px-4 py-3 text-[11px] font-mono transition-all border border-transparent",
+                    isActive
+                      ? "bg-foreground text-background border-foreground"
+                      : "text-muted-foreground hover:text-foreground hover:border-border/30",
+                  )}
+                >
+                  <item.icon size={14} strokeWidth={1.5} className="shrink-0" />
+                  <div className="flex flex-col">
+                    <span className="uppercase tracking-widest font-medium leading-none">
+                      {isActive ? `> ${item.label}` : item.label}
+                    </span>
+                  </div>
+                </div>
               )}
             </Link>
           ))}
         </nav>
 
         {/* User Profile / Logout */}
-        <div className="p-4 md:p-2 lg:p-6 border-t border-border shrink-0 space-y-4">
-          <div className="flex items-center justify-between md:flex-col lg:flex-row gap-2 px-1">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground font-bold md:hidden lg:block">
-              主题模式
+        <div className="p-6 border-t border-border/30 shrink-0 space-y-6">
+          {/* Theme Toggle Area */}
+          <div className="flex items-center justify-between">
+            <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
+              THEME_MODE
             </span>
-            <ThemeToggle className="w-8 h-8 md:w-12 md:h-12 lg:w-8 lg:h-8 rounded-sm" />
+            <ThemeToggle className="w-8 h-8 rounded-none border border-border/30 hover:border-foreground transition-colors" />
           </div>
 
-          <div className="flex flex-row md:flex-col lg:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3 md:hidden lg:flex min-w-0">
-              <div className="w-10 h-10 rounded-full overflow-hidden border border-border shrink-0">
+          {/* User Info */}
+          <div className="flex items-center justify-between pt-2">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 border border-border/30 flex items-center justify-center bg-muted/20">
                 {user?.image ? (
                   <img
                     src={user.image}
                     alt={user.name}
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover opacity-80"
                   />
                 ) : (
-                  <div className="w-full h-full bg-muted flex items-center justify-center text-zinc-300">
-                    <User size={16} />
-                  </div>
+                  <User size={14} className="opacity-50" />
                 )}
               </div>
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-bold truncate">
+              <div className="flex flex-col">
+                <span className="text-[10px] font-mono uppercase tracking-wider truncate max-w-25">
                   {user?.name || "管理员"}
                 </span>
-                <span className="text-[9px] uppercase tracking-widest text-muted-foreground truncate">
-                  {user?.role === "admin" ? "Admin" : "User"}
+                <span className="text-[8px] text-muted-foreground font-mono">
+                  {user?.role === "admin" ? "ADMINISTRATOR" : "USER"}
                 </span>
               </div>
             </div>
 
             <button
               onClick={handleSignOutClick}
-              className="w-10 h-10 md:w-12 md:h-12 lg:w-10 lg:h-10 flex items-center justify-center text-muted-foreground hover:text-red-500 hover:bg-red-500/5 rounded-sm transition-all shrink-0"
+              className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-destructive transition-colors border border-transparent hover:border-destructive/30"
               title="退出登录"
             >
-              <LogOut size={18} strokeWidth={1.5} />
+              <LogOut size={14} strokeWidth={1.5} />
             </button>
           </div>
         </div>

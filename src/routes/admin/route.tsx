@@ -45,7 +45,7 @@ function AdminLayout() {
   const closeMobileSidebar = () => setIsMobileSidebarOpen(false);
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex relative transition-colors duration-500 font-sans">
+    <div className="min-h-screen bg-background text-foreground flex relative font-sans">
       <SideBar
         isMobileSidebarOpen={isMobileSidebarOpen}
         closeMobileSidebar={closeMobileSidebar}
@@ -54,13 +54,13 @@ function AdminLayout() {
       {/* Main Content Area */}
       <main className="flex-1 flex flex-col min-w-0">
         {/* Top Header */}
-        <header className="h-16 border-b border-border/50 bg-background/80 backdrop-blur-xl flex items-center justify-between px-6 md:px-10 sticky top-0 z-30 shrink-0">
+        <header className="h-20 border-b border-border/30 bg-background flex items-center justify-between px-6 md:px-10 sticky top-0 z-30 shrink-0">
           <div className="flex items-center gap-4">
             <button
               onClick={() => setIsMobileSidebarOpen(true)}
-              className="md:hidden p-2 hover:bg-accent rounded-sm transition-colors"
+              className="md:hidden p-2 hover:bg-muted/50 rounded-sm transition-colors text-foreground"
             >
-              <Menu size={20} />
+              <Menu size={20} strokeWidth={1.5} />
             </button>
             <Breadcrumbs />
           </div>
@@ -72,18 +72,20 @@ function AdminLayout() {
               title="系统设置"
             >
               <Settings
-                size={20}
+                size={18}
+                strokeWidth={1.5}
                 className="group-hover:rotate-45 transition-transform duration-500 ease-in-out"
               />
             </Link>
-            <div className="h-6 w-px bg-border/60" />
+            <div className="h-4 w-px bg-border/40" />
             <Link
               to="/"
-              className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-bold text-muted-foreground hover:text-foreground transition-colors group"
+              className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] font-mono font-medium text-muted-foreground hover:text-foreground transition-colors group"
             >
-              <span>查看前台</span>
+              <span>返回前台</span>
               <ArrowUpRight
-                size={12}
+                size={10}
+                strokeWidth={1.5}
                 className="group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform"
               />
             </Link>

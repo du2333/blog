@@ -214,17 +214,23 @@ pre.shiki {
 }
 
 /* Comment Highlight for Anchor Navigation */
-@keyframes highlight-fade {
+@keyframes highlight-flash {
   0% {
-    background-color: var(--muted);
+    background-color: var(--foreground);
+    color: var(--background);
+  }
+  15% {
+    background-color: var(--foreground);
+    color: var(--background);
   }
   100% {
     background-color: transparent;
+    color: inherit;
   }
 }
 
 .highlight-active {
-  animation: highlight-fade 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  animation: highlight-flash 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
   position: relative;
   scroll-margin-top: 100px;
 }
