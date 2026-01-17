@@ -179,9 +179,7 @@ export const postTagsRelations = relations(PostTagsTable, ({ one }) => ({
 // ==================== types ====================
 export type Tag = typeof TagsTable.$inferSelect;
 export type Post = typeof PostsTable.$inferSelect;
-export type PostListItem = Omit<Post, "contentJson"> & {
-  tags?: Array<Tag>;
-};
+
 export type Comment = typeof CommentsTable.$inferSelect;
 export type EmailUnsubscription = typeof EmailUnsubscriptionsTable.$inferSelect;
 export type EmailUnsubscribeType = (typeof EMAIL_UNSUBSCRIBE_TYPES)[number];

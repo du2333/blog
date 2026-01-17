@@ -6,14 +6,14 @@ export function cn(...inputs: Array<ClassValue>) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(date: Date | undefined | null) {
+export function formatDate(date: Date | undefined | null | string | number) {
   if (!date) return "";
-
-  const year = date.getUTCFullYear();
-  const month = date.getUTCMonth() + 1;
-  const day = date.getUTCDate();
-
-  return `${year}-${month}-${day}`;
+  const d = new Date(date);
+  return new Intl.DateTimeFormat("zh-CN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  }).format(d);
 }
 
 export function formatTimeAgo(date: Date | null | string) {

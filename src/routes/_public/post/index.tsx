@@ -178,6 +178,7 @@ function RouteComponent() {
           </div>
         ) : (
           posts.map((post, index) => (
+            // @ts-expect-error - we filter for published posts in the query
             <PostItem key={post.id} post={post} index={index} />
           ))
         )}
