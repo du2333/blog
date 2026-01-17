@@ -1,5 +1,5 @@
 import { ClientOnly, useNavigate } from "@tanstack/react-router";
-import { Calendar, Edit3, MoreVertical, Trash2 } from "lucide-react";
+import { Edit3, MoreVertical, Trash2 } from "lucide-react";
 import type { PostListItem } from "../types";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -23,31 +23,31 @@ export function PostRow({ post, onDelete }: PostRowProps) {
   };
 
   return (
-    <div className="group px-4 sm:px-6 py-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-accent/50 transition-all duration-500 relative border-b border-border/40 last:border-0">
+    <div className="group px-4 py-4 flex flex-col md:grid md:grid-cols-12 gap-4 items-center hover:bg-muted/30 transition-all duration-200 relative border-b border-border/30 last:border-0">
       {/* Main Content: Info Block */}
       <div
-        className="md:col-span-6 min-w-0 cursor-pointer group/title w-full flex flex-col gap-1.5"
+        className="md:col-span-6 min-w-0 cursor-pointer group/title w-full flex flex-col gap-1"
         onClick={handleEdit}
       >
-        {/* Metadata Header: ID & Status */}
+        {/* Metadata Header: ID */}
         <div className="flex items-center gap-3">
-          <span className="font-mono text-muted-foreground text-[10px] tracking-widest opacity-50">
-            #{post.id.toString().padStart(2, "0")}
+          <span className="font-mono text-muted-foreground text-[10px] tracking-widest">
+            #{post.id.toString().padStart(3, "0")}
           </span>
         </div>
 
         {/* Title */}
-        <h3 className="font-sans font-medium text-lg text-foreground tracking-tight group-hover/title:text-primary transition-colors duration-300 truncate">
+        <h3 className="font-serif font-medium text-lg text-foreground tracking-tight group-hover/title:underline underline-offset-4 decoration-border/50 transition-all truncate">
           {post.title}
         </h3>
 
         {/* Summary */}
-        <p className="text-xs text-muted-foreground truncate max-w-3xl font-light">
-          {post.summary}
+        <p className="text-xs text-muted-foreground truncate max-w-3xl font-mono opacity-70">
+          {post.summary || "无摘要"}
         </p>
       </div>
 
-      {/* Middle side: Status & Info */}
+      {/* Middle side: Status */}
       <div className="md:col-span-3 flex items-center gap-4">
         <StatusBadge status={post.status} />
       </div>
@@ -56,39 +56,14 @@ export function PostRow({ post, onDelete }: PostRowProps) {
       <div className="md:col-span-3 flex md:justify-end items-center gap-6 w-full md:w-auto mt-2 md:mt-0">
         {/* Smart Date Display */}
         <div className="flex flex-col items-end gap-1">
-          <div
-            className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest cursor-help text-muted-foreground transition-colors hover:text-foreground"
-            title={`发布于: ${post.publishedAt ? formatDate(post.publishedAt) : "未发布"}\n修改于: ${formatDate(post.updatedAt)}`}
-          >
-            {post.status === "published" ? (
-              <Calendar
-                size={10}
-                strokeWidth={1.5}
-                className="text-emerald-500"
-              />
-            ) : (
-              <Edit3 size={10} strokeWidth={1.5} className="text-amber-500" />
-            )}
-            <span className="opacity-70">
-              {post.status === "published" ? "发布于" : "修改于"}
+          <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
+            <span className="opacity-50">
+              {post.status === "published" ? "发布" : "修改"}
             </span>
             <ClientOnly fallback={<span>-</span>}>
               {post.status === "published"
                 ? formatDate(post.publishedAt || post.createdAt)
                 : formatDate(post.updatedAt)}
-            </ClientOnly>
-          </div>
-          <div
-            className="flex items-center gap-2 text-[9px] font-mono uppercase tracking-tighter cursor-help text-muted-foreground/40 transition-colors hover:text-muted-foreground/60"
-            title={`${post.status === "published" ? "更新于" : "创建于"}: ${formatDate(post.status === "published" ? post.updatedAt : post.createdAt)}`}
-          >
-            <span className="opacity-70 italic">
-              {post.status === "published" ? "更新于" : "创建于"}
-            </span>
-            <ClientOnly fallback={<span>-</span>}>
-              {formatDate(
-                post.status === "published" ? post.updatedAt : post.createdAt,
-              )}
             </ClientOnly>
           </div>
         </div>
@@ -102,7 +77,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
               e.stopPropagation();
               handleEdit();
             }}
-            className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent"
+            className="h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-transparent rounded-none"
             title="编辑"
           >
             <Edit3 size={14} strokeWidth={1.5} />
@@ -110,7 +85,7 @@ export function PostRow({ post, onDelete }: PostRowProps) {
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 text-muted-foreground hover:text-red-500 hover:bg-red-500/10"
+            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-transparent rounded-none"
             title="删除"
             onClick={(e) => {
               e.stopPropagation();
@@ -128,14 +103,14 @@ export function PostRow({ post, onDelete }: PostRowProps) {
               <Button
                 variant="ghost"
                 size="icon"
-                className="h-8 w-8 text-muted-foreground"
+                className="h-8 w-8 text-muted-foreground rounded-none"
               >
                 <MoreVertical size={16} />
               </Button>
             }
             items={[
               {
-                label: "删除",
+                label: "删除文章",
                 icon: <Trash2 size={14} strokeWidth={1.5} />,
                 onClick: () => onDelete(post),
                 danger: true,
@@ -151,29 +126,21 @@ export function PostRow({ post, onDelete }: PostRowProps) {
 function StatusBadge({ status }: { status: string }) {
   return (
     <Badge
-      variant={
-        status === "published"
-          ? "default"
+      variant="outline"
+      className={
+        "text-[9px] px-2 py-0.5 uppercase tracking-widest font-mono font-normal rounded-none border border-border/50 shadow-none bg-transparent " +
+        (status === "published"
+          ? "text-emerald-600 border-emerald-500/30"
           : status === "draft"
-            ? "secondary"
-            : "outline"
+            ? "text-muted-foreground border-border"
+            : "text-amber-600 border-amber-500/30")
       }
-      className={`
-        text-[9px] px-2.5 py-0.5 uppercase tracking-[0.2em] font-bold rounded-sm border shadow-none
-        ${
-          status === "published"
-            ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 hover:bg-emerald-500/10"
-            : status === "draft"
-              ? "bg-zinc-500/10 text-zinc-500 border-zinc-500/20 hover:bg-zinc-500/10"
-              : "bg-amber-500/10 text-amber-600 border-amber-500/20 hover:bg-amber-500/10"
-        }
-      `}
     >
       {status === "published"
-        ? "已发布"
+        ? "[ 已发布 ]"
         : status === "draft"
-          ? "草稿"
-          : "计划中"}
+          ? "[ 草稿 ]"
+          : "[ 待定 ]"}
     </Badge>
   );
 }

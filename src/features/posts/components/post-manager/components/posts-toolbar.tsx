@@ -33,27 +33,27 @@ export function PostsToolbar({
     searchTerm !== "";
 
   return (
-    <div className="flex flex-col lg:flex-row gap-4 mb-8 items-stretch lg:items-center w-full">
+    <div className="flex flex-col lg:flex-row gap-4 mb-8 items-stretch lg:items-center w-full border-b border-border/30 pb-8">
       {/* Search Input Group */}
       <div className="relative flex-1 group">
         <Search
-          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/50 group-focus-within:text-foreground transition-colors"
-          size={16}
-          strokeWidth={2}
+          className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground group-focus-within:text-foreground transition-colors"
+          size={14}
+          strokeWidth={1.5}
         />
         <Input
           type="text"
-          placeholder="检索文章标题..."
+          placeholder="搜索文章..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full pl-10 pr-10 h-10 bg-secondary/40 border-transparent hover:bg-secondary/60 focus:bg-background focus:border-border transition-all rounded-md font-sans text-sm shadow-sm"
+          className="w-full pl-9 pr-9 h-10 bg-transparent border-border/30 hover:border-foreground/50 focus:border-foreground transition-all rounded-none font-sans text-sm shadow-none focus-visible:ring-0"
         />
         {searchTerm && (
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onSearchChange("")}
-            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-sm"
+            className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-muted-foreground hover:text-foreground rounded-none"
           >
             <X size={14} />
           </Button>
@@ -61,8 +61,8 @@ export function PostsToolbar({
       </div>
 
       {/* Filters Group */}
-      <div className="flex items-center gap-2 flex-wrap lg:flex-nowrap">
-        <div className="h-6 w-px bg-border mx-2 hidden lg:block" />
+      <div className="flex items-center gap-3 flex-wrap lg:flex-nowrap">
+        <div className="h-4 w-px bg-border/30 mx-2 hidden lg:block" />
 
         {/* 1. Status Filter */}
         <Dropdown
@@ -72,17 +72,17 @@ export function PostsToolbar({
               variant="outline"
               size="sm"
               className={`
-                    h-10 border-dashed border-border hover:border-foreground/30
-                    flex items-center gap-2 text-[11px] font-medium transition-all px-3 rounded-md shadow-sm
+                    h-10 border-border/30 hover:border-foreground
+                    flex items-center gap-2 text-[11px] font-medium transition-all px-4 rounded-none shadow-none
                     ${
                       status !== "ALL"
-                        ? "bg-secondary text-foreground border-solid border-secondary-foreground/20"
-                        : "bg-background text-muted-foreground hover:text-foreground"
+                        ? "bg-foreground text-background border-foreground"
+                        : "bg-transparent text-muted-foreground hover:text-foreground"
                     }
                 `}
             >
               <Filter size={14} strokeWidth={1.5} />
-              <span className="uppercase tracking-wider">
+              <span className="uppercase tracking-widest font-mono">
                 {
                   {
                     ALL: "状态",
@@ -91,23 +91,19 @@ export function PostsToolbar({
                   }[status]
                 }
               </span>
-              {status !== "ALL" && (
-                <span className="flex h-1.5 w-1.5 rounded-full bg-primary ml-1" />
-              )}
             </Button>
           }
           items={STATUS_FILTERS.map((s) => ({
             label: {
-              ALL: "显示所有",
+              ALL: "全部",
               PUBLISHED: "已发布",
               DRAFT: "草稿",
             }[s],
             onClick: () => onStatusChange(s),
-            className: status === s ? "bg-accent text-accent-foreground" : "",
-            icon:
-              status === s ? (
-                <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-              ) : undefined,
+            className:
+              status === s
+                ? "bg-foreground text-background font-mono"
+                : "font-mono",
           }))}
         />
 
@@ -119,18 +115,18 @@ export function PostsToolbar({
               variant="outline"
               size="sm"
               className={`
-                    h-10 border-dashed border-border hover:border-foreground/30
-                    flex items-center gap-2 text-[11px] font-medium transition-all px-3 rounded-md shadow-sm
+                    h-10 border-border/30 hover:border-foreground
+                    flex items-center gap-2 text-[11px] font-medium transition-all px-4 rounded-none shadow-none
                     ${
                       sortDir !== "DESC" || sortBy !== "updatedAt"
-                        ? "bg-secondary text-foreground border-solid border-secondary-foreground/20"
-                        : "bg-background text-muted-foreground hover:text-foreground"
+                        ? "bg-foreground text-background border-foreground"
+                        : "bg-transparent text-muted-foreground hover:text-foreground"
                     }
                 `}
             >
               <ArrowUpDown size={14} strokeWidth={1.5} />
-              <span className="uppercase tracking-wider">
-                {sortBy === "publishedAt" ? "最近发布" : "最近修改"}
+              <span className="uppercase tracking-widest font-mono">
+                {sortBy === "publishedAt" ? "发布时间" : "修改时间"}
               </span>
             </Button>
           }
@@ -149,10 +145,9 @@ export function PostsToolbar({
           ].map((opt) => ({
             label: opt.label,
             onClick: opt.onClick,
-            className: opt.isActive ? "bg-accent text-accent-foreground" : "",
-            icon: opt.isActive ? (
-              <div className="h-1.5 w-1.5 rounded-full bg-primary" />
-            ) : undefined,
+            className: opt.isActive
+              ? "bg-foreground text-background font-mono"
+              : "font-mono",
           }))}
         />
 
@@ -162,10 +157,10 @@ export function PostsToolbar({
             variant="ghost"
             size="icon"
             onClick={onResetFilters}
-            className="h-10 w-10 text-muted-foreground hover:text-red-500 hover:bg-red-500/10 transition-colors"
-            title="重置所有筛选"
+            className="h-10 w-10 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors rounded-none"
+            title="重置"
           >
-            <X size={16} />
+            <X size={16} strokeWidth={1.5} />
           </Button>
         )}
       </div>

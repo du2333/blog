@@ -123,28 +123,28 @@ export function PostManager({
   };
 
   return (
-    <div className="space-y-12 pb-20">
+    <div className="space-y-8 pb-20">
       {/* Header */}
-      <div className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both">
-        <div className="space-y-1">
-          <h1 className="text-4xl font-serif font-medium tracking-tight">
+      <div className="flex justify-between items-end animate-in fade-in slide-in-from-bottom-4 duration-1000 fill-mode-both border-b border-border/30 pb-6">
+        <div className="space-y-2">
+          <h1 className="text-3xl font-serif font-medium tracking-tight">
             文章管理
           </h1>
-          <p className="text-sm text-muted-foreground">
-            发布、编辑或删除博客文章
+          <p className="text-xs font-mono text-muted-foreground uppercase tracking-widest">
+            POSTS_MANAGEMENT_SYSTEM
           </p>
         </div>
         <Button
           onClick={() => createMutation.mutate()}
           disabled={createMutation.isPending}
-          className="h-12 px-8 text-[11px] uppercase tracking-[0.2em] font-medium rounded-sm gap-2"
+          className="h-10 px-6 text-[11px] uppercase tracking-[0.2em] font-medium rounded-none gap-2 bg-foreground text-background hover:bg-foreground/90 disabled:opacity-50"
         >
           <Plus size={14} />
           {createMutation.isPending ? "创建中..." : "新建文章"}
         </Button>
       </div>
 
-      <div className="animate-in fade-in duration-1000 delay-100 fill-mode-both space-y-12">
+      <div className="animate-in fade-in duration-1000 delay-100 fill-mode-both space-y-8">
         {/* Toolbar */}
         <PostsToolbar
           searchTerm={searchInput}
@@ -166,30 +166,30 @@ export function PostManager({
         ) : isPending ? (
           <PostManagerSkeleton />
         ) : (
-          <div className="space-y-0 border-t border-border">
+          <div className="space-y-0">
             {posts.length === 0 ? (
-              <div className="py-24 flex flex-col items-center justify-center text-muted-foreground font-serif italic gap-4">
-                <ListFilter size={40} strokeWidth={1} className="opacity-20" />
-                <div className="text-center">
+              <div className="py-24 flex flex-col items-center justify-center text-muted-foreground gap-4 border border-dashed border-border/30">
+                <ListFilter size={32} strokeWidth={1} className="opacity-20" />
+                <div className="text-center font-mono text-xs">
                   未找到匹配的文章
                   <button
-                    className="mt-4 block text-[10px] uppercase tracking-widest font-mono hover:underline"
+                    className="mt-4 block mx-auto text-[10px] uppercase tracking-widest font-bold hover:underline"
                     onClick={onResetFilters}
                   >
-                    [清除所有筛选]
+                    [ 清除所有筛选 ]
                   </button>
                 </div>
               </div>
             ) : (
               <>
-                {/* Desktop Header (Simplified) */}
-                <div className="hidden md:grid grid-cols-12 gap-4 px-4 sm:px-6 py-4 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-bold border-b border-border bg-secondary/20">
-                  <div className="col-span-6">文章内容</div>
-                  <div className="col-span-3 text-left">状态 / 信息</div>
-                  <div className="col-span-3 text-left">日期 (发布 & 更新)</div>
+                {/* Desktop Header */}
+                <div className="hidden md:grid grid-cols-12 gap-4 px-4 py-2 text-[9px] uppercase tracking-[0.3em] text-muted-foreground font-mono border-b border-border/30 bg-muted/10">
+                  <div className="col-span-6">文章信息</div>
+                  <div className="col-span-3">当前状态</div>
+                  <div className="col-span-3 text-right">时间节点</div>
                 </div>
 
-                <div className="divide-y divide-border">
+                <div className="divide-y divide-border/30 border-b border-border/30">
                   {posts.map((post) => (
                     <PostRow
                       key={post.id}
@@ -219,7 +219,7 @@ export function PostManager({
         isOpen={!!postToDelete}
         onClose={() => !deleteMutation.isPending && setPostToDelete(null)}
         onConfirm={confirmDelete}
-        title="删除文章"
+        title="确认删除"
         message={`您确定要永久删除文章 "${postToDelete?.title}" 吗？此操作无法撤销。`}
         confirmLabel="确认删除"
         isDanger={true}

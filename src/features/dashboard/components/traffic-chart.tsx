@@ -10,12 +10,12 @@ export function TrafficChart({ data }: { data: Array<TrafficData> }) {
             <linearGradient id="colorViews" x1="0" y1="0" x2="0" y2="1">
               <stop
                 offset="0%"
-                stopColor="var(--foreground)"
+                stopColor="hsl(var(--foreground))"
                 stopOpacity={0.1}
               />
               <stop
                 offset="100%"
-                stopColor="var(--foreground)"
+                stopColor="hsl(var(--foreground))"
                 stopOpacity={0}
               />
             </linearGradient>
@@ -49,7 +49,7 @@ export function TrafficChart({ data }: { data: Array<TrafficData> }) {
               return null;
             }}
             cursor={{
-              stroke: "var(--border)",
+              stroke: "hsl(var(--border))",
               strokeWidth: 1,
               strokeDasharray: "4 4",
             }}
@@ -57,7 +57,7 @@ export function TrafficChart({ data }: { data: Array<TrafficData> }) {
           <Area
             type="monotone"
             dataKey="views"
-            stroke="var(--foreground)"
+            stroke="hsl(var(--foreground))"
             strokeWidth={1.5}
             fillOpacity={1}
             fill="url(#colorViews)"

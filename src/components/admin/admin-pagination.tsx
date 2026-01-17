@@ -1,4 +1,3 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import React from "react";
 import { Button } from "@/components/ui/button";
 
@@ -62,30 +61,29 @@ export function AdminPagination({
   const endItem = Math.min(startItem + currentPageItemCount - 1, totalItems);
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-8">
-      <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-[0.3em]">
-        第 {startItem.toString().padStart(2, "0")} —{" "}
-        {endItem.toString().padStart(2, "0")} 条 / 共 {totalItems} 条
+    <div className="flex flex-col sm:flex-row items-center justify-between gap-8 pt-8 border-t border-border/30 mt-8">
+      <div className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest">
+        第 {startItem} - {endItem} 条 / 共 {totalItems} 条
       </div>
 
-      <div className="flex items-center gap-1">
+      <div className="flex items-center gap-2">
         {/* Previous Button */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="h-10 w-10 text-muted-foreground disabled:opacity-0 hover:text-foreground transition-all rounded-none"
+          className="h-8 w-8 rounded-none border-border/30 hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-20"
         >
-          <ChevronLeft size={16} strokeWidth={1} />
+          <span className="font-mono text-xs font-bold">{"<"}</span>
         </Button>
 
         {/* Page Numbers */}
-        <div className="flex items-center gap-1 px-4">
+        <div className="flex items-center gap-1 px-2">
           {pageNumbers.map((pageNumber, index) => (
             <React.Fragment key={index}>
               {pageNumber === "..." ? (
-                <div className="w-8 text-center text-[10px] text-muted-foreground tracking-tighter font-mono">
+                <div className="w-8 text-center text-[10px] text-muted-foreground font-mono">
                   ...
                 </div>
               ) : (
@@ -93,13 +91,13 @@ export function AdminPagination({
                   variant="ghost"
                   size="sm"
                   onClick={() => onPageChange(pageNumber)}
-                  className={`h-8 min-w-8 px-2 flex items-center justify-center text-[11px] font-mono transition-all duration-300 rounded-none border-b ${
+                  className={`h-8 w-8 p-0 rounded-none font-mono text-xs transition-colors ${
                     currentPage === pageNumber
-                      ? "text-foreground font-bold border-foreground bg-transparent"
-                      : "text-muted-foreground hover:text-foreground border-transparent bg-transparent"
+                      ? "bg-foreground text-background font-bold hover:bg-foreground hover:text-background"
+                      : "text-muted-foreground hover:text-foreground hover:bg-transparent underline decoration-border/30 hover:decoration-foreground underline-offset-4"
                   }`}
                 >
-                  {pageNumber.toString().padStart(2, "0")}
+                  {pageNumber}
                 </Button>
               )}
             </React.Fragment>
@@ -108,13 +106,13 @@ export function AdminPagination({
 
         {/* Next Button */}
         <Button
-          variant="ghost"
+          variant="outline"
           size="icon"
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="h-10 w-10 text-muted-foreground disabled:opacity-0 hover:text-foreground transition-all rounded-none"
+          className="h-8 w-8 rounded-none border-border/30 hover:bg-foreground hover:text-background hover:border-foreground transition-all disabled:opacity-20"
         >
-          <ChevronRight size={16} strokeWidth={1} />
+          <span className="font-mono text-xs font-bold">{">"}</span>
         </Button>
       </div>
     </div>
