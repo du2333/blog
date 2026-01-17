@@ -14,8 +14,7 @@ The project pursues a **Strict Minimalist** and **Typography-driven** design aes
 3.  **Generous Whitespace**: 
     - Use larger vertical gaps (e.g., `space-y-20`, `py-32`) to create a calm reading experience.
     - Avoid dense packing of information.
-4.  **No "Hero" Imagery**: Avoid large splash images. Use bold typography introductions ("你好 👋") instead.
-5.  **Micro-Interactions**: Subtle, staggered animations (`animate-in`, `slide-in-from-bottom`) that respect the user's focus.
+4.  **Micro-Interactions**: Subtle, staggered animations (`animate-in`, `slide-in-from-bottom`) that respect the user's focus.
 
 ## Technical Stack
 
@@ -32,7 +31,7 @@ The project pursues a **Strict Minimalist** and **Typography-driven** design aes
 
 | Category | Fonts | Usage |
 | :--- | :--- | :--- |
-| **Serif (Display)** | `Noto Serif SC`, `Playfair Display` | **Primary Headings** (H1, H2), Introductions |
+| **Serif (Display)** | `Noto Serif SC` | **Primary Headings** (H1, H2), Introductions |
 | **Sans (Body)** | `Inter`, `Noto Sans SC` | Long-form reading, UI text |
 | **Mono (Meta)** | `JetBrains Mono` | Dates, Tags, Code blocks, Reading time |
 
