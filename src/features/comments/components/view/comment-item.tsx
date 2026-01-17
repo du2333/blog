@@ -1,12 +1,9 @@
 import { memo, useMemo } from "react";
-import { Link2, MessageSquare, Trash2 } from "lucide-react";
-import { toast } from "sonner";
 import { ExpandableContent } from "./expandable-content";
 import type { CommentWithUser } from "../../comments.schema";
 import { authClient } from "@/lib/auth/auth.client";
 import { cn, formatDate } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface CommentItemProps {
   comment: CommentWithUser;
@@ -15,6 +12,7 @@ interface CommentItemProps {
   isReply?: boolean;
   replyToName?: string | null;
   highlightCommentId?: number;
+  className?: string; // Added prop
 }
 
 export const CommentItem = memo(
@@ -25,6 +23,7 @@ export const CommentItem = memo(
     isReply,
     replyToName,
     highlightCommentId,
+    className,
   }: CommentItemProps) => {
     const isHighlighted = highlightCommentId === comment.id;
 
@@ -37,15 +36,15 @@ export const CommentItem = memo(
     const renderedContent = useMemo(() => {
       if (comment.status === "deleted") {
         return (
-          <p className="text-sm italic text-muted-foreground py-2">
-            该评论已删除
+          <p className="text-xs italic text-muted-foreground/40 py-1">
+            该评论已被删除
           </p>
         );
       }
       return (
         <ExpandableContent
           content={comment.content}
-          className="py-2"
+          className="py-1 text-sm/relaxed text-foreground/90 font-light"
           maxLines={6}
         />
       );
@@ -55,108 +54,73 @@ export const CommentItem = memo(
       <div
         id={`comment-${comment.id}`}
         className={cn(
-          "group flex gap-4 py-6 scroll-mt-24",
-          isReply ? "ml-12" : "border-b border-border/30",
-          isHighlighted && "highlight-active",
+          "group flex gap-5 py-8 scroll-mt-32 transition-colors duration-500",
+          isReply ? "ml-8 pl-8" : "border-b border-border/10",
+          isHighlighted && "bg-muted/5 -mx-4 px-4 rounded-sm",
+          className,
         )}
       >
-        {/* Avatar */}
-        <div className="shrink-0">
-          <div className="w-10 h-10 rounded-sm bg-muted overflow-hidden flex items-center justify-center border border-border/50">
+        {/* Avatar - Minimalist Text or Image */}
+        <div className="shrink-0 pt-1">
+          <div className="w-8 h-8 rounded-full bg-muted/30 overflow-hidden flex items-center justify-center border border-border/20">
             {comment.status === "deleted" ? (
-              <span className="text-xs font-mono text-muted-foreground uppercase opacity-50">
-                DEL
+              <span className="text-[9px] font-mono text-muted-foreground uppercase opacity-30">
+                X
               </span>
             ) : comment.user?.image ? (
               <img
                 src={comment.user.image}
                 alt={comment.user.name}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover grayscale opacity-80"
               />
             ) : (
-              <span className="text-xs font-mono text-muted-foreground uppercase">
-                {comment.user?.name.slice(0, 2) || "??"}
+              <span className="text-[10px] font-mono text-muted-foreground uppercase">
+                {comment.user?.name.slice(0, 1) || "?"}
               </span>
             )}
           </div>
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 min-w-0 space-y-1">
-          <div className="flex items-center justify-between">
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-baseline justify-between">
             <div className="flex items-center gap-3">
-              {isReply && replyToName && (
-                <span className="text-xs text-muted-foreground">
-                  回复{" "}
-                  <span className="text-primary font-medium">
-                    @{comment.status === "deleted" ? "已删除用户" : replyToName}
-                  </span>
-                </span>
-              )}
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-xs font-medium text-foreground tracking-wide">
                 {comment.status === "deleted"
-                  ? "已删除"
-                  : comment.user?.name || "匿名用户"}
+                  ? "Deleted"
+                  : comment.user?.name || "Anonymous"}
               </span>
               {isBlogger && comment.status !== "deleted" && (
-                <Badge
-                  variant="outline"
-                  className="text-[9px] h-4 px-1.5 font-mono uppercase tracking-widest border-primary/30 text-primary bg-primary/5 rounded-sm"
-                >
-                  博主
-                </Badge>
+                <span className="text-[9px] font-mono text-foreground/40 uppercase tracking-widest border border-border/30 px-1 rounded-[1px]">
+                  OP
+                </span>
               )}
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">
-                {formatDate(comment.createdAt)}
-              </span>
+
+              {isReply && replyToName && (
+                <span className="text-[10px] text-muted-foreground/50 font-mono">
+                  回复 @{comment.status === "deleted" ? "unknown" : replyToName}
+                </span>
+              )}
             </div>
+            <span className="text-[9px] font-mono text-muted-foreground/30 uppercase tracking-widest">
+              {formatDate(comment.createdAt)}
+            </span>
           </div>
 
           {renderedContent}
 
           {comment.status !== "deleted" && (
-            <div className="flex items-center gap-4 pt-1">
+            <div className="flex items-center gap-4 pt-2">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => {
                   const rootId = comment.rootId ?? comment.id;
-                  onReply?.(
-                    rootId,
-                    comment.id,
-                    comment.user?.name || "未知用户",
-                  );
+                  onReply?.(rootId, comment.id, comment.user?.name || "User");
                 }}
-                className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
+                className="h-auto p-0 text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
               >
-                <MessageSquare size={12} className="mr-1.5" />
                 回复
-              </Button>
-
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  const url = new URL(
-                    window.location.origin + window.location.pathname,
-                  );
-                  const effectiveRootId = comment.rootId ?? comment.id;
-                  url.searchParams.set(
-                    "highlightCommentId",
-                    comment.id.toString(),
-                  );
-                  url.searchParams.set("rootId", effectiveRootId.toString());
-                  url.hash = `comment-${comment.id}`;
-
-                  navigator.clipboard.writeText(url.toString());
-                  toast.success("链接已复制", {
-                    description: "评论直链已复制到剪贴板",
-                  });
-                }}
-                className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
-              >
-                <Link2 size={12} className="mr-1.5" />
-                链接
               </Button>
 
               {(isAuthor || isAdmin) && (
@@ -164,9 +128,8 @@ export const CommentItem = memo(
                   variant="ghost"
                   size="sm"
                   onClick={() => onDelete?.(comment.id)}
-                  className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-destructive bg-transparent hover:bg-transparent"
+                  className="h-auto p-0 text-[9px] uppercase tracking-widest font-bold text-muted-foreground/50 hover:text-destructive bg-transparent hover:bg-transparent"
                 >
-                  <Trash2 size={12} className="mr-1.5" />
                   删除
                 </Button>
               )}

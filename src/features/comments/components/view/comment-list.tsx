@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { ChevronDown, ChevronUp, LogIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { repliesByRootIdInfiniteQuery } from "../../queries";
 import { CommentItem } from "./comment-item";
@@ -147,42 +146,39 @@ function RootCommentWithReplies({
         }}
         onDelete={onDelete}
         highlightCommentId={highlightCommentId}
+        className={root.replyCount > 0 ? "pb-2 border-b-0" : ""}
       />
 
       {isReplyingToRoot && (
-        <div className="py-8 ml-12 px-6 border border-dashed border-border/50 rounded-sm bg-accent/5">
+        <div className="py-6 ml-12 px-0 animate-in fade-in slide-in-from-top-2 duration-300">
           {session ? (
             <CommentReplyForm
               parentUserName={replyTarget.userName}
               onSubmit={onSubmitReply!}
               isSubmitting={isSubmittingReply!}
               onCancel={onCancelReply!}
+              className="mt-0"
             />
           ) : (
-            <div className="flex flex-col items-center gap-4 text-center">
-              <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                登录后即可发表评论，与博主和其他读者一起交流心得。
-              </p>
-              <div className="flex gap-4">
-                <Link to="..">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold border-border hover:bg-foreground hover:text-background transition-all"
-                  >
-                    <LogIn size={10} className="mr-2" />
-                    立即登录
-                  </Button>
-                </Link>
+            <div className="flex items-center gap-4 py-4 bg-muted/5 rounded-sm px-4">
+              <span className="text-[10px] text-muted-foreground uppercase tracking-wider flex-1">
+                Login to reply @{replyTarget.userName}
+              </span>
+              <Link to="/login">
                 <Button
-                  variant="ghost"
+                  variant="outline"
                   size="sm"
-                  onClick={onCancelReply}
-                  className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground"
+                  className="h-7 px-3 text-[9px] uppercase tracking-widest font-bold border-border/40 hover:bg-foreground hover:text-background transition-all"
                 >
-                  取消
+                  Login
                 </Button>
-              </div>
+              </Link>
+              <button
+                onClick={onCancelReply}
+                className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground/50 hover:text-foreground transition-colors"
+              >
+                Cancel
+              </button>
             </div>
           )}
         </div>
@@ -190,27 +186,20 @@ function RootCommentWithReplies({
 
       {root.replyCount > 0 && (
         <div className="ml-12 mt-2">
-          <Button
-            variant="ghost"
-            size="sm"
+          <button
             onClick={onToggleExpand}
-            className="h-7 px-0 text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground bg-transparent hover:bg-transparent"
+            className="flex items-center gap-3 group mt-1 mb-1"
           >
-            {isExpanded ? (
-              <>
-                <ChevronUp size={12} className="mr-1.5" />
-                收起回复 ({root.replyCount})
-              </>
-            ) : (
-              <>
-                <ChevronDown size={12} className="mr-1.5" />
-                展开回复 ({root.replyCount})
-              </>
-            )}
-          </Button>
+            <div
+              className={`h-px bg-border/40 transition-all duration-300 ${isExpanded ? "w-12 bg-foreground/40" : "w-8 group-hover:w-12 group-hover:bg-foreground/40"}`}
+            />
+            <span className="text-[10px] font-mono text-muted-foreground/60 uppercase tracking-widest group-hover:text-foreground transition-colors">
+              {isExpanded ? "收起回复" : `展开 ${root.replyCount} 条回复`}
+            </span>
+          </button>
 
           {isExpanded && (
-            <div className="mt-4 space-y-2 border-l border-border/50 pl-6">
+            <div className="mt-4 space-y-2 pl-6">
               {allReplies.map((reply) => {
                 const isReplyingToThis =
                   replyTarget &&
@@ -237,39 +226,35 @@ function RootCommentWithReplies({
                       highlightCommentId={highlightCommentId}
                     />
                     {isReplyingToThis && (
-                      <div className="py-8 ml-12 px-6 border border-dashed border-border/50 rounded-sm bg-accent/5">
+                      <div className="py-6 ml-0 px-0 animate-in fade-in slide-in-from-top-2 duration-300">
                         {session ? (
                           <CommentReplyForm
                             parentUserName={replyTarget.userName}
                             onSubmit={onSubmitReply!}
                             isSubmitting={isSubmittingReply!}
                             onCancel={onCancelReply!}
+                            className="mt-0"
                           />
                         ) : (
-                          <div className="flex flex-col items-center gap-4 text-center">
-                            <p className="text-[11px] text-muted-foreground uppercase tracking-wider">
-                              登录后即可发表评论，与博主和其他读者一起交流心得。
-                            </p>
-                            <div className="flex gap-4">
-                              <Link to="/login">
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold border-border hover:bg-foreground hover:text-background transition-all"
-                                >
-                                  <LogIn size={10} className="mr-2" />
-                                  立即登录
-                                </Button>
-                              </Link>
+                          <div className="flex items-center gap-4 py-4 bg-muted/5 rounded-sm px-4">
+                            <span className="text-[10px] text-muted-foreground uppercase tracking-wider flex-1">
+                              Login to reply @{replyTarget.userName}
+                            </span>
+                            <Link to="/login">
                               <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="sm"
-                                onClick={onCancelReply}
-                                className="h-8 px-4 text-[9px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground"
+                                className="h-7 px-3 text-[9px] uppercase tracking-widest font-bold border-border/40 hover:bg-foreground hover:text-background transition-all"
                               >
-                                取消
+                                Login
                               </Button>
-                            </div>
+                            </Link>
+                            <button
+                              onClick={onCancelReply}
+                              className="text-[9px] uppercase tracking-widest font-bold text-muted-foreground/50 hover:text-foreground transition-colors"
+                            >
+                              Cancel
+                            </button>
                           </div>
                         )}
                       </div>

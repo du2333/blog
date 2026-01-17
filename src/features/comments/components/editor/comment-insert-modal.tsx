@@ -1,5 +1,5 @@
 import { ClientOnly } from "@tanstack/react-router";
-import { Globe, Image as ImageIcon, Link as LinkIcon, X } from "lucide-react";
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import type React from "react";
@@ -55,52 +55,43 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/95 backdrop-blur-2xl"
+        className="absolute inset-0 bg-background/90 backdrop-blur-md transition-opacity duration-500"
         onClick={onClose}
       />
 
       {/* Modal Content */}
       <div
         className={`
-            relative w-full max-w-4xl bg-background border border-border shadow-2xl 
-            flex flex-col overflow-hidden rounded-sm max-h-[90vh] transition-all duration-500 ease-in-out transform
+            relative w-full max-w-lg bg-background border border-border/20 shadow-2xl 
+            flex flex-col overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.23,1,0.32,1)] transform
             ${
               isMounted
                 ? "translate-y-0 scale-100 opacity-100"
-                : "translate-y-8 scale-[0.99] opacity-0"
+                : "translate-y-4 scale-[0.98] opacity-0"
             }
        `}
       >
         {/* Header */}
-        <div className="flex justify-between items-start p-8 md:p-12 pb-6 shrink-0">
-          <div className="space-y-2">
-            <div className="flex items-center gap-3 text-[10px] uppercase tracking-[0.4em] font-bold text-muted-foreground">
-              {activeType === "LINK" ? (
-                <LinkIcon size={14} />
-              ) : (
-                <ImageIcon size={14} />
-              )}
-              <span>{activeType === "LINK" ? "超链接" : "插入图片"}</span>
-            </div>
-            <h2 className="text-3xl font-serif font-medium text-foreground">
-              {activeType === "LINK" ? "插入超链接" : "插入图片"}
-            </h2>
+        <div className="flex justify-between items-center px-8 py-6 border-b border-border/10">
+          <div className="flex items-center gap-3">
+            <span className="text-xs font-mono text-foreground tracking-widest uppercase">
+              {activeType === "LINK" ? "[ 插入链接 ]" : "[ 插入图片 ]"}
+            </span>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors"
+            className="text-muted-foreground hover:text-foreground transition-colors"
           >
-            <X size={24} strokeWidth={1} />
+            <X size={18} strokeWidth={1.5} />
           </button>
         </div>
 
-        <div className="flex flex-col gap-8 flex-1 overflow-hidden min-h-0 px-8 md:px-12 pb-8">
+        <div className="p-8 space-y-8">
           {/* URL Input */}
-          <div className="space-y-4 pb-4">
-            <label className="text-[10px] uppercase tracking-[0.3em] font-bold text-zinc-400 flex items-center gap-2">
-              <Globe size={12} strokeWidth={1.5} />
-              {activeType === "IMAGE" ? "图片 URL" : "目标链接地址"}
+          <div className="space-y-3 group">
+            <label className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest group-focus-within:text-foreground transition-colors">
+              {activeType === "IMAGE" ? "图片地址 (URL)" : "目标链接地址"}
             </label>
             <input
               type="url"
@@ -110,18 +101,18 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
                 setInputUrl(e.target.value);
               }}
               onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
-              placeholder="https://example.com/..."
-              className="w-full bg-transparent border-b border-border text-foreground text-sm py-4 focus:border-foreground focus:outline-none transition-all"
+              placeholder="https://..."
+              className="w-full bg-transparent border-0 border-b border-border/40 text-foreground font-mono text-sm py-2 focus:border-foreground focus:outline-none transition-all placeholder:text-muted-foreground/20 rounded-none shadow-none"
             />
           </div>
         </div>
 
         {/* Actions */}
-        <div className="p-8 md:p-12 py-8 border-t border-border flex flex-col sm:flex-row justify-end gap-4 shrink-0">
+        <div className="px-8 pb-8 flex items-center justify-end gap-6">
           <button
             type="button"
             onClick={onClose}
-            className="px-8 py-4 text-[10px] font-bold uppercase tracking-[0.3em] text-muted-foreground hover:text-foreground transition-colors"
+            className="text-[10px] font-mono font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors"
           >
             取消
           </button>
@@ -133,11 +124,11 @@ const InsertModalInternal: React.FC<InsertModalProps> = ({
                 ? !inputUrl.trim() && !initialUrl.trim()
                 : !inputUrl.trim()
             }
-            className="px-10 py-4 bg-primary text-primary-foreground text-[10px] font-bold uppercase tracking-[0.3em] hover:opacity-90 transition-all shadow-xl shadow-black/10 disabled:opacity-20 disabled:cursor-not-allowed"
+            className="text-[10px] font-mono font-bold uppercase tracking-widest text-foreground hover:opacity-70 transition-opacity disabled:opacity-30 disabled:cursor-not-allowed"
           >
             {activeType === "LINK" && !inputUrl.trim() && initialUrl.trim()
-              ? "移除链接"
-              : "确认插入"}
+              ? "[ 移除 ]"
+              : "[ 确认 ]"}
           </button>
         </div>
       </div>

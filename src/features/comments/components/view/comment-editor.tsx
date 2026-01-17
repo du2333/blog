@@ -34,7 +34,7 @@ export const CommentEditor = ({
     editorProps: {
       attributes: {
         class:
-          "min-h-[120px] max-h-[400px] w-full bg-transparent p-4 text-sm focus:outline-none overflow-y-auto prose prose-sm prose-zinc prose-invert max-w-none",
+          "min-h-[80px] w-full bg-transparent py-2 text-sm focus:outline-none placeholder:text-muted-foreground/30 prose prose-sm prose-zinc prose-invert max-w-none",
       },
     },
   });
@@ -69,39 +69,49 @@ export const CommentEditor = ({
   };
 
   return (
-    <div className="relative border border-border/50 bg-accent/20 rounded-sm transition-all duration-300 focus-within:border-primary/50 focus-within:bg-accent/30">
-      <CommentEditorToolbar
-        editor={editor}
-        onLinkClick={openLinkModal}
-        onImageClick={openImageModal}
-      />
+    <div className="relative group/editor border border-border/10 rounded-sm bg-muted/5 transition-colors duration-300 hover:border-border/30 focus-within:border-border/50 focus-within:bg-background overflow-hidden">
+      {/* Toolbar - Always visible at top */}
+      <div className="border-b border-border/10 p-1 bg-background/50 backdrop-blur-sm sticky top-0 z-10 w-full">
+        <CommentEditorToolbar
+          editor={editor}
+          onLinkClick={openLinkModal}
+          onImageClick={openImageModal}
+        />
+      </div>
 
-      <EditorContent editor={editor} />
+      <EditorContent editor={editor} className="min-h-25 w-full px-4 py-3" />
 
-      <div className="flex items-center justify-end gap-3 p-3 border-t border-border/30 bg-background/30">
-        {onCancel && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={onCancel}
-            className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground hover:text-foreground"
-          >
-            取消
-          </Button>
-        )}
-        <Button
-          size="sm"
-          disabled={isEmpty || isSubmitting}
-          onClick={handleSubmit}
-          className="h-9 px-6 text-[10px] font-bold uppercase tracking-widest shadow-xl shadow-primary/10 transition-all duration-300 active:scale-95"
-        >
-          {isSubmitting ? (
-            <Loader2 size={14} className="animate-spin mr-2" />
-          ) : (
-            <Send size={14} className="mr-2" />
+      <div className="flex items-center justify-between px-4 pb-2 pt-2 border-t border-border/10">
+        <div className="text-[10px] font-mono text-muted-foreground/30 tracking-widest pl-2">
+          支持 Markdown
+        </div>
+        <div className="flex items-center gap-4">
+          {onCancel && (
+            <button
+              onClick={onCancel}
+              className="text-[10px] uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors"
+            >
+              取消
+            </button>
           )}
-          {submitLabel}
-        </Button>
+          <Button
+            size="sm"
+            disabled={isEmpty || isSubmitting}
+            onClick={handleSubmit}
+            variant="ghost"
+            className="h-8 px-4 text-[10px] font-bold uppercase tracking-widest hover:bg-transparent hover:text-foreground p-0 flex items-center gap-2 group/btn"
+          >
+            <span>{submitLabel}</span>
+            {isSubmitting ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Send
+                size={12}
+                className="group-hover/btn:translate-x-0.5 transition-transform"
+              />
+            )}
+          </Button>
+        </div>
       </div>
 
       <InsertModal

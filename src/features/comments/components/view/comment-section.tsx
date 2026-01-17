@@ -110,13 +110,10 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
   }
 
   return (
-    <section className="space-y-12 mt-32 pt-16 border-t border-border/50 animate-in fade-in duration-700">
+    <section className="space-y-12 mt-24 pt-12 border-t border-border/20 animate-in fade-in duration-700">
       <header className="flex items-center justify-between">
-        <div className="space-y-1">
-          <h3 className="text-[11px] uppercase tracking-[0.4em] font-bold text-muted-foreground">
-            评论交流
-          </h3>
-          <p className="text-2xl font-serif font-medium text-foreground">
+        <div className="space-y-2">
+          <p className="text-xl font-serif font-medium text-foreground">
             {totalCount} 条评论
           </p>
         </div>
@@ -131,17 +128,17 @@ export const CommentSection = ({ postId }: CommentSectionProps) => {
           />
         </div>
       ) : (
-        <div className="py-12 px-8 border border-dashed border-border/50 rounded-sm bg-accent/5 flex flex-col items-center gap-6">
-          <p className="text-sm text-muted-foreground text-center max-w-sm leading-relaxed">
-            登录后即可发表评论，与博主和其他读者一起交流心得。
+        <div className="py-12 flex flex-col items-center justify-center gap-4 text-center">
+          <p className="text-xs font-mono text-muted-foreground/60 tracking-wider">
+            加入讨论
           </p>
           <Link to="/login">
             <Button
               variant="outline"
-              className="px-8 py-5 text-[10px] uppercase tracking-[0.2em] font-bold border-border hover:bg-foreground hover:text-background transition-all"
+              className="h-10 px-6 text-[10px] uppercase tracking-[0.25em] font-bold border-border/40 bg-transparent hover:bg-foreground hover:text-background transition-all"
             >
-              <LogIn size={14} className="mr-2" />
-              立即登录
+              <LogIn size={12} className="mr-2.5 opacity-70" />
+              登录
             </Button>
           </Link>
         </div>

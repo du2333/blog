@@ -135,9 +135,10 @@ function RouteComponent() {
           <main className="prose prose-zinc prose-invert prose-lg md:prose-xl max-w-none animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed font-serif prose-headings:font-serif prose-code:font-mono prose-pre:border-0 prose-pre:bg-secondary/20">
             <ContentRenderer content={post.contentJson} />
 
-            <footer className="mt-24 pt-12 border-t border-border/40 flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-xs font-mono text-muted-foreground/40 uppercase tracking-widest">
-                {/* Footer metadata if needed */}
+            <footer className="mt-24 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="flex items-center gap-4 text-xs font-mono text-muted-foreground/60 tracking-widest uppercase">
+                <span className="opacity-50">///</span>
+                <span>End of Article</span>
               </div>
               <Button
                 variant="ghost"
@@ -149,10 +150,14 @@ function RouteComponent() {
                     description: "文章链接已复制到剪贴板",
                   });
                 }}
-                className="group h-auto p-0 flex items-center gap-2 text-xs uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
+                className="group h-auto p-0 flex items-center gap-3 text-xs uppercase tracking-widest font-medium text-muted-foreground hover:text-foreground transition-colors bg-transparent hover:bg-transparent"
               >
-                <Share2 size={14} strokeWidth={1.5} />
-                <span>分享文章</span>
+                <span>分享</span>
+                <Share2
+                  size={12}
+                  strokeWidth={1.5}
+                  className="group-hover:-translate-y-0.5 transition-transform"
+                />
               </Button>
             </footer>
           </main>

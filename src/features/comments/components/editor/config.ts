@@ -12,18 +12,19 @@ export const commentExtensions = [
     blockquote: false,
     code: {
       HTMLAttributes: {
-        class: "bg-muted px-1.5 py-0.5 rounded font-mono text-sm",
+        class:
+          "font-mono text-xs px-1 text-foreground/80 bg-muted/40 rounded-sm",
         spellCheck: false,
       },
     },
     underline: {
       HTMLAttributes: {
-        class: "decoration-muted-foreground underline-offset-4",
+        class: "underline underline-offset-4 decoration-border/60",
       },
     },
     strike: {
       HTMLAttributes: {
-        class: "text-muted-foreground line-through opacity-60",
+        class: "line-through opacity-50 decoration-foreground/40",
       },
     },
     link: {
@@ -31,7 +32,7 @@ export const commentExtensions = [
       openOnClick: false,
       HTMLAttributes: {
         class:
-          "font-medium underline underline-offset-4 decoration-border hover:decoration-current transition-all duration-300 cursor-pointer",
+          "font-normal underline underline-offset-4 decoration-border hover:decoration-foreground transition-all duration-300 cursor-pointer text-foreground",
         target: "_blank",
       },
     },
