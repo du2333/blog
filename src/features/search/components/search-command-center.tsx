@@ -1,6 +1,5 @@
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { CornerDownLeft, Search } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import {
@@ -93,13 +92,17 @@ export function SearchCommandCenter({
     }
   }, [selectedIndex, searchResults]);
 
+  // Reset query when closed
   useEffect(() => {
-    setSelectedIndex(0);
-  }, [query]);
+    if (!isOpen) {
+      setQuery("");
+      setSelectedIndex(0);
+    }
+  }, [isOpen]);
 
   return (
     <div
-      className={`fixed inset-0 z-100 flex items-start justify-center pt-[15vh] px-4 md:px-6 transition-all duration-500 ease-in-out ${
+      className={`fixed inset-0 z-100 flex flex-col items-center justify-start pt-[15vh] px-4 md:px-0 transition-opacity duration-300 ${
         isOpen
           ? "opacity-100 pointer-events-auto"
           : "opacity-0 pointer-events-none"
@@ -107,133 +110,102 @@ export function SearchCommandCenter({
     >
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-background/90 backdrop-blur-xl"
+        className="absolute inset-0 bg-background/98 backdrop-blur-xl transition-opacity duration-500"
         onClick={onClose}
       />
 
       {/* Main Container */}
       <div
-        className={`
-        relative w-full max-w-3xl flex flex-col max-h-[70vh]
-        transition-all duration-500 ease-in-out transform fill-mode-both
-        ${
-          isOpen
-            ? "opacity-100 scale-100 translate-y-0"
-            : "opacity-0 scale-99 -translate-y-4"
-        }
-      `}
+        className={`relative w-full max-w-2xl flex flex-col transition-all duration-500 ease-out ${
+          isOpen ? "translate-y-0 opacity-100" : "-translate-y-8 opacity-0"
+        }`}
       >
-        {/* Header / Input */}
-        <div className="relative flex items-center gap-6 pb-8 border-b border-border">
-          <Search
-            className={`transition-colors duration-500 ${
-              isSearching
-                ? "text-muted-foreground animate-pulse"
-                : "text-muted-foreground"
-            }`}
-            size={28}
-            strokeWidth={1.5}
-          />
+        {/* Input Area */}
+        <div className="relative mb-16 group">
           <input
             ref={inputRef}
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="搜索文章或想法..."
-            className="flex-1 bg-transparent text-3xl md:text-5xl font-serif text-foreground placeholder:text-muted-foreground focus:outline-none min-w-0"
+            placeholder="搜索文章..."
+            className="w-full bg-transparent text-4xl md:text-6xl font-serif text-foreground placeholder:text-muted-foreground/10 focus:outline-none text-center selection:bg-foreground selection:text-background tracking-tight"
           />
-          {isSearching && (
-            <div className="absolute -bottom-px left-0 w-full h-px overflow-hidden">
-              <div className="w-full h-full bg-primary animate-pulse transition-opacity duration-1000"></div>
-            </div>
-          )}
         </div>
 
         {/* Results List */}
         <div
           ref={listRef}
-          className="flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 space-y-2 scroll-smooth"
+          className="w-full max-h-[60vh] overflow-y-auto custom-scrollbar px-4 pb-20 space-y-6"
         >
-          {query.trim() === "" ? (
-            <div className="h-64 flex flex-col items-center justify-center space-y-4"></div>
-          ) : !isSearching && searchResults.length === 0 ? (
-            <div className="h-64 flex flex-col items-center justify-center">
-              <span className="text-lg font-light text-muted-foreground italic">
-                未找到相关结果
-              </span>
-            </div>
-          ) : (
-            searchResults.map((result, index) => (
+          {query.trim() !== "" &&
+            !isSearching &&
+            searchResults.length === 0 && (
+              <div className="text-center py-12 opacity-50">
+                <p className="font-serif text-xl text-muted-foreground">
+                  没有找到 "{query}"
+                </p>
+              </div>
+            )}
+
+          {searchResults.map((result, index) => {
+            const isSelected = index === selectedIndex;
+            return (
               <div
                 key={result.post.id}
                 onClick={() => handleSelect(result.post.slug)}
                 onMouseEnter={() => setSelectedIndex(index)}
                 className={`
-                  group p-6 transition-all duration-500 rounded-sm relative cursor-pointer
-                  ${
-                    index === selectedIndex
-                      ? "bg-accent shadow-xs"
-                      : "hover:bg-accent/50"
-                  }
+                  group relative cursor-pointer transition-all duration-500 flex flex-col items-center text-center
+                  ${isSelected ? "opacity-100 scale-100" : "opacity-30 scale-95 blur-[1px] hover:opacity-60 hover:blur-0"}
                 `}
               >
-                <div className="flex justify-between items-start gap-8">
-                  <div className="flex-1 min-w-0 space-y-2">
-                    <h4
-                      className="text-xl md:text-2xl font-serif text-foreground leading-tight"
+                <h4
+                  className={`
+                    font-serif tracking-tight transition-all duration-500
+                    ${isSelected ? "text-2xl md:text-4xl text-foreground font-medium" : "text-xl md:text-2xl text-muted-foreground"}
+                  `}
+                  dangerouslySetInnerHTML={{
+                    __html: result.matches.title || result.post.title,
+                  }}
+                />
+
+                {/* Summary & Metadata - Only visible when selected */}
+                <div
+                  className={`
+                    overflow-hidden transition-all duration-500 ease-in-out
+                    ${isSelected ? "max-h-40 opacity-100 mt-4" : "max-h-0 opacity-0 mt-0"}
+                  `}
+                >
+                  <div className="flex flex-col items-center gap-3">
+                    <p
+                      className="text-sm text-muted-foreground font-sans max-w-lg line-clamp-2 leading-relaxed"
                       dangerouslySetInnerHTML={{
-                        __html: result.matches.title || result.post.title,
+                        __html:
+                          result.matches.summary || result.post.summary || "",
                       }}
                     />
 
-                    <div
-                      className="text-sm font-light text-muted-foreground line-clamp-1 italic"
-                      dangerouslySetInnerHTML={{
-                        __html: result.matches.summary || result.post.summary,
-                      }}
-                    />
-
-                    {/* Tags */}
                     {result.post.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-2 pt-1">
-                        {result.post.tags.map((tag: string) => (
+                      <div className="flex gap-2 pt-1">
+                        {result.post.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="text-[10px] uppercase tracking-wider text-muted-foreground/60 px-1.5 py-0.5 bg-accent/30 rounded-sm border border-border/20"
+                            className="text-[10px] uppercase tracking-widest font-mono text-muted-foreground/70 border border-border/50 px-2 py-0.5 rounded-full"
                           >
-                            # {tag}
+                            {tag}
                           </span>
                         ))}
                       </div>
                     )}
-                  </div>
 
-                  <div className="shrink-0 pt-6 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
-                    <CornerDownLeft
-                      size={16}
-                      className="text-muted-foreground"
-                    />
+                    <div className="mt-2 text-[10px] font-mono text-muted-foreground/30 uppercase tracking-[0.2em] animate-pulse">
+                      按 Enter 阅读
+                    </div>
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
-
-        {/* Footer */}
-        <div className="pt-8 border-t border-border flex justify-between items-center text-[10px] font-mono uppercase tracking-[0.2em] opacity-30">
-          <div className="flex gap-8">
-            <div className="flex items-center gap-2">
-              <kbd className="px-1 border border-current rounded">↑↓</kbd> 导航
-            </div>
-            <div className="flex items-center gap-2">
-              <kbd className="px-1 border border-current rounded">Enter</kbd>{" "}
-              选择
-            </div>
-            <div className="flex items-center gap-2">
-              <kbd className="px-1 border border-current rounded">Esc</kbd> 关闭
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>

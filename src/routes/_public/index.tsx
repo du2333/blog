@@ -63,9 +63,9 @@ function App() {
       </section>
 
       {/* Selected Posts */}
-      <section className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+      <section className="space-y-10 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200 fill-mode-both">
         <h2 className="text-xl font-serif font-medium text-foreground tracking-tight flex items-center gap-2">
-          精选文章
+          最新文章
         </h2>
 
         <div className="space-y-8">
