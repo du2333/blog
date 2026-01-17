@@ -28,7 +28,10 @@ function App() {
 
           <div className="space-y-4 max-w-2xl text-base md:text-lg text-muted-foreground font-light leading-relaxed">
             <p>
-              我是 <span className="text-foreground font-medium">{blogConfig.author}</span>
+              我是{" "}
+              <span className="text-foreground font-medium">
+                {blogConfig.author}
+              </span>
               ，{blogConfig.description}
             </p>
           </div>

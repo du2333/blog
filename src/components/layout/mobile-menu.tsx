@@ -3,6 +3,7 @@ import { LogOut, UserIcon, X } from "lucide-react";
 import type { FileRoutesByTo } from "@/routeTree.gen";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { blogConfig } from "@/blog.config";
 
 interface MobileMenuProps {
   navOptions: Array<{
@@ -52,8 +53,8 @@ export function MobileMenu({
         {/* Header */}
         <div className="flex justify-between items-center">
           <div className="flex flex-col">
-            <span className="font-serif italic text-2xl tracking-tight text-foreground">
-              菜单
+            <span className="font-serif text-2xl font-bold tracking-tighter text-foreground">
+              [ {blogConfig.name} ]
             </span>
           </div>
           <Button

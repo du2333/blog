@@ -1,7 +1,8 @@
 export const blogConfig = {
-  name: "CHRONICLE",
+  name: "akuang",
   author: "阿旷",
-  description: "这是我的个人网站和博客。在这里，我主要分享与技术和生活相关的内容。欢迎阅读！",
+  description:
+    "这是我的个人网站和博客。在这里，我主要分享与技术和生活相关的内容。欢迎阅读！",
   logo: "/favicon.svg",
   hero: {
     title: "数字",

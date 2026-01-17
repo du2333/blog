@@ -3,9 +3,8 @@ import { LayoutDashboard, Search, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FileRoutesByTo } from "@/routeTree.gen";
 import { ThemeToggle } from "@/components/common/theme-toggle";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { cn } from "@/lib/utils";
 import { blogConfig } from "@/blog.config";
 
 interface NavbarProps {
@@ -46,125 +45,92 @@ export function Navbar({
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-40 h-28 flex items-center transition-all duration-700 ${
+        className={`fixed top-0 left-0 right-0 z-40 flex items-center transition-all duration-500 ${
           isScrolled
-            ? "bg-background/90 backdrop-blur-2xl border-b border-border h-20 shadow-sm"
-            : "bg-transparent border-b border-transparent h-28"
+            ? "bg-background/80 backdrop-blur-md border-b border-border/40 py-4 shadow-sm"
+            : "bg-transparent border-transparent py-8"
         }`}
       >
-        <div className="max-w-7xl mx-auto w-full px-6 md:px-12 flex items-center justify-between">
+        <div className="max-w-3xl mx-auto w-full px-6 md:px-0 flex items-center justify-between">
           {/* Left: Brand */}
-          <Link to="/" className="group select-none flex items-center gap-4">
-            <div className="w-9 h-9 relative">
-              <img
-                src={blogConfig.logo}
-                alt={blogConfig.name}
-                className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
-              />
-            </div>
-            <span className="hidden md:block text-[11px] font-bold uppercase tracking-[0.6em] text-foreground">
-              {blogConfig.name}
+          <Link to="/" className="group select-none">
+            <span className="font-serif text-xl font-bold tracking-tighter text-foreground transition-colors group-hover:text-muted-foreground">
+              [ {blogConfig.name} ]
             </span>
           </Link>
 
-          {/* Center: Main Nav (Absolute center for true minimalist feel) */}
-          <nav className="hidden lg:flex items-center gap-16">
+          {/* Center: Main Nav */}
+          <nav className="hidden lg:flex items-center gap-8">
             {navOptions.map((option) => (
               <Link
                 key={option.id}
                 to={option.to}
-                className="text-[10px] uppercase tracking-[0.5em] text-muted-foreground hover:text-foreground transition-all py-2 font-bold relative group"
+                className="text-[11px] font-medium uppercase tracking-widest text-muted-foreground/60 hover:text-foreground transition-colors"
                 activeProps={{
                   className: "!text-foreground",
                 }}
               >
-                {({ isActive }) => (
-                  <>
-                    {option.label}
-                    <span
-                      className={`absolute -bottom-1 left-0 h-0.5 bg-current transition-all duration-700 ease-out ${
-                        isActive
-                          ? "w-full"
-                          : "w-0 group-hover:w-full opacity-0 group-hover:opacity-20"
-                      }`}
-                    />
-                  </>
-                )}
+                {option.label}
               </Link>
             ))}
           </nav>
 
           {/* Right: Actions */}
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-1">
               <ThemeToggle />
               <Button
                 variant="ghost"
                 size="icon"
                 onClick={onSearchClick}
-                className="text-muted-foreground hover:text-foreground h-10 w-10 bg-transparent hover:bg-transparent"
-                title="Search"
+                className="text-muted-foreground hover:text-foreground h-8 w-8"
               >
-                <Search size={16} strokeWidth={1.2} />
+                <Search size={16} strokeWidth={1.5} />
               </Button>
             </div>
 
-            <div className="h-4 w-px bg-border hidden md:block" />
-
             {/* Profile / Menu Toggle */}
-            <div className="flex items-center gap-4">
-              <div className="hidden md:flex items-center gap-4">
+            <div className="flex items-center gap-3 pl-3 border-l border-border/50">
+              <div className="hidden md:flex items-center">
                 {isLoading ? (
                   <Skeleton className="w-8 h-8 rounded-full" />
                 ) : (
-                  <div className="flex items-center gap-4 animate-in fade-in duration-700 fill-mode-both">
+                  <div className="flex items-center gap-3 animate-in fade-in">
                     {user ? (
                       <>
                         {user.role === "admin" && (
                           <Link
                             to="/admin"
-                            className={cn(
-                              buttonVariants({
-                                variant: "ghost",
-                                size: "icon",
-                              }),
-                              "p-2.5 h-auto w-auto hover:bg-accent rounded-full transition-all duration-500 text-muted-foreground hover:text-foreground",
-                            )}
-                            title="进入后台"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                            title="Admin"
                           >
-                            <LayoutDashboard size={18} strokeWidth={1.5} />
+                            <LayoutDashboard size={16} />
                           </Link>
                         )}
                         <button
                           onClick={onOpenProfile}
-                          className="group flex items-center p-0.5 rounded-full border border-transparent hover:border-border transition-all duration-500"
+                          className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-border hover:ring-foreground transition-all"
                         >
-                          <div className="w-8 h-8 rounded-full overflow-hidden border border-border/50 p-0.5 transition-all duration-700">
-                            {user.image ? (
-                              <img
-                                src={user.image}
-                                alt={user.name}
-                                className="w-full h-full rounded-full object-cover"
+                          {user.image ? (
+                            <img
+                              src={user.image}
+                              alt={user.name}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-muted flex items-center justify-center">
+                              <UserIcon
+                                size={12}
+                                className="text-muted-foreground"
                               />
-                            ) : (
-                              <div className="w-full h-full bg-muted flex items-center justify-center">
-                                <UserIcon
-                                  size={14}
-                                  className="text-zinc-300"
-                                  strokeWidth={1}
-                                />
-                              </div>
-                            )}
-                          </div>
+                            </div>
+                          )}
                         </button>
                       </>
                     ) : (
                       <Link
                         to="/login"
-                        className={cn(
-                          buttonVariants({ variant: "link" }),
-                          "text-[10px] uppercase tracking-[0.4em] text-muted-foreground hover:text-foreground transition-colors font-medium h-auto p-0",
-                        )}
+                        className="text-[10px] uppercase tracking-widest font-bold text-muted-foreground hover:text-foreground transition-colors"
                       >
                         Login
                       </Link>
@@ -174,18 +140,17 @@ export function Navbar({
               </div>
 
               <button
-                className="w-10 h-10 flex flex-col items-center justify-center gap-1 group"
+                className="w-8 h-8 flex flex-col items-center justify-center gap-1.5 group"
                 onClick={onMenuClick}
               >
-                <div className="w-6 h-px bg-foreground transition-transform group-hover:scale-x-75 origin-right"></div>
-                <div className="w-6 h-px bg-foreground transition-transform group-hover:scale-x-110 origin-right"></div>
+                <div className="w-5 h-px bg-foreground transition-all group-hover:w-3"></div>
+                <div className="w-5 h-px bg-foreground transition-all group-hover:w-6"></div>
               </button>
             </div>
           </div>
         </div>
       </header>
-      {/* Spacer to push content down since header is fixed */}
-      <div className="h-28"></div>
+      <div className="h-32"></div>
     </>
   );
 }
