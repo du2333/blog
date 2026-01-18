@@ -6,8 +6,18 @@
 
 本项目使用标准环境变量进行配置。
 
-- **本地开发 (Local)**: 创建 `.dev.vars` 文件 (该文件不会被 git 追踪)。
-- **CI/CD**: 在 GitHub Settings 中设置 Secrets。
+### 本地开发 (Local Development)
+
+由于 Vite 和 Cloudflare Wrangler 读取不同的文件，本地开发需要配置两个文件：
+
+| 文件        | 用途                                                    | Git 追踪 |
+| :---------- | :------------------------------------------------------ | :------: |
+| `.env`      | 客户端变量 (`VITE_*`)，被 Vite 读取注入前端。           |    否    |
+| `.dev.vars` | 服务端变量，被 Wrangler 读取注入 Worker 的 `env` 对象。 |    否    |
+
+### CI/CD
+
+在 GitHub Repository 的 Settings -> Secrets and variables -> Actions 中设置 Secrets。
 
 ### 环境变量列表
 
