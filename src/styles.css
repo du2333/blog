@@ -1,8 +1,8 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-@import "@fontsource-variable/inter";
 @import "@fontsource-variable/noto-sans-sc";
+@import "@fontsource-variable/noto-serif-sc";
 @import "@fontsource-variable/jetbrains-mono";
 
 @custom-variant dark (&:is(.dark *));
@@ -101,7 +101,7 @@ mark {
 
   /* Awwwards Style Font Families */
   --font-serif: "Noto Serif SC Variable", serif;
-  --font-sans: "Inter Variable", "Noto Sans SC Variable", system-ui, sans-serif;
+  --font-sans: "Noto Sans SC Variable", system-ui, sans-serif;
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   /* Semantic Colors mapping to CSS variables */
