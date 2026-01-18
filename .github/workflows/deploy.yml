@@ -123,7 +123,7 @@ jobs:
           sed -i "s/D1_DATABASE_ID/$D1_DATABASE_ID/g" wrangler.jsonc
           sed -i "s/KV_NAMESPACE_ID/$KV_NAMESPACE_ID/g" wrangler.jsonc
           sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" wrangler.jsonc
-          sed -i "s/BUCKET_NAME_PLACEHOLDER/$BUCKET_NAME/g" wrangler.jsonc
+          sed -i "s/bucket-name-placeholder/$BUCKET_NAME/g" wrangler.jsonc
 
       - name: Generate Secrets JSON
         run: |

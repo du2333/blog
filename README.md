@@ -1,5 +1,9 @@
 # Flare Stack Blog
 
+> **注意**：本项目专为 Cloudflare Workers 生态设计，深度集成 D1、R2、KV、Workflows 等服务，**仅支持部署在 Cloudflare Workers**。
+
+[部署指南](#部署指南) | [本地开发](#本地开发)
+
 基于 Cloudflare Workers 的现代化全栈博客 CMS。
 
 ## 核心功能
@@ -191,7 +195,18 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 > 使用 Cloudflare Workers Builds CI/CD（每月 3000 分钟免费额度）。后续更新 Sync Fork 后会自动触发部署，`wrangler.jsonc` 通常可自动合并无冲突。
 
 1. Fork 本仓库
-2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1、KV 的资源 ID、域名和 R2 存储桶名称（替换对应的 `_PLACEHOLDER`）
+2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，替换其中的占位符：
+
+   ```jsonc
+   {
+     "routes": [{ "pattern": "blog.example.com", ... }],  // ← 你的域名
+     "d1_databases": [{ "database_id": "xxxxxxxx-xxxx-...", ... }],  // ← D1 ID
+     "r2_buckets": [{ "bucket_name": "my-blog-bucket", ... }],  // ← R2 存储桶名称
+     "kv_namespaces": [{ "id": "xxxxxxxx...", ... }],  // ← KV ID
+     "env": { "test": { ... } }  // ← 测试环境配置，无需修改
+   }
+   ```
+
 3. 在 Cloudflare Dashboard 创建 Worker，连接你的 GitHub 仓库
 4. 配置构建设置：
    - Build command: `bun run build`
