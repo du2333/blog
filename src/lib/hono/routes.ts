@@ -17,7 +17,7 @@ app.get("*", cacheMiddleware);
 /* ================================ 路由开始 ================================ */
 app.get("/stats.js", async (c) => {
   const env = serverEnv(c.env);
-  const umamiSrc = env.VITE_UMAMI_SRC;
+  const umamiSrc = env.UMAMI_SRC;
   if (!umamiSrc) {
     return c.text("Not Found", 404);
   }
@@ -32,7 +32,7 @@ app.get("/stats.js", async (c) => {
 
 app.all("/api/send", async (c) => {
   const env = serverEnv(c.env);
-  const umamiSrc = env.VITE_UMAMI_SRC;
+  const umamiSrc = env.UMAMI_SRC;
   if (!umamiSrc) {
     return c.text("Not Found", 404);
   }

@@ -103,7 +103,7 @@ jobs:
             "CLOUDFLARE_PURGE_API_TOKEN": "$CLOUDFLARE_PURGE_API_TOKEN",
             "DOMAIN": "$DOMAIN",
             "VITE_UMAMI_WEBSITE_ID": "$VITE_UMAMI_WEBSITE_ID",
-            "VITE_UMAMI_SRC": "$VITE_UMAMI_SRC",
+            "UMAMI_SRC": "$UMAMI_SRC",
             "UMAMI_API_KEY": "$UMAMI_API_KEY",
             "UMAMI_USERNAME": "$UMAMI_USERNAME",
             "UMAMI_PASSWORD": "$UMAMI_PASSWORD"

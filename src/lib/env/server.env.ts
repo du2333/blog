@@ -16,7 +16,7 @@ const serverEnvSchema = z.object({
     ),
   ENVIRONMENT: z.enum(["dev", "prod", "test"]).optional(),
   VITE_UMAMI_WEBSITE_ID: z.string().optional(),
-  VITE_UMAMI_SRC: z.string().optional(),
+  UMAMI_SRC: z.string().optional(),
   UMAMI_API_KEY: z.string().optional(),
   UMAMI_USERNAME: z.string().optional(),
   UMAMI_PASSWORD: z.string().optional(),

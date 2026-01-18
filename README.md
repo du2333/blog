@@ -31,14 +31,14 @@
 | `CLOUDFLARE_ZONE_ID`         |       Server        | **是** | Cloudflare Zone ID，用于通过 API 清除 CDN 缓存。                              |
 | `CLOUDFLARE_PURGE_API_TOKEN` |       Server        | **是** | 具有清除该区域缓存权限的 Cloudflare API Token。                               |
 | `DOMAIN`                     |       Server        | **是** | 博客的域名 (例如 `blog.example.com`)。用于安全检查和路由。                    |
+| `D1_DATABASE_ID`             |        CI/CD        | **是** | D1 数据库 ID (用于 GitHub Actions 注入 `wrangler.jsonc`)。                    |
+| `KV_NAMESPACE_ID`            |        CI/CD        | **是** | KV 缓存命名空间 ID (用于 GitHub Actions 注入 `wrangler.jsonc`)。              |
 | `ENVIRONMENT`                |       Server        |   否   | 环境标识：`dev`, `prod`, 或 `test`。默认为`undefined`。                       |
 | `UMAMI_API_KEY`              |       Server        |   否   | Umami 统计 API Key (如果你使用Umami Cloud)。                                  |
 | `UMAMI_USERNAME`             |       Server        |   否   | Umami 用户名 (如果你使用自部署)。                                             |
 | `UMAMI_PASSWORD`             |       Server        |   否   | Umami 密码 (如果你使用自部署)。                                               |
-| `D1_DATABASE_ID`             |        CI/CD        | **是** | D1 数据库 ID (用于 GitHub Actions 注入 `wrangler.jsonc`)。                    |
-| `KV_NAMESPACE_ID`            |        CI/CD        | **是** | KV 缓存命名空间 ID (用于 GitHub Actions 注入 `wrangler.jsonc`)。              |
+| `UMAMI_SRC`                  |       Server        |   否   | Umami 统计实例的 URL (例如 `https://analytics.example.com`)。                 |
 | `VITE_UMAMI_WEBSITE_ID`      | **Client & Server** |   否   | Umami 统计脚本的 Website ID (服务端和客户端均需使用)。                        |
-| `VITE_UMAMI_SRC`             |       Client        |   否   | Umami 统计实例的 URL (例如 `https://analytics.example.com`)。                 |
 | `VITE_BLOG_TITLE`            |       Client        |   否   | 博客标题。                                                                    |
 | `VITE_BLOG_NAME`             |       Client        |   否   | 博客短名称或 ID。                                                             |
 | `VITE_BLOG_AUTHOR`           |       Client        |   否   | 作者名称。                                                                    |

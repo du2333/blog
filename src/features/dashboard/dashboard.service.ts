@@ -216,7 +216,7 @@ export async function getDashboardStats(
   let umamiUrl: string | undefined;
 
   const umamiWebsiteId = env.VITE_UMAMI_WEBSITE_ID;
-  const umamiSrc = env.VITE_UMAMI_SRC;
+  const umamiSrc = env.UMAMI_SRC;
 
   if (umamiWebsiteId && umamiSrc) {
     umamiUrl = `${umamiSrc.replace(/\/$/, "")}/websites/${umamiWebsiteId}`;
