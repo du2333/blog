@@ -1,0 +1,27 @@
+# ===========================================
+# 服务端环境变量（Wrangler 注入 Worker env）
+# ===========================================
+
+# --- 环境标识 ---
+ENVIRONMENT=dev
+
+# --- 认证配置（Better Auth） ---
+BETTER_AUTH_SECRET=your-secret-key-run-openssl-rand-hex-32
+BETTER_AUTH_URL=http://localhost:3000
+ADMIN_EMAIL=your-email@example.com
+
+# --- GitHub OAuth ---
+GITHUB_CLIENT_ID=your-github-client-id
+GITHUB_CLIENT_SECRET=your-github-client-secret
+
+# --- CDN 缓存清理 ---
+CLOUDFLARE_ZONE_ID=your-zone-id
+CLOUDFLARE_PURGE_API_TOKEN=your-purge-api-token
+DOMAIN=blog.example.com
+
+# --- Umami 统计（可选） ---
+VITE_UMAMI_WEBSITE_ID=your-umami-website-id
+UMAMI_SRC=https://umami.example.com
+UMAMI_API_KEY=
+UMAMI_USERNAME=
+UMAMI_PASSWORD=

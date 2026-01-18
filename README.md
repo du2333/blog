@@ -6,6 +6,10 @@
 
 基于 Cloudflare Workers 的现代化全栈博客 CMS。
 
+![首页](docs/assets/home.png)
+
+![管理后台](docs/assets/admin.png)
+
 ## 核心功能
 
 - **文章管理** — 富文本编辑器，支持代码高亮、图片上传、草稿/发布流程
@@ -228,9 +232,69 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 
 ## 本地开发
 
-由于 Vite 和 Wrangler 读取不同的配置文件：
+### 前置要求
+
+- [Bun](https://bun.sh) >= 1.3
+- Cloudflare 账号（用于远程 D1/R2/KV 资源）
+
+### 快速开始
+
+```bash
+# 安装依赖
+bun install
+
+# 配置环境变量
+cp .env.example .env        # 客户端变量
+cp .dev.vars.example .dev.vars  # 服务端变量
+
+# 配置 Wrangler
+cp wrangler.example.jsonc wrangler.jsonc
+# 编辑 wrangler.jsonc，填入你的资源 ID
+
+# 启动开发服务器
+bun dev
+```
+
+### 常用命令
+
+| 命令            | 说明                        |
+| :-------------- | :-------------------------- |
+| `bun dev`       | 启动开发服务器（端口 3000） |
+| `bun run build` | 构建生产版本                |
+| `bun run test`  | 运行测试                    |
+| `bun lint`      | ESLint 检查                 |
+| `bun check`     | 类型检查 + Lint + 格式化    |
+
+### 数据库命令
+
+| 命令              | 说明                                |
+| :---------------- | :---------------------------------- |
+| `bun db:studio`   | 启动 Drizzle Studio（可视化数据库） |
+| `bun db:generate` | 生成迁移文件                        |
+| `bun db:migrate`  | 应用迁移到远程 D1                   |
+| `bun db:push`     | 直接推送 Schema 到数据库            |
+
+### 环境变量
 
 | 文件        | 用途                                   |
 | :---------- | :------------------------------------- |
 | `.env`      | 客户端变量（`VITE_*`），Vite 读取      |
 | `.dev.vars` | 服务端变量，Wrangler 注入 Worker `env` |
+
+### 本地模拟 Cloudflare 资源
+
+默认配置使用远程 D1/R2/KV 资源。如需完全本地开发，可在 `wrangler.jsonc` 中移除 `remote: true`，Miniflare 会自动模拟这些服务：
+
+```jsonc
+{
+  "d1_databases": [{ "binding": "DB", ... }],  // 移除 "remote": true
+  "r2_buckets": [{ "binding": "R2", ... }],    // 移除 "remote": true
+  "kv_namespaces": [{ "binding": "KV", ... }]  // 移除 "remote": true
+}
+```
+
+> **注意**：本地模拟的数据不会同步到远程，适合初期开发和测试。本地数据库迁移使用：
+>
+> ```bash
+> wrangler d1 migrations apply DB
+> ```
