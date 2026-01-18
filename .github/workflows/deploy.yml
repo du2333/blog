@@ -13,6 +13,7 @@ on:
       - ".agent/**"
       - ".vscode/**"
       - ".gitignore"
+  workflow_dispatch:
 
 jobs:
   test:
@@ -68,7 +69,9 @@ jobs:
       - name: Install dependencies
         run: bun ci
 
-      - name: import cloudflare secrets
+      # === Original repo: fetch secrets from Vault ===
+      - name: "[Vault] Import cloudflare secrets"
+        if: github.repository == 'du2333/flare-stack-blog'
         uses: hashicorp/vault-action@v3
         with:
           url: https://vault.dukda.com
@@ -76,13 +79,42 @@ jobs:
           secrets: |
             secrets/data/cloudflare *
 
-      - name: import runtime secrets
+      - name: "[Vault] Import runtime secrets"
+        if: github.repository == 'du2333/flare-stack-blog'
         uses: hashicorp/vault-action@v3
         with:
           url: https://vault.dukda.com
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             secrets/data/blog *
+
+      # === Fork repos: use repository secrets ===
+      - name: "[Fork] Import secrets from repository"
+        if: github.repository != 'du2333/flare-stack-blog'
+        run: |
+          echo "CLOUDFLARE_API_TOKEN=${{ secrets.CLOUDFLARE_API_TOKEN }}" >> $GITHUB_ENV
+          echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
+          echo "D1_DATABASE_ID=${{ secrets.D1_DATABASE_ID }}" >> $GITHUB_ENV
+          echo "KV_NAMESPACE_ID=${{ secrets.KV_NAMESPACE_ID }}" >> $GITHUB_ENV
+          echo "BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}" >> $GITHUB_ENV
+          echo "BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}" >> $GITHUB_ENV
+          echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> $GITHUB_ENV
+          echo "GITHUB_CLIENT_ID=${{ secrets.GH_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "GITHUB_CLIENT_SECRET=${{ secrets.GH_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "CLOUDFLARE_ZONE_ID=${{ secrets.CLOUDFLARE_ZONE_ID }}" >> $GITHUB_ENV
+          echo "CLOUDFLARE_PURGE_API_TOKEN=${{ secrets.CLOUDFLARE_PURGE_API_TOKEN }}" >> $GITHUB_ENV
+          echo "DOMAIN=${{ secrets.DOMAIN }}" >> $GITHUB_ENV
+          echo "UMAMI_SRC=${{ secrets.UMAMI_SRC }}" >> $GITHUB_ENV
+          echo "UMAMI_API_KEY=${{ secrets.UMAMI_API_KEY }}" >> $GITHUB_ENV
+          echo "UMAMI_USERNAME=${{ secrets.UMAMI_USERNAME }}" >> $GITHUB_ENV
+          echo "UMAMI_PASSWORD=${{ secrets.UMAMI_PASSWORD }}" >> $GITHUB_ENV
+          echo "VITE_UMAMI_WEBSITE_ID=${{ vars.VITE_UMAMI_WEBSITE_ID }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_TITLE=${{ vars.VITE_BLOG_TITLE }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_NAME=${{ vars.VITE_BLOG_NAME }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_AUTHOR=${{ vars.VITE_BLOG_AUTHOR }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_DESCRIPTION=${{ vars.VITE_BLOG_DESCRIPTION }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_GITHUB=${{ vars.VITE_BLOG_GITHUB }}" >> $GITHUB_ENV
+          echo "VITE_BLOG_EMAIL=${{ vars.VITE_BLOG_EMAIL }}" >> $GITHUB_ENV
 
       - name: Inject Resource IDs
         run: |

@@ -13,7 +13,6 @@ The project deeply integrates multiple Cloudflare services:
 
 | Service             | Binding        | Purpose                                          |
 | :------------------ | :------------- | :----------------------------------------------- |
-| **Runtime**         | -              | Bun                                              |
 | **Compute/Hosting** | -              | Cloudflare Workers                               |
 | **Database**        | `DB`           | Cloudflare D1 (SQLite) with Drizzle ORM          |
 | **Object Storage**  | `R2`           | Media assets storage                             |
