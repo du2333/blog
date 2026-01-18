@@ -121,6 +121,7 @@ jobs:
           cp wrangler.example.jsonc wrangler.jsonc
           sed -i "s/D1_DATABASE_ID/$D1_DATABASE_ID/g" wrangler.jsonc
           sed -i "s/KV_NAMESPACE_ID/$KV_NAMESPACE_ID/g" wrangler.jsonc
+          sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" wrangler.jsonc
 
       - name: Generate Secrets JSON
         run: |

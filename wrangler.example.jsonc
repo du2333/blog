@@ -9,14 +9,13 @@
   },
   "routes": [
     {
-      "pattern": "blog.dukda.com",
+      "pattern": "DOMAIN_PLACEHOLDER",
       "custom_domain": true,
     },
   ],
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "blog-d1",
       "database_id": "D1_DATABASE_ID",
       "migrations_dir": "migrations",
       "remote": true,

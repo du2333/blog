@@ -119,9 +119,9 @@ src/
 
 ---
 
-### 方式一：GitHub Actions 自动部署（推荐）
+### 方式一：GitHub Actions 自动部署
 
-> 推荐此方式，后续更新只需 Sync Fork 即可自动合并上游更改。
+> 使用 GitHub Actions CI/CD（每月 2000 分钟免费额度）。后续更新只需 Sync Fork 即可自动触发部署。
 
 1. Fork 本仓库
 2. 在 GitHub 仓库 **Settings → Secrets and variables → Actions** 中配置变量
@@ -176,10 +176,12 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 
 ---
 
-### 方式二：Cloudflare Dashboard 手动部署
+### 方式二：Cloudflare Dashboard 自动部署
+
+> 使用 Cloudflare Workers Builds CI/CD（每月 3000 分钟免费额度）。后续更新 Sync Fork 后会自动触发部署，`wrangler.jsonc` 通常可自动合并无冲突。
 
 1. Fork 本仓库
-2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1 和 KV 的资源 ID
+2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1、KV 的资源 ID 和你的域名（替换 `DOMAIN_PLACEHOLDER`）
 3. 在 Cloudflare Dashboard 创建 Worker，连接你的 GitHub 仓库
 4. 配置构建设置：
    - Build command: `bun run build`
@@ -194,6 +196,8 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 > - `GH_CLIENT_SECRET` → `GITHUB_CLIENT_SECRET`
 >
 > 其余变量名保持一致。Cloudflare 会自动创建带 D1 权限的 API Token，数据库迁移会在部署时自动执行。
+>
+> **CDN 缓存**：方式二不会自动清除 CDN 缓存，部署后可在博客后台「设置」页面手动清除。
 
 ---
 
