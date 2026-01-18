@@ -23,7 +23,7 @@
   ],
   "r2_buckets": [
     {
-      "bucket_name": "blog",
+      "bucket_name": "BUCKET_NAME_PLACEHOLDER",
       "binding": "R2",
       "remote": true,
     },

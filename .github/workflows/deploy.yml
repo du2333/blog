@@ -96,6 +96,7 @@ jobs:
           echo "CLOUDFLARE_ACCOUNT_ID=${{ secrets.CLOUDFLARE_ACCOUNT_ID }}" >> $GITHUB_ENV
           echo "D1_DATABASE_ID=${{ secrets.D1_DATABASE_ID }}" >> $GITHUB_ENV
           echo "KV_NAMESPACE_ID=${{ secrets.KV_NAMESPACE_ID }}" >> $GITHUB_ENV
+          echo "BUCKET_NAME=${{ secrets.BUCKET_NAME }}" >> $GITHUB_ENV
           echo "BETTER_AUTH_SECRET=${{ secrets.BETTER_AUTH_SECRET }}" >> $GITHUB_ENV
           echo "BETTER_AUTH_URL=${{ secrets.BETTER_AUTH_URL }}" >> $GITHUB_ENV
           echo "ADMIN_EMAIL=${{ secrets.ADMIN_EMAIL }}" >> $GITHUB_ENV
@@ -122,6 +123,7 @@ jobs:
           sed -i "s/D1_DATABASE_ID/$D1_DATABASE_ID/g" wrangler.jsonc
           sed -i "s/KV_NAMESPACE_ID/$KV_NAMESPACE_ID/g" wrangler.jsonc
           sed -i "s/DOMAIN_PLACEHOLDER/$DOMAIN/g" wrangler.jsonc
+          sed -i "s/BUCKET_NAME_PLACEHOLDER/$BUCKET_NAME/g" wrangler.jsonc
 
       - name: Generate Secrets JSON
         run: |

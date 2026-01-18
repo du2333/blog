@@ -102,18 +102,27 @@ src/
 
 ## 部署指南
 
+本项目支持两种 CI/CD 部署方式，选择其一即可：
+
+| 方式       | 平台                      | 免费额度     | 特点               |
+| :--------- | :------------------------ | :----------- | :----------------- |
+| **方式一** | GitHub Actions            | 2000 分钟/月 | 自动清除 CDN 缓存  |
+| **方式二** | Cloudflare Workers Builds | 3000 分钟/月 | 无需创建部署 Token |
+
 ### 前置准备
+
+以下步骤两种方式通用：
 
 1. **Cloudflare 账号** — 需绑定付款方式以启用 R2、Workers AI、Images 等服务（免费额度充足，个人博客基本用不完）
 2. **创建 Cloudflare 资源**：
-   - R2 存储桶（名称必须为 `blog`）
+   - R2 存储桶（记录名称）
    - D1 数据库（记录 Database ID）
    - KV 命名空间（记录 Namespace ID）
 3. **域名托管** — 将域名 DNS 托管到 Cloudflare 以使用免费 CDN
 4. **获取 Cloudflare 凭证**：
    - Dashboard 中获取 Zone ID 和 Account ID
    - 创建 API Token（需要 Purge CDN 权限）
-   - 创建 API Token（需要 Worker 部署 + D1 读写权限）
+   - 创建 API Token（需要 Worker 部署 + D1 读写权限）— **仅方式一需要**
 5. **GitHub OAuth App** — 在 GitHub Developer Settings 创建 OAuth App，获取 Client ID 和 Secret
    - Authorization callback URL：`https://<your-domain>/api/auth/callback/github`
 
@@ -137,6 +146,7 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 | `CLOUDFLARE_ACCOUNT_ID`      | CI/CD  | Cloudflare Account ID                             |
 | `D1_DATABASE_ID`             | CI/CD  | D1 数据库 ID                                      |
 | `KV_NAMESPACE_ID`            | CI/CD  | KV 命名空间 ID                                    |
+| `BUCKET_NAME`                | CI/CD  | R2 存储桶名称                                     |
 | `BETTER_AUTH_SECRET`         | 运行时 | 会话加密密钥，运行 `openssl rand -hex 32` 生成    |
 | `BETTER_AUTH_URL`            | 运行时 | 应用 URL（如 `https://blog.example.com`）         |
 | `ADMIN_EMAIL`                | 运行时 | 管理员邮箱，注册的用户会按照该邮箱授予管理员权限  |
@@ -181,7 +191,7 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 > 使用 Cloudflare Workers Builds CI/CD（每月 3000 分钟免费额度）。后续更新 Sync Fork 后会自动触发部署，`wrangler.jsonc` 通常可自动合并无冲突。
 
 1. Fork 本仓库
-2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1、KV 的资源 ID 和你的域名（替换 `DOMAIN_PLACEHOLDER`）
+2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1、KV 的资源 ID、域名和 R2 存储桶名称（替换对应的 `_PLACEHOLDER`）
 3. 在 Cloudflare Dashboard 创建 Worker，连接你的 GitHub 仓库
 4. 配置构建设置：
    - Build command: `bun run build`
