@@ -180,7 +180,6 @@ function RouteComponent() {
       </article>
 
       {/* Back To Top */}
-      {/* Back To Top */}
       <div
         className={`fixed bottom-8 right-8 z-40 transition-all duration-700 ${
           showBackToTop
