@@ -4,8 +4,9 @@ import {
   Link,
   createFileRoute,
   notFound,
+  useNavigate,
 } from "@tanstack/react-router";
-import { ArrowUp, Share2 } from "lucide-react";
+import { ArrowLeft, ArrowUp, Share2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -13,11 +14,10 @@ import { postBySlugQuery } from "@/features/posts/queries";
 import { ContentRenderer } from "@/features/posts/components/view/content-renderer";
 import TableOfContents from "@/features/posts/components/view/table-of-content";
 import { CommentSection } from "@/features/comments/components/view/comment-section";
-import { ArticleSkeleton } from "@/features/posts/components/article-skeleton";
+import { ArticleSkeleton } from "@/features/posts/components/view/article-skeleton";
 
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/utils";
-import { Breadcrumbs } from "@/components/breadcrumbs";
 
 const searchSchema = z.object({
   highlightCommentId: z.coerce.number().optional(),
@@ -57,6 +57,7 @@ function RouteComponent() {
   const { data: post } = useSuspenseQuery(
     postBySlugQuery(Route.useParams().slug),
   );
+  const navigate = useNavigate();
   const [showBackToTop, setShowBackToTop] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,13 @@ function RouteComponent() {
     <div className="w-full max-w-3xl mx-auto pb-20 px-6 md:px-0">
       {/* Back Link */}
       <nav className="py-12 flex items-center justify-between">
-        <Breadcrumbs />
+        <button
+          onClick={() => navigate({ to: "/posts" })}
+          className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
+        >
+          <ArrowLeft size={12} />
+          <span>返回目录</span>
+        </button>
       </nav>
 
       <article className="space-y-16">

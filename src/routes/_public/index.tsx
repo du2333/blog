@@ -3,7 +3,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { Github, Mail, Rss, Terminal } from "lucide-react";
 import { featuredPostsQuery } from "@/features/posts/queries";
 import { PostItem } from "@/features/posts/components/view/post-item";
-import { LoadingFallback } from "@/components/common/loading-fallback";
+import { HomeSkeleton } from "@/features/posts/components/view/home-skeleton";
 import { blogConfig } from "@/blog.config";
 
 export const Route = createFileRoute("/_public/")({
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/_public/")({
   loader: async ({ context }) => {
     await context.queryClient.ensureQueryData(featuredPostsQuery);
   },
-  pendingComponent: LoadingFallback,
+  pendingComponent: HomeSkeleton,
 });
 
 function App() {

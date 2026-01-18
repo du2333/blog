@@ -15,7 +15,7 @@ export function Breadcrumbs() {
   if (breadcrumbs.length === 0) return null;
 
   return (
-    <nav className="flex items-center gap-1.5 md:gap-2 text-[10px] uppercase tracking-[0.2em] md:tracking-[0.3em] text-muted-foreground min-w-0">
+    <nav className="flex items-center gap-1.5 md:gap-2 text-[10px] tracking-[0.2em] md:tracking-[0.3em] text-muted-foreground min-w-0">
       {breadcrumbs.map((crumb, index) => (
         <Fragment key={crumb.path}>
           {index > 0 && <span className="opacity-30 shrink-0">/</span>}

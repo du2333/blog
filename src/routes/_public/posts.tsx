@@ -8,7 +8,7 @@ import { z } from "zod";
 
 import { postsInfiniteQueryOptions } from "@/features/posts/queries";
 import { blogConfig } from "@/blog.config";
-import { LoadingFallback } from "@/components/common/loading-fallback";
+import { PostsSkeleton } from "@/features/posts/components/view/posts-skeleton";
 import { PostItem } from "@/features/posts/components/view/post-item";
 import { tagsQueryOptions } from "@/features/tags/queries";
 import { cn } from "@/lib/utils";
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/_public/posts")({
     tagName: z.string().optional(),
   }),
   component: RouteComponent,
-  pendingComponent: LoadingFallback,
+  pendingComponent: PostsSkeleton,
   loaderDeps: ({ search: { tagName } }) => ({ tagName }),
   loader: async ({ context, deps }) => {
     await Promise.all([
