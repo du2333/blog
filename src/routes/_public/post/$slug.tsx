@@ -91,7 +91,7 @@ function RouteComponent() {
         {/* Header Section */}
         <header className="space-y-8">
           <div className="space-y-6">
-            <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground/60 tracking-wider uppercase">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground/60 tracking-wider">
               <span className="flex items-center gap-1.5">
                 <ClientOnly fallback={<span>-</span>}>
                   {formatDate(post.publishedAt)}
@@ -104,7 +104,7 @@ function RouteComponent() {
               {post.tags && post.tags.length > 0 && (
                 <>
                   <span className="opacity-30">/</span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     {post.tags.map((tag) => (
                       <Link
                         key={tag.id}
@@ -180,24 +180,26 @@ function RouteComponent() {
       </article>
 
       {/* Back To Top */}
+      {/* Back To Top */}
       <div
-        className={`fixed bottom-12 right-12 z-40 transition-all duration-700 ${
+        className={`fixed bottom-8 right-8 z-40 transition-all duration-700 ${
           showBackToTop
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-10 pointer-events-none"
         }`}
       >
-        <Button
-          size="icon"
-          variant="outline"
+        <button
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          className="w-10 h-10 rounded-full border border-border/40 bg-background/80 backdrop-blur-sm flex items-center justify-center hover:bg-foreground hover:text-background transition-all duration-500 group shadow-sm"
+          className="group flex flex-col items-center gap-1.5"
         >
           <ArrowUp
             size={16}
-            className="group-hover:-translate-y-0.5 transition-transform"
+            className="text-muted-foreground/60 group-hover:text-foreground group-hover:-translate-y-1 transition-all duration-300"
           />
-        </Button>
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground/40 group-hover:text-foreground transition-colors duration-300">
+            Top
+          </span>
+        </button>
       </div>
     </div>
   );

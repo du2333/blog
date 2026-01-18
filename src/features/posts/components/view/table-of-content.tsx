@@ -38,7 +38,7 @@ export default function TableOfContents({
     >
       {/* Root List Container */}
       <div className="relative toc-root">
-        <ul className="space-y-3">
+        <ul className="space-y-3 list-none m-0 p-0">
           {headers.map((node) => (
             <li key={node.id}>
               <a

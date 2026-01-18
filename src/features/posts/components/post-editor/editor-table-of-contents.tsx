@@ -53,7 +53,7 @@ export function EditorTableOfContents({ editor }: { editor: Editor }) {
 
       {/* Root List Container */}
       <div className="relative toc-root">
-        <ul className="space-y-4">
+        <ul className="space-y-4 list-none m-0 p-0">
           {items.map((node) => (
             <li key={node.id}>
               <button

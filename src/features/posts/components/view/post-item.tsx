@@ -26,10 +26,7 @@ export const PostItem = memo(({ post }: PostItemProps) => {
                 <span className="opacity-30">/</span>
                 <div className="flex gap-2">
                   {post.tags.map((tag) => (
-                    <span
-                      key={tag.id}
-                      className="text-muted-foreground/60 uppercase"
-                    >
+                    <span key={tag.id} className="text-muted-foreground/60">
                       {tag.name}
                     </span>
                   ))}
