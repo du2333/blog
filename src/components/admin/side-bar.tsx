@@ -160,7 +160,7 @@ export function SideBar({
             <span className="text-[9px] uppercase tracking-[0.2em] text-muted-foreground font-mono">
               THEME_MODE
             </span>
-            <ThemeToggle className="w-8 h-8 rounded-none border border-border/30 hover:border-foreground transition-colors" />
+            <ThemeToggle className="size-8" />
           </div>
 
           {/* User Info */}

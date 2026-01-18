@@ -13,10 +13,12 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as AdminRouteRouteImport } from './routes/admin/route'
+import { Route as UserRouteRouteImport } from './routes/_user/route'
 import { Route as PublicRouteRouteImport } from './routes/_public/route'
 import { Route as AuthRouteRouteImport } from './routes/_auth/route'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
+import { Route as UserProfileRouteImport } from './routes/_user/profile'
 import { Route as PublicUnsubscribeRouteImport } from './routes/_public/unsubscribe'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthResetLinkRouteImport } from './routes/_auth/reset-link'
@@ -54,6 +56,10 @@ const AdminRouteRoute = AdminRouteRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const UserRouteRoute = UserRouteRouteImport.update({
+  id: '/_user',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PublicRouteRoute = PublicRouteRouteImport.update({
   id: '/_public',
   getParentRoute: () => rootRouteImport,
@@ -71,6 +77,11 @@ const PublicIndexRoute = PublicIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => PublicRouteRoute,
+} as any)
+const UserProfileRoute = UserProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => UserRouteRoute,
 } as any)
 const PublicUnsubscribeRoute = PublicUnsubscribeRouteImport.update({
   id: '/unsubscribe',
@@ -166,6 +177,7 @@ export interface FileRoutesByFullPath {
   '/reset-link': typeof AuthResetLinkRoute
   '/verify-email': typeof AuthVerifyEmailRoute
   '/unsubscribe': typeof PublicUnsubscribeRoute
+  '/profile': typeof UserProfileRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
@@ -187,6 +199,7 @@ export interface FileRoutesByTo {
   '/reset-link': typeof AuthResetLinkRoute
   '/verify-email': typeof AuthVerifyEmailRoute
   '/unsubscribe': typeof PublicUnsubscribeRoute
+  '/profile': typeof UserProfileRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
@@ -202,6 +215,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_auth': typeof AuthRouteRouteWithChildren
   '/_public': typeof PublicRouteRouteWithChildren
+  '/_user': typeof UserRouteRouteWithChildren
   '/admin': typeof AdminRouteRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
@@ -214,6 +228,7 @@ export interface FileRoutesById {
   '/_auth/reset-link': typeof AuthResetLinkRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
   '/_public/unsubscribe': typeof PublicUnsubscribeRoute
+  '/_user/profile': typeof UserProfileRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
@@ -240,6 +255,7 @@ export interface FileRouteTypes {
     | '/reset-link'
     | '/verify-email'
     | '/unsubscribe'
+    | '/profile'
     | '/'
     | '/admin/'
     | '/post/$slug'
@@ -261,6 +277,7 @@ export interface FileRouteTypes {
     | '/reset-link'
     | '/verify-email'
     | '/unsubscribe'
+    | '/profile'
     | '/'
     | '/admin'
     | '/post/$slug'
@@ -275,6 +292,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/_auth'
     | '/_public'
+    | '/_user'
     | '/admin'
     | '/robots.txt'
     | '/rss.xml'
@@ -287,6 +305,7 @@ export interface FileRouteTypes {
     | '/_auth/reset-link'
     | '/_auth/verify-email'
     | '/_public/unsubscribe'
+    | '/_user/profile'
     | '/_public/'
     | '/admin/'
     | '/_public/post/$slug'
@@ -302,6 +321,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   AuthRouteRoute: typeof AuthRouteRouteWithChildren
   PublicRouteRoute: typeof PublicRouteRouteWithChildren
+  UserRouteRoute: typeof UserRouteRouteWithChildren
   AdminRouteRoute: typeof AdminRouteRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   RssDotxmlRoute: typeof RssDotxmlRoute
@@ -338,6 +358,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_user': {
+      id: '/_user'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof UserRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_public': {
       id: '/_public'
       path: ''
@@ -365,6 +392,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof PublicIndexRouteImport
       parentRoute: typeof PublicRouteRoute
+    }
+    '/_user/profile': {
+      id: '/_user/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof UserProfileRouteImport
+      parentRoute: typeof UserRouteRoute
     }
     '/_public/unsubscribe': {
       id: '/_public/unsubscribe'
@@ -531,6 +565,18 @@ const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(
   PublicRouteRouteChildren,
 )
 
+interface UserRouteRouteChildren {
+  UserProfileRoute: typeof UserProfileRoute
+}
+
+const UserRouteRouteChildren: UserRouteRouteChildren = {
+  UserProfileRoute: UserProfileRoute,
+}
+
+const UserRouteRouteWithChildren = UserRouteRoute._addFileChildren(
+  UserRouteRouteChildren,
+)
+
 interface AdminPostsRouteRouteChildren {
   AdminPostsIndexRoute: typeof AdminPostsIndexRoute
   AdminPostsEditIdRoute: typeof AdminPostsEditIdRoute
@@ -570,6 +616,7 @@ const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   AuthRouteRoute: AuthRouteRouteWithChildren,
   PublicRouteRoute: PublicRouteRouteWithChildren,
+  UserRouteRoute: UserRouteRouteWithChildren,
   AdminRouteRoute: AdminRouteRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
   RssDotxmlRoute: RssDotxmlRoute,

@@ -89,6 +89,13 @@ mark {
   @apply bg-muted text-inherit px-1 py-0.5 rounded-sm transition-colors border-b border-border;
 }
 
+/* Theme Transition: Disable default cross-fade when 'theme-transition' class is present */
+.theme-transition::view-transition-old(root),
+.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
 @theme {
   --tw-transition-duration: 0.3s;
 

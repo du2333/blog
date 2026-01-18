@@ -2,7 +2,6 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Outlet, createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { UserProfileModal } from "@/features/auth/components/user-profile-modal";
 import { Footer } from "@/components/layout/footer";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";
@@ -21,7 +20,6 @@ export const Route = createFileRoute("/_public")({
 function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
 
   const navOptions = [
     { label: "主页", to: "/" as const, id: "home" },
@@ -63,16 +61,15 @@ function PublicLayout() {
   return (
     <div className="min-h-screen font-sans relative antialiased">
       {/* --- Minimalist Background --- */}
-      <div className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+      <button className="fixed inset-0 pointer-events-none z-0 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(0,0,0,0.03)_0%,transparent_70%)] in-[.dark]:bg-[radial-gradient(circle_at_50%_0%,rgba(255,255,255,0.02)_0%,transparent_70%)]"></div>
-      </div>
+      </button>
 
       <Navbar
         onMenuClick={() => setIsMenuOpen(true)}
         onSearchClick={() => setIsSearchOpen(true)}
         user={session?.user}
         isLoading={isSessionPending}
-        onOpenProfile={() => setIsProfileModalOpen(true)}
         navOptions={navOptions}
       />
       <MobileMenu
@@ -80,19 +77,11 @@ function PublicLayout() {
         onClose={() => setIsMenuOpen(false)}
         user={session?.user}
         logout={logout}
-        onOpenProfile={() => setIsProfileModalOpen(true)}
         navOptions={navOptions}
       />
       <SearchCommandCenter
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-      />
-      {/* User Profile Modal */}
-      <UserProfileModal
-        isOpen={isProfileModalOpen}
-        onClose={() => setIsProfileModalOpen(false)}
-        user={session?.user}
-        logout={logout}
       />
       <main className="flex flex-col min-h-screen relative z-10">
         <Outlet />

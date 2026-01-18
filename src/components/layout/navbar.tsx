@@ -15,7 +15,6 @@ interface NavbarProps {
   }>;
   onSearchClick: () => void;
   onMenuClick: () => void;
-  onOpenProfile: () => void;
   isLoading?: boolean;
   user?: {
     name: string;
@@ -29,7 +28,6 @@ export function Navbar({
   onMenuClick,
   user,
   navOptions,
-  onOpenProfile,
   isLoading,
 }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -98,25 +96,28 @@ export function Navbar({
                   <div className="flex items-center gap-3 animate-in fade-in">
                     {user ? (
                       <>
-                        <button
-                          onClick={onOpenProfile}
-                          className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-border hover:ring-foreground transition-all"
-                        >
-                          {user.image ? (
-                            <img
-                              src={user.image}
-                              alt={user.name}
-                              className="w-full h-full object-cover"
-                            />
-                          ) : (
-                            <div className="w-full h-full bg-muted flex items-center justify-center">
-                              <UserIcon
-                                size={12}
-                                className="text-muted-foreground"
+                        <>
+                          <Link
+                            to="/profile"
+                            className="w-7 h-7 rounded-full overflow-hidden ring-1 ring-border hover:ring-foreground transition-all relative z-10"
+                            style={{ viewTransitionName: "user-avatar" }}
+                          >
+                            {user.image ? (
+                              <img
+                                src={user.image}
+                                alt={user.name}
+                                className="w-full h-full object-cover"
                               />
-                            </div>
-                          )}
-                        </button>
+                            ) : (
+                              <div className="w-full h-full bg-muted flex items-center justify-center">
+                                <UserIcon
+                                  size={12}
+                                  className="text-muted-foreground"
+                                />
+                              </div>
+                            )}
+                          </Link>
+                        </>
                       </>
                     ) : (
                       <Link

@@ -15,6 +15,7 @@ export const ROUTE_REGEXPS: Array<RegExp> = [
   new RegExp("^/reset-link/?$"),
   new RegExp("^/verify-email/?$"),
   new RegExp("^/unsubscribe/?$"),
+  new RegExp("^/profile/?$"),
   new RegExp("^/$"),
   new RegExp("^/post/[^/]+/?$"),
   new RegExp("^/admin/comments/?$"),

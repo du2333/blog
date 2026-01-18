@@ -18,7 +18,6 @@ interface MobileMenuProps {
     role?: string | null;
   };
   logout: () => Promise<void>;
-  onOpenProfile: () => void;
 }
 
 export function MobileMenu({
@@ -27,7 +26,6 @@ export function MobileMenu({
   onClose,
   user,
   logout,
-  onOpenProfile,
 }: MobileMenuProps) {
   return (
     <div
@@ -161,12 +159,13 @@ export function MobileMenu({
                   <span className="font-mono text-sm text-foreground">
                     @{user.name}
                   </span>
-                  <button
-                    onClick={onOpenProfile}
+                  <Link
+                    to="/profile"
+                    onClick={onClose}
                     className="text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground text-left"
                   >
                     个人资料
-                  </button>
+                  </Link>
                 </div>
               </div>
 
