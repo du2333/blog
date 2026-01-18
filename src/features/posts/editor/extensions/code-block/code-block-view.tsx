@@ -1,12 +1,33 @@
 import { NodeViewContent, NodeViewWrapper } from "@tiptap/react";
 import { Check, Copy } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { LANGUAGES } from "./languages";
 import type { NodeViewProps } from "@tiptap/react";
+import { loadLanguage } from "@/lib/shiki";
 import DropdownMenu from "@/components/ui/dropdown-menu";
 
-export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
+export function CodeBlockView({
+  node,
+  updateAttributes,
+  editor,
+}: NodeViewProps) {
   const [copied, setCopied] = useState(false);
+  const language = node.attrs.language || "text";
+
+  useEffect(() => {
+    let mounted = true;
+    loadLanguage(language).then(() => {
+      if (mounted) {
+        // Trigger re-decoration in shiki plugin
+        const tr = editor.state.tr.setMeta("shikiUpdate", true);
+        editor.view.dispatch(tr);
+      }
+    });
+
+    return () => {
+      mounted = false;
+    };
+  }, [language, editor]);
 
   const handleCopy = () => {
     const code = node.textContent;
@@ -14,8 +35,6 @@ export function CodeBlockView({ node, updateAttributes }: NodeViewProps) {
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
-
-  const language = node.attrs.language || "text";
 
   return (
     <NodeViewWrapper className="my-16 relative group">

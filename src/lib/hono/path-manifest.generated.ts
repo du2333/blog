@@ -5,6 +5,7 @@
 export const ROUTE_REGEXPS: Array<RegExp> = [
   new RegExp("^/admin/?$"),
   new RegExp("^/robots\\.txt/?$"),
+  new RegExp("^/rss\\.xml/?$"),
   new RegExp("^/sitemap\\.xml/?$"),
   new RegExp("^/post/?$"),
   new RegExp("^/admin/posts/?$"),
