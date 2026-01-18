@@ -38,6 +38,9 @@ jobs:
       - name: Install dependencies
         run: bun ci
 
+      - name: Setup Wrangler Config
+        run: cp wrangler.example.jsonc wrangler.jsonc
+
       - name: Run tests
         run: bun run test
 
@@ -80,6 +83,12 @@ jobs:
           token: ${{ secrets.VAULT_TOKEN }}
           secrets: |
             secrets/data/blog *
+
+      - name: Inject Resource IDs
+        run: |
+          cp wrangler.example.jsonc wrangler.jsonc
+          sed -i "s/D1_DATABASE_ID/$D1_DATABASE_ID/g" wrangler.jsonc
+          sed -i "s/KV_NAMESPACE_ID/$KV_NAMESPACE_ID/g" wrangler.jsonc
 
       - name: Generate Secrets JSON
         run: |

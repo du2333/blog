@@ -17,7 +17,7 @@
     {
       "binding": "DB",
       "database_name": "blog-d1",
-      "database_id": "1acbc6af-0a75-4ca8-84a4-9d3030fd1359",
+      "database_id": "D1_DATABASE_ID",
       "migrations_dir": "migrations",
       "remote": true,
     },
@@ -32,7 +32,7 @@
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "c69b676dc47b4832ab19cea46f120461",
+      "id": "KV_NAMESPACE_ID",
       "remote": true,
     },
   ],

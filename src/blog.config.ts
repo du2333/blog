@@ -1,12 +1,16 @@
+import { clientEnv } from "@/lib/env/client.env";
+
+const env = clientEnv();
+
 export const blogConfig = {
-  title: "冷静的阿旷",
-  name: "akuang",
-  author: "阿旷",
+  title: env.VITE_BLOG_TITLE || "Flare Stack Blog",
+  name: env.VITE_BLOG_NAME || "blog",
+  author: env.VITE_BLOG_AUTHOR || "作者",
   description:
-    "这是我的个人网站和博客。在这里，我主要分享与技术和生活相关的内容。欢迎阅读！",
+    env.VITE_BLOG_DESCRIPTION || "这是博客的描述，写一段话介绍一下这个博客，",
   social: {
-    github: "https://github.com/du2333",
-    email: "kuangdadu@gmail.com",
+    github: env.VITE_BLOG_GITHUB || "https://github.com/example",
+    email: env.VITE_BLOG_EMAIL || "demo@example.com",
   },
 };
 
