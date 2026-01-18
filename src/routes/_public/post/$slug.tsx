@@ -101,7 +101,7 @@ function RouteComponent() {
                     {post.tags.map((tag) => (
                       <Link
                         key={tag.id}
-                        to="/post"
+                        to="/posts"
                         search={{ tagName: tag.name }}
                         className="hover:text-foreground transition-colors"
                       >

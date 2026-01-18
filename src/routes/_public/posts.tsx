@@ -17,7 +17,7 @@ const DisplayTagsQueryOptions = {
   ...tagsQueryOptions(),
 };
 
-export const Route = createFileRoute("/_public/post/")({
+export const Route = createFileRoute("/_public/posts")({
   validateSearch: z.object({
     tagName: z.string().optional(),
   }),
@@ -31,7 +31,21 @@ export const Route = createFileRoute("/_public/post/")({
       ),
       context.queryClient.prefetchQuery(DisplayTagsQueryOptions),
     ]);
+    return {
+      title: "全部文章",
+    };
   },
+  head: ({ loaderData }) => ({
+    meta: [
+      {
+        title: loaderData?.title,
+      },
+      {
+        name: "description",
+        content: blogConfig.description,
+      },
+    ],
+  }),
 });
 
 function RouteComponent() {
@@ -91,7 +105,6 @@ function RouteComponent() {
           {blogConfig.description}
         </p>
       </header>
-
       {/* Tag Filters - Minimalist Text Chips */}
       <div className="mb-12 space-y-4">
         <div className="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground/50">
@@ -153,7 +166,6 @@ function RouteComponent() {
           )}
         </div>
       </div>
-
       {/* Posts List - Clean Divide */}
       <div className="flex flex-col gap-0 border-t border-border/40">
         {posts.length === 0 ? (
@@ -169,7 +181,6 @@ function RouteComponent() {
           ))
         )}
       </div>
-
       {/* Load More Area */}
       <div
         ref={observerRef}

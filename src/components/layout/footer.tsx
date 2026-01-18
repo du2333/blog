@@ -19,7 +19,7 @@ export function Footer() {
           <a href="/" className="hover:text-foreground transition-colors">
             Home
           </a>
-          <a href="/post" className="hover:text-foreground transition-colors">
+          <a href="/posts" className="hover:text-foreground transition-colors">
             Posts
           </a>
           <a

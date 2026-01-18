@@ -126,7 +126,7 @@ async function invalidateTagRelatedCache(
     }
 
     // Purge CDN for affected posts and list pages
-    const cdnUrls = ["/", "/post"];
+    const cdnUrls = ["/", "/posts"];
     for (const post of affectedPosts) {
       cdnUrls.push(`/post/${post.slug}`);
     }
@@ -138,7 +138,7 @@ async function invalidateTagRelatedCache(
     await Promise.all([
       CacheService.bumpVersion(context, "posts:detail"),
       CacheService.bumpVersion(context, "posts:list"),
-      purgeCDNCache(context.env, { urls: ["/", "/post"] }),
+      purgeCDNCache(context.env, { urls: ["/", "/posts"] }),
     ]);
   }
 }

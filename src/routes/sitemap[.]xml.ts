@@ -38,7 +38,7 @@ export const Route = createFileRoute("/sitemap.xml")({
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://${env.DOMAIN}/post</loc>
+    <loc>https://${env.DOMAIN}/posts</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

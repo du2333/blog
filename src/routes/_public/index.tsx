@@ -76,11 +76,11 @@ function App() {
 
         <div className="pt-8">
           <Link
-            to="/post"
+            to="/posts"
             className="text-sm font-mono text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2"
           >
             <Terminal size={14} />
-            cd /post
+            cd /posts
           </Link>
         </div>
       </section>

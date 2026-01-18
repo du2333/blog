@@ -20,19 +20,19 @@ import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as PublicIndexRouteImport } from './routes/_public/index'
 import { Route as UserProfileRouteImport } from './routes/_user/profile'
 import { Route as PublicUnsubscribeRouteImport } from './routes/_public/unsubscribe'
+import { Route as PublicSearchRouteImport } from './routes/_public/search'
+import { Route as PublicPostsRouteImport } from './routes/_public/posts'
 import { Route as AuthVerifyEmailRouteImport } from './routes/_auth/verify-email'
 import { Route as AuthResetLinkRouteImport } from './routes/_auth/reset-link'
 import { Route as AuthRegisterRouteImport } from './routes/_auth/register'
 import { Route as AuthLoginRouteImport } from './routes/_auth/login'
 import { Route as AuthForgotPasswordRouteImport } from './routes/_auth/forgot-password'
 import { Route as AdminPostsRouteRouteImport } from './routes/admin/posts/route'
-import { Route as PublicPostRouteRouteImport } from './routes/_public/post/route'
 import { Route as AdminTagsIndexRouteImport } from './routes/admin/tags/index'
 import { Route as AdminSettingsIndexRouteImport } from './routes/admin/settings/index'
 import { Route as AdminPostsIndexRouteImport } from './routes/admin/posts/index'
 import { Route as AdminMediaIndexRouteImport } from './routes/admin/media/index'
 import { Route as AdminCommentsIndexRouteImport } from './routes/admin/comments/index'
-import { Route as PublicPostIndexRouteImport } from './routes/_public/post/index'
 import { Route as PublicPostSlugRouteImport } from './routes/_public/post/$slug'
 import { Route as AdminPostsEditIdRouteImport } from './routes/admin/posts/edit.$id'
 
@@ -88,6 +88,16 @@ const PublicUnsubscribeRoute = PublicUnsubscribeRouteImport.update({
   path: '/unsubscribe',
   getParentRoute: () => PublicRouteRoute,
 } as any)
+const PublicSearchRoute = PublicSearchRouteImport.update({
+  id: '/search',
+  path: '/search',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
+const PublicPostsRoute = PublicPostsRouteImport.update({
+  id: '/posts',
+  path: '/posts',
+  getParentRoute: () => PublicRouteRoute,
+} as any)
 const AuthVerifyEmailRoute = AuthVerifyEmailRouteImport.update({
   id: '/verify-email',
   path: '/verify-email',
@@ -118,11 +128,6 @@ const AdminPostsRouteRoute = AdminPostsRouteRouteImport.update({
   path: '/posts',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const PublicPostRouteRoute = PublicPostRouteRouteImport.update({
-  id: '/post',
-  path: '/post',
-  getParentRoute: () => PublicRouteRoute,
-} as any)
 const AdminTagsIndexRoute = AdminTagsIndexRouteImport.update({
   id: '/tags/',
   path: '/tags/',
@@ -148,15 +153,10 @@ const AdminCommentsIndexRoute = AdminCommentsIndexRouteImport.update({
   path: '/comments/',
   getParentRoute: () => AdminRouteRoute,
 } as any)
-const PublicPostIndexRoute = PublicPostIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => PublicPostRouteRoute,
-} as any)
 const PublicPostSlugRoute = PublicPostSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => PublicPostRouteRoute,
+  id: '/post/$slug',
+  path: '/post/$slug',
+  getParentRoute: () => PublicRouteRoute,
 } as any)
 const AdminPostsEditIdRoute = AdminPostsEditIdRouteImport.update({
   id: '/edit/$id',
@@ -169,19 +169,19 @@ export interface FileRoutesByFullPath {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/post': typeof PublicPostRouteRouteWithChildren
   '/admin/posts': typeof AdminPostsRouteRouteWithChildren
   '/forgot-password': typeof AuthForgotPasswordRoute
   '/login': typeof AuthLoginRoute
   '/register': typeof AuthRegisterRoute
   '/reset-link': typeof AuthResetLinkRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/posts': typeof PublicPostsRoute
+  '/search': typeof PublicSearchRoute
   '/unsubscribe': typeof PublicUnsubscribeRoute
   '/profile': typeof UserProfileRoute
   '/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/post/': typeof PublicPostIndexRoute
   '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
@@ -198,12 +198,13 @@ export interface FileRoutesByTo {
   '/register': typeof AuthRegisterRoute
   '/reset-link': typeof AuthResetLinkRoute
   '/verify-email': typeof AuthVerifyEmailRoute
+  '/posts': typeof PublicPostsRoute
+  '/search': typeof PublicSearchRoute
   '/unsubscribe': typeof PublicUnsubscribeRoute
   '/profile': typeof UserProfileRoute
   '/': typeof PublicIndexRoute
   '/admin': typeof AdminIndexRoute
   '/post/$slug': typeof PublicPostSlugRoute
-  '/post': typeof PublicPostIndexRoute
   '/admin/comments': typeof AdminCommentsIndexRoute
   '/admin/media': typeof AdminMediaIndexRoute
   '/admin/posts': typeof AdminPostsIndexRoute
@@ -220,19 +221,19 @@ export interface FileRoutesById {
   '/robots.txt': typeof RobotsDottxtRoute
   '/rss.xml': typeof RssDotxmlRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
-  '/_public/post': typeof PublicPostRouteRouteWithChildren
   '/admin/posts': typeof AdminPostsRouteRouteWithChildren
   '/_auth/forgot-password': typeof AuthForgotPasswordRoute
   '/_auth/login': typeof AuthLoginRoute
   '/_auth/register': typeof AuthRegisterRoute
   '/_auth/reset-link': typeof AuthResetLinkRoute
   '/_auth/verify-email': typeof AuthVerifyEmailRoute
+  '/_public/posts': typeof PublicPostsRoute
+  '/_public/search': typeof PublicSearchRoute
   '/_public/unsubscribe': typeof PublicUnsubscribeRoute
   '/_user/profile': typeof UserProfileRoute
   '/_public/': typeof PublicIndexRoute
   '/admin/': typeof AdminIndexRoute
   '/_public/post/$slug': typeof PublicPostSlugRoute
-  '/_public/post/': typeof PublicPostIndexRoute
   '/admin/comments/': typeof AdminCommentsIndexRoute
   '/admin/media/': typeof AdminMediaIndexRoute
   '/admin/posts/': typeof AdminPostsIndexRoute
@@ -247,19 +248,19 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rss.xml'
     | '/sitemap.xml'
-    | '/post'
     | '/admin/posts'
     | '/forgot-password'
     | '/login'
     | '/register'
     | '/reset-link'
     | '/verify-email'
+    | '/posts'
+    | '/search'
     | '/unsubscribe'
     | '/profile'
     | '/'
     | '/admin/'
     | '/post/$slug'
-    | '/post/'
     | '/admin/comments'
     | '/admin/media'
     | '/admin/posts/'
@@ -276,12 +277,13 @@ export interface FileRouteTypes {
     | '/register'
     | '/reset-link'
     | '/verify-email'
+    | '/posts'
+    | '/search'
     | '/unsubscribe'
     | '/profile'
     | '/'
     | '/admin'
     | '/post/$slug'
-    | '/post'
     | '/admin/comments'
     | '/admin/media'
     | '/admin/posts'
@@ -297,19 +299,19 @@ export interface FileRouteTypes {
     | '/robots.txt'
     | '/rss.xml'
     | '/sitemap.xml'
-    | '/_public/post'
     | '/admin/posts'
     | '/_auth/forgot-password'
     | '/_auth/login'
     | '/_auth/register'
     | '/_auth/reset-link'
     | '/_auth/verify-email'
+    | '/_public/posts'
+    | '/_public/search'
     | '/_public/unsubscribe'
     | '/_user/profile'
     | '/_public/'
     | '/admin/'
     | '/_public/post/$slug'
-    | '/_public/post/'
     | '/admin/comments/'
     | '/admin/media/'
     | '/admin/posts/'
@@ -407,6 +409,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PublicUnsubscribeRouteImport
       parentRoute: typeof PublicRouteRoute
     }
+    '/_public/search': {
+      id: '/_public/search'
+      path: '/search'
+      fullPath: '/search'
+      preLoaderRoute: typeof PublicSearchRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
+    '/_public/posts': {
+      id: '/_public/posts'
+      path: '/posts'
+      fullPath: '/posts'
+      preLoaderRoute: typeof PublicPostsRouteImport
+      parentRoute: typeof PublicRouteRoute
+    }
     '/_auth/verify-email': {
       id: '/_auth/verify-email'
       path: '/verify-email'
@@ -449,13 +465,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPostsRouteRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_public/post': {
-      id: '/_public/post'
-      path: '/post'
-      fullPath: '/post'
-      preLoaderRoute: typeof PublicPostRouteRouteImport
-      parentRoute: typeof PublicRouteRoute
-    }
     '/admin/tags/': {
       id: '/admin/tags/'
       path: '/tags'
@@ -491,19 +500,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCommentsIndexRouteImport
       parentRoute: typeof AdminRouteRoute
     }
-    '/_public/post/': {
-      id: '/_public/post/'
-      path: '/'
-      fullPath: '/post/'
-      preLoaderRoute: typeof PublicPostIndexRouteImport
-      parentRoute: typeof PublicPostRouteRoute
-    }
     '/_public/post/$slug': {
       id: '/_public/post/$slug'
-      path: '/$slug'
+      path: '/post/$slug'
       fullPath: '/post/$slug'
       preLoaderRoute: typeof PublicPostSlugRouteImport
-      parentRoute: typeof PublicPostRouteRoute
+      parentRoute: typeof PublicRouteRoute
     }
     '/admin/posts/edit/$id': {
       id: '/admin/posts/edit/$id'
@@ -535,30 +537,20 @@ const AuthRouteRouteWithChildren = AuthRouteRoute._addFileChildren(
   AuthRouteRouteChildren,
 )
 
-interface PublicPostRouteRouteChildren {
-  PublicPostSlugRoute: typeof PublicPostSlugRoute
-  PublicPostIndexRoute: typeof PublicPostIndexRoute
-}
-
-const PublicPostRouteRouteChildren: PublicPostRouteRouteChildren = {
-  PublicPostSlugRoute: PublicPostSlugRoute,
-  PublicPostIndexRoute: PublicPostIndexRoute,
-}
-
-const PublicPostRouteRouteWithChildren = PublicPostRouteRoute._addFileChildren(
-  PublicPostRouteRouteChildren,
-)
-
 interface PublicRouteRouteChildren {
-  PublicPostRouteRoute: typeof PublicPostRouteRouteWithChildren
+  PublicPostsRoute: typeof PublicPostsRoute
+  PublicSearchRoute: typeof PublicSearchRoute
   PublicUnsubscribeRoute: typeof PublicUnsubscribeRoute
   PublicIndexRoute: typeof PublicIndexRoute
+  PublicPostSlugRoute: typeof PublicPostSlugRoute
 }
 
 const PublicRouteRouteChildren: PublicRouteRouteChildren = {
-  PublicPostRouteRoute: PublicPostRouteRouteWithChildren,
+  PublicPostsRoute: PublicPostsRoute,
+  PublicSearchRoute: PublicSearchRoute,
   PublicUnsubscribeRoute: PublicUnsubscribeRoute,
   PublicIndexRoute: PublicIndexRoute,
+  PublicPostSlugRoute: PublicPostSlugRoute,
 }
 
 const PublicRouteRouteWithChildren = PublicRouteRoute._addFileChildren(

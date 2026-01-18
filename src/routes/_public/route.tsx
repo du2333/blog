@@ -1,11 +1,10 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { Outlet, createFileRoute } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Footer } from "@/components/layout/footer";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { Navbar } from "@/components/layout/navbar";
-import { SearchCommandCenter } from "@/features/search/components/search-command-center";
 import { authClient } from "@/lib/auth/auth.client";
 import { CACHE_CONTROL } from "@/lib/constants";
 import { AUTH_KEYS } from "@/features/auth/queries";
@@ -19,11 +18,11 @@ export const Route = createFileRoute("/_public")({
 
 function PublicLayout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const navigate = useNavigate();
 
   const navOptions = [
     { label: "主页", to: "/" as const, id: "home" },
-    { label: "文章", to: "/post" as const, id: "post" },
+    { label: "文章", to: "/posts" as const, id: "posts" },
   ];
 
   const { data: session, isPending: isSessionPending } =
@@ -44,19 +43,19 @@ function PublicLayout() {
       description: "你已安全退出当前会话。",
     });
   };
-  // Global shortcut: Cmd/Ctrl + K to toggle search
+  // Global shortcut: Cmd/Ctrl + K to navigate to search
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const isToggle = (e.metaKey || e.ctrlKey) && e.key.toLowerCase() === "k";
       if (isToggle) {
         e.preventDefault();
-        setIsSearchOpen((prev) => !prev);
+        navigate({ to: "/search" });
         setIsMenuOpen(false);
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="min-h-screen font-sans relative antialiased">
@@ -67,7 +66,6 @@ function PublicLayout() {
 
       <Navbar
         onMenuClick={() => setIsMenuOpen(true)}
-        onSearchClick={() => setIsSearchOpen(true)}
         user={session?.user}
         isLoading={isSessionPending}
         navOptions={navOptions}
@@ -78,10 +76,6 @@ function PublicLayout() {
         user={session?.user}
         logout={logout}
         navOptions={navOptions}
-      />
-      <SearchCommandCenter
-        isOpen={isSearchOpen}
-        onClose={() => setIsSearchOpen(false)}
       />
       <main className="flex flex-col min-h-screen relative z-10">
         <Outlet />

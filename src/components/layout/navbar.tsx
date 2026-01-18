@@ -3,7 +3,6 @@ import { Search, UserIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { FileRoutesByTo } from "@/routeTree.gen";
 import { ThemeToggle } from "@/components/common/theme-toggle";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { blogConfig } from "@/blog.config";
 
@@ -13,7 +12,6 @@ interface NavbarProps {
     to: keyof FileRoutesByTo;
     id: string;
   }>;
-  onSearchClick: () => void;
   onMenuClick: () => void;
   isLoading?: boolean;
   user?: {
@@ -24,7 +22,6 @@ interface NavbarProps {
 }
 
 export function Navbar({
-  onSearchClick,
   onMenuClick,
   user,
   navOptions,
@@ -77,14 +74,16 @@ export function Navbar({
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1">
               <ThemeToggle />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={onSearchClick}
-                className="text-muted-foreground hover:text-foreground h-8 w-8"
+              <Link
+                to="/search"
+                className="text-muted-foreground hover:text-foreground h-8 w-8 flex items-center justify-center transition-colors"
               >
-                <Search size={16} strokeWidth={1.5} />
-              </Button>
+                <Search
+                  size={16}
+                  strokeWidth={1.5}
+                  style={{ viewTransitionName: "search-input" }}
+                />
+              </Link>
             </div>
 
             {/* Profile / Menu Toggle */}

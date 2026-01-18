@@ -28,7 +28,7 @@ export function ArticleSkeleton() {
       {/* Back Link Skeleton (matches real page) */}
       <nav className="py-12 flex items-center justify-between">
         <button
-          onClick={() => navigate({ to: "/post" })}
+          onClick={() => navigate({ to: "/posts" })}
           className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] opacity-40 hover:opacity-100 transition-opacity"
         >
           <ArrowLeft size={12} />
