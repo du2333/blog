@@ -76,13 +76,13 @@ function RouteComponent() {
   return (
     <div className="w-full max-w-3xl mx-auto pb-20 px-6 md:px-0">
       {/* Back Link */}
-      <nav className="py-12 animate-in fade-in duration-500 fill-mode-both flex items-center justify-between">
+      <nav className="py-12 flex items-center justify-between">
         <Breadcrumbs />
       </nav>
 
       <article className="space-y-16">
         {/* Header Section */}
-        <header className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 ease-out fill-mode-both">
+        <header className="space-y-8">
           <div className="space-y-6">
             <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground/60 tracking-wider uppercase">
               <span className="flex items-center gap-1.5">
@@ -113,7 +113,10 @@ function RouteComponent() {
               )}
             </div>
 
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-tight text-foreground">
+            <h1
+              className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium leading-[1.1] tracking-tight text-foreground"
+              style={{ viewTransitionName: `post-title-${post.slug}` }}
+            >
               {post.title}
             </h1>
           </div>
@@ -132,7 +135,7 @@ function RouteComponent() {
             </div>
           </aside>
 
-          <main className="max-w-none animate-in fade-in duration-700 delay-200 fill-mode-both text-foreground leading-relaxed font-serif">
+          <main className="max-w-none text-foreground leading-relaxed font-serif">
             <ContentRenderer content={post.contentJson} />
 
             <footer className="mt-24 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-6">

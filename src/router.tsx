@@ -23,6 +23,7 @@ export function getRouter() {
     },
     defaultNotFoundComponent: NotFound,
     defaultErrorComponent: ErrorPage,
+    defaultViewTransition: true,
   });
 
   setupRouterSsrQueryIntegration({

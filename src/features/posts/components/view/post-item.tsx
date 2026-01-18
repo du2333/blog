@@ -38,7 +38,10 @@ export const PostItem = memo(({ post }: PostItemProps) => {
             )}
           </div>
 
-          <h3 className="text-2xl md:text-3xl font-serif font-medium text-foreground group-hover:text-foreground/70 transition-colors duration-300">
+          <h3
+            className="text-2xl md:text-3xl font-serif font-medium text-foreground group-hover:text-foreground/70 transition-colors duration-300"
+            style={{ viewTransitionName: `post-title-${post.slug}` }}
+          >
             {post.title}
           </h3>
 

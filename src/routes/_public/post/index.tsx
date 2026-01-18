@@ -83,7 +83,7 @@ function RouteComponent() {
   return (
     <div className="w-full max-w-3xl mx-auto pb-20 px-6 md:px-0">
       {/* Header Section */}
-      <header className="py-12 md:py-20 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both">
+      <header className="py-12 md:py-20 space-y-6">
         <h1 className="text-4xl md:text-5xl font-serif font-medium tracking-tight text-foreground">
           文章
         </h1>
@@ -93,7 +93,7 @@ function RouteComponent() {
       </header>
 
       {/* Tag Filters - Minimalist Text Chips */}
-      <div className="mb-12 space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100 fill-mode-both">
+      <div className="mb-12 space-y-4">
         <div className="flex items-center gap-2 text-[10px] font-mono tracking-[0.2em] uppercase text-muted-foreground/50">
           <span>// 分类_筛选</span>
         </div>
