@@ -131,41 +131,48 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 
 #### GitHub Secrets（必填）
 
-| 变量名                       | 说明                                              |
-| :--------------------------- | :------------------------------------------------ |
-| `CLOUDFLARE_API_TOKEN`       | Cloudflare API Token（Worker 部署 + D1 读写权限） |
-| `CLOUDFLARE_ACCOUNT_ID`      | Cloudflare Account ID                             |
-| `D1_DATABASE_ID`             | D1 数据库 ID                                      |
-| `KV_NAMESPACE_ID`            | KV 命名空间 ID                                    |
-| `BETTER_AUTH_SECRET`         | 会话加密密钥，运行 `openssl rand -hex 32` 生成    |
-| `BETTER_AUTH_URL`            | 应用 URL（如 `https://blog.example.com`）         |
-| `ADMIN_EMAIL`                | 管理员邮箱，注册的用户会按照该邮箱授予管理员权限  |
-| `GH_CLIENT_ID`               | GitHub OAuth Client ID                            |
-| `GH_CLIENT_SECRET`           | GitHub OAuth Client Secret                        |
-| `CLOUDFLARE_ZONE_ID`         | Cloudflare Zone ID                                |
-| `CLOUDFLARE_PURGE_API_TOKEN` | 具有 Purge CDN 权限的 API Token                   |
-| `DOMAIN`                     | 博客域名（如 `blog.example.com`）                 |
+| 变量名                       | 类型   | 说明                                              |
+| :--------------------------- | :----- | :------------------------------------------------ |
+| `CLOUDFLARE_API_TOKEN`       | CI/CD  | Cloudflare API Token（Worker 部署 + D1 读写权限） |
+| `CLOUDFLARE_ACCOUNT_ID`      | CI/CD  | Cloudflare Account ID                             |
+| `D1_DATABASE_ID`             | CI/CD  | D1 数据库 ID                                      |
+| `KV_NAMESPACE_ID`            | CI/CD  | KV 命名空间 ID                                    |
+| `BETTER_AUTH_SECRET`         | 运行时 | 会话加密密钥，运行 `openssl rand -hex 32` 生成    |
+| `BETTER_AUTH_URL`            | 运行时 | 应用 URL（如 `https://blog.example.com`）         |
+| `ADMIN_EMAIL`                | 运行时 | 管理员邮箱，注册的用户会按照该邮箱授予管理员权限  |
+| `GH_CLIENT_ID`               | 运行时 | GitHub OAuth Client ID                            |
+| `GH_CLIENT_SECRET`           | 运行时 | GitHub OAuth Client Secret                        |
+| `CLOUDFLARE_ZONE_ID`         | 运行时 | Cloudflare Zone ID                                |
+| `CLOUDFLARE_PURGE_API_TOKEN` | 运行时 | 具有 Purge CDN 权限的 API Token                   |
+| `DOMAIN`                     | 运行时 | 博客域名（如 `blog.example.com`）                 |
+
+> **类型说明**：
+>
+> - **CI/CD**：仅用于 GitHub Actions 构建部署，方式二用户无需配置
+> - **运行时**：Worker 运行时使用，方式二用户在 Worker Settings 中配置
 
 #### GitHub Secrets（可选，Umami 统计）
 
-| 变量名           | 说明                         |
-| :--------------- | :--------------------------- |
-| `UMAMI_SRC`      | Umami 实例 URL               |
-| `UMAMI_API_KEY`  | Umami API Key（Umami Cloud） |
-| `UMAMI_USERNAME` | Umami 用户名（自部署）       |
-| `UMAMI_PASSWORD` | Umami 密码（自部署）         |
+| 变量名           | 类型   | 说明                         |
+| :--------------- | :----- | :--------------------------- |
+| `UMAMI_SRC`      | 运行时 | Umami 实例 URL               |
+| `UMAMI_API_KEY`  | 运行时 | Umami API Key（Umami Cloud） |
+| `UMAMI_USERNAME` | 运行时 | Umami 用户名（自部署）       |
+| `UMAMI_PASSWORD` | 运行时 | Umami 密码（自部署）         |
 
-#### GitHub Variables（客户端配置）
+#### GitHub Variables（可选，客户端配置）
 
-| 变量名                  | 说明                       |
-| :---------------------- | :------------------------- |
-| `VITE_UMAMI_WEBSITE_ID` | Umami Website ID           |
-| `VITE_BLOG_TITLE`       | 博客标题                   |
-| `VITE_BLOG_NAME`        | 博客短名称，显示在导航栏上 |
-| `VITE_BLOG_AUTHOR`      | 作者名称                   |
-| `VITE_BLOG_DESCRIPTION` | 博客描述，显示在主页上     |
-| `VITE_BLOG_GITHUB`      | GitHub 主页链接            |
-| `VITE_BLOG_EMAIL`       | 联系邮箱                   |
+| 变量名                  | 类型   | 说明                       |
+| :---------------------- | :----- | :------------------------- |
+| `VITE_UMAMI_WEBSITE_ID` | 构建时 | Umami Website ID           |
+| `VITE_BLOG_TITLE`       | 构建时 | 博客标题                   |
+| `VITE_BLOG_NAME`        | 构建时 | 博客短名称，显示在导航栏上 |
+| `VITE_BLOG_AUTHOR`      | 构建时 | 作者名称                   |
+| `VITE_BLOG_DESCRIPTION` | 构建时 | 博客描述，显示在主页上     |
+| `VITE_BLOG_GITHUB`      | 构建时 | GitHub 主页链接            |
+| `VITE_BLOG_EMAIL`       | 构建时 | 联系邮箱                   |
+
+> **构建时变量**：在 Vite 构建时注入到客户端代码，方式二用户在 Build Variables 中配置
 
 ---
 
@@ -175,21 +182,18 @@ CI/CD 会自动完成数据库迁移、构建、部署和 CDN 缓存清理。
 2. 复制 `wrangler.example.jsonc` 为 `wrangler.jsonc`，填入 D1 和 KV 的资源 ID
 3. 在 Cloudflare Dashboard 创建 Worker，连接你的 GitHub 仓库
 4. 配置构建设置：
-   - Build command: `bun ci && bun run build`
+   - Build command: `bun run build`
    - Deploy command: `bun run deploy`
-   - 添加构建时变量：
-     - `BUN_VERSION`: `1.3.5`
-     - `SKIP_DEPENDENCY_INSTALL`: `true`
-     - 所有 `VITE_*` 开头的客户端变量
-5. **数据库迁移**：如果构建环境无 D1 权限，需手动在 D1 Dashboard 执行 `migrations/` 目录下的 SQL 文件建表
-6. 部署完成后，在 **Worker Settings → Variables and Secrets** 中配置运行时环境变量
+   - 构建时变量：`BUN_VERSION`: `1.3.5`
+   - 构建时变量：所有 `VITE_*` 开头的客户端变量
+5. 部署完成后，在 **Worker Settings → Variables and Secrets** 中配置运行时变量
 
-> **注意**：运行时变量名与方式一的 GitHub Secrets 略有不同：
+> **注意**：运行时变量名与方式一略有不同：
 >
 > - `GH_CLIENT_ID` → `GITHUB_CLIENT_ID`
 > - `GH_CLIENT_SECRET` → `GITHUB_CLIENT_SECRET`
 >
-> 其余变量名保持一致。
+> 其余变量名保持一致。Cloudflare 会自动创建带 D1 权限的 API Token，数据库迁移会在部署时自动执行。
 
 ---
 
